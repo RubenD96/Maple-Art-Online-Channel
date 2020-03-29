@@ -57,7 +57,10 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
             if (packetHandler == null) {
                 System.out.println("[RECEIVED] packet " + opCode + " (" + (hex.length() == 1 ? "0x0" : "0x") + hex.toUpperCase() + ")");
             } else {
-                System.out.println("[RECEIVED] " + packetHandler.getClass().getName());
+                String className = packetHandler.getClass().getName();
+                if (!className.contains("DoNothingHandler")) {
+                    System.out.println("[RECEIVED] " + className);
+                }
             }
             //System.out.printf("data: %s.%n", packet.toString());
         }

@@ -9,6 +9,7 @@ public enum SendOpcode implements IntegerValue {
     QUICKSLOT_MAPPED_INIT(0xAF),
     USER_ENTER_FIELD(0xB3),
     USER_MOVE(0xD2),
+    USER_EMOTION(0xDB),
     FUNC_KEY_MAPPED_INIT(0x18E);
     private int value;
 

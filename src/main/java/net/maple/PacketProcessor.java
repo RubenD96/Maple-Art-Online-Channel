@@ -6,6 +6,7 @@ import net.maple.handlers.PongHandler;
 import net.maple.handlers.field.UserMoveHandler;
 import net.maple.handlers.login.MigrateInHandler;
 import net.maple.handlers.user.QuickSlotKeyMappedModifiedHandler;
+import net.maple.handlers.user.UserEmotionHandler;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -37,8 +38,12 @@ public final class PacketProcessor {
         handlers.put(RecvOpcode.MIGRATE_IN, new MigrateInHandler());
         handlers.put(RecvOpcode.PONG, new PongHandler());
         handlers.put(RecvOpcode.USER_MOVE, new UserMoveHandler());
+        handlers.put(RecvOpcode.USER_EMOTION, new UserEmotionHandler());
         handlers.put(RecvOpcode.QUICKSLOT_KEY_MAPPED_MODIFIED, new QuickSlotKeyMappedModifiedHandler());
 
+        handlers.put(RecvOpcode.UPDATE_GM_BOARD, new DoNothingHandler());
         handlers.put(RecvOpcode.UPDATE_SCREEN_SETTING, new DoNothingHandler());
+        handlers.put(RecvOpcode.REQUIRE_FIELD_OBSTACLE_STATUS, new DoNothingHandler());
+        handlers.put(RecvOpcode.CANCEL_INVITE_PARTY_MATCH, new DoNothingHandler());
     }
 }
