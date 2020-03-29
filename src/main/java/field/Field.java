@@ -1,22 +1,71 @@
 package field;
 
+import field.life.FieldObject;
+import field.life.FieldObjectType;
 import lombok.Data;
 import lombok.NonNull;
 import player.Character;
 import util.packet.Packet;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 @Data
 public class Field {
 
     @NonNull final int id;
-    final List<Character> characters = new ArrayList<>();
+    //final List<Character> characters = new ArrayList<>();
+    final Map<FieldObjectType, Set<FieldObject>> objects = new HashMap<>();
+
+    public void init() {
+        for (FieldObjectType type : FieldObjectType.values()) {
+            objects.put(type, new HashSet<>());
+        }
+    }
 
     public void broadcast(Packet packet, Character source) {
-        characters.stream()
+        getObjects(FieldObjectType.CHARACTER).stream()
                 .filter(chr -> !chr.equals(source))
-                .forEach(chr -> chr.write(packet));
+                .forEach(chr -> ((Character) chr).write(packet));
+    }
+
+    public void enter(FieldObject obj) {
+        addObject(obj);
+        if (obj instanceof Character) {
+            Character chr = (Character) obj;
+            chr.setField(this);
+            broadcast(chr.getEnterFieldPacket(), chr);
+
+            objects.values().forEach(set -> set.stream()
+                    .filter(o -> !o.equals(obj))
+                    .forEach(o -> {
+                        System.out.println(o);
+                        chr.write(o.getEnterFieldPacket());
+                    }));
+
+        }
+    }
+
+    public void addObject(FieldObject obj) {
+        objects.get(obj.getFieldObjectType()).add(obj);
+    }
+
+    public Set<FieldObject> getObjects(FieldObjectType t) {
+        return objects.get(t);
+    }
+
+    public Set<FieldObject> getObjectsAsList() {
+        Set<FieldObject> ret = new HashSet<>();
+        for (Set<FieldObject> fieldObjects : objects.values()) {
+            System.out.println(fieldObjects);
+            for (FieldObject fieldObject : fieldObjects) {
+                System.out.println(fieldObject);
+                ret.add(fieldObject);
+            }
+        }
+        //this.objects.values().forEach(ret::addAll);
+        return ret;
     }
 }

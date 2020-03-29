@@ -14,6 +14,7 @@ public class FieldManager {
         Field field = fields.get(id);
         if (field == null) {
             field = new Field(id);
+            field.init();
             fields.put(id, field);
         }
         return field;

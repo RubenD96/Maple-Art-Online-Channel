@@ -94,6 +94,10 @@ public class MovePath implements MoveFragment {
 
     @Override
     public void encode(PacketWriter packet) {
+        packet.writePosition(position);
+        packet.writePosition(vposition);
 
+        packet.write(fragments.size());
+        fragments.forEach(fragment -> fragment.encode(packet));
     }
 }

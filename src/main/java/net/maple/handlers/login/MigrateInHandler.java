@@ -1,5 +1,6 @@
 package net.maple.handlers.login;
 
+import field.Field;
 import net.database.AccountAPI;
 import net.database.CharacterAPI;
 import net.maple.SendOpcode;
@@ -13,8 +14,6 @@ import util.packet.PacketWriter;
 
 import java.util.Arrays;
 
-import static net.maple.packets.FieldPackets.enterField;
-
 public class MigrateInHandler extends PacketHandler {
 
     @Override
@@ -25,10 +24,12 @@ public class MigrateInHandler extends PacketHandler {
 
         Character chr = CharacterAPI.getNewCharacter(c, cid);
         chr.setEquipment(CharacterAPI.getEquips(chr));
-        chr.setField(c.getWorldChannel().getFieldManager().getField(chr.getFieldId()));
-        c.setCharacter(chr);
+
         c.write(setField(chr));
-        c.write(enterField(chr));
+        Field field = c.getWorldChannel().getFieldManager().getField(chr.getFieldId());
+        field.enter(chr);
+
+        c.setCharacter(chr);
         c.write(initFuncKey(chr));
         c.write(initQuickslot(chr));
     }

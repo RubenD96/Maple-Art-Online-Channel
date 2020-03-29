@@ -1,5 +1,6 @@
 package net.server;
 
+import field.Field;
 import field.FieldManager;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;

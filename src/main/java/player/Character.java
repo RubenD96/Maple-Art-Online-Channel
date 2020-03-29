@@ -107,4 +107,9 @@ public class Character extends AbstractFieldLife {
     public Packet getLeaveFieldPacket() {
         return null;
     }
+
+    @Override
+    public String toString() {
+        return name + ":" + id;
+    }
 }
