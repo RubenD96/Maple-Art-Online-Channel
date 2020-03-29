@@ -83,6 +83,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
         Client c = (Client) ch.attr(Client.CLIENT_KEY).get();
 
+        c.disconnect();
         //c.softDisconnect(c.isLoggedIn()); // handle this is we don't soft disconnect through handler
 
         c.cancelPingTask();
@@ -94,6 +95,9 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext chc, Throwable cause) {
         // Close the connection when an exception is raised.
+        Channel ch = chc.channel();
+        Client c = (Client) ch.attr(Client.CLIENT_KEY).get();
+        c.disconnect();
         System.out.println(cause.getMessage());
         chc.close();
     }

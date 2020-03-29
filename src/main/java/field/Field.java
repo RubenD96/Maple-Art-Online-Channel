@@ -30,26 +30,47 @@ public class Field {
                 .filter(chr -> !chr.equals(source))
                 .forEach(chr -> ((Character) chr).write(packet));
     }
+    public void broadcast(Packet packet) {
+        broadcast(packet, null);
+    }
 
-    public void enter(FieldObject obj) {
+    public synchronized void enter(FieldObject obj) {
+        if (obj.getField() != null) {
+            leave(obj);
+        }
+        obj.setField(this);
+
         addObject(obj);
         if (obj instanceof Character) {
             Character chr = (Character) obj;
-            chr.setField(this);
             broadcast(chr.getEnterFieldPacket(), chr);
-
             objects.values().forEach(set -> set.stream()
                     .filter(o -> !o.equals(obj))
                     .forEach(o -> {
                         System.out.println(o);
                         chr.write(o.getEnterFieldPacket());
                     }));
+        } else {
+            broadcast(obj.getEnterFieldPacket());
+        }
+    }
 
+    public synchronized void leave(FieldObject obj) {
+        removeObject(obj);
+        if (obj instanceof Character) {
+            Character chr = (Character) obj;
+            broadcast(chr.getLeaveFieldPacket(), chr);
+        } else {
+            broadcast(obj.getLeaveFieldPacket());
         }
     }
 
     public void addObject(FieldObject obj) {
         objects.get(obj.getFieldObjectType()).add(obj);
+    }
+
+    public void removeObject(FieldObject obj) {
+        objects.get(obj.getFieldObjectType()).remove(obj);
     }
 
     public Set<FieldObject> getObjects(FieldObjectType t) {

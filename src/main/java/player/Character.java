@@ -32,7 +32,6 @@ public class Character extends AbstractFieldLife {
     /**
      * End constructor fields
      */
-    Field field;
     Map<Byte, Integer> equipment = new HashMap<>();
     final Pet[] pets = new Pet[3];
     final KeyBinding[] keyBindings = new KeyBinding[90];
@@ -105,7 +104,7 @@ public class Character extends AbstractFieldLife {
 
     @Override
     public Packet getLeaveFieldPacket() {
-        return null;
+        return FieldPackets.leaveField(this);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package player;
 
+import field.Field;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.ScheduledFuture;
 import lombok.Getter;
@@ -55,5 +56,13 @@ public class Client extends NettyClient {
 
     public void addLoginTry() {
         this.loginTries++;
+    }
+
+    public void disconnect() {
+        loggedIn = false;
+        Field field = character.getField();
+        if (field != null) {
+            field.leave(character);
+        }
     }
 }

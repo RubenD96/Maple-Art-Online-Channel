@@ -69,4 +69,13 @@ public class FieldPackets {
 
         return pw.createPacket();
     }
+
+    public static Packet leaveField(Character chr) {
+        PacketWriter pw = new PacketWriter(6);
+
+        pw.writeHeader(SendOpcode.USER_LEAVE_FIELD);
+        pw.writeInt(chr.getId());
+
+        return pw.createPacket();
+    }
 }
