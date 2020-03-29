@@ -1,0 +1,28 @@
+# File Types
+
+*.rar
+*.zip
+*.mp3
+*.png
+*.jpg
+*.gif
+*.sql
+*.dmp
+
+# Folders
+/target/
+/build/
+/dist/
+/nbproject/
+/logs/
+/.idea/
+/wz/
+/web/
+/tools/
+/out/
+/temp/
+/dumps/
+
+# Files
+
+configuration.ini
