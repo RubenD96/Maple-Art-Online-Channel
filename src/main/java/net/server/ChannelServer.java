@@ -1,5 +1,6 @@
 package net.server;
 
+import field.FieldManager;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -19,12 +20,15 @@ import net.netty.ServerHandler;
 public class ChannelServer extends Thread {
 
     @NonNull @Getter final int channelId, port;
+    @Getter FieldManager fieldManager;
 
     public void init() {
+        fieldManager = new FieldManager();
     }
 
     @Override
     public void run() {
+        init();
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {

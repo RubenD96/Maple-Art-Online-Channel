@@ -55,6 +55,7 @@ public class CharacterAPI {
                     str, dex, intelligence, luck,
                     hp, mhp, mp, mmp, exp
             );
+            character.init();
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }

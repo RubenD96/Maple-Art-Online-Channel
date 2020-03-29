@@ -1,9 +1,9 @@
 package player.field;
 
 public final class Gender {
-    public final static int MALE = 0;
-    public final static int FEMALE = 1;
-    public final static int ALIEN = 2;
+    public static final int MALE = 0;
+    public static final int FEMALE = 1;
+    public static final int ALIEN = 2;
 
     private Gender() {
     }

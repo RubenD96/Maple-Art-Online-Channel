@@ -1,4 +1,4 @@
-package player.field;
+package player.field.key;
 
 import lombok.Getter;
 import lombok.NonNull;

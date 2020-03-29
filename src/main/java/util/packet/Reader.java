@@ -17,6 +17,7 @@
 */
 package util.packet;
 
+import java.awt.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
@@ -77,6 +78,10 @@ public abstract class Reader {
                 + (read() << 24) + (read() << 32)
                 + (read() << 40) + (read() << 48)
                 + (read() << 56);
+    }
+
+    public final Point readPoint() {
+        return new Point(readShort(), readShort());
     }
 
     public final double readDouble() {

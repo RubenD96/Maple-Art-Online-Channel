@@ -7,9 +7,13 @@ import lombok.Setter;
 import net.maple.packets.ConnectionPackets;
 import net.netty.NettyClient;
 import net.server.ChannelServer;
+import net.server.Server;
+import org.jooq.Record;
 
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
+import static database.jooq.Tables.ACCOUNTS;
 
 public class Client extends NettyClient {
 
@@ -27,6 +31,15 @@ public class Client extends NettyClient {
 
     public Client(Channel c, byte[] siv, byte[] riv) {
         super(c, siv, riv);
+    }
+
+    public void login(Record data) {
+        accId = data.getValue(ACCOUNTS.ID);
+        banned = data.getValue(ACCOUNTS.BANNED) == 1;
+
+        worldChannel = Server.getInstance().getChannels().get(0);
+
+        loggedIn = true;
     }
 
     public void startPing() {

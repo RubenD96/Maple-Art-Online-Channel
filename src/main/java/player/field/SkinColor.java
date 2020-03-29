@@ -1,14 +1,14 @@
 package player.field;
 
 public final class SkinColor {
-    public final static int NORMAL = 0;
-    public final static int DARK = 1;
-    public final static int BLACK = 2;
-    public final static int PALE = 3;
-    public final static int BLUE = 4;
-    public final static int GREEN = 5;
-    public final static int WHITE = 9;
-    public final static int PINK = 10;
+    public static final int NORMAL = 0;
+    public static final int DARK = 1;
+    public static final int BLACK = 2;
+    public static final int PALE = 3;
+    public static final int BLUE = 4;
+    public static final int GREEN = 5;
+    public static final int WHITE = 9;
+    public static final int PINK = 10;
 
     private SkinColor() {
     }

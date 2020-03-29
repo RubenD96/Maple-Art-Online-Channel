@@ -1,0 +1,39 @@
+package net.maple.handlers.field;
+
+import field.movement.MovePath;
+import net.maple.SendOpcode;
+import net.maple.handlers.PacketHandler;
+import player.Character;
+import player.Client;
+import util.packet.Packet;
+import util.packet.PacketReader;
+import util.packet.PacketWriter;
+
+public class UserMoveHandler extends PacketHandler {
+
+    @Override
+    public void handlePacket(PacketReader reader, Client c) {
+        Character chr = c.getCharacter();
+
+        reader.readLong(); // probably timestamp
+        reader.read();
+        reader.readLong();
+        reader.readInteger();
+        reader.readInteger();
+        reader.readInteger();
+
+        MovePath path = chr.move(reader);
+
+        chr.getField().broadcast(movePlayer(chr, path), chr);
+    }
+
+    private static Packet movePlayer(Character chr, MovePath path) {
+        PacketWriter pw = new PacketWriter(32);
+
+        pw.writeHeader(SendOpcode.USER_MOVE);
+        pw.writeInt(chr.getId());
+        path.encode(pw);
+
+        return pw.createPacket();
+    }
+}
