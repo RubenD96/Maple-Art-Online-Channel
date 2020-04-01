@@ -28,8 +28,9 @@ public class Field {
     public void broadcast(Packet packet, Character source) {
         getObjects(FieldObjectType.CHARACTER).stream()
                 .filter(chr -> !chr.equals(source))
-                .forEach(chr -> ((Character) chr).write(packet));
+                .forEach(chr -> ((Character) chr).write(packet.clone()));
     }
+
     public void broadcast(Packet packet) {
         broadcast(packet, null);
     }

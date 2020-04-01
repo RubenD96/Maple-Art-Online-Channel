@@ -67,6 +67,9 @@ public class Packet implements Cloneable {
 
     @Override
     public Packet clone() {
+        int len = getLength();
+        byte[] data = new byte[len];
+        System.arraycopy(this.data, 0, data, 0, len);
         return new Packet(data);
     }
 }

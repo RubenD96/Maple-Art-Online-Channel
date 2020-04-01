@@ -11,7 +11,11 @@ import java.sql.SQLException;
 
 public class DatabaseCore {
 
-    static {
+    public DatabaseCore() {
+        initialize();
+    }
+
+    public static void initialize() {
         final var pConfig = new HikariConfig();
         pConfig.setDriverClassName("com.mysql.cj.jdbc.Driver");
         pConfig.setJdbcUrl(ServerConstants.DB_URL);
@@ -39,12 +43,7 @@ public class DatabaseCore {
 
     private static HikariDataSource m_pDataSource;
 
-    public static DSLContext getConnection() throws SQLException {
-        try {
-            return DSL.using(m_pDataSource.getConnection(), SQLDialect.MARIADB);
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-            throw sqle;
-        }
+    public static DSLContext getConnection() {
+        return DSL.using(m_pDataSource, SQLDialect.MARIADB);
     }
 }

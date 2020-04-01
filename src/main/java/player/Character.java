@@ -88,6 +88,10 @@ public class Character extends AbstractFieldLife {
         System.arraycopy(slots, 0, quickSlotKeys, 0, quickSlotKeys.length);
     }
 
+    public boolean isGM() {
+        return gmLevel > 0;
+    }
+
     public void write(Packet msg) {
         client.write(msg);
     }

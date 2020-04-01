@@ -3,10 +3,9 @@ package net.maple;
 import net.maple.handlers.DoNothingHandler;
 import net.maple.handlers.PacketHandler;
 import net.maple.handlers.PongHandler;
-import net.maple.handlers.field.UserMoveHandler;
-import net.maple.handlers.login.MigrateInHandler;
-import net.maple.handlers.user.QuickSlotKeyMappedModifiedHandler;
-import net.maple.handlers.user.UserEmotionHandler;
+import net.maple.handlers.field.*;
+import net.maple.handlers.login.*;
+import net.maple.handlers.user.*;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -38,6 +37,7 @@ public final class PacketProcessor {
         handlers.put(RecvOpcode.MIGRATE_IN, new MigrateInHandler());
         handlers.put(RecvOpcode.PONG, new PongHandler());
         handlers.put(RecvOpcode.USER_MOVE, new UserMoveHandler());
+        handlers.put(RecvOpcode.USER_CHAT, new UserChatHandler());
         handlers.put(RecvOpcode.USER_EMOTION, new UserEmotionHandler());
         handlers.put(RecvOpcode.QUICKSLOT_KEY_MAPPED_MODIFIED, new QuickSlotKeyMappedModifiedHandler());
 
