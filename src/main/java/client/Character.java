@@ -1,8 +1,9 @@
 package client;
 
-import field.life.AbstractFieldLife;
-import field.life.FieldObjectType;
+import field.object.FieldObjectType;
+import field.object.life.AbstractFieldLife;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import net.maple.packets.FieldPackets;
 import client.player.Job;
@@ -14,6 +15,7 @@ import util.packet.Packet;
 import java.util.HashMap;
 import java.util.Map;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class Character extends AbstractFieldLife {
 
@@ -28,6 +30,7 @@ public class Character extends AbstractFieldLife {
     @NonNull int ap, sp, fame, fieldId, spawnpoint;
     @NonNull int strength, dexterity, intelligence, luck;
     @NonNull int health, maxHealth, mana, maxMana, exp;
+    @NonNull int meso;
     /**
      * End constructor fields
      */
@@ -90,6 +93,10 @@ public class Character extends AbstractFieldLife {
 
     public boolean isGM() {
         return gmLevel > 0;
+    }
+
+    public void gainMeso(int meso) {
+        this.meso -= meso;
     }
 
     public void write(Packet msg) {

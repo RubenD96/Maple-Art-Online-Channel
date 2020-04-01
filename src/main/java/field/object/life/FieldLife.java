@@ -1,4 +1,6 @@
-package field.life;
+package field.object.life;
+
+import field.object.FieldObject;
 
 public interface FieldLife extends FieldObject {
 

@@ -1,4 +1,4 @@
-package field.life;
+package field.object;
 
 import field.Field;
 import util.packet.Packet;

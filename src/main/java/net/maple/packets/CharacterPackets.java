@@ -18,7 +18,7 @@ public class CharacterPackets {
         pw.write(250); // friends
         pw.writeBool(false);
 
-        pw.writeInt(100); // meso?
+        pw.writeInt(chr.getMeso());
 
         // inv slots
         pw.write(24); // equips
@@ -164,5 +164,10 @@ public class CharacterPackets {
         mask.forEach((k, v) -> pw.write(k).writeInt(v));
         pw.write(0xFF);
         pw.writeInt(chr.getEquipment().getOrDefault((byte) 111, 0));
+    }
+
+    public static void statUpdate() {
+        PacketWriter pw = new PacketWriter(32);
+
     }
 }

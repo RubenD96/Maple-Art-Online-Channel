@@ -1,7 +1,7 @@
-package field.life;
+package field.object.life;
 
 import field.movement.MovePath;
-import util.packet.Packet;
+import field.object.AbstractFieldObject;
 import util.packet.PacketReader;
 
 public abstract class AbstractFieldLife extends AbstractFieldObject implements FieldLife {

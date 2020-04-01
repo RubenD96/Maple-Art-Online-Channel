@@ -1,6 +1,6 @@
 package field.movement.fragment;
 
-import field.life.FieldLife;
+import field.object.life.FieldLife;
 import lombok.Getter;
 import lombok.Setter;
 import util.packet.PacketReader;

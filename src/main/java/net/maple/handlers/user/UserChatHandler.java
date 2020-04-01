@@ -19,7 +19,6 @@ public class UserChatHandler extends PacketHandler {
         String msg = reader.readMapleString();
         boolean textBox = !reader.readBool();
 
-        System.out.println("Message from " + chr + " = " + msg);
         chr.getField().broadcast(sendMessage(chr, msg, textBox), null);
     }
 
@@ -28,7 +27,7 @@ public class UserChatHandler extends PacketHandler {
 
         pw.writeHeader(SendOpcode.USER_CHAT);
         pw.writeInt(chr.getId());
-        pw.writeBool(/*chr.isGM()*/ false);
+        pw.writeBool(chr.isGM());
         pw.writeMapleString(msg);
         pw.writeBool(!textBox);
 

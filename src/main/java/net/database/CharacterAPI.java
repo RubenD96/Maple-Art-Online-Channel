@@ -41,6 +41,7 @@ public class CharacterAPI {
         int mp = record.getValue(CHARACTERS.MP);
         int mmp = record.getValue(CHARACTERS.MAX_MP);
         int exp = record.getValue(CHARACTERS.EXP);
+        int meso = record.getValue(CHARACTERS.MESO);
 
         Character character = new Character(
                 c,
@@ -50,7 +51,8 @@ public class CharacterAPI {
                 job,
                 ap, sp, fame, mapId, spawnpoint,
                 str, dex, intelligence, luck,
-                hp, mhp, mp, mmp, exp
+                hp, mhp, mp, mmp, exp,
+                meso
         );
         character.init();
         return character;

@@ -1,7 +1,7 @@
 package field;
 
-import field.life.FieldObject;
-import field.life.FieldObjectType;
+import field.object.FieldObject;
+import field.object.FieldObjectType;
 import lombok.Data;
 import lombok.NonNull;
 import client.Character;
