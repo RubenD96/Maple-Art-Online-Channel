@@ -5,6 +5,7 @@ import util.packet.IntegerValue;
 public enum SendOpcode implements IntegerValue {
 
     PING(0x11),
+    STAT_CHANGED(0x1E),
     SET_FIELD(0x8D),
     QUICKSLOT_MAPPED_INIT(0xAF),
     USER_ENTER_FIELD(0xB3),

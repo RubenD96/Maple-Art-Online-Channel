@@ -1,10 +1,12 @@
 package client;
 
+import client.player.StatType;
 import field.object.FieldObjectType;
 import field.object.life.AbstractFieldLife;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
+import net.maple.packets.CharacterPackets;
 import net.maple.packets.FieldPackets;
 import client.player.Job;
 import client.player.key.KeyAction;
@@ -12,7 +14,9 @@ import client.player.key.KeyBinding;
 import client.player.key.KeyType;
 import util.packet.Packet;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @EqualsAndHashCode(callSuper = true)
@@ -96,7 +100,20 @@ public class Character extends AbstractFieldLife {
     }
 
     public void gainMeso(int meso) {
-        this.meso -= meso;
+        this.meso += meso;
+        updateSingleStat(StatType.MESO);
+    }
+
+    public void updateStats(List<StatType> statTypes, boolean enableActions) {
+        CharacterPackets.statUpdate(this, statTypes, enableActions);
+    }
+
+    public void updateStats(List<StatType> statTypes) {
+        updateStats(statTypes, true);
+    }
+
+    public void updateSingleStat(StatType statType) {
+        updateStats(Collections.singletonList(statType));
     }
 
     public void write(Packet msg) {

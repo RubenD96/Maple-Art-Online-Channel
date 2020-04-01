@@ -2,9 +2,14 @@ package net.maple.packets;
 
 import client.Character;
 import client.Pet;
+import client.player.StatType;
+import net.maple.SendOpcode;
+import util.packet.Packet;
 import util.packet.PacketWriter;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CharacterPackets {
@@ -166,8 +171,94 @@ public class CharacterPackets {
         pw.writeInt(chr.getEquipment().getOrDefault((byte) 111, 0));
     }
 
-    public static void statUpdate() {
+    /*public static void statUpdate(Character chr, List<StatType> statTypes) {
+        statUpdate(chr, statTypes, true);
+    }*/
+
+    public static void statUpdate(Character chr, List<StatType> statTypes, boolean enableActions) {
         PacketWriter pw = new PacketWriter(32);
 
+        if (statTypes.size() > 1) {
+            Collections.sort(statTypes);
+        }
+
+        pw.writeHeader(SendOpcode.STAT_CHANGED);
+        pw.writeBool(enableActions);
+
+        int flag = statTypes.stream().mapToInt(StatType::getStat).reduce(0, (a, b) -> a | b);
+        pw.writeInt(flag);
+
+        statTypes.forEach(statType -> {
+            switch (statType) {
+                case SKIN:
+                    pw.write(chr.getSkinColor());
+                    break;
+                case FACE:
+                    pw.writeInt(chr.getFace());
+                    break;
+                case HAIR:
+                    pw.writeInt(chr.getHair());
+                    break;
+                case PET:
+                case PET2:
+                case PET3:
+                case TEMP_EXP:
+                    System.err.println("[statUpdate] unimplemented " + statType.name());
+                    break;
+                case LEVEL:
+                    pw.write(chr.getLevel());
+                    break;
+                case JOB:
+                    pw.writeShort(chr.getJob());
+                    break;
+                case STR:
+                    pw.writeShort(chr.getStrength());
+                    break;
+                case DEX:
+                    pw.writeShort(chr.getDexterity());
+                    break;
+                case INT:
+                    pw.writeShort(chr.getIntelligence());
+                    break;
+                case LUK:
+                    pw.writeShort(chr.getLuck());
+                    break;
+                case MAX_HP:
+                    pw.writeInt(chr.getMaxHealth());
+                    break;
+                case HP:
+                    pw.writeInt(chr.getHealth());
+                    break;
+                case MAX_MP:
+                    pw.writeInt(chr.getMaxMana());
+                    break;
+                case MP:
+                    pw.writeInt(chr.getMana());
+                    break;
+                case AP:
+                    pw.writeShort(chr.getAp());
+                    break;
+                case SP:
+                    pw.writeShort(chr.getSp());
+                    break;
+                case EXP:
+                    pw.writeInt(chr.getExp());
+                    break;
+                case FAME:
+                    pw.writeShort(chr.getFame());
+                    break;
+                case MESO:
+                    pw.writeInt(chr.getMeso());
+                    break;
+                default:
+                    System.err.println("[statUpdate] unimplemented " + statType.name());
+                    break;
+            }
+        });
+
+        pw.writeBool(false);
+        pw.writeBool(false);
+
+        chr.write(pw.createPacket());
     }
 }
