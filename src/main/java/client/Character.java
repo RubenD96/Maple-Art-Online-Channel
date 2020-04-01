@@ -1,15 +1,14 @@
-package player;
+package client;
 
-import field.Field;
 import field.life.AbstractFieldLife;
 import field.life.FieldObjectType;
 import lombok.Data;
 import lombok.NonNull;
 import net.maple.packets.FieldPackets;
-import player.field.Job;
-import player.field.key.KeyAction;
-import player.field.key.KeyBinding;
-import player.field.key.KeyType;
+import client.player.Job;
+import client.player.key.KeyAction;
+import client.player.key.KeyBinding;
+import client.player.key.KeyType;
 import util.packet.Packet;
 
 import java.util.HashMap;
@@ -36,6 +35,7 @@ public class Character extends AbstractFieldLife {
     final Pet[] pets = new Pet[3];
     final KeyBinding[] keyBindings = new KeyBinding[90];
     final int[] quickSlotKeys = new int[8];
+    Integer portableChair = null;
 
     public void init() {
         resetKeyBindings();

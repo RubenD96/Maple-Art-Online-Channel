@@ -1,6 +1,6 @@
 package net.maple.handlers;
 
-import player.Client;
+import client.Client;
 import util.packet.PacketReader;
 
 public class PongHandler extends PacketHandler {

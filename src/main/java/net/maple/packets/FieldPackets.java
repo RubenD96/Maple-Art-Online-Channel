@@ -1,7 +1,7 @@
 package net.maple.packets;
 
 import net.maple.SendOpcode;
-import player.Character;
+import client.Character;
 import util.packet.Packet;
 import util.packet.PacketWriter;
 

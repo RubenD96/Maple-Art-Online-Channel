@@ -1,4 +1,4 @@
-package player.field.key;
+package client.player.key;
 
 public final class KeyAction {
 

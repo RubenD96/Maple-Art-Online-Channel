@@ -60,7 +60,7 @@ public final class PacketWriter extends Writer {
     public final Writer writeHeader(IntegerValue i) {
         int opCode = i.getValue();
         String hex = Integer.toHexString(opCode);
-        if (ServerConstants.LOG && opCode != SendOpcode.PING.getValue())
+        if (ServerConstants.LOG && opCode != SendOpcode.PING.getValue() && opCode != SendOpcode.USER_MOVE.getValue())
             System.out.println("[SEND] packet " + opCode + " (" + (hex.length() == 1 ? "0x0" : "0x") + hex.toUpperCase() + ") - " + SendOpcode.getEnumByString(opCode));
         return writeShort(i.getValue());
     }

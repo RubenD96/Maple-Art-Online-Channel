@@ -1,4 +1,4 @@
-package player.field;
+package client.player;
 
 public final class Gender {
     public static final int MALE = 0;

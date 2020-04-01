@@ -5,6 +5,8 @@ public enum RecvOpcode {
     MIGRATE_IN(0x14),
     PONG(0x19),
     USER_MOVE(0x2C),
+    USER_SIT_REQUEST(0x2D),
+    USER_PORTABLE_CHAIR_SIT_REQUEST(0x2E),
     USER_CHAT(0x36),
     USER_EMOTION(0x38),
     UPDATE_GM_BOARD(0xC0),

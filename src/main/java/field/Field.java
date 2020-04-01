@@ -4,7 +4,7 @@ import field.life.FieldObject;
 import field.life.FieldObjectType;
 import lombok.Data;
 import lombok.NonNull;
-import player.Character;
+import client.Character;
 import util.packet.Packet;
 
 import java.util.HashMap;

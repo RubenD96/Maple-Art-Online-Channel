@@ -1,4 +1,4 @@
-package player;
+package client;
 
 import field.Field;
 import io.netty.channel.Channel;

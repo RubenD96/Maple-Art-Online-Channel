@@ -8,7 +8,7 @@ import net.maple.handlers.PacketHandler;
 import net.maple.PacketProcessor;
 import net.maple.RecvOpcode;
 import net.maple.packets.ConnectionPackets;
-import player.Client;
+import client.Client;
 import util.crypto.MapleAESOFB;
 import util.packet.Packet;
 import util.packet.PacketReader;
@@ -20,7 +20,8 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
     PacketProcessor processor = PacketProcessor.getInstance();
     int[] ignoreOps = {
             RecvOpcode.PONG.getValue(),
-            RecvOpcode.UPDATE_SCREEN_SETTING.getValue()
+            RecvOpcode.UPDATE_SCREEN_SETTING.getValue(),
+            RecvOpcode.USER_MOVE.getValue()
     };
 
     @Override

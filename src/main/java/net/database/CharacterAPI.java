@@ -3,9 +3,9 @@ package net.database;
 import org.jooq.Record;
 import org.jooq.Record2;
 import org.jooq.Result;
-import player.Character;
-import player.Client;
-import player.field.Job;
+import client.Character;
+import client.Client;
+import client.player.Job;
 
 import java.util.HashMap;
 import java.util.Map;

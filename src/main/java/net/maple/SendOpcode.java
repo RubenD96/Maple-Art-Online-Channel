@@ -12,6 +12,8 @@ public enum SendOpcode implements IntegerValue {
     USER_CHAT(0xB5),
     USER_MOVE(0xD2),
     USER_EMOTION(0xDB),
+    USER_SET_ACTIVE_PORTABLE_CHAIR(0xDE),
+    USER_SIT_RESULT(0xE7),
     FUNC_KEY_MAPPED_INIT(0x18E);
     private int value;
 

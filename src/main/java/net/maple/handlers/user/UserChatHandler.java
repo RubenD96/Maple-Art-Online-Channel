@@ -2,8 +2,8 @@ package net.maple.handlers.user;
 
 import net.maple.SendOpcode;
 import net.maple.handlers.PacketHandler;
-import player.Character;
-import player.Client;
+import client.Character;
+import client.Client;
 import util.packet.Packet;
 import util.packet.PacketReader;
 import util.packet.PacketWriter;

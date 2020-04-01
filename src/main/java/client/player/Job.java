@@ -1,4 +1,4 @@
-package player.field;
+package client.player;
 
 import util.packet.IntegerValue;
 

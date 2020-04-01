@@ -1,4 +1,4 @@
-package player;
+package client;
 
 import lombok.Data;
 import lombok.NonNull;

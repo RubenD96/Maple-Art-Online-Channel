@@ -1,4 +1,4 @@
-package player.field;
+package client.player;
 
 public final class SkinColor {
     public static final int NORMAL = 0;

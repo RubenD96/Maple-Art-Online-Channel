@@ -1,7 +1,7 @@
 package net.maple.packets;
 
-import player.Character;
-import player.Pet;
+import client.Character;
+import client.Pet;
 import util.packet.PacketWriter;
 
 import java.util.HashMap;
