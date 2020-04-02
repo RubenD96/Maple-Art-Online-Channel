@@ -73,6 +73,7 @@ public class UserChatHandler extends PacketHandler {
 
     private void eval(Client c, String command) {
         ScriptEngine engine = GraalJSScriptEngine.create();
+        System.out.println("Evaluating:\n" + command);
         try {
             engine.put("c", c);
             engine.eval(command);

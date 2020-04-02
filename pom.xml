@@ -110,13 +110,18 @@
         <dependency>
             <groupId>org.graalvm.js</groupId>
             <artifactId>js</artifactId>
-            <version>20.0.0</version>
+            <version>1.0.0-rc14</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.graalvm.js/js-scriptengine -->
         <dependency>
             <groupId>org.graalvm.js</groupId>
             <artifactId>js-scriptengine</artifactId>
-            <version>20.0.0</version>
+            <version>1.0.0-rc14</version>
         </dependency>
     </dependencies>
+
+    <properties>
+        <maven.compiler.source>12</maven.compiler.source>
+        <maven.compiler.target>12</maven.compiler.target>
+    </properties>
 </project>

@@ -60,6 +60,10 @@ public class Client extends NettyClient {
     }
 
     public void disconnect() {
+        if (ch.isOpen()) {
+            close(this, "Disconnect function called");
+        }
+
         loggedIn = false;
         Field field = character.getField();
         if (field != null) {
