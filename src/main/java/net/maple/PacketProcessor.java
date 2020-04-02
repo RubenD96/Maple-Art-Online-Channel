@@ -3,8 +3,8 @@ package net.maple;
 import net.maple.handlers.DoNothingHandler;
 import net.maple.handlers.PacketHandler;
 import net.maple.handlers.PongHandler;
-import net.maple.handlers.field.*;
 import net.maple.handlers.login.*;
+import net.maple.handlers.misc.*;
 import net.maple.handlers.user.*;
 
 import java.util.Arrays;
@@ -42,6 +42,7 @@ public final class PacketProcessor {
         handlers.put(RecvOpcode.USER_CHAT, new UserChatHandler());
         handlers.put(RecvOpcode.USER_EMOTION, new UserEmotionHandler());
         handlers.put(RecvOpcode.USER_DROP_MESO_REQUEST, new UserDropMesoRequestHandler());
+        handlers.put(RecvOpcode.FUNC_KEY_MAPPED_MODIFIED, new FuncKeyMappedModifiedHandler());
         handlers.put(RecvOpcode.QUICKSLOT_KEY_MAPPED_MODIFIED, new QuickSlotKeyMappedModifiedHandler());
 
         handlers.put(RecvOpcode.UPDATE_GM_BOARD, new DoNothingHandler());

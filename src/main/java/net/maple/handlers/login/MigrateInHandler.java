@@ -1,5 +1,6 @@
 package net.maple.handlers.login;
 
+import client.player.key.KeyBinding;
 import field.Field;
 import net.database.AccountAPI;
 import net.database.CharacterAPI;
@@ -44,10 +45,28 @@ public class MigrateInHandler extends PacketHandler {
 
         pw.writeHeader(SendOpcode.FUNC_KEY_MAPPED_INIT);
         pw.writeBool(false);
-        Arrays.stream(chr.getKeyBindings(), 0, 90).forEach(key -> {
+        /*Arrays.stream(chr.getKeyBindings(), 0, 90).forEach(key -> {
             pw.write(key == null ? 0 : key.getType());
             pw.writeInt(key == null ? 0 : key.getAction());
-        });
+        });*/
+
+        for (int i = 0; i < 90; i++) {
+            KeyBinding keyBinding = chr.getKeyBindings().get(i);
+            byte type = 0;
+            int action = 0;
+            if (keyBinding != null) {
+                type = keyBinding.getType();
+                action = keyBinding.getAction();
+            } else { // get default
+                KeyBinding def = KeyBinding.getDefaultBindings()[i];
+                if (def != null) {
+                    type = def.getType();
+                    action = def.getAction();
+                }
+            }
+            pw.write(type);
+            pw.writeInt(action);
+        }
 
         return pw.createPacket();
     }

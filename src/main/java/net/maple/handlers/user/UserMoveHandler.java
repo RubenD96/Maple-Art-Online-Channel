@@ -1,4 +1,4 @@
-package net.maple.handlers.field;
+package net.maple.handlers.user;
 
 import field.movement.MovePath;
 import net.maple.SendOpcode;

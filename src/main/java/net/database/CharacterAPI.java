@@ -1,17 +1,17 @@
 package net.database;
 
-import org.jooq.Record;
-import org.jooq.Record2;
-import org.jooq.Result;
 import client.Character;
 import client.Client;
 import client.player.Job;
+import client.player.key.KeyBinding;
+import org.jooq.Record;
+import org.jooq.Record2;
+import org.jooq.Result;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static database.jooq.Tables.CHARACTERS;
-import static database.jooq.Tables.INVENTORIES;
+import static database.jooq.Tables.*;
 
 public class CharacterAPI {
 
@@ -56,6 +56,82 @@ public class CharacterAPI {
         );
         character.init();
         return character;
+    }
+
+    /**
+     * Updates the characters table data except for:
+     * - name
+     * - gender
+     *
+     * @param chr character to save
+     */
+    public static void saveCharacterStats(Character chr) {
+        DatabaseCore.getConnection()
+                .update(CHARACTERS)
+                .set(CHARACTERS.LEVEL, chr.getLevel())
+                .set(CHARACTERS.FACE, chr.getFace())
+                .set(CHARACTERS.HAIR, chr.getHair())
+                .set(CHARACTERS.SKIN, chr.getSkinColor())
+                .set(CHARACTERS.JOB, chr.getJob().getId())
+                .set(CHARACTERS.AP, chr.getAp())
+                .set(CHARACTERS.SP, chr.getSp())
+                .set(CHARACTERS.FAME, chr.getFame())
+                .set(CHARACTERS.MAP, chr.getFieldId())
+                .set(CHARACTERS.SPAWNPOINT, chr.getSpawnpoint())
+                .set(CHARACTERS.STR, chr.getStrength())
+                .set(CHARACTERS.DEX, chr.getDexterity())
+                .set(CHARACTERS.INT, chr.getIntelligence())
+                .set(CHARACTERS.LUK, chr.getLuck())
+                .set(CHARACTERS.HP, chr.getHealth())
+                .set(CHARACTERS.MAX_HP, chr.getMaxHealth())
+                .set(CHARACTERS.MP, chr.getMana())
+                .set(CHARACTERS.MAX_MP, chr.getMaxMana())
+                .set(CHARACTERS.EXP, chr.getExp())
+                .set(CHARACTERS.MESO, chr.getMeso())
+                .where(CHARACTERS.ID.eq(chr.getId()))
+                .execute();
+    }
+
+    /**
+     * Get bindings that were changed at least once before
+     *
+     * @param cid character id
+     * @return map with KeyBindings and Integer key to bind them to
+     */
+    public static Map<Integer, KeyBinding> getKeyBindings(int cid) {
+        Map<Integer, KeyBinding> keyBindings = new HashMap<>();
+        Result<Record> res = DatabaseCore.getConnection()
+                .select().from(KEYBINDINGS)
+                .where(KEYBINDINGS.CID.eq(cid))
+                .fetch();
+        for (Record rec : res) {
+            keyBindings.put(
+                    rec.getValue(KEYBINDINGS.KEY),
+                    new KeyBinding(rec.getValue(KEYBINDINGS.TYPE), rec.getValue(KEYBINDINGS.ACTION))
+            );
+        }
+
+        return keyBindings;
+    }
+
+    /**
+     * Insert new key bindings, except if binding was already changed before
+     *
+     * @param chr character
+     */
+    public static void updateKeyBindings(Character chr) {
+        Map<Integer, KeyBinding> keyBindings = chr.getKeyBindings();
+        for (Map.Entry<Integer, KeyBinding> keyBinding : keyBindings.entrySet()) {
+            DatabaseCore.getConnection()
+                    .insertInto(KEYBINDINGS, KEYBINDINGS.CID, KEYBINDINGS.KEY, KEYBINDINGS.TYPE, KEYBINDINGS.ACTION)
+                    .values(chr.getId(), keyBinding.getKey(), keyBinding.getValue().getType(), keyBinding.getValue().getAction())
+                    .onDuplicateKeyUpdate()
+                    .set(KEYBINDINGS.TYPE, keyBinding.getValue().getType())
+                    .set(KEYBINDINGS.ACTION, keyBinding.getValue().getAction())
+                    .where(KEYBINDINGS.CID.eq(chr.getId()))
+                    .and(KEYBINDINGS.KEY.eq(keyBinding.getKey()))
+                    .execute();
+        }
     }
 
     public static Map<Byte, Integer> getEquips(Character chr) {

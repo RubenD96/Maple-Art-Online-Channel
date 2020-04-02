@@ -1,4 +1,4 @@
-package net.maple.handlers.user;
+package net.maple.handlers.misc;
 
 import net.maple.handlers.PacketHandler;
 import client.Character;
