@@ -27,6 +27,12 @@ public class UserChatHandler extends PacketHandler {
         if (msg.equals("script")) {
             scriptExample();
             return;
+        } else if (msg.split(" ")[0].equals("!eval")) {
+            msg = msg.substring(6);
+            // example use:
+            // !eval c.getCharacter().gainMeso(100);
+            eval(c, msg);
+            return;
         }
 
         chr.getField().broadcast(sendMessage(chr, msg, textBox), null);
@@ -44,7 +50,7 @@ public class UserChatHandler extends PacketHandler {
         return pw.createPacket();
     }
 
-    private static void scriptExample() {
+    private void scriptExample() {
         ScriptEngine engine = GraalJSScriptEngine.create();
         try {
             ArrayList<Integer> list = new ArrayList<>();
@@ -60,6 +66,16 @@ public class UserChatHandler extends PacketHandler {
                             "   }\n" +
                             "}"
             );
+        } catch (ScriptException se) {
+            se.printStackTrace();
+        }
+    }
+
+    private void eval(Client c, String command) {
+        ScriptEngine engine = GraalJSScriptEngine.create();
+        try {
+            engine.put("c", c);
+            engine.eval(command);
         } catch (ScriptException se) {
             se.printStackTrace();
         }
