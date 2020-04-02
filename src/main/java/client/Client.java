@@ -30,6 +30,7 @@ public class Client extends NettyClient {
     private @Getter @Setter boolean banned;
     private @Getter int loginTries;
     private ScheduledFuture<?> ping;
+    private @Getter boolean disconnecting = false;
 
     public Client(Channel c, byte[] siv, byte[] riv) {
         super(c, siv, riv);
@@ -60,15 +61,18 @@ public class Client extends NettyClient {
     }
 
     public void disconnect() {
-        if (ch.isOpen()) {
-            close(this, "Disconnect function called");
-        }
+        if (!disconnecting) {
+            disconnecting = true;
+            if (ch.isOpen()) {
+                close(this, "Disconnect function called");
+            }
 
-        loggedIn = false;
-        Field field = character.getField();
-        if (field != null) {
-            field.leave(character);
+            loggedIn = false;
+            Field field = character.getField();
+            if (field != null) {
+                field.leave(character);
+            }
+            character.save();
         }
-        character.save();
     }
 }
