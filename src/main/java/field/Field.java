@@ -7,6 +7,7 @@ import lombok.NonNull;
 import client.Character;
 import util.packet.Packet;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -15,8 +16,10 @@ import java.util.Set;
 @Data
 public class Field {
 
-    @NonNull final int id;
-    //final List<Character> characters = new ArrayList<>();
+    @NonNull private final int id;
+    private int returnMap, forcedReturnMap, fieldLimit;
+    private String name, script;
+    private Rectangle mapArea;
     final Map<FieldObjectType, Set<FieldObject>> objects = new HashMap<>();
 
     public void init() {

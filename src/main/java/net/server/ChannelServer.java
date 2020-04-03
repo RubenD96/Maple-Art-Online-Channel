@@ -1,7 +1,6 @@
 package net.server;
 
-import field.Field;
-import field.FieldManager;
+import manager.FieldManager;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;

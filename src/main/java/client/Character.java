@@ -1,6 +1,8 @@
 package client;
 
+import client.player.Job;
 import client.player.StatType;
+import client.player.key.KeyBinding;
 import field.object.FieldObjectType;
 import field.object.life.AbstractFieldLife;
 import lombok.Data;
@@ -9,16 +11,9 @@ import lombok.NonNull;
 import net.database.CharacterAPI;
 import net.maple.packets.CharacterPackets;
 import net.maple.packets.FieldPackets;
-import client.player.Job;
-import client.player.key.KeyAction;
-import client.player.key.KeyBinding;
-import client.player.key.KeyType;
 import util.packet.Packet;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -67,6 +62,40 @@ public class Character extends AbstractFieldLife {
     public void gainMeso(int meso) {
         this.meso += meso;
         updateSingleStat(StatType.MESO);
+    }
+
+    public void levelUp() {
+        level++;
+        maxHealth += 50; // just random number for now
+        maxMana += 5;
+        health = maxHealth;
+        mana = maxMana;
+        ap += 5;
+
+        List<StatType> statTypes = new ArrayList<>();
+        statTypes.add(StatType.LEVEL);
+        statTypes.add(StatType.MAX_HP);
+        statTypes.add(StatType.MAX_MP);
+        statTypes.add(StatType.HP);
+        statTypes.add(StatType.MP);
+        statTypes.add(StatType.AP);
+        updateStats(statTypes, false);
+    }
+
+    /**
+     * Used for GM's to manipulate levels.
+     *
+     * @param level new level
+     * @see #levelUp() for regular players
+     */
+    public void setLevel(int level) {
+        this.level = level;
+        updateSingleStat(StatType.LEVEL);
+    }
+
+    public void setJob(int jobId) {
+        job = Job.getById(jobId);
+        updateSingleStat(StatType.JOB);
     }
 
     public void updateStats(List<StatType> statTypes, boolean enableActions) {

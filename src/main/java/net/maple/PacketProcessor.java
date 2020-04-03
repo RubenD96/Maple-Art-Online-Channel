@@ -49,5 +49,6 @@ public final class PacketProcessor {
         handlers.put(RecvOpcode.UPDATE_SCREEN_SETTING, new DoNothingHandler());
         handlers.put(RecvOpcode.REQUIRE_FIELD_OBSTACLE_STATUS, new DoNothingHandler());
         handlers.put(RecvOpcode.CANCEL_INVITE_PARTY_MATCH, new DoNothingHandler());
+        handlers.put(RecvOpcode.USER_QUEST_REQUEST, new DoNothingHandler()); // todo
     }
 }

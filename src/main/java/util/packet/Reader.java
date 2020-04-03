@@ -69,6 +69,10 @@ public abstract class Reader {
                 + (read() << 24);
     }
 
+    public final Rectangle readRectangle() {
+        return new Rectangle(readInteger(), readInteger(), readInteger(), readInteger());
+    }
+
     public final float readFloat() {
         return Float.intBitsToFloat(readInteger());
     }

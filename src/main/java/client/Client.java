@@ -23,14 +23,13 @@ public class Client extends NettyClient {
     private @Getter int accId;
     private @Getter @Setter String accountName;
     private @Setter long lastPong, clientStart; // Not too sure what to do with these
-    private @Getter boolean loggedIn = false;
+    private @Getter boolean disconnecting = false, loggedIn = false;
     private @Getter @Setter ChannelServer worldChannel;
     private @Getter @Setter Character character;
     private @Getter @Setter Set<String> macs, hwids, ips;
     private @Getter @Setter boolean banned;
     private @Getter int loginTries;
     private ScheduledFuture<?> ping;
-    private @Getter boolean disconnecting = false;
 
     public Client(Channel c, byte[] siv, byte[] riv) {
         super(c, siv, riv);
