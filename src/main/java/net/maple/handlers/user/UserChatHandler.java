@@ -33,6 +33,9 @@ public class UserChatHandler extends PacketHandler {
             // !eval c.getCharacter().gainMeso(100);
             eval(c, msg);
             return;
+        } else if (msg.equals("pos")) {
+            System.out.println("pos\n\t" + chr.getPosition());
+            return;
         }
 
         chr.getField().broadcast(sendMessage(chr, msg, textBox), null);

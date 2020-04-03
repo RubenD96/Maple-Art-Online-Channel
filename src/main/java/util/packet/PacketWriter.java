@@ -21,6 +21,8 @@ import constants.ServerConstants;
 import net.maple.SendOpcode;
 import util.HexTool;
 
+import java.util.Arrays;
+
 /**
  * Artifact from Invictus. Modified because this is relatively cheap enough
  * and the addition of locks and keeping one for a session was probably overkill
@@ -30,6 +32,12 @@ import util.HexTool;
  */
 public final class PacketWriter extends Writer {
 
+    private static int[] ignoreOps = {
+            SendOpcode.PING.getValue(),
+            SendOpcode.USER_MOVE.getValue(),
+            SendOpcode.NPC_CHANGE_CONTROLLER.getValue(),
+            SendOpcode.NPC_ENTER_FIELD.getValue()
+    };
     private int offset;
     private byte[] data;
 
@@ -60,7 +68,7 @@ public final class PacketWriter extends Writer {
     public final Writer writeHeader(IntegerValue i) {
         int opCode = i.getValue();
         String hex = Integer.toHexString(opCode);
-        if (ServerConstants.LOG && opCode != SendOpcode.PING.getValue() && opCode != SendOpcode.USER_MOVE.getValue())
+        if (ServerConstants.LOG && Arrays.stream(ignoreOps).noneMatch(p -> p == opCode))
             System.out.println("[SEND] packet " + opCode + " (" + (hex.length() == 1 ? "0x0" : "0x") + hex.toUpperCase() + ") - " + SendOpcode.getEnumByString(opCode));
         return writeShort(i.getValue());
     }

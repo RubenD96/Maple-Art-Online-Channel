@@ -1,4 +1,4 @@
-package manager.flag;
+package managers.flag;
 
 import util.packet.IntegerValue;
 

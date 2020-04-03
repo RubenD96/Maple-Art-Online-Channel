@@ -98,8 +98,9 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
         // Close the connection when an exception is raised.
         Channel ch = chc.channel();
         Client c = (Client) ch.attr(Client.CLIENT_KEY).get();
-        c.disconnect();
-        System.out.println(cause.getMessage());
-        chc.close();
+        //c.disconnect();
+        //System.out.println(cause);
+        cause.printStackTrace();
+        //chc.close();
     }
 }

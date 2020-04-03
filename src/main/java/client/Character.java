@@ -5,12 +5,15 @@ import client.player.StatType;
 import client.player.key.KeyBinding;
 import field.object.FieldObjectType;
 import field.object.life.AbstractFieldLife;
+import field.object.life.FieldControlledObject;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NonNull;
 import net.database.CharacterAPI;
 import net.maple.packets.CharacterPackets;
 import net.maple.packets.FieldPackets;
+import net.server.ChannelServer;
 import util.packet.Packet;
 
 import java.util.*;
@@ -39,6 +42,8 @@ public class Character extends AbstractFieldLife {
     Map<Integer, KeyBinding> keyBindings = new HashMap<>();
     final int[] quickSlotKeys = new int[8];
     Integer portableChair = null;
+    private byte portal = -1;
+    @Getter List<FieldControlledObject> controlledObjects = new ArrayList<>();
 
     public void init() {
         resetQuickSlot();
@@ -100,6 +105,10 @@ public class Character extends AbstractFieldLife {
 
     public void updateStats(List<StatType> statTypes, boolean enableActions) {
         CharacterPackets.statUpdate(this, statTypes, enableActions);
+    }
+
+    public ChannelServer getChannel() {
+        return client.getWorldChannel();
     }
 
     public void updateStats(List<StatType> statTypes) {

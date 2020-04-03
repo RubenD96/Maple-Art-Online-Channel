@@ -122,8 +122,8 @@ public class CharacterPackets {
         pw.writeInt(chr.getExp());
         pw.writeShort(chr.getFame());
         pw.writeInt(0); // Gacha Exp
-        pw.writeInt(chr.getFieldId());
-        pw.write(chr.getSpawnpoint());
+        pw.writeInt(chr.getField().getId());
+        pw.write(chr.getPortal());
         pw.writeInt(0); // playtime
         pw.writeShort(0); // subjob?
     }

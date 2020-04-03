@@ -12,6 +12,39 @@ import java.awt.*;
 
 public class FieldPackets {
 
+    public static Packet setField(Character chr) {
+        boolean isInstantiated = false;
+        PacketWriter pw = new PacketWriter(32); // mhm hard to know
+
+        pw.writeHeader(SendOpcode.SET_FIELD);
+        pw.writeShort(0);
+        pw.writeInt(0); // channel?
+        pw.writeInt(0); // world
+
+        pw.writeBool(true);
+        pw.writeBool(!isInstantiated); // instantiated
+        pw.writeShort(0);
+
+        if (!isInstantiated) {
+            pw.writeInt(0);
+            pw.writeInt(0);
+            pw.writeInt(0);
+
+            CharacterPackets.encodeData(chr, pw);
+
+            pw.writeInt(0);
+            pw.writeInt(0);
+            pw.writeInt(0);
+            pw.writeInt(0);
+        } else {
+            System.err.println("[SetField] uuuh?");
+        }
+
+        pw.writeLong(System.currentTimeMillis() * 10000 + 116444592000000000L);
+
+        return pw.createPacket();
+    }
+
     public static Packet enterField(Character chr) {
         PacketWriter pw = new PacketWriter(32);
 
@@ -47,11 +80,11 @@ public class FieldPackets {
         pw.writeInt(0);
         pw.writeInt(0);
         pw.writeInt(0); // complete set itemid
-        pw.writeInt(0); // portable chair
+        pw.writeInt(chr.getPortableChair() == null ? 0 : chr.getPortableChair());
 
-        pw.writePosition(new Point(-235, 179));
-        pw.write(4); // move action
-        pw.writeShort(0); // foothold
+        pw.writePosition(chr.getPosition());
+        pw.write(chr.getMoveAction());
+        pw.writeShort(chr.getFoothold());
         pw.write(0); // ?
 
         // pets here

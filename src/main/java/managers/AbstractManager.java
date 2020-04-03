@@ -1,4 +1,4 @@
-package manager;
+package managers;
 
 import util.packet.PacketReader;
 
@@ -8,7 +8,7 @@ import java.nio.file.Files;
 
 public abstract class AbstractManager {
 
-    PacketReader getFieldData(String path) {
+    static PacketReader getFieldData(String path) {
         try {
             File file = new File(path);
             if (file.exists()) {

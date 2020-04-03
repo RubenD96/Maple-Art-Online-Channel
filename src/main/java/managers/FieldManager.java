@@ -1,15 +1,15 @@
-package manager;
+package managers;
 
 import field.Field;
+import field.object.Foothold;
+import field.object.life.FieldNPC;
+import field.object.portal.FieldPortal;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import manager.flag.FieldFlag;
+import managers.flag.FieldFlag;
 import util.packet.PacketReader;
 
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +17,7 @@ import java.util.Map;
 @Data
 public class FieldManager extends AbstractManager {
 
-    Map<Integer, Field> fields = new HashMap<>();
+    private Map<Integer, Field> fields = new HashMap<>();
 
     public synchronized Field getField(int id) {
         Field field = fields.get(id);
@@ -46,9 +46,9 @@ public class FieldManager extends AbstractManager {
         if (containsFlag(flags, FieldFlag.FOOTHOLDS)) {
             short size = r.readShort();
             for (int i = 0; i < size; i++) {
-                int fhId = r.readInteger();
-                Point point1 = r.readPoint();
-                Point point2 = r.readPoint();
+                Foothold fh = new Foothold();
+                fh.generate(r);
+                field.getFootholds().put(fh.getId(), fh);
             }
         }
 
@@ -67,16 +67,9 @@ public class FieldManager extends AbstractManager {
         if (containsFlag(flags, FieldFlag.PORTALS)) {
             short size = r.readShort();
             for (int i = 0; i < size; i++) {
-                String name = r.readMapleString();
-                String target = r.readMapleString();
-                boolean hasScript = r.readBool();
-                if (hasScript) {
-                    String script = r.readMapleString();
-                }
-                Point pos = r.readPoint();
-                int id = r.readInteger();
-                int targetMap = r.readInteger();
-                int type = r.readInteger();
+                FieldPortal portal = new FieldPortal(field);
+                portal.generate(r);
+                field.getPortals().put((byte) portal.getId(), portal);
             }
         }
 
@@ -101,8 +94,22 @@ public class FieldManager extends AbstractManager {
                 int rx0 = r.readInteger();
                 int rx1 = r.readInteger();
                 String type = r.readMapleString();
+                if (type.equals("m")) {
+                    // todo mob
+                } else { // npc
+                    FieldNPC npc = NPCManager.getNPC(id);
+                    npc.setRx0(rx0);
+                    npc.setRx1(rx1);
+                    npc.setPosition(new Point(x, y));
+                    npc.setFoothold((short) fh);
+                    npc.setF(f == 1);
+                    npc.setCy(cy);
+                    npc.setHide(hide == 1);
+                    field.enter(npc);
+                }
             }
         }
+        System.out.println("Finished initializing field: " + field.getId());
     }
 
     public boolean containsFlag(int flags, FieldFlag flag) {
