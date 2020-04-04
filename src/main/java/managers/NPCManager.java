@@ -21,10 +21,12 @@ public class NPCManager extends AbstractManager {
     }
 
     private static void loadNPCData(FieldNPC npc) {
-        PacketReader r = getFieldData("wz/Map/" + npc.getId() + ".mao");
+        PacketReader r = getFieldData("wz/Npc/" + npc.getNpcId() + ".mao");
 
-        npc.setId(r.readInteger());
+        //npc.setId(r.readInteger());
+        r.readInteger();
         npc.setName(r.readMapleString());
-        npc.setMove(!r.readBool());
+        System.out.println(npc.getName());
+        npc.setMove(r.readBool());
     }
 }
