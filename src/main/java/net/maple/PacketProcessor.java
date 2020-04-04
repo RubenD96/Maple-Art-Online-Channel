@@ -45,6 +45,7 @@ public final class PacketProcessor {
         handlers.put(RecvOpcode.USER_DROP_MESO_REQUEST, new UserDropMesoRequestHandler());
         handlers.put(RecvOpcode.FUNC_KEY_MAPPED_MODIFIED, new FuncKeyMappedModifiedHandler());
         handlers.put(RecvOpcode.QUICKSLOT_KEY_MAPPED_MODIFIED, new QuickSlotKeyMappedModifiedHandler());
+        handlers.put(RecvOpcode.NPC_MOVE, new NPCMoveHandler());
 
         handlers.put(RecvOpcode.UPDATE_GM_BOARD, new DoNothingHandler());
         handlers.put(RecvOpcode.UPDATE_SCREEN_SETTING, new DoNothingHandler());

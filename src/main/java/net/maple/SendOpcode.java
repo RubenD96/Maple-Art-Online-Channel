@@ -17,6 +17,7 @@ public enum SendOpcode implements IntegerValue {
     USER_SIT_RESULT(0xE7),
     NPC_ENTER_FIELD(0x137),
     NPC_LEAVE_FIELD(0x138),
+    NPC_MOVE(0x13A),
     NPC_CHANGE_CONTROLLER(0x139),
     DROP_ENTER_FIELD(0x142),
     DROP_LEAVE_FIELD(0x144),

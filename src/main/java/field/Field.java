@@ -113,6 +113,13 @@ public class Field {
         }).forEach(c -> ((FieldControlledObject) c).setController((Character) characters.stream().findFirst().orElse(null)));
     }
 
+    public FieldControlledObject getControlledObject(Character chr, int oid) {
+        FieldObjectType[] types = {FieldObjectType.NPC, FieldObjectType.MOB};
+        return (FieldControlledObject) getObjects(types).stream().filter(
+                o -> ((FieldControlledObject) o).getController().equals(chr) &&
+                        o.getId() == oid).findAny().orElse(null);
+    }
+
     public void addObject(FieldObject obj) {
         objects.get(obj.getFieldObjectType()).add(obj);
     }

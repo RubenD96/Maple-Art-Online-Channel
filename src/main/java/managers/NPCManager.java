@@ -25,6 +25,6 @@ public class NPCManager extends AbstractManager {
 
         npc.setId(r.readInteger());
         npc.setName(r.readMapleString());
-        npc.setMove(r.readBool());
+        npc.setMove(!r.readBool());
     }
 }

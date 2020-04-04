@@ -21,7 +21,8 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
     int[] ignoreOps = {
             RecvOpcode.PONG.getValue(),
             RecvOpcode.UPDATE_SCREEN_SETTING.getValue(),
-            RecvOpcode.USER_MOVE.getValue()
+            RecvOpcode.USER_MOVE.getValue(),
+            RecvOpcode.NPC_MOVE.getValue()
     };
 
     @Override
