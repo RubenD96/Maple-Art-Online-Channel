@@ -21,7 +21,7 @@ public class NPCManager extends AbstractManager {
     }
 
     private static void loadNPCData(FieldNPC npc) {
-        PacketReader r = getFieldData("wz/Npc/" + npc.getNpcId() + ".mao");
+        PacketReader r = getData("wz/Npc/" + npc.getNpcId() + ".mao");
 
         //npc.setId(r.readInteger());
         r.readInteger();

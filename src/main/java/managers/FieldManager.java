@@ -31,7 +31,7 @@ public class FieldManager extends AbstractManager {
     }
 
     private void loadFieldData(Field field) {
-        PacketReader r = getFieldData("wz/Map/" + field.getId() + ".mao");
+        PacketReader r = getData("wz/Map/" + field.getId() + ".mao");
         int flags = r.readInteger();
 
         if (containsFlag(flags, FieldFlag.ID))

@@ -17,6 +17,7 @@ public class UserPortableChairSitRequestHandler extends PacketHandler {
 
         chr.setPortableChair(chairId);
 
+        chr.enableActions();
         chr.getField().broadcast(broadcastChairSit(chr.getId(), chairId), chr);
     }
 

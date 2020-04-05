@@ -2,7 +2,10 @@ package net.maple.packets;
 
 import client.Character;
 import client.Pet;
+import client.inventory.ModifyInventoriesContext;
+import client.inventory.item.templates.ItemTemplate;
 import client.player.StatType;
+import managers.ItemManager;
 import net.maple.SendOpcode;
 import util.packet.Packet;
 import util.packet.PacketWriter;
@@ -260,5 +263,21 @@ public class CharacterPackets {
         pw.writeBool(false);
 
         chr.write(pw.createPacket());
+    }
+
+    public static void modifyInventory(Character chr, boolean enableActions, int id) {
+        ModifyInventoriesContext context = new ModifyInventoriesContext(chr.getInventories());
+
+        context.add(ItemManager.getItem(id), (short) 1);
+        PacketWriter pw = new PacketWriter(8);
+
+        pw.writeHeader(SendOpcode.INVENTORY_OPERATION);
+        pw.writeBool(enableActions);
+        context.encode(pw);
+        pw.writeBool(false);
+
+        chr.write(pw.createPacket());
+
+        //todo equips
     }
 }

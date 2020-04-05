@@ -5,6 +5,7 @@ import net.maple.SendOpcode;
 import net.maple.handlers.PacketHandler;
 import client.Character;
 import client.Client;
+import net.maple.packets.CharacterPackets;
 import util.packet.Packet;
 import util.packet.PacketReader;
 import util.packet.PacketWriter;
@@ -35,6 +36,10 @@ public class UserChatHandler extends PacketHandler {
             return;
         } else if (msg.equals("pos")) {
             System.out.println("pos\n\t" + chr.getPosition());
+            return;
+        } else if (msg.split(" ")[0].equals("!item")) {
+            msg = msg.substring(6);
+            CharacterPackets.modifyInventory(chr, false, Integer.parseInt(msg));
             return;
         }
 

@@ -8,7 +8,7 @@ import java.nio.file.Files;
 
 public abstract class AbstractManager {
 
-    static PacketReader getFieldData(String path) {
+    static PacketReader getData(String path) {
         try {
             File file = new File(path);
             if (file.exists()) {

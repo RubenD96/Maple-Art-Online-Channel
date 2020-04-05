@@ -1,5 +1,7 @@
 package client;
 
+import client.inventory.ItemInventory;
+import client.inventory.ItemInventoryType;
 import client.player.Job;
 import client.player.StatType;
 import client.player.key.KeyBinding;
@@ -44,10 +46,16 @@ public class Character extends AbstractFieldLife {
     Integer portableChair = null;
     private byte portal = -1;
     @Getter List<FieldControlledObject> controlledObjects = new ArrayList<>();
+    @Getter Map<ItemInventoryType, ItemInventory> inventories = new HashMap<>();
 
     public void init() {
         resetQuickSlot();
         keyBindings = CharacterAPI.getKeyBindings(id);
+        inventories.put(ItemInventoryType.EQUIP, new ItemInventory((short) 24));
+        inventories.put(ItemInventoryType.CONSUME, new ItemInventory((short) 24));
+        inventories.put(ItemInventoryType.INSTALL, new ItemInventory((short) 24));
+        inventories.put(ItemInventoryType.ETC, new ItemInventory((short) 24));
+        inventories.put(ItemInventoryType.CASH, new ItemInventory((short) 24));
     }
 
     public void resetQuickSlot() {
@@ -101,6 +109,10 @@ public class Character extends AbstractFieldLife {
     public void setJob(int jobId) {
         job = Job.getById(jobId);
         updateSingleStat(StatType.JOB);
+    }
+
+    public void enableActions() {
+        CharacterPackets.statUpdate(this, new ArrayList<>(), true);
     }
 
     public void updateStats(List<StatType> statTypes, boolean enableActions) {
