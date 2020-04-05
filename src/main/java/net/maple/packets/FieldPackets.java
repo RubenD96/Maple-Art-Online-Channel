@@ -145,15 +145,14 @@ public class FieldPackets {
 
     public static Packet leaveField(AbstractFieldDrop drop) {
         PacketWriter pw = new PacketWriter(32);
-        byte leaveType = 1;
 
         pw.writeHeader(SendOpcode.DROP_LEAVE_FIELD);
-        pw.write(leaveType); // animation or something
+        pw.write(drop.getLeaveType()); // animation or something
         pw.writeInt(drop.getId());
 
-        if (leaveType == 0x02 || leaveType == 0x03 || leaveType == 0x05) {
+        if (drop.getLeaveType() == 0x02 || drop.getLeaveType() == 0x03 || drop.getLeaveType() == 0x05) {
             pw.writeInt(drop.getSource().getId());
-        } else if (leaveType == 0x04) {
+        } else if (drop.getLeaveType() == 0x04) {
             pw.writeShort(0);
         }
 

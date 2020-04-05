@@ -14,7 +14,7 @@ import util.packet.Packet;
 @RequiredArgsConstructor
 public abstract class AbstractFieldDrop extends AbstractFieldObject {
 
-    @NonNull @Getter final byte enterType;
+    @NonNull @Getter final byte enterType, leaveType;
     @NonNull @Getter final int owner;
     @NonNull @Getter final FieldObject source;
     @Getter @Setter long expire;

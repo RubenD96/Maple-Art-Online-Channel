@@ -17,7 +17,7 @@ public class UserDropMesoRequestHandler extends PacketHandler {
 
         if (meso <= chr.getMeso() && meso > 9 && meso < 50001) {
             chr.gainMeso(-meso);
-            MesoDrop drop = new MesoDrop(EnterType.REGULAR, chr.getId(), chr, meso);
+            MesoDrop drop = new MesoDrop(EnterType.REGULAR, (byte) 1, chr.getId(), chr, meso);
             drop.setPosition(chr.getPosition());
             chr.getField().enter(drop);
         }
