@@ -1,10 +1,11 @@
 package net.maple.handlers.user;
 
-import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
-import net.maple.SendOpcode;
-import net.maple.handlers.PacketHandler;
 import client.Character;
 import client.Client;
+import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
+import managers.ItemManager;
+import net.maple.SendOpcode;
+import net.maple.handlers.PacketHandler;
 import net.maple.packets.CharacterPackets;
 import util.packet.Packet;
 import util.packet.PacketReader;
@@ -38,8 +39,10 @@ public class UserChatHandler extends PacketHandler {
             System.out.println("pos\n\t" + chr.getPosition());
             return;
         } else if (msg.split(" ")[0].equals("!item")) {
-            msg = msg.substring(6);
-            CharacterPackets.modifyInventory(chr, false, Integer.parseInt(msg));
+            int id = Integer.parseInt(msg.substring(6));
+            CharacterPackets.modifyInventory(chr,
+                    i -> i.add(ItemManager.getItem(id), (short) 1),
+                    false);
             return;
         }
 

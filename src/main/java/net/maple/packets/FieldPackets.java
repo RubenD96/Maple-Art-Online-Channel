@@ -1,14 +1,12 @@
 package net.maple.packets;
 
+import client.Character;
 import field.object.FieldObject;
 import field.object.drop.AbstractFieldDrop;
 import field.object.drop.EnterType;
 import net.maple.SendOpcode;
-import client.Character;
 import util.packet.Packet;
 import util.packet.PacketWriter;
-
-import java.awt.*;
 
 public class FieldPackets {
 

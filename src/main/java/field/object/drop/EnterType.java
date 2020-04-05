@@ -8,5 +8,6 @@ public final class EnterType {
     public final static byte EXPLOSIVE = 0x03;
     public final static byte MISC = 0x04; // todo ?
 
-    private EnterType(){}
+    private EnterType() {
+    }
 }

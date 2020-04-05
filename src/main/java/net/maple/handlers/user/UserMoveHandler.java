@@ -1,10 +1,10 @@
 package net.maple.handlers.user;
 
+import client.Character;
+import client.Client;
 import field.movement.MovePath;
 import net.maple.SendOpcode;
 import net.maple.handlers.PacketHandler;
-import client.Character;
-import client.Client;
 import util.packet.Packet;
 import util.packet.PacketReader;
 import util.packet.PacketWriter;

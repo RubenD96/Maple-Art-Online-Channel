@@ -7,8 +7,6 @@ import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
-import java.sql.SQLException;
-
 public class DatabaseCore {
 
     public DatabaseCore() {

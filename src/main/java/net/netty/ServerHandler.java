@@ -1,14 +1,14 @@
 package net.netty;
 
+import client.Client;
 import constants.ServerConstants;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import net.maple.handlers.PacketHandler;
 import net.maple.PacketProcessor;
 import net.maple.RecvOpcode;
+import net.maple.handlers.PacketHandler;
 import net.maple.packets.ConnectionPackets;
-import client.Client;
 import util.crypto.MapleAESOFB;
 import util.packet.Packet;
 import util.packet.PacketReader;

@@ -3,17 +3,15 @@ package net.maple.packets;
 import client.Character;
 import client.Pet;
 import client.inventory.ModifyInventoriesContext;
-import client.inventory.item.templates.ItemTemplate;
 import client.player.StatType;
-import managers.ItemManager;
 import net.maple.SendOpcode;
-import util.packet.Packet;
 import util.packet.PacketWriter;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class CharacterPackets {
 
@@ -265,10 +263,10 @@ public class CharacterPackets {
         chr.write(pw.createPacket());
     }
 
-    public static void modifyInventory(Character chr, boolean enableActions, int id) {
+    public static void modifyInventory(Character chr, Consumer<ModifyInventoriesContext> consumer, boolean enableActions) {
         ModifyInventoriesContext context = new ModifyInventoriesContext(chr.getInventories());
 
-        context.add(ItemManager.getItem(id), (short) 1);
+        consumer.accept(context);
         PacketWriter pw = new PacketWriter(8);
 
         pw.writeHeader(SendOpcode.INVENTORY_OPERATION);

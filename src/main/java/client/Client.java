@@ -5,7 +5,6 @@ import io.netty.channel.Channel;
 import io.netty.util.concurrent.ScheduledFuture;
 import lombok.Getter;
 import lombok.Setter;
-import net.database.CharacterAPI;
 import net.maple.packets.ConnectionPackets;
 import net.netty.NettyClient;
 import net.server.ChannelServer;

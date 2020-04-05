@@ -1,6 +1,5 @@
 package net.server;
 
-import managers.FieldManager;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -12,6 +11,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import managers.FieldManager;
 import net.netty.PacketDecoder;
 import net.netty.PacketEncoder;
 import net.netty.ServerHandler;

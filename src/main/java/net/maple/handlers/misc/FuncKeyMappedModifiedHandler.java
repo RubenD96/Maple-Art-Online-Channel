@@ -3,7 +3,6 @@ package net.maple.handlers.misc;
 import client.Character;
 import client.Client;
 import client.player.key.KeyBinding;
-import net.database.CharacterAPI;
 import net.maple.handlers.PacketHandler;
 import util.packet.PacketReader;
 

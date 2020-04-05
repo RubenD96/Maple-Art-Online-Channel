@@ -39,5 +39,6 @@ public final class MovePathAttribute {
     public final static byte MOB_ATTACK_RUSH = 0x23;
     public final static byte MOB_ATTACK_RUSH_STOP = 0x24;
 
-    private MovePathAttribute(){}
+    private MovePathAttribute() {
+    }
 }

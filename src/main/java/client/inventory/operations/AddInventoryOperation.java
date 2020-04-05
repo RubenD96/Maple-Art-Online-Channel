@@ -1,8 +1,8 @@
 package client.inventory.operations;
 
 import client.inventory.ItemInventoryType;
-import client.inventory.slots.ItemSlot;
 import client.inventory.ModifyInventoryOperationType;
+import client.inventory.slots.ItemSlot;
 import net.maple.packets.ItemPackets;
 import util.packet.PacketWriter;
 

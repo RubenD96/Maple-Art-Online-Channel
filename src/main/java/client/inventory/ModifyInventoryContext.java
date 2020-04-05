@@ -1,9 +1,9 @@
 package client.inventory;
 
+import client.inventory.item.templates.ItemTemplate;
 import client.inventory.operations.*;
 import client.inventory.slots.ItemSlot;
 import client.inventory.slots.ItemSlotBundle;
-import client.inventory.item.templates.ItemTemplate;
 import constants.ItemConstants;
 import lombok.Getter;
 import util.packet.PacketWriter;

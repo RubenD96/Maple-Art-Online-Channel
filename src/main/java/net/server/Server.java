@@ -1,10 +1,7 @@
 package net.server;
 
-import client.inventory.ItemInventoryType;
-import client.inventory.item.templates.StatChangeItemTemplate;
 import constants.ServerConstants;
 import lombok.Getter;
-import managers.ItemManager;
 import net.database.DatabaseCore;
 import util.crypto.MapleAESOFB;
 

@@ -17,5 +17,6 @@ public final class PortalType {
     public static final int COLLISION_VERTICAL_JUMP = 0xC;
     public static final int COLLISION_CUSTOM_IMPACT = 0xD;
 
-    private PortalType(){}
+    private PortalType() {
+    }
 }

@@ -2,7 +2,7 @@ package client.inventory.item.flags;
 
 import util.packet.IntegerValue;
 
-public enum  ItemFlag implements IntegerValue {
+public enum ItemFlag implements IntegerValue {
 
     PRICE(0x01),
     TIME_LIMITED(0x02),

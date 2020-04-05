@@ -2,8 +2,8 @@ package client.inventory.item.templates;
 
 import client.inventory.ItemVariation;
 import client.inventory.ItemVariationType;
-import client.inventory.slots.ItemSlotEquip;
 import client.inventory.item.flags.EquipFlag;
+import client.inventory.slots.ItemSlotEquip;
 import lombok.Getter;
 import util.Rand32;
 import util.packet.PacketReader;

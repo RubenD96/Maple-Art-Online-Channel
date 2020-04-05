@@ -1,8 +1,8 @@
 package net.maple.handlers.misc;
 
-import net.maple.handlers.PacketHandler;
 import client.Character;
 import client.Client;
+import net.maple.handlers.PacketHandler;
 import util.packet.PacketReader;
 
 public class QuickSlotKeyMappedModifiedHandler extends PacketHandler {

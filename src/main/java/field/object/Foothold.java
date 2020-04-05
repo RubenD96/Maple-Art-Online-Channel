@@ -3,8 +3,6 @@ package field.object;
 import lombok.Getter;
 import util.packet.PacketReader;
 
-import java.awt.*;
-
 @Getter
 public class Foothold {
 
