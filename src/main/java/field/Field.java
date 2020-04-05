@@ -136,6 +136,13 @@ public class Field {
         return objects;
     }
 
+    public FieldObject getObject(FieldObjectType t, int i) {
+        for (FieldObject obj : getObjects(t)) {
+            if (obj.getId() == i) return obj;
+        }
+        return null;
+    }
+
     public FieldPortal getSpawnpoint() {
         return portals.values().stream().filter(p -> p.getType() == PortalType.START_POINT).findFirst().orElse(null);
     }

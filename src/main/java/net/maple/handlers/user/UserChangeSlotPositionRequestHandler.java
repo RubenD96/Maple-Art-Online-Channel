@@ -6,7 +6,7 @@ import client.inventory.ItemInventoryType;
 import client.inventory.slots.ItemSlot;
 import client.inventory.slots.ItemSlotBundle;
 import constants.ItemConstants;
-import field.object.drop.ItemFieldDrop;
+import field.object.drop.ItemDrop;
 import net.maple.handlers.PacketHandler;
 import net.maple.packets.CharacterPackets;
 import util.packet.PacketReader;
@@ -38,7 +38,8 @@ public class UserChangeSlotPositionRequestHandler extends PacketHandler {
                             i.getInventoryContext(type).remove(item);
                         }
 
-                        ItemFieldDrop drop = new ItemFieldDrop((byte) 1, (byte) 1, chr.getId(), chr, item);
+                        ItemDrop drop = new ItemDrop((byte) 1, (byte) 1, chr.getId(), chr, item);
+                        drop.setPosition(chr.getPosition());
                         chr.getField().enter(drop);
                     }, true);
         } else {

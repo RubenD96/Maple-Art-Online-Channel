@@ -27,6 +27,6 @@ public class MesoDrop extends AbstractFieldDrop {
     @Override
     public void pickUp(Character chr) {
         getField().leave(this);
-        // todo
+        chr.gainMeso(meso);
     }
 }

@@ -4,9 +4,7 @@ import net.maple.handlers.DoNothingHandler;
 import net.maple.handlers.PacketHandler;
 import net.maple.handlers.PongHandler;
 import net.maple.handlers.login.MigrateInHandler;
-import net.maple.handlers.misc.FuncKeyMappedModifiedHandler;
-import net.maple.handlers.misc.NPCMoveHandler;
-import net.maple.handlers.misc.QuickSlotKeyMappedModifiedHandler;
+import net.maple.handlers.misc.*;
 import net.maple.handlers.user.*;
 
 import java.util.Arrays;
@@ -50,6 +48,7 @@ public final class PacketProcessor {
         handlers.put(RecvOpcode.FUNC_KEY_MAPPED_MODIFIED, new FuncKeyMappedModifiedHandler());
         handlers.put(RecvOpcode.QUICKSLOT_KEY_MAPPED_MODIFIED, new QuickSlotKeyMappedModifiedHandler());
         handlers.put(RecvOpcode.NPC_MOVE, new NPCMoveHandler());
+        handlers.put(RecvOpcode.DROP_PICK_UP_REQUEST, new DropPickUpRequestHandler());
 
         handlers.put(RecvOpcode.UPDATE_GM_BOARD, new DoNothingHandler());
         handlers.put(RecvOpcode.UPDATE_SCREEN_SETTING, new DoNothingHandler());

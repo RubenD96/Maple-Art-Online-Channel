@@ -123,8 +123,8 @@ public class FieldPackets {
         pw.writeInt(drop.getId());
         pw.writeBool(drop.isMeso());
         pw.writeInt(drop.getInfo());
-        pw.writeInt(drop.getOwner());
-        pw.write(type); // own type
+        pw.writeInt(/*drop.getOwner()*/0);
+        pw.write(/*type*/0x02); // own type
         pw.writePosition(drop.getPosition());
         pw.writeInt(source instanceof Character ? 0 : source.getId()); // source
 
@@ -134,7 +134,7 @@ public class FieldPackets {
         }
 
         if (!drop.isMeso()) {
-            pw.writeLong(drop.getExpire() * 10000 + 116444592000000000L);
+            pw.writeLong(/*drop.getExpire() * 10000 + 116444592000000000L*/0);
         }
 
         pw.writeBool(false);

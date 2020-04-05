@@ -2,6 +2,7 @@ package net.maple.handlers.user;
 
 import client.Character;
 import client.Client;
+import client.inventory.item.templates.ItemTemplate;
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 import managers.ItemManager;
 import net.maple.SendOpcode;
@@ -14,6 +15,7 @@ import util.packet.PacketWriter;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class UserChatHandler extends PacketHandler {
 
@@ -39,10 +41,17 @@ public class UserChatHandler extends PacketHandler {
             System.out.println("pos\n\t" + chr.getPosition());
             return;
         } else if (msg.split(" ")[0].equals("!item")) {
-            int id = Integer.parseInt(msg.substring(6));
-            CharacterPackets.modifyInventory(chr,
-                    i -> i.add(ItemManager.getItem(id), (short) 1),
-                    false);
+            int id = Integer.parseInt(msg.split(" ")[1]);
+            AtomicInteger quantity = new AtomicInteger(1); // lmao
+            if (msg.split(" ").length > 2) {
+                quantity.set(Integer.parseInt(msg.split(" ")[2]));
+            }
+            ItemTemplate item = ItemManager.getItem(id);
+            if (item != null) {
+                CharacterPackets.modifyInventory(chr,
+                        i -> i.add(item, (short) quantity.get()),
+                        false);
+            }
             return;
         }
 

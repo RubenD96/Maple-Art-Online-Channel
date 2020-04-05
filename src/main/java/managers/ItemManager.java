@@ -12,6 +12,9 @@ public class ItemManager extends AbstractManager {
     private static Map<Integer, ItemTemplate> items = new HashMap<>();
 
     public static synchronized ItemTemplate getItem(int id) {
+        if (id < 999999) {
+            return null;
+        }
         ItemTemplate item = items.get(id);
         if (item == null) {
             ItemInventoryType type = ItemInventoryType.values()[(id / 1000000) - 1];
