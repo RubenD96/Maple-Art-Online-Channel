@@ -4,11 +4,15 @@ import client.Character;
 import client.Pet;
 import client.inventory.ItemInventoryType;
 import client.inventory.ModifyInventoriesContext;
+import client.inventory.operations.MoveInventoryOperation;
 import client.player.StatType;
 import net.maple.SendOpcode;
 import util.packet.PacketWriter;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class CharacterPackets {
@@ -274,6 +278,27 @@ public class CharacterPackets {
 
         chr.write(pw.createPacket());
 
-        //todo equips
+        // equip check
+        if (context.getOperations().stream().anyMatch(op -> op.getSlot() < 0) ||
+                context.getOperations().stream().filter(op -> op instanceof MoveInventoryOperation).anyMatch(mio -> ((MoveInventoryOperation) mio).getToSlot() < 0)) {
+            modifyAvatar(chr);
+        }
+    }
+
+    public static void modifyAvatar(Character chr) {
+        PacketWriter pw = new PacketWriter(32);
+
+        pw.writeHeader(SendOpcode.USER_AVATAR_MODIFIED);
+        pw.writeInt(chr.getId());
+        pw.write(0x01); // some flag
+        encodeLooks(pw, chr, false);
+
+        pw.writeBool(false);
+        pw.writeBool(false);
+        pw.writeBool(false);
+        pw.writeBool(false);
+        pw.writeInt(0); // set items
+
+        chr.getField().broadcast(pw.createPacket(), chr);
     }
 }

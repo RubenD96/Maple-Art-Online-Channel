@@ -29,10 +29,10 @@ public class ItemPackets {
     }
 
     private static void encode(ItemSlotEquip item, PacketWriter pw) {
-        pw.writeByte((byte) 1);
+        pw.write(1);
         encodeBase(item, pw);
-        pw.writeByte(item.getRUC());
-        pw.writeByte(item.getCUC());
+        pw.write(item.getRUC());
+        pw.write(item.getCUC());
 
         pw.writeShort(item.getSTR());
         pw.writeShort(item.getDEX());
@@ -53,13 +53,15 @@ public class ItemPackets {
         pw.writeMapleString(item.getTitle());
         pw.writeShort(item.getAttribute());
 
-        pw.writeByte(item.getLevelUpType());
-        pw.writeByte(item.getLevel());
+        pw.write(item.getLevelUpType());
+        pw.write(item.getLevel());
         pw.writeInt(item.getEXP());
         pw.writeInt(item.getDurability());
 
-        pw.writeByte(item.getGrade());
-        pw.writeByte(item.getCHUC());
+        pw.writeInt(item.getIUC());
+
+        pw.write(item.getGrade());
+        pw.write(item.getCHUC());
 
         pw.writeShort(item.getOption1());
         pw.writeShort(item.getOption2());
@@ -73,7 +75,7 @@ public class ItemPackets {
     }
 
     private static void encode(ItemSlotBundle item, PacketWriter pw) {
-        pw.writeByte((byte) 2);
+        pw.write(2);
         encodeBase(item, pw);
 
         pw.writeShort(item.getNumber());
@@ -86,15 +88,15 @@ public class ItemPackets {
     }
 
     public static void encode(ItemSlotPet item, PacketWriter pw) {
-        pw.writeByte((byte) 3);
+        pw.write(3);
         encodeBase(item, pw);
 
         pw.writeString(item.getPetName());
         pw.fill(0x00, 13 - item.getPetName().length());
 
-        pw.writeByte(item.getLevel());
+        pw.write(item.getLevel());
         pw.writeShort(item.getTameness());
-        pw.writeByte(item.getRepleteness());
+        pw.write(item.getRepleteness());
         pw.writeLong(item.getDateDead());
 
         pw.writeShort(item.getPetAttribute());

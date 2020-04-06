@@ -19,7 +19,11 @@ public class ItemManager extends AbstractManager {
         if (item == null) {
             ItemInventoryType type = ItemInventoryType.values()[(id / 1000000) - 1];
             int subType = id % 1000000 / 10000;
-            PacketReader data = getData("wz/Item/" + id + ".mao");
+            PacketReader data = getData(
+                    "wz/" +
+                            "" + (type != ItemInventoryType.EQUIP ? "Item" : "Equip") +
+                            "/" + id + ".mao"
+            );
 
             if (data == null) {
                 return null;
@@ -27,7 +31,7 @@ public class ItemManager extends AbstractManager {
 
             switch (type) {
                 case EQUIP:
-                    // todo
+                    item = new ItemEquipTemplate(id, data);
                     break;
                 case CONSUME:
                     switch (subType) {

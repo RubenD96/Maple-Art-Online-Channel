@@ -11,6 +11,7 @@ import util.packet.PacketReader;
 @Getter
 public class ItemEquipTemplate extends ItemTemplate {
 
+    private int equipFlags;
     private short ReqSTR, ReqDEX, ReqINT, ReqLUK, ReqFAME, ReqJob;
     private byte ReqLevel, TUC;
     private short IncSTR, IncDEX, IncINT, IncLUK;
@@ -18,10 +19,13 @@ public class ItemEquipTemplate extends ItemTemplate {
     private short IncPAD, IncMAD, IncPDD, IncMDD, IncACC, IncEVA, IncCraft, IncSpeed, IncJump;
     private boolean onlyEquip, tradeBlockEquip, notExtend, sharableOnce;
     private byte appliableKarmaType;
-    private int setItemId, durability;
+    private int setItemId;
+    private int durability = -1;
 
     public ItemEquipTemplate(int id, PacketReader r) {
         super(id, r);
+        equipFlags = r.readInteger();
+
         ReqSTR = r.readShort();
         ReqDEX = r.readShort();
         ReqINT = r.readShort();
@@ -29,8 +33,6 @@ public class ItemEquipTemplate extends ItemTemplate {
         ReqFAME = r.readShort();
         ReqJob = r.readShort();
         ReqLevel = r.readByte();
-        ReqSTR = r.readShort();
-        ReqSTR = r.readShort();
 
         if (containsFlag(EquipFlag.TUC)) TUC = r.readByte();
         if (containsFlag(EquipFlag.INC_STR)) IncSTR = r.readShort();
@@ -60,7 +62,7 @@ public class ItemEquipTemplate extends ItemTemplate {
     }
 
     public boolean containsFlag(EquipFlag flag) {
-        return (flags & flag.getValue()) == flag.getValue();
+        return (equipFlags & flag.getValue()) == flag.getValue();
     }
 
     public ItemSlotEquip toItemSlot(ItemVariationType type) {
@@ -84,5 +86,45 @@ public class ItemEquipTemplate extends ItemTemplate {
         equip.setJump((short) variation.get(IncJump));
         equip.setDurability(100);
         return equip;
+    }
+
+    @Override
+    public String toString() {
+        System.out.println(super.toString());
+        return "ItemEquipTemplate{" +
+                "equipFlags=" + equipFlags +
+                "ReqSTR=" + ReqSTR +
+                ", ReqDEX=" + ReqDEX +
+                ", ReqINT=" + ReqINT +
+                ", ReqLUK=" + ReqLUK +
+                ", ReqFAME=" + ReqFAME +
+                ", ReqJob=" + ReqJob +
+                ", ReqLevel=" + ReqLevel +
+                ", TUC=" + TUC +
+                ", IncSTR=" + IncSTR +
+                ", IncDEX=" + IncDEX +
+                ", IncINT=" + IncINT +
+                ", IncLUK=" + IncLUK +
+                ", IncMaxHP=" + IncMaxHP +
+                ", IncMaxMP=" + IncMaxMP +
+                ", IncMaxHPr=" + IncMaxHPr +
+                ", IncMaxMPr=" + IncMaxMPr +
+                ", IncPAD=" + IncPAD +
+                ", IncMAD=" + IncMAD +
+                ", IncPDD=" + IncPDD +
+                ", IncMDD=" + IncMDD +
+                ", IncACC=" + IncACC +
+                ", IncEVA=" + IncEVA +
+                ", IncCraft=" + IncCraft +
+                ", IncSpeed=" + IncSpeed +
+                ", IncJump=" + IncJump +
+                ", onlyEquip=" + onlyEquip +
+                ", tradeBlockEquip=" + tradeBlockEquip +
+                ", notExtend=" + notExtend +
+                ", sharableOnce=" + sharableOnce +
+                ", appliableKarmaType=" + appliableKarmaType +
+                ", setItemId=" + setItemId +
+                ", durability=" + durability +
+                '}';
     }
 }
