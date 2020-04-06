@@ -21,6 +21,10 @@ public class ItemManager extends AbstractManager {
             int subType = id % 1000000 / 10000;
             PacketReader data = getData("wz/Item/" + id + ".mao");
 
+            if (data == null) {
+                return null;
+            }
+
             switch (type) {
                 case EQUIP:
                     // todo

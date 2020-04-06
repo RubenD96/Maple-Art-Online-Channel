@@ -14,7 +14,8 @@ public abstract class AbstractManager {
             if (file.exists()) {
                 return new PacketReader().next(Files.readAllBytes(file.toPath()));
             } else {
-                throw new IOException("File does not exist");
+                System.err.println("File does not exist (" + path + ")");
+                return null;
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();

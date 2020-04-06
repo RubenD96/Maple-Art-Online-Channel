@@ -10,4 +10,13 @@ public abstract class ItemSlot {
     protected int templateId;
     protected long cashItemSN;
     protected long expire;
+
+    @Override
+    public String toString() {
+        return "ItemSlot{" +
+                "templateId=" + templateId +
+                ", cashItemSN=" + cashItemSN +
+                ", expire=" + expire +
+                '}';
+    }
 }

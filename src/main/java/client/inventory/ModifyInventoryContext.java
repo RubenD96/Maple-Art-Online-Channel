@@ -49,11 +49,11 @@ public class ModifyInventoryContext implements ModifyInventoryContextInterface {
             }).filter(i -> i.equals(bundle)).findFirst().orElse(null);
 
             if (mergeable != null) {
-                int count = bundle.getNumber() + mergeable.getNumber();
+                int quantity = bundle.getNumber() + mergeable.getNumber();
                 short maxNumber = mergeable.getMaxNumber();
 
-                if (count > maxNumber) {
-                    int leftOver = count - maxNumber;
+                if (quantity > maxNumber) {
+                    int leftOver = quantity - maxNumber;
                     bundle.setNumber((short) leftOver);
                     mergeable.setNumber(maxNumber);
                     updateQuantity(mergeable);
@@ -247,7 +247,7 @@ public class ModifyInventoryContext implements ModifyInventoryContextInterface {
     public void update(ItemSlot slot) {
         update(inventory.getItems().entrySet()
                 .stream()
-                .filter(entry -> Objects.equals(entry.getValue(), slot))
+                .filter(entry -> entry.getValue() == slot)
                 .map(Map.Entry::getKey).findFirst().get());
     }
 
@@ -259,11 +259,13 @@ public class ModifyInventoryContext implements ModifyInventoryContextInterface {
     private void updateQuantity(ItemSlot item) {
         updateQuantity(inventory.getItems().entrySet()
                 .stream()
-                .filter(entry -> Objects.equals(entry.getValue(), item))
+                .filter(entry -> entry.getValue() == item)
                 .map(Map.Entry::getKey).findFirst().get());
     }
 
     private void updateQuantity(short slot) {
+        System.out.println(slot);
+        System.out.println(((ItemSlotBundle) inventory.getItems().get(slot)).getNumber());
         operations.add(new UpdateQuantityInventoryOperation(type, slot, ((ItemSlotBundle) inventory.getItems().get(slot)).getNumber()));
     }
 }

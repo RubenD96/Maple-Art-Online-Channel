@@ -29,4 +29,15 @@ public class ItemSlotBundle extends ItemSlot {
     public int hashCode() {
         return Objects.hash(templateId, maxNumber, attribute, title, cashItemSN, expire);
     }
+
+    @Override
+    public String toString() {
+        System.out.println(super.toString());
+        return "ItemSlotBundle{" +
+                "number=" + number +
+                ", maxNumber=" + maxNumber +
+                ", attribute=" + attribute +
+                ", title='" + title + '\'' +
+                '}';
+    }
 }
