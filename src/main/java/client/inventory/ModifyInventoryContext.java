@@ -131,7 +131,7 @@ public class ModifyInventoryContext implements ModifyInventoryContextInterface {
     public void remove(ItemSlot item) {
         remove(inventory.getItems().entrySet()
                 .stream()
-                .filter(entry -> Objects.equals(entry.getValue(), item))
+                .filter(entry -> entry.getValue() == item)
                 .map(Map.Entry::getKey).findFirst().get());
     }
 
@@ -139,7 +139,7 @@ public class ModifyInventoryContext implements ModifyInventoryContextInterface {
     public void remove(ItemSlot item, short quantity) {
         remove(inventory.getItems().entrySet()
                 .stream()
-                .filter(entry -> Objects.equals(entry.getValue(), item))
+                .filter(entry -> entry.getValue() == item)
                 .map(Map.Entry::getKey).findFirst().get(), quantity);
     }
 
@@ -231,7 +231,7 @@ public class ModifyInventoryContext implements ModifyInventoryContextInterface {
     public ItemSlotBundle take(int id, short quantity) {
         return take(inventory.getItems().entrySet()
                 .stream()
-                .filter(entry -> Objects.equals(entry.getValue().getTemplateId(), id))
+                .filter(entry -> entry.getValue().getTemplateId() == id)
                 .map(Map.Entry::getKey).findFirst().get(), quantity);
     }
 
@@ -264,8 +264,6 @@ public class ModifyInventoryContext implements ModifyInventoryContextInterface {
     }
 
     private void updateQuantity(short slot) {
-        System.out.println(slot);
-        System.out.println(((ItemSlotBundle) inventory.getItems().get(slot)).getNumber());
         operations.add(new UpdateQuantityInventoryOperation(type, slot, ((ItemSlotBundle) inventory.getItems().get(slot)).getNumber()));
     }
 }
