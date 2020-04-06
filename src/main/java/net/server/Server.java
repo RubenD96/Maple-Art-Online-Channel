@@ -2,6 +2,7 @@ package net.server;
 
 import constants.ServerConstants;
 import lombok.Getter;
+import managers.ItemManager;
 import net.database.DatabaseCore;
 import util.crypto.MapleAESOFB;
 
@@ -29,6 +30,7 @@ public class Server {
     }
 
     public static void main(String[] args) {
+        System.out.println(ItemManager.getItem(4000000));
         MapleAESOFB.initialize(ServerConstants.VERSION);
         new DatabaseCore();
         getInstance().run();

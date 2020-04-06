@@ -25,7 +25,7 @@ public class ItemPackets {
         if (item.getCashItemSN() > 0) {
             pw.writeLong(item.getCashItemSN());
         }
-        pw.writeLong(item.getExpire() > 0 ? item.getExpire() : 0);
+        pw.writeLong(item.getExpire() > 0 ? item.getExpire() : 150842304000000000L);
     }
 
     private static void encode(ItemSlotEquip item, PacketWriter pw) {

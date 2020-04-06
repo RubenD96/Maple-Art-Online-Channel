@@ -2,15 +2,13 @@ package net.maple.packets;
 
 import client.Character;
 import client.Pet;
+import client.inventory.ItemInventoryType;
 import client.inventory.ModifyInventoriesContext;
 import client.player.StatType;
 import net.maple.SendOpcode;
 import util.packet.PacketWriter;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class CharacterPackets {
@@ -27,11 +25,11 @@ public class CharacterPackets {
         pw.writeInt(chr.getMeso());
 
         // inv slots
-        pw.write(24); // equips
-        pw.write(24); // consumes
-        pw.write(24); // install
-        pw.write(24); // etc
-        pw.write(96); // cash
+        pw.write(chr.getInventories().get(ItemInventoryType.EQUIP).getSlotMax()); // equips
+        pw.write(chr.getInventories().get(ItemInventoryType.CONSUME).getSlotMax()); // consumes
+        pw.write(chr.getInventories().get(ItemInventoryType.INSTALL).getSlotMax()); // install
+        pw.write(chr.getInventories().get(ItemInventoryType.ETC).getSlotMax()); // etc
+        pw.write(chr.getInventories().get(ItemInventoryType.CASH).getSlotMax()); // cash
 
         // admin shop
         pw.writeInt(0);
@@ -267,7 +265,7 @@ public class CharacterPackets {
         ModifyInventoriesContext context = new ModifyInventoriesContext(chr.getInventories());
 
         consumer.accept(context);
-        PacketWriter pw = new PacketWriter(8);
+        PacketWriter pw = new PacketWriter(32);
 
         pw.writeHeader(SendOpcode.INVENTORY_OPERATION);
         pw.writeBool(enableActions);

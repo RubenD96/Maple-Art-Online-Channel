@@ -55,7 +55,7 @@ public class Character extends AbstractFieldLife {
         inventories.put(ItemInventoryType.CONSUME, new ItemInventory((short) 24));
         inventories.put(ItemInventoryType.INSTALL, new ItemInventory((short) 24));
         inventories.put(ItemInventoryType.ETC, new ItemInventory((short) 24));
-        inventories.put(ItemInventoryType.CASH, new ItemInventory((short) 24));
+        inventories.put(ItemInventoryType.CASH, new ItemInventory((short) 96));
     }
 
     public void resetQuickSlot() {
