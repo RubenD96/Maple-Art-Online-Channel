@@ -5,6 +5,7 @@ import client.Pet;
 import client.inventory.ItemInventoryType;
 import client.inventory.ModifyInventoriesContext;
 import client.inventory.operations.MoveInventoryOperation;
+import client.inventory.slots.ItemSlot;
 import client.player.StatType;
 import net.maple.SendOpcode;
 import util.packet.PacketWriter;
@@ -152,26 +153,34 @@ public class CharacterPackets {
         Map<Byte, Integer> base = new HashMap<>();
         Map<Byte, Integer> mask = new HashMap<>();
 
-        for (Map.Entry<Byte, Integer> item : chr.getEquipment().entrySet()) {
-            byte pos = item.getKey();
-            if (pos < 100 && !base.containsKey(pos)) {
-                base.put(pos, item.getValue());
-            } else if (pos > 100 && pos != 111) {
-                pos -= 100;
-                if (base.containsKey(pos)) {
-                    mask.put(pos, base.get(pos));
+        chr.getInventories().get(ItemInventoryType.EQUIP).getItems().forEach(
+                (key, value) -> {
+                    byte pos = key.byteValue();
+                    if (pos < 100 && !base.containsKey(pos)) {
+                        base.put(pos, value.getTemplateId());
+                    } else if (pos > 100 && pos != 111) {
+                        pos -= 100;
+                        if (base.containsKey(pos)) {
+                            mask.put(pos, base.get(pos));
+                        }
+                        base.put(pos, value.getTemplateId());
+                    } else if (base.containsKey(pos)) {
+                        mask.put(pos, value.getTemplateId());
+                    }
                 }
-                base.put(pos, item.getValue());
-            } else if (base.containsKey(pos)) {
-                mask.put(pos, item.getValue());
-            }
-        }
+        );
 
         base.forEach((k, v) -> pw.write(k).writeInt(v));
         pw.write(0xFF);
         mask.forEach((k, v) -> pw.write(k).writeInt(v));
         pw.write(0xFF);
-        pw.writeInt(chr.getEquipment().getOrDefault((byte) 111, 0));
+
+        ItemSlot item = chr.getInventories().get(ItemInventoryType.EQUIP).getItems().get((short) 111);
+        if (item != null) {
+            pw.writeInt(item.getTemplateId());
+        } else {
+            pw.writeInt(0);
+        }
     }
 
     /*public static void statUpdate(Character chr, List<StatType> statTypes) {

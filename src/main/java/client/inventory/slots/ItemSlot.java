@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public abstract class ItemSlot {
+public abstract class ItemSlot implements Cloneable {
 
     protected int templateId;
     protected long cashItemSN;
@@ -18,5 +18,10 @@ public abstract class ItemSlot {
                 ", cashItemSN=" + cashItemSN +
                 ", expire=" + expire +
                 '}';
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

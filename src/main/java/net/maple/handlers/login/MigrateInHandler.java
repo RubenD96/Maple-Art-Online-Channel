@@ -21,7 +21,7 @@ public class MigrateInHandler extends PacketHandler {
         c.login(AccountAPI.getAccountInfoTemporary(cid));
 
         Character chr = CharacterAPI.getNewCharacter(c, cid);
-        chr.setEquipment(CharacterAPI.getEquips(chr));
+        //chr.setEquipment(CharacterAPI.getEquips(chr));
 
         Field field = c.getWorldChannel().getFieldManager().getField(chr.getFieldId());
         field.enter(chr);

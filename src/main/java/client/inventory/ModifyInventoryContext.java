@@ -6,6 +6,7 @@ import client.inventory.slots.ItemSlot;
 import client.inventory.slots.ItemSlotBundle;
 import constants.ItemConstants;
 import lombok.Getter;
+import managers.ItemManager;
 import util.packet.PacketWriter;
 
 import java.util.LinkedList;
@@ -42,6 +43,11 @@ public class ModifyInventoryContext implements ModifyInventoryContextInterface {
             ItemSlotBundle bundle = (ItemSlotBundle) item;
             if (bundle.getNumber() < 1) bundle.setNumber((short) 1);
             if (bundle.getMaxNumber() < 1) bundle.setMaxNumber((short) 1);
+
+            while (bundle.getNumber() > bundle.getMaxNumber()) {
+                bundle.setNumber((short) (bundle.getNumber() - bundle.getMaxNumber()));
+                add(Objects.requireNonNull(ItemManager.getItem(item.getTemplateId())), bundle.getMaxNumber());
+            }
 
             ItemSlotBundle mergeable = (ItemSlotBundle) inventory.getItems().values().stream().filter(i -> {
                 ItemSlotBundle b = (ItemSlotBundle) i;
@@ -185,6 +191,8 @@ public class ModifyInventoryContext implements ModifyInventoryContextInterface {
 
                     if (quantity > max) {
                         int left = quantity - max;
+
+                        bundle.setNumber((short) left);
                         existing.setNumber((short) max);
                         updateQuantity(bundle);
                     } else {

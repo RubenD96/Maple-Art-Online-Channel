@@ -39,7 +39,6 @@ public class Character extends AbstractFieldLife {
     /**
      * End constructor fields
      */
-    Map<Byte, Integer> equipment = new HashMap<>();
     final Pet[] pets = new Pet[3];
     Map<Integer, KeyBinding> keyBindings = new HashMap<>();
     final int[] quickSlotKeys = new int[8];

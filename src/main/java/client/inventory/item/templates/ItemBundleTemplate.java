@@ -14,6 +14,9 @@ public class ItemBundleTemplate extends ItemTemplate {
         super(id, r);
         unitPrice = r.readDouble();
         maxPerSlot = r.readShort();
+        if (maxPerSlot == 0) {
+            maxPerSlot = 100;
+        }
     }
 
     public ItemSlotBundle toItemSlot() {
@@ -22,5 +25,14 @@ public class ItemBundleTemplate extends ItemTemplate {
         item.setNumber((short) 1);
         item.setMaxNumber(maxPerSlot);
         return item;
+    }
+
+    @Override
+    public String toString() {
+        System.out.println(super.toString());
+        return "ItemBundleTemplate{" +
+                "unitPrice=" + unitPrice +
+                ", maxPerSlot=" + maxPerSlot +
+                '}';
     }
 }

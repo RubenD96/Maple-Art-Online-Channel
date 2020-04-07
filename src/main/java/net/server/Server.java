@@ -2,6 +2,7 @@ package net.server;
 
 import constants.ServerConstants;
 import lombok.Getter;
+import managers.ItemManager;
 import net.database.DatabaseCore;
 import util.crypto.MapleAESOFB;
 
