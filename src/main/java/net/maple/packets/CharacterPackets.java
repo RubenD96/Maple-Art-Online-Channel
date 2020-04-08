@@ -81,10 +81,6 @@ public class CharacterPackets {
                     pw.write(0);
                 }
         );
-        /*pw.write(0); // consume
-        pw.write(0); // install
-        pw.write(0); // etc
-        pw.write(0); // cash*/
 
         // skills
         pw.writeShort(0); // count
@@ -301,6 +297,12 @@ public class CharacterPackets {
         pw.writeBool(false);
 
         chr.write(pw.createPacket());
+
+        if (statTypes.stream().anyMatch(type -> type == StatType.SKIN ||
+                type == StatType.FACE ||
+                type == StatType.HAIR)) {
+            modifyAvatar(chr);
+        }
     }
 
     public static void modifyInventory(Character chr, Consumer<ModifyInventoriesContext> consumer, boolean enableActions) {
@@ -319,6 +321,7 @@ public class CharacterPackets {
         // equip check
         if (context.getOperations().stream().anyMatch(op -> op.getSlot() < 0) ||
                 context.getOperations().stream().filter(op -> op instanceof MoveInventoryOperation).anyMatch(mio -> ((MoveInventoryOperation) mio).getToSlot() < 0)) {
+            chr.validateStats();
             modifyAvatar(chr);
         }
     }

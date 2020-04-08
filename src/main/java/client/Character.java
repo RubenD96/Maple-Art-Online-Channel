@@ -112,6 +112,43 @@ public class Character extends AbstractFieldLife {
         updateSingleStat(StatType.JOB);
     }
 
+    public void setHealth(int health) {
+        if (health > maxHealth) {
+            health = maxHealth;
+        }
+        this.health = health;
+        updateSingleStat(StatType.HP, false);
+    }
+
+    public void setMana(int mana) {
+        if (mana > maxMana) {
+            mana = maxMana;
+        }
+        this.mana = mana;
+        updateSingleStat(StatType.MP, false);
+    }
+
+    public void modifyHealth(int health) {
+        this.health += health;
+        updateSingleStat(StatType.HP, false);
+    }
+
+    public void modifyMana(int mana) {
+        this.mana += mana;
+        updateSingleStat(StatType.MP, false);
+    }
+
+    public void modifyHPMP(int health, int mana) {
+        this.health += health;
+        this.mana += mana;
+        updateStats(new ArrayList<>(Arrays.asList(StatType.HP, StatType.MP)), false);
+    }
+
+    public void validateStats() {
+        if (health > maxHealth) setHealth(maxHealth);
+        if (mana > maxMana) setMana(maxMana);
+    }
+
     public void enableActions() {
         CharacterPackets.statUpdate(this, new ArrayList<>(), true);
     }
@@ -129,7 +166,11 @@ public class Character extends AbstractFieldLife {
     }
 
     public void updateSingleStat(StatType statType) {
-        updateStats(Collections.singletonList(statType));
+        updateSingleStat(statType, true);
+    }
+
+    public void updateSingleStat(StatType statType, boolean enableActions) {
+        updateStats(Collections.singletonList(statType), enableActions);
     }
 
     public void write(Packet msg) {
