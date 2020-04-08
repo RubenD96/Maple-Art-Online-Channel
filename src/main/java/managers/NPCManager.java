@@ -24,8 +24,10 @@ public class NPCManager extends AbstractManager {
         PacketReader r = getData("wz/Npc/" + npc.getNpcId() + ".mao");
 
         //npc.setId(r.readInteger());
-        r.readInteger();
-        npc.setName(r.readMapleString());
-        npc.setMove(r.readBool());
+        if (r != null) {
+            r.readInteger();
+            npc.setName(r.readMapleString());
+            npc.setMove(r.readBool());
+        }
     }
 }

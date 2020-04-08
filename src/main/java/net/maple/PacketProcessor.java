@@ -49,6 +49,7 @@ public final class PacketProcessor {
         handlers.put(RecvOpcode.USER_CHARACTER_INFO_REQUEST, new UserCharacterInfoRequestHandler());
         handlers.put(RecvOpcode.FUNC_KEY_MAPPED_MODIFIED, new FuncKeyMappedModifiedHandler());
         handlers.put(RecvOpcode.QUICKSLOT_KEY_MAPPED_MODIFIED, new QuickSlotKeyMappedModifiedHandler());
+        handlers.put(RecvOpcode.MOB_MOVE, new MobMoveHandler());
         handlers.put(RecvOpcode.NPC_MOVE, new NPCMoveHandler());
         handlers.put(RecvOpcode.DROP_PICK_UP_REQUEST, new DropPickUpRequestHandler());
 

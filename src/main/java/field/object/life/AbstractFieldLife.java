@@ -6,8 +6,8 @@ import util.packet.PacketReader;
 
 public abstract class AbstractFieldLife extends AbstractFieldObject implements FieldLife {
 
-    private byte moveAction;
-    private short foothold;
+    protected byte moveAction;
+    protected short foothold;
 
     @Override
     public byte getMoveAction() {

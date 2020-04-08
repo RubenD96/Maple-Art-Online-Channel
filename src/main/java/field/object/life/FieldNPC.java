@@ -14,10 +14,7 @@ import util.packet.PacketWriter;
 public class FieldNPC extends AbstractFieldControlledLife {
 
     @NonNull final private int npcId;
-    @Setter private int rx0, rx1, cy;
-    @Setter private String name;
-    @Setter private boolean move, hide;
-    @Setter private boolean f;
+    @Setter protected boolean move;
 
     @Override
     public FieldObjectType getFieldObjectType() {

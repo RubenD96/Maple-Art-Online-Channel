@@ -2,7 +2,7 @@ package managers;
 
 import field.Field;
 import field.object.Foothold;
-import field.object.life.FieldNPC;
+import field.object.life.*;
 import field.object.portal.FieldPortal;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -83,6 +83,8 @@ public class FieldManager extends AbstractManager {
         if (containsFlag(flags, FieldFlag.LIFE)) {
             short size = r.readShort();
             for (int i = 0; i < size; i++) {
+                AbstractFieldControlledLife obj;
+
                 int id = r.readInteger();
                 int time = r.readInteger();
                 int x = r.readInteger();
@@ -95,18 +97,23 @@ public class FieldManager extends AbstractManager {
                 int rx1 = r.readInteger();
                 String type = r.readMapleString();
                 if (type.equals("m")) {
-                    // todo mob
+                    FieldMob mob = new FieldMob(MobManager.getMob(id), f == 1);
+                    mob.setHp(mob.getTemplate().getMaxHP());
+                    mob.setMp(mob.getTemplate().getMaxMP());
+                    mob.setHome((short) fh);
+                    obj = mob;
                 } else { // npc
                     FieldNPC npc = NPCManager.getNPC(id);
-                    npc.setRx0(rx0);
-                    npc.setRx1(rx1);
-                    npc.setPosition(new Point(x, y));
-                    npc.setFoothold((short) fh);
-                    npc.setF(f == 1);
-                    npc.setCy(cy);
-                    npc.setHide(hide == 1);
-                    field.enter(npc);
+                    obj = npc;
                 }
+                obj.setRx0(rx0);
+                obj.setRx1(rx1);
+                obj.setPosition(new Point(x, y));
+                obj.setFoothold((short) fh);
+                obj.setF(f == 1);
+                obj.setCy(cy);
+                obj.setHide(hide == 1);
+                field.enter(obj);
             }
         }
         System.out.println("Finished initializing field: " + field.getId());

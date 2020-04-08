@@ -23,7 +23,8 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
             RecvOpcode.UPDATE_SCREEN_SETTING.getValue(),
             RecvOpcode.USER_MOVE.getValue(),
             RecvOpcode.NPC_MOVE.getValue(),
-            RecvOpcode.USER_CHANGE_STAT_REQUEST.getValue()
+            RecvOpcode.USER_CHANGE_STAT_REQUEST.getValue(),
+            RecvOpcode.MOB_MOVE.getValue()
     };
 
     @Override
