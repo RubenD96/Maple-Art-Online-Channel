@@ -31,15 +31,20 @@ public class ItemAPI {
     public static void saveInventories(Character chr) {
         Set<byte[]> uuids = deleteOldItems(chr);
 
-        saveEquips(chr);
-
-        IntStream.range(1, 5).forEach(i -> {
-            var inv = chr.getInventories().get(ItemInventoryType.values()[i]).getItems();
+        IntStream.range(0, 5).forEach(i -> {
+            var type = ItemInventoryType.values()[i];
+            var inv = chr.getInventories().get(type).getItems();
             inv.forEach((slot, item) -> {
                 if (item.getUuid() == null || (item.isNewItem() && uuids.stream().noneMatch(uuid -> Arrays.equals(item.getUuid(), uuid)))) { // item is new, insert new entry
-                    insertNewItem(chr, i + 1, slot, (ItemSlotBundle) item);
+                    insertNewItem(chr, i + 1, slot, item);
+                    if (type == ItemInventoryType.EQUIP) {
+                        insertNewEquip((ItemSlotEquip) item);
+                    }
                 } else {
-                    updateExistingItem(slot, (ItemSlotBundle) item);
+                    updateExistingItem(slot, item);
+                    if (type == ItemInventoryType.EQUIP) {
+                        updateExistingEquip((ItemSlotEquip) item);
+                    }
                 }
             });
         });
@@ -80,21 +85,48 @@ public class ItemAPI {
                 .execute();
     }
 
-    private static void updateExistingItem(short slot, ItemSlotBundle item) {
+    private static void updateExistingItem(short slot, ItemSlot item) {
+        int quantity = item instanceof ItemSlotBundle ? ((ItemSlotBundle) item).getNumber() : 1;
         DatabaseCore.getConnection()
                 .update(INVENTORIES)
                 .set(INVENTORIES.POSITION, slot)
-                .set(INVENTORIES.QUANTITY, (int) item.getNumber())
+                .set(INVENTORIES.QUANTITY, quantity)
                 .where(INVENTORIES.ID.eq(item.getUuid()))
                 .execute();
     }
 
-    private static void insertNewItem(Character chr, int type, short slot, ItemSlotBundle item) {
+    private static void updateExistingEquip(ItemSlotEquip equip) {
+        DatabaseCore.getConnection()
+                .update(EQUIPS)
+                .set(EQUIPS.SLOTS, equip.getRUC())
+                .set(EQUIPS.STR, equip.getSTR())
+                .set(EQUIPS.DEX, equip.getDEX())
+                .set(EQUIPS.INT, equip.getINT())
+                .set(EQUIPS.LUK, equip.getLUK())
+                .set(EQUIPS.HP, equip.getMaxHP())
+                .set(EQUIPS.MP, equip.getMaxMP())
+                .set(EQUIPS.PAD, equip.getPAD())
+                .set(EQUIPS.MAD, equip.getMAD())
+                .set(EQUIPS.PDD, equip.getPDD())
+                .set(EQUIPS.MDD, equip.getMDD())
+                .set(EQUIPS.ACC, equip.getACC())
+                .set(EQUIPS.EVA, equip.getEVA())
+                .set(EQUIPS.SPEED, equip.getSpeed())
+                .set(EQUIPS.JUMP, equip.getJump())
+                .set(EQUIPS.CRAFT, equip.getCraft())
+                .set(EQUIPS.DURABILITY, equip.getDurability())
+                .where(EQUIPS.ITEMID.eq(equip.getUuid()))
+                .execute();
+    }
+
+    private static void insertNewItem(Character chr, int type, short slot, ItemSlot item) {
         try {
             byte[] uuid = item.getUuid();
             if (uuid == null) {
                 uuid = HexTool.toBytes(UUID.randomUUID().toString().replace("-", ""));
+                item.setUuid(uuid);
             }
+            int quantity = item instanceof ItemSlotBundle ? ((ItemSlotBundle) item).getNumber() : 1;
             DatabaseCore.getConnection()
                     .insertInto(INVENTORIES,
                             INVENTORIES.ID,
@@ -113,17 +145,57 @@ public class ItemAPI {
                             item.getTemplateId(),
                             type,
                             slot,
-                            (int) item.getNumber(),
+                            quantity,
                             null)
                     .execute();
         } catch (DataAccessException dae) {
-            System.err.println("[CharacterAPI] Duplicate UUID for " + chr.getName() + " on " + item);
+            System.err.println("[ItemAPI] Duplicate UUID for " + chr.getName() + " on " + item);
             dae.printStackTrace();
         }
     }
 
-    private static void saveEquips(Character chr) {
-
+    private static void insertNewEquip(ItemSlotEquip equip) {
+        DatabaseCore.getConnection()
+                .insertInto(EQUIPS,
+                        EQUIPS.ITEMID,
+                        EQUIPS.SLOTS,
+                        EQUIPS.LEVEL,
+                        EQUIPS.STR,
+                        EQUIPS.DEX,
+                        EQUIPS.INT,
+                        EQUIPS.LUK,
+                        EQUIPS.HP,
+                        EQUIPS.MP,
+                        EQUIPS.PAD,
+                        EQUIPS.MAD,
+                        EQUIPS.PDD,
+                        EQUIPS.MDD,
+                        EQUIPS.ACC,
+                        EQUIPS.EVA,
+                        EQUIPS.SPEED,
+                        EQUIPS.JUMP,
+                        EQUIPS.CRAFT,
+                        EQUIPS.DURABILITY)
+                .values(equip.getUuid(),
+                        equip.getRUC(),
+                        equip.getLevel(),
+                        equip.getSTR(),
+                        equip.getDEX(),
+                        equip.getINT(),
+                        equip.getLUK(),
+                        equip.getMaxHP(),
+                        equip.getMaxMP(),
+                        equip.getPAD(),
+                        equip.getMAD(),
+                        equip.getPDD(),
+                        equip.getMDD(),
+                        equip.getACC(),
+                        equip.getEVA(),
+                        equip.getSpeed(),
+                        equip.getJump(),
+                        equip.getCraft(),
+                        equip.getDurability())
+                .execute();
     }
 
     /**
@@ -132,6 +204,7 @@ public class ItemAPI {
      * @param chr Player to load
      */
     public static void loadInventories(Character chr) {
+        deleteBrokenEquips(chr);
         loadEquips(chr);
 
         Result<Record> itemData = DatabaseCore.getConnection()
@@ -161,6 +234,32 @@ public class ItemAPI {
     }
 
     /**
+     * If an equip happens to appear in the DB without any stats, it could cause problems.
+     * This method detects equips in the DB that have no stats and removes them.
+     *
+     * @param chr The player to check
+     */
+    private static void deleteBrokenEquips(Character chr) {
+        Result<Record> itemData = DatabaseCore.getConnection()
+                .select()
+                .from(INVENTORIES)
+                .where(INVENTORIES.INVENTORY_TYPE.eq(1)) // equip inv
+                .and(INVENTORIES.CID.eq(chr.getId()))
+                .fetch();
+        itemData.forEach(rec -> {
+            Record match = DatabaseCore.getConnection()
+                    .select()
+                    .from(EQUIPS)
+                    .where(EQUIPS.ITEMID.eq(rec.getValue(INVENTORIES.ID)))
+                    .fetchOne();
+            if (match == null) {
+                System.err.println("[ItemAPI] Broken equip found for " + chr.getName() + " (" + rec.getValue(INVENTORIES.ITEMID) + ")");
+                deleteItemByUUID(rec.getValue(INVENTORIES.ID));
+            }
+        });
+    }
+
+    /**
      * Separate from loadInventories because of equip stats
      *
      * @param chr Player to load
@@ -180,6 +279,7 @@ public class ItemAPI {
             ItemEquipTemplate template = ((ItemEquipTemplate) ItemManager.getItem(rec.getValue(INVENTORIES.ITEMID)));
             if (template != null) {
                 ItemSlotEquip equip = template.fromDbToSlot(
+                        rec.getValue(EQUIPS.SLOTS),
                         rec.getValue(EQUIPS.STR),
                         rec.getValue(EQUIPS.DEX),
                         rec.getValue(EQUIPS.INT),

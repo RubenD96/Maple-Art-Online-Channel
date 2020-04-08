@@ -66,28 +66,29 @@ public class ItemEquipTemplate extends ItemTemplate {
     }
 
     public ItemSlotEquip fromDbToSlot(
-            int str, int dex, int int_, int luk, int hp, int mp,
-            int pad, int mad, int pdd, int mdd, int acc, int eva,
-            int speed, int jump, int craft, int durability
+            byte TUC,
+            short str, short dex, short int_, short luk, short hp, short mp,
+            short pad, short mad, short pdd, short mdd, short acc, short eva,
+            short speed, short jump, short craft, int durability
     ) {
         ItemSlotEquip equip = new ItemSlotEquip();
         equip.setTemplateId(getId());
         equip.setRUC(TUC);
-        equip.setSTR((short) str);
-        equip.setDEX((short) dex);
-        equip.setINT((short) int_);
-        equip.setLUK((short) luk);
-        equip.setMaxHP((short) hp);
-        equip.setMaxMP((short) mp);
-        equip.setPAD((short) pad);
-        equip.setMAD((short) mad);
-        equip.setPDD((short) pdd);
-        equip.setMDD((short) mdd);
-        equip.setACC((short) acc);
-        equip.setEVA((short) eva);
-        equip.setSpeed((short) speed);
-        equip.setJump((short) jump);
-        equip.setCraft((short) craft);
+        equip.setSTR(str);
+        equip.setDEX(dex);
+        equip.setINT(int_);
+        equip.setLUK(luk);
+        equip.setMaxHP(hp);
+        equip.setMaxMP(mp);
+        equip.setPAD(pad);
+        equip.setMAD(mad);
+        equip.setPDD(pdd);
+        equip.setMDD(mdd);
+        equip.setACC(acc);
+        equip.setEVA(eva);
+        equip.setSpeed(speed);
+        equip.setJump(jump);
+        equip.setCraft(craft);
         equip.setDurability(durability);
 
         return equip;
