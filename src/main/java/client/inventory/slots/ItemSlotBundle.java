@@ -32,8 +32,7 @@ public class ItemSlotBundle extends ItemSlot {
 
     @Override
     public String toString() {
-        System.out.println(super.toString());
-        return "ItemSlotBundle{" +
+        return super.toString() + "\nItemSlotBundle{" +
                 "number=" + number +
                 ", maxNumber=" + maxNumber +
                 ", attribute=" + attribute +

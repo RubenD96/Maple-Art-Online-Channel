@@ -7,6 +7,7 @@ import client.inventory.slots.ItemSlot;
 import client.inventory.slots.ItemSlotBundle;
 import constants.ItemConstants;
 import field.object.drop.ItemDrop;
+import net.database.ItemAPI;
 import net.maple.handlers.PacketHandler;
 import net.maple.packets.CharacterPackets;
 import util.packet.PacketReader;
@@ -27,6 +28,7 @@ public class UserChangeSlotPositionRequestHandler extends PacketHandler {
             CharacterPackets.modifyInventory(chr,
                     i -> {
                         ItemSlot item = chr.getInventories().get(type).getItems().get(from);
+                        byte[] uuid = item.getUuid();
 
                         if (!ItemConstants.isTreatSingly(item.getTemplateId())) {
                             if (!(item instanceof ItemSlotBundle)) return;
@@ -34,6 +36,8 @@ public class UserChangeSlotPositionRequestHandler extends PacketHandler {
                             if (bundle.getNumber() < number) return;
 
                             item = i.getInventoryContext(type).take(from, number);
+                            item.setUuid(uuid);
+                            ItemAPI.deleteItemByUUID(uuid); // clear db entry
                         } else {
                             i.getInventoryContext(type).remove(item);
                         }

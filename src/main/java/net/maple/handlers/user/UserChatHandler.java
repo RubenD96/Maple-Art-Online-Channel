@@ -2,6 +2,7 @@ package net.maple.handlers.user;
 
 import client.Character;
 import client.Client;
+import client.inventory.ItemInventoryType;
 import client.inventory.item.templates.ItemTemplate;
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 import managers.ItemManager;
@@ -52,6 +53,11 @@ public class UserChatHandler extends PacketHandler {
                         i -> i.add(item, (short) quantity.get()),
                         false);
             }
+            return;
+        } else if (msg.equals("inv")) {
+            chr.getInventories().get(ItemInventoryType.ETC)
+                    .getItems()
+                    .forEach((slot, item) -> System.out.println(slot + "("+item+")"));
             return;
         }
 

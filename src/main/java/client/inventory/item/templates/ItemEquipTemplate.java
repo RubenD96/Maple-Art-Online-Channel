@@ -65,10 +65,39 @@ public class ItemEquipTemplate extends ItemTemplate {
         return (equipFlags & flag.getValue()) == flag.getValue();
     }
 
+    public ItemSlotEquip fromDbToSlot(
+            int str, int dex, int int_, int luk, int hp, int mp,
+            int pad, int mad, int pdd, int mdd, int acc, int eva,
+            int speed, int jump, int craft, int durability
+    ) {
+        ItemSlotEquip equip = new ItemSlotEquip();
+        equip.setTemplateId(getId());
+        equip.setRUC(TUC);
+        equip.setSTR((short) str);
+        equip.setDEX((short) dex);
+        equip.setINT((short) int_);
+        equip.setLUK((short) luk);
+        equip.setMaxHP((short) hp);
+        equip.setMaxMP((short) mp);
+        equip.setPAD((short) pad);
+        equip.setMAD((short) mad);
+        equip.setPDD((short) pdd);
+        equip.setMDD((short) mdd);
+        equip.setACC((short) acc);
+        equip.setEVA((short) eva);
+        equip.setSpeed((short) speed);
+        equip.setJump((short) jump);
+        equip.setCraft((short) craft);
+        equip.setDurability(durability);
+
+        return equip;
+    }
+
     public ItemSlotEquip toItemSlot(ItemVariationType type) {
         ItemVariation variation = new ItemVariation(Rand32.Create(), type);
         ItemSlotEquip equip = new ItemSlotEquip();
         equip.setTemplateId(getId());
+        equip.setRUC(TUC);
         equip.setSTR((short) variation.get(IncSTR));
         equip.setDEX((short) variation.get(IncDEX));
         equip.setINT((short) variation.get(IncINT));

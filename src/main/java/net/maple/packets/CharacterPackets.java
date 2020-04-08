@@ -2,6 +2,7 @@ package net.maple.packets;
 
 import client.Character;
 import client.Pet;
+import client.inventory.ItemInventory;
 import client.inventory.ItemInventoryType;
 import client.inventory.ModifyInventoriesContext;
 import client.inventory.operations.MoveInventoryOperation;
@@ -10,11 +11,9 @@ import client.player.StatType;
 import net.maple.SendOpcode;
 import util.packet.PacketWriter;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class CharacterPackets {
 
@@ -41,17 +40,51 @@ public class CharacterPackets {
         pw.writeInt(0);
 
         // equips
-        pw.writeShort(0); // equipped
-        pw.writeShort(0); // equipped2
-        pw.writeShort(0); // equip (inventory tab)
-        pw.writeShort(0); // dragon
-        pw.writeShort(0); // mechanic
+        Map<ItemInventoryType, ItemInventory> inventories = chr.getInventories();
+        var inventory = inventories.get(ItemInventoryType.EQUIP).getItems();
+        var equip = inventory.entrySet().stream()
+                .filter(kv -> kv.getKey() >= 0)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        var equipped = inventory.entrySet().stream()
+                .filter(kv -> kv.getKey() >= -100 && kv.getKey() < 0)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        var mask = inventory.entrySet().stream()
+                .filter(kv -> kv.getKey() >= -1000 && kv.getKey() < -100)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        var dragon = inventory.entrySet().stream()
+                .filter(kv -> kv.getKey() >= -1100 && kv.getKey() < -1000)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        var mech = inventory.entrySet().stream()
+                .filter(kv -> kv.getKey() >= -1200 && kv.getKey() < -1100)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        new ArrayList<>(Arrays.asList(equipped, mask, equip, dragon, mech))
+                .forEach(inv -> {
+                    inv.forEach((slot, item) -> {
+                        pw.writeShort(Math.abs(slot) % 100);
+                        ItemPackets.encode(item, pw);
+                    });
+                    pw.writeShort(0);
+                });
 
         // other inv's
-        pw.write(0); // consume
+        new ArrayList<>(Arrays.asList(
+                inventories.get(ItemInventoryType.CONSUME).getItems(),
+                inventories.get(ItemInventoryType.INSTALL).getItems(),
+                inventories.get(ItemInventoryType.ETC).getItems(),
+                inventories.get(ItemInventoryType.CASH).getItems()
+        )).forEach(
+                inv -> {
+                    inv.forEach((slot, item) -> {
+                        pw.write(slot);
+                        ItemPackets.encode(item, pw);
+                    });
+                    pw.write(0);
+                }
+        );
+        /*pw.write(0); // consume
         pw.write(0); // install
         pw.write(0); // etc
-        pw.write(0); // cash
+        pw.write(0); // cash*/
 
         // skills
         pw.writeShort(0); // count
@@ -150,37 +183,33 @@ public class CharacterPackets {
     }
 
     private static void encodeVisualEquips(final PacketWriter pw, Character chr) {
-        Map<Byte, Integer> base = new HashMap<>();
-        Map<Byte, Integer> mask = new HashMap<>();
+        Map<Short, ItemSlot> equips = chr.getInventories().get(ItemInventoryType.EQUIP)
+                .getItems().entrySet().stream()
+                .filter(kv -> kv.getKey() < 0)
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue
+                ));
+        Map<Short, ItemSlot> base = equips.entrySet().stream()
+                .map(kv -> equips.containsKey((short) (kv.getKey() - 100))
+                        ? new AbstractMap.SimpleEntry<>(kv.getKey(), equips.get((short) (kv.getKey() - 100)))
+                        : kv)
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue
+                ));
+        Map<Short, ItemSlot> mask = equips.entrySet().stream()
+                .filter(kv -> !base.entrySet().contains(kv))
+                .collect(Collectors.toMap(
+                        kv -> (short) (kv.getKey() <= -100 ? kv.getKey() - 100 : kv.getKey()),
+                        Map.Entry::getValue
+                ));
 
-        chr.getInventories().get(ItemInventoryType.EQUIP).getItems().forEach(
-                (key, value) -> {
-                    byte pos = key.byteValue();
-                    if (pos < 100 && !base.containsKey(pos)) {
-                        base.put(pos, value.getTemplateId());
-                    } else if (pos > 100 && pos != 111) {
-                        pos -= 100;
-                        if (base.containsKey(pos)) {
-                            mask.put(pos, base.get(pos));
-                        }
-                        base.put(pos, value.getTemplateId());
-                    } else if (base.containsKey(pos)) {
-                        mask.put(pos, value.getTemplateId());
-                    }
-                }
-        );
-
-        base.forEach((k, v) -> pw.write(k).writeInt(v));
+        base.forEach((k, v) -> pw.write(Math.abs(k)).writeInt(v.getTemplateId()));
         pw.write(0xFF);
-        mask.forEach((k, v) -> pw.write(k).writeInt(v));
+        mask.forEach((k, v) -> pw.write(Math.abs(k)).writeInt(v.getTemplateId()));
         pw.write(0xFF);
-
-        ItemSlot item = chr.getInventories().get(ItemInventoryType.EQUIP).getItems().get((short) 111);
-        if (item != null) {
-            pw.writeInt(item.getTemplateId());
-        } else {
-            pw.writeInt(0);
-        }
+        pw.writeInt(equips.containsKey((short) -111) ? equips.get((short) -111).getTemplateId() : 0);
     }
 
     /*public static void statUpdate(Character chr, List<StatType> statTypes) {

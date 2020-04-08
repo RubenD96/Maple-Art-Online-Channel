@@ -13,6 +13,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import net.database.CharacterAPI;
+import net.database.ItemAPI;
 import net.maple.packets.CharacterPackets;
 import net.maple.packets.FieldPackets;
 import net.server.ChannelServer;
@@ -65,6 +66,7 @@ public class Character extends AbstractFieldLife {
     public void save() {
         CharacterAPI.saveCharacterStats(this);
         CharacterAPI.updateKeyBindings(this);
+        ItemAPI.saveInventories(this);
     }
 
     public boolean isGM() {

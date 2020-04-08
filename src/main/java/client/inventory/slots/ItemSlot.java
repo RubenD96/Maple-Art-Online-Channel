@@ -3,6 +3,8 @@ package client.inventory.slots;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Arrays;
+
 @Getter
 @Setter
 public abstract class ItemSlot implements Cloneable {
@@ -10,6 +12,8 @@ public abstract class ItemSlot implements Cloneable {
     protected int templateId;
     protected long cashItemSN;
     protected long expire;
+    protected byte[] uuid;
+    private boolean newItem = true;
 
     @Override
     public String toString() {
@@ -17,6 +21,7 @@ public abstract class ItemSlot implements Cloneable {
                 "templateId=" + templateId +
                 ", cashItemSN=" + cashItemSN +
                 ", expire=" + expire +
+                ", uuid=" + Arrays.toString(uuid) +
                 '}';
     }
 
