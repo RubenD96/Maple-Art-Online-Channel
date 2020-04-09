@@ -5,6 +5,7 @@ import client.inventory.ItemInventoryType;
 import client.player.Job;
 import client.player.StatType;
 import client.player.key.KeyBinding;
+import constants.UserConstants;
 import field.object.FieldObjectType;
 import field.object.life.AbstractFieldLife;
 import field.object.life.FieldControlledObject;
@@ -106,6 +107,21 @@ public class Character extends AbstractFieldLife {
     public void setLevel(int level) {
         this.level = level;
         updateSingleStat(StatType.LEVEL);
+    }
+
+    public void gainExp(int exp) {
+        if (level >= UserConstants.maxLevel) return;
+
+        this.exp += exp;
+        int needed = level < 50 ? UserConstants.expTable[level] : 1242;
+        if (this.exp >= needed) {
+            this.exp -= UserConstants.expTable[level]; // leftover
+            levelUp();
+            if (exp > 0) {
+                gainExp(this.exp);
+            }
+        }
+        updateSingleStat(StatType.EXP);
     }
 
     public void setJob(int jobId) {

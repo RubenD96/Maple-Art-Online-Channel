@@ -51,7 +51,7 @@ public class DamageInfo {
 
         if (mob != null) {
             mob.setController(chr);
-            // todo deal damage to mob
+            mob.damage(chr, totalDamage);
         }
     }
 }

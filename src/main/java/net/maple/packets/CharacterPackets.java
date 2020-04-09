@@ -7,8 +7,10 @@ import client.inventory.ItemInventoryType;
 import client.inventory.ModifyInventoriesContext;
 import client.inventory.operations.MoveInventoryOperation;
 import client.inventory.slots.ItemSlot;
+import client.messages.Message;
 import client.player.StatType;
 import net.maple.SendOpcode;
+import util.packet.Packet;
 import util.packet.PacketWriter;
 
 import java.util.*;
@@ -383,5 +385,14 @@ public class CharacterPackets {
 
 
         chr.getField().broadcast(pw.createPacket(), chr);
+    }
+
+    public static Packet message(Message message) {
+        PacketWriter pw = new PacketWriter(32);
+
+        pw.writeHeader(SendOpcode.MESSAGE);
+        message.encode(pw);
+
+        return pw.createPacket();
     }
 }

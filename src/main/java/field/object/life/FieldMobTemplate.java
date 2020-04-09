@@ -16,4 +16,17 @@ public class FieldMobTemplate {
 
     private short level;
     private int exp, maxHP, maxMP;
+
+    @Override
+    public String toString() {
+        return "FieldMobTemplate{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", moveType=" + moveType +
+                ", level=" + level +
+                ", exp=" + exp +
+                ", maxHP=" + maxHP +
+                ", maxMP=" + maxMP +
+                '}';
+    }
 }

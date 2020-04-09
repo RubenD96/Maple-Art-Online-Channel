@@ -1,9 +1,13 @@
 package field.object.life;
 
+import client.Character;
+import client.messages.IncEXPMessage;
+import client.messages.Message;
 import field.object.FieldObjectType;
 import lombok.Getter;
 import lombok.Setter;
 import net.maple.SendOpcode;
+import net.maple.packets.CharacterPackets;
 import util.packet.Packet;
 import util.packet.PacketWriter;
 
@@ -17,6 +21,45 @@ public class FieldMob extends AbstractFieldControlledLife {
     public FieldMob(FieldMobTemplate template, boolean left) {
         this.template = template;
         moveAction = 3;
+    }
+
+    public void damage(Character chr, int damage) {
+        synchronized (this) {
+            hp -= damage;
+        }
+
+        float indicator = hp / (float) template.getMaxHP() * 100f;
+
+        indicator = Math.min(100, indicator);
+        indicator = Math.max(0, indicator);
+
+        chr.write(showHpBar(indicator));
+
+        if (hp <= 0) {
+            kill(chr);
+        }
+    }
+
+    public void kill(Character chr) {
+        field.leave(this);
+        chr.gainExp(template.getExp()); // todo share
+
+        IncEXPMessage msg = new IncEXPMessage();
+        msg.setLastHit(true);
+        msg.setExp(template.getExp());
+        chr.write(CharacterPackets.message(msg));
+
+        // todo drops
+    }
+
+    private Packet showHpBar(float indicator) {
+        PacketWriter pw = new PacketWriter(7);
+
+        pw.writeHeader(SendOpcode.MOB_HP_INDICATOR);
+        pw.writeInt(id);
+        pw.write((byte) indicator);
+
+        return pw.createPacket();
     }
 
     @Override
