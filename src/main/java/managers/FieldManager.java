@@ -2,10 +2,11 @@ package managers;
 
 import field.Field;
 import field.object.Foothold;
-import field.object.life.*;
+import field.object.life.AbstractFieldControlledLife;
+import field.object.life.FieldMob;
+import field.object.life.FieldNPC;
 import field.object.portal.FieldPortal;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import managers.flag.FieldFlag;
 import util.packet.PacketReader;
 
@@ -13,8 +14,7 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+@Getter
 public class FieldManager extends AbstractManager {
 
     private Map<Integer, Field> fields = new HashMap<>();

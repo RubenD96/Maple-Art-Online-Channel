@@ -8,10 +8,10 @@ import client.player.key.KeyBinding;
 import field.object.FieldObjectType;
 import field.object.life.AbstractFieldLife;
 import field.object.life.FieldControlledObject;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import net.database.CharacterAPI;
 import net.database.ItemAPI;
 import net.maple.packets.CharacterPackets;
@@ -21,8 +21,9 @@ import util.packet.Packet;
 
 import java.util.*;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+@Getter
+@Setter
+@RequiredArgsConstructor
 public class Character extends AbstractFieldLife {
 
     /**
@@ -180,6 +181,10 @@ public class Character extends AbstractFieldLife {
     @Override
     public FieldObjectType getFieldObjectType() {
         return FieldObjectType.CHARACTER;
+    }
+
+    public void removeMe() {
+        field.removeObject(this);
     }
 
     @Override

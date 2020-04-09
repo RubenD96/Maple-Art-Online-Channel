@@ -28,11 +28,11 @@ public class Field {
     private Rectangle mapArea;
     private final Map<Byte, FieldPortal> portals = new HashMap<>();
     private final Map<Integer, Foothold> footholds = new HashMap<>();
-    private final Map<FieldObjectType, Set<FieldObject>> objects = new HashMap<>();
+    private final Map<FieldObjectType, Set<FieldObject>> objects = new LinkedHashMap<>();
 
     public void init() {
         for (FieldObjectType type : FieldObjectType.values()) {
-            objects.put(type, new HashSet<>());
+            objects.put(type, new LinkedHashSet<>());
         }
     }
 
@@ -102,6 +102,7 @@ public class Field {
         List<FieldObject> characters = getObjects(FieldObjectType.CHARACTER).stream()
                 .sorted(Comparator.comparingInt(chr -> ((Character) chr).getControlledObjects().size()))
                 .collect(Collectors.toList());
+
         FieldObjectType[] types = {FieldObjectType.NPC, FieldObjectType.MOB};
         List<FieldObject> controlled = getObjects(types).stream()
                 .filter(obj -> obj instanceof FieldControlledObject)
@@ -125,7 +126,10 @@ public class Field {
     }
 
     public void removeObject(FieldObject obj) {
-        objects.get(obj.getFieldObjectType()).remove(obj);
+        boolean success = objects.get(obj.getFieldObjectType()).remove(obj);
+        if (!success) {
+            throw new NullPointerException("[Field] Removal of field object failed.\n" + toString());
+        }
     }
 
     public Set<FieldObject> getObjects(FieldObjectType... t) {
@@ -170,5 +174,15 @@ public class Field {
         }
         //this.objects.values().forEach(ret::addAll);
         return ret;
+    }
+
+    @Override
+    public String toString() {
+        return "Field{" +
+                "id=" + id +
+                ", runningObjectId=" + runningObjectId +
+                ", name='" + name + '\'' +
+                ", objects=" + objects +
+                '}';
     }
 }
