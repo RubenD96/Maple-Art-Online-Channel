@@ -68,12 +68,15 @@ public final class PacketWriter extends Writer {
         return this;
     }
 
+    public final Writer writeHeader(short i) {
+        String hex = Integer.toHexString(i);
+        if (ServerConstants.LOG && Arrays.stream(ignoreOps).noneMatch(p -> p == i))
+            System.out.println("[SEND] packet " + i + " (" + (hex.length() == 1 ? "0x0" : "0x") + hex.toUpperCase() + ") - " + SendOpcode.getEnumByString(i));
+        return writeShort(i);
+    }
+
     public final Writer writeHeader(IntegerValue i) {
-        int opCode = i.getValue();
-        String hex = Integer.toHexString(opCode);
-        if (ServerConstants.LOG && Arrays.stream(ignoreOps).noneMatch(p -> p == opCode))
-            System.out.println("[SEND] packet " + opCode + " (" + (hex.length() == 1 ? "0x0" : "0x") + hex.toUpperCase() + ") - " + SendOpcode.getEnumByString(opCode));
-        return writeShort(i.getValue());
+        return writeHeader((short) i.getValue());
     }
 
     public final Writer writeShort(IntegerValue s) {

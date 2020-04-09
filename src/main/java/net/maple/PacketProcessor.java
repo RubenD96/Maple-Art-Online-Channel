@@ -1,11 +1,13 @@
 package net.maple;
 
+import net.maple.handlers.user.attack.AttackType;
 import net.maple.handlers.DoNothingHandler;
 import net.maple.handlers.PacketHandler;
 import net.maple.handlers.PongHandler;
 import net.maple.handlers.login.MigrateInHandler;
 import net.maple.handlers.misc.*;
 import net.maple.handlers.user.*;
+import net.maple.handlers.user.attack.UserAttackHandler;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -54,11 +56,10 @@ public final class PacketProcessor {
         handlers.put(RecvOpcode.NPC_MOVE, new NPCMoveHandler());
         handlers.put(RecvOpcode.DROP_PICK_UP_REQUEST, new DropPickUpRequestHandler());
 
-        PacketHandler attackHandler = new UserAttackHandler();
-        handlers.put(RecvOpcode.USER_MELEE_ATTACK, attackHandler);
-        handlers.put(RecvOpcode.USER_SHOOT_ATTACK, attackHandler);
-        handlers.put(RecvOpcode.USER_MAGIC_ATTACK, attackHandler);
-        handlers.put(RecvOpcode.USER_BODY_ATTACK, attackHandler);
+        handlers.put(RecvOpcode.USER_MELEE_ATTACK, new UserAttackHandler(AttackType.MELEE));
+        handlers.put(RecvOpcode.USER_SHOOT_ATTACK, new UserAttackHandler(AttackType.SHOOT));
+        handlers.put(RecvOpcode.USER_MAGIC_ATTACK, new UserAttackHandler(AttackType.MAGIC));
+        handlers.put(RecvOpcode.USER_BODY_ATTACK, new UserAttackHandler(AttackType.BODY));
 
         PacketHandler doNothing = new DoNothingHandler();
         handlers.put(RecvOpcode.UPDATE_GM_BOARD, doNothing);
