@@ -40,6 +40,7 @@ public final class PacketProcessor {
         handlers.put(RecvOpcode.USER_MOVE, new UserMoveHandler());
         handlers.put(RecvOpcode.USER_SIT_REQUEST, new UserSitRequestHandler());
         handlers.put(RecvOpcode.USER_PORTABLE_CHAIR_SIT_REQUEST, new UserPortableChairSitRequestHandler());
+        handlers.put(RecvOpcode.USER_HIT, new UserHitHandler());
         handlers.put(RecvOpcode.USER_CHAT, new UserChatHandler());
         handlers.put(RecvOpcode.USER_EMOTION, new UserEmotionHandler());
         handlers.put(RecvOpcode.USER_SELECT_NPC, new UserSelectNpcHandler());
@@ -53,10 +54,17 @@ public final class PacketProcessor {
         handlers.put(RecvOpcode.NPC_MOVE, new NPCMoveHandler());
         handlers.put(RecvOpcode.DROP_PICK_UP_REQUEST, new DropPickUpRequestHandler());
 
-        handlers.put(RecvOpcode.UPDATE_GM_BOARD, new DoNothingHandler());
-        handlers.put(RecvOpcode.UPDATE_SCREEN_SETTING, new DoNothingHandler());
-        handlers.put(RecvOpcode.REQUIRE_FIELD_OBSTACLE_STATUS, new DoNothingHandler());
-        handlers.put(RecvOpcode.CANCEL_INVITE_PARTY_MATCH, new DoNothingHandler());
-        handlers.put(RecvOpcode.USER_QUEST_REQUEST, new DoNothingHandler()); // todo
+        PacketHandler attackHandler = new UserAttackHandler();
+        handlers.put(RecvOpcode.USER_MELEE_ATTACK, attackHandler);
+        handlers.put(RecvOpcode.USER_SHOOT_ATTACK, attackHandler);
+        handlers.put(RecvOpcode.USER_MAGIC_ATTACK, attackHandler);
+        handlers.put(RecvOpcode.USER_BODY_ATTACK, attackHandler);
+
+        PacketHandler doNothing = new DoNothingHandler();
+        handlers.put(RecvOpcode.UPDATE_GM_BOARD, doNothing);
+        handlers.put(RecvOpcode.UPDATE_SCREEN_SETTING, doNothing);
+        handlers.put(RecvOpcode.REQUIRE_FIELD_OBSTACLE_STATUS, doNothing);
+        handlers.put(RecvOpcode.CANCEL_INVITE_PARTY_MATCH, doNothing);
+        handlers.put(RecvOpcode.USER_QUEST_REQUEST, doNothing); // todo
     }
 }

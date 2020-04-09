@@ -102,6 +102,8 @@ public class UserChatHandler extends PacketHandler {
         System.out.println("Evaluating:\n" + command);
         try {
             engine.put("c", c);
+            engine.put("chr", c.getCharacter());
+            engine.put("field", c.getCharacter().getField());
             engine.eval(command);
         } catch (ScriptException se) {
             se.printStackTrace();

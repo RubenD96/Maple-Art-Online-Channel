@@ -71,6 +71,9 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
         if (packetHandler != null) {
             if (packetHandler.validateState(client)) {
+                if (opCode == RecvOpcode.USER_HIT.getValue()) {
+                    System.out.printf("[USER_HIT] %s.%n", packet.toString());
+                }
                 packetHandler.handlePacket(packetReader, client);
             } else {
                 System.out.printf("Client failed to validate state for packet %s.%n", opCode);

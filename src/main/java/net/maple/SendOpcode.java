@@ -14,6 +14,7 @@ public enum SendOpcode implements IntegerValue {
     USER_LEAVE_FIELD(0xB4),
     USER_CHAT(0xB5),
     USER_MOVE(0xD2),
+    USER_HIT(0xDA),
     USER_EMOTION(0xDB),
     USER_SET_ACTIVE_PORTABLE_CHAIR(0xDE),
     USER_AVATAR_MODIFIED(0xDF),
