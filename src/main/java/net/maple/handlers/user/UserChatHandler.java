@@ -57,7 +57,7 @@ public class UserChatHandler extends PacketHandler {
         } else if (msg.equals("inv")) {
             chr.getInventories().get(ItemInventoryType.ETC)
                     .getItems()
-                    .forEach((slot, item) -> System.out.println(slot + "("+item+")"));
+                    .forEach((slot, item) -> System.out.println(slot + "(" + item + ")"));
             return;
         }
 

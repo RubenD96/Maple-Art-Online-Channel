@@ -343,32 +343,43 @@ public class CharacterPackets {
         chr.getField().broadcast(pw.createPacket(), chr);
     }
 
-    public static void showDamage(Character chr, byte type, int dmg, int mobId, int oid) {
+    public static void showDamage(Character chr, byte type, int dmg, int mobId, byte dir) {
         PacketWriter pw = new PacketWriter(32);
 
         pw.writeHeader(SendOpcode.USER_HIT);
-        byte v5 = 0;
+        pw.writeInt(chr.getId());
+        pw.write(type);
+
+        pw.writeInt(dmg);
+        if (type > -2) {
+            pw.writeInt(mobId);
+            pw.write(dir);
+            pw.write(0); // ?
+            pw.write(0); // power guard
+            pw.writeBool(false); // stance
+        }
+        pw.writeInt(dmg);
+        /*byte v5 = 0;
         pw.write(v5);
         pw.writeInt(chr.getId()); // v61
         if (v5 > -2) {
-            System.out.println("v5 > -2");
             pw.writeInt(mobId); // v51
             pw.write(1); // v48, unsure
             byte v19 = 0;
-            pw.write(v19); // v19 ?
+            pw.write(v19); // v19 powerguard?
             if (v19 > 0) {
                 pw.writeBool(true); // v49
                 pw.writeInt(oid); // v51
 
-                pw.write(6); // v27 direction?
-                /*pw.writeShort(0);
-                pw.writeShort(0);*/
+                pw.write(1); // v27 ?
+                *//*pw.writeShort(0);
+                pw.writeShort(0);*//*
                 pw.writePosition(chr.getPosition()); // v51 + v28
             }
             pw.write(0); // v4
             pw.write(0); // v34 skill
         }
-        pw.writeInt(dmg); // result
+        pw.writeInt(dmg); // result*/
 
 
         chr.getField().broadcast(pw.createPacket(), chr);

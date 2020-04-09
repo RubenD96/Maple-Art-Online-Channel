@@ -16,19 +16,16 @@ public class UserHitHandler extends PacketHandler {
         byte type = reader.readByte();
         byte element = reader.readByte();
         int dmg = reader.readInteger();
-        /*System.out.println(timestamp);
-        System.out.println(type);
-        System.out.println(element);
-        System.out.println(dmg);*/
 
         switch (type) {
             case DamageType.MOB:
                 int mobId = reader.readInteger();
                 int objId = reader.readInteger();
-                CharacterPackets.showDamage(chr, type, dmg, mobId, objId);
+                byte dir = reader.readByte();
+                CharacterPackets.showDamage(chr, type, dmg, mobId, dir);
                 break;
             case DamageType.WORLD:
-                CharacterPackets.showDamage(chr, type, dmg, 0, 0);
+                CharacterPackets.showDamage(chr, type, dmg, 0, (byte) 0);
                 break;
             default:
                 System.err.println("[UserHitHandler] Unknown damage type (" + type + ")");
