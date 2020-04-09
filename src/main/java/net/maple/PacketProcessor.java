@@ -39,6 +39,7 @@ public final class PacketProcessor {
         handlers.put(RecvOpcode.MIGRATE_IN, new MigrateInHandler());
         handlers.put(RecvOpcode.PONG, new PongHandler());
         handlers.put(RecvOpcode.USER_TRANSFER_FIELD_REQUEST, new UserTransferFieldRequestHandler());
+        handlers.put(RecvOpcode.USER_TRANSFER_CHANNEL_REQUEST, new UserTransferChannelRequestHandler());
         handlers.put(RecvOpcode.USER_MOVE, new UserMoveHandler());
         handlers.put(RecvOpcode.USER_SIT_REQUEST, new UserSitRequestHandler());
         handlers.put(RecvOpcode.USER_PORTABLE_CHAIR_SIT_REQUEST, new UserPortableChairSitRequestHandler());

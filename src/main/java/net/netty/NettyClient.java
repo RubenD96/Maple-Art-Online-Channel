@@ -70,7 +70,8 @@ public class NettyClient {
      * Lock regarding the encoding of packets to be sent to remote
      * sessions.
      */
-    private final ReentrantLock lock;
+    private final ReentrantLock encodeLock;
+    private final ReentrantLock migrateLock;
 
     /**
      * PacketReader object for this specific session since this can help
@@ -91,7 +92,8 @@ public class NettyClient {
         siv = alpha;
         riv = delta;
         r = new PacketReader();
-        lock = new ReentrantLock(true); // note: lock is fair to ensure logical sequence is maintained server-side
+        encodeLock = new ReentrantLock(true); // note: lock is fair to ensure logical sequence is maintained server-side
+        migrateLock = new ReentrantLock();
     }
 
     /**
@@ -197,13 +199,24 @@ public class NettyClient {
      * be dropped as a result.
      */
     public final void acquireEncoderState() {
-        lock.lock();
+        encodeLock.lock();
     }
 
     /**
      * Releases the encoding state for this specific send IV.
      */
     public final void releaseEncodeState() {
-        lock.unlock();
+        encodeLock.unlock();
+    }
+
+    public final void acquireMigrateState() {
+        if (!migrateLock.tryLock()) {
+            releaseMigrateState();
+            close(this, "User was already in migration");
+        }
+    }
+
+    public final void releaseMigrateState() {
+        migrateLock.unlock();
     }
 }

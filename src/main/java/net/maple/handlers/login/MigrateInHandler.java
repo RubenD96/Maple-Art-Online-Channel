@@ -17,20 +17,25 @@ public class MigrateInHandler extends PacketHandler {
 
     @Override
     public void handlePacket(PacketReader reader, Client c) {
-        int cid = reader.readInteger();
+        c.acquireMigrateState();
+        try {
+            int cid = reader.readInteger();
 
-        c.login(AccountAPI.getAccountInfoTemporary(cid));
+            c.login(AccountAPI.getAccountInfoTemporary(cid));
 
-        Character chr = CharacterAPI.getNewCharacter(c, cid);
-        ItemAPI.loadInventories(chr);
-        //chr.validateStats();
+            Character chr = CharacterAPI.getNewCharacter(c, cid);
+            ItemAPI.loadInventories(chr);
+            //chr.validateStats();
 
-        Field field = c.getWorldChannel().getFieldManager().getField(chr.getFieldId());
-        field.enter(chr);
+            Field field = c.getWorldChannel().getFieldManager().getField(chr.getFieldId());
+            field.enter(chr);
 
-        c.setCharacter(chr);
-        c.write(initFuncKey(chr));
-        c.write(initQuickslot(chr));
+            c.setCharacter(chr);
+            c.write(initFuncKey(chr));
+            c.write(initQuickslot(chr));
+        } finally {
+            c.releaseMigrateState();
+        }
     }
 
     @Override
