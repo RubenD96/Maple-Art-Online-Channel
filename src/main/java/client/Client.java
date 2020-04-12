@@ -11,6 +11,7 @@ import net.server.ChannelServer;
 import net.server.Server;
 import org.jooq.Record;
 
+import javax.script.ScriptEngine;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -28,6 +29,7 @@ public class Client extends NettyClient {
     private @Getter @Setter Set<String> macs, hwids, ips;
     private @Getter @Setter boolean banned;
     private @Getter int loginTries;
+    private @Getter @Setter ScriptEngine engine;
     private ScheduledFuture<?> ping;
 
     public Client(Channel c, byte[] siv, byte[] riv) {

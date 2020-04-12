@@ -76,8 +76,13 @@ public class UserChatHandler extends PacketHandler {
             }
             return;
         }
+         **/
 
         if(COMMAND_LIST.get(chr.getGmLevel()).contains(msg)) {
+            if (c.getEngine() == null) {
+                c.setEngine(GraalJSScriptEngine.create());
+            }
+
             System.out.println("Command Executed!");
             return;
         }
