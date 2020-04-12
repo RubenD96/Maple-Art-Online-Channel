@@ -55,9 +55,14 @@ public class UserChatHandler extends PacketHandler {
                 String[] args = Arrays.copyOfRange(cmd, 1, cmd.length);
 
                 c.getEngine().put("cs", new CommandShortcut(c, args));
+
+                if(cmd[0].substring(1).equals("eval")) {
+                    c.getEngine().eval(msg.substring(6));
+                    return;
+                }
+
                 c.getEngine().eval(COMMAND_FILE_LIST.get(cmd[0].substring(1)));
 
-                System.out.println("Command Executed!");
             } catch (ScriptException e) {
                 e.printStackTrace();
             }
