@@ -43,59 +43,19 @@ public class UserChatHandler extends PacketHandler {
         reader.readInteger(); // ?
 
         String msg = reader.readMapleString();
+        String[] cmd = msg.split(" ");
         boolean textBox = !reader.readBool();
 
-        if (msg.equals("script")) {
-            scriptExample();
-            return;
-        } else if (msg.split(" ")[0].equals("!eval")) {
-            msg = msg.substring(6);
-            // example use:
-            // !eval c.getCharacter().gainMeso(100);
-            eval(c, msg);
-            return;
-        } else if (msg.equals("pos")) {
-            System.out.println("pos\n\t" + chr.getPosition());
-            return;
-        } else if (msg.split(" ")[0].equals("!item")) {
-            int id = Integer.parseInt(msg.split(" ")[1]);
-            AtomicInteger quantity = new AtomicInteger(1); // lmao
-            if (msg.split(" ").length > 2) {
-                quantity.set(Integer.parseInt(msg.split(" ")[2]));
-            }
-            ItemTemplate item = ItemManager.getItem(id);
-            if (item != null) {
-                CharacterPackets.modifyInventory(chr,
-                        i -> i.add(item, (short) quantity.get()),
-                        false);
-            }
-            return;
-        } else if (msg.equals("inv")) {
-            chr.getInventories().get(ItemInventoryType.ETC)
-                    .getItems()
-                    .forEach((slot, item) -> System.out.println(slot + "(" + item + ")"));
-            return;
-        } else if (msg.equals("help")) {
-            for(List<String> s : COMMAND_LIST) {
-                for (String x : s) {
-                    chr.getField().broadcast(sendMessage(chr, x, textBox), null);
-                }
-            }
-            return;
-        }
-         **/
-
-        if(COMMAND_LIST.get(chr.getGmLevel()).contains(msg.substring(1)) && msg.charAt(0) == '#') {
+        if(COMMAND_LIST.get(chr.getGmLevel()).contains(cmd[0].substring(1)) && msg.charAt(0) == '#') {
             if (c.getEngine() == null) {
                 c.setEngine(GraalJSScriptEngine.create());
             }
 
             try {
-                String[] splitMsg = msg.split(" ");
-                String[] args = Arrays.copyOfRange(splitMsg, 1, splitMsg.length);
+                String[] args = Arrays.copyOfRange(cmd, 1, cmd.length);
 
                 c.getEngine().put("cs", new CommandShortcut(c, args));
-                c.getEngine().eval(COMMAND_FILE_LIST.get(msg.substring(1)));
+                c.getEngine().eval(COMMAND_FILE_LIST.get(cmd[0].substring(1)));
 
                 System.out.println("Command Executed!");
             } catch (ScriptException e) {
