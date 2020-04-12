@@ -9,22 +9,29 @@ import managers.ItemManager;
 import net.maple.SendOpcode;
 import net.maple.handlers.PacketHandler;
 import net.maple.packets.CharacterPackets;
+import net.maple.shortcuts.CommandShortcut;
 import util.packet.Packet;
 import util.packet.PacketReader;
 import util.packet.PacketWriter;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static constants.ServerConstants.COMMAND_FILE_LIST;
 import static constants.ServerConstants.COMMAND_LIST;
 
 public class UserChatHandler extends PacketHandler {
@@ -78,12 +85,23 @@ public class UserChatHandler extends PacketHandler {
         }
          **/
 
-        if(COMMAND_LIST.get(chr.getGmLevel()).contains(msg)) {
+        if(COMMAND_LIST.get(chr.getGmLevel()).contains(msg.substring(1)) && msg.charAt(0) == '#') {
             if (c.getEngine() == null) {
                 c.setEngine(GraalJSScriptEngine.create());
             }
 
-            System.out.println("Command Executed!");
+            try {
+                String[] splitMsg = msg.split(" ");
+                String[] args = Arrays.copyOfRange(splitMsg, 1, splitMsg.length);
+
+                c.getEngine().put("cs", new CommandShortcut(c, args));
+                c.getEngine().eval(COMMAND_FILE_LIST.get(msg.substring(1)));
+
+                System.out.println("Command Executed!");
+            } catch (ScriptException e) {
+                e.printStackTrace();
+            }
+
             return;
         }
 
@@ -99,6 +117,13 @@ public class UserChatHandler extends PacketHandler {
 
                         String level = trimmed.substring(0, trimmed.lastIndexOf('\\'));
                         String command = trimmed.substring(trimmed.lastIndexOf('\\') + 1, trimmed.lastIndexOf('.'));
+
+                        try{
+                            COMMAND_FILE_LIST.put(command, new String(Files.readAllBytes(x)));
+                        } catch(java.io.IOException e) {
+                            e.printStackTrace();
+                        }
+
                         switch(level) {
                             case "Admin":
                                 COMMAND_LIST.get(2).add(command);

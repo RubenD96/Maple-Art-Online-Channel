@@ -14,12 +14,12 @@ import static net.maple.handlers.user.UserChatHandler.refreshCommandList;
 public class CommandShortcut {
     @Getter @NonNull Client c;
     @Getter @NonNull Character chr;
-    @Getter @Setter List<String> arg = new ArrayList<>()
+    @Getter @Setter String[] args;
 
-    public CommandShortcut(Client _c, List<String> _arg) {
+    public CommandShortcut(Client _c, String[] _args) {
         c = _c;
         chr = c.getCharacter();
-        arg = _arg;
+        args = _args;
     }
 
     public void gainMeso(int m) {
