@@ -67,6 +67,7 @@ public class UserChatHandler extends PacketHandler {
                 e.printStackTrace();
             }
 
+            chr.getField().broadcast(sendMessage(chr, "Successfully Executed Command!", textBox), null);
             return;
         }
 
