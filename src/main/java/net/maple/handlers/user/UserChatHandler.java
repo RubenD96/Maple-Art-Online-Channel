@@ -15,8 +15,17 @@ import util.packet.PacketWriter;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static constants.ServerConstants.COMMAND_LIST;
 
 public class UserChatHandler extends PacketHandler {
 
@@ -59,9 +68,48 @@ public class UserChatHandler extends PacketHandler {
                     .getItems()
                     .forEach((slot, item) -> System.out.println(slot + "(" + item + ")"));
             return;
+        } else if (msg.equals("help")) {
+            for(List<String> s : COMMAND_LIST) {
+                for (String x : s) {
+                    chr.getField().broadcast(sendMessage(chr, x, textBox), null);
+                }
+            }
+            return;
+        }
+
+        if(COMMAND_LIST.get(chr.getGmLevel()).contains(msg)) {
+            System.out.println("Command Executed!");
+            return;
         }
 
         chr.getField().broadcast(sendMessage(chr, msg, textBox), null);
+    }
+
+    public static void refreshCommandList() {
+        try(Stream<Path> walk = Files.walk(Paths.get("scripts/command"))) {
+            walk.filter(Files::isRegularFile)
+                    .forEach(x -> {
+                        String s = x.toString();
+                        String trimmed = s.substring(s.indexOf("\\", s.indexOf("\\") + 1) + 1);
+
+                        String level = trimmed.substring(0, trimmed.lastIndexOf('\\'));
+                        String command = trimmed.substring(trimmed.lastIndexOf('\\') + 1, trimmed.lastIndexOf('.'));
+                        switch(level) {
+                            case "Admin":
+                                COMMAND_LIST.get(2).add(command);
+                            case "GM":
+                                COMMAND_LIST.get(1).add(command);
+                            case "Player":
+                                COMMAND_LIST.get(0).add(command);
+                                break;
+                            default:
+                                break;
+                        }
+                    });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static Packet sendMessage(Character chr, String msg, boolean textBox) {

@@ -1,5 +1,8 @@
 package constants;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ServerConstants {
 
     public static final short VERSION = 95;
@@ -10,5 +13,7 @@ public class ServerConstants {
 
     public static final String DB_USER = "root";
     public static final String DB_PASS = "";
-    public static final String DB_URL = "jdbc:mysql://localhost:3306/mao";
+    public static final String DB_URL = "jdbc:mysql://localhost:3306/mao?serverTimezone=UTC";
+
+    public static List<List<String>> COMMAND_LIST = new ArrayList<>();
 }
