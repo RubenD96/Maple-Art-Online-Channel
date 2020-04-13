@@ -2,16 +2,16 @@ package net.maple.shortcuts;
 
 import client.Character;
 import client.Client;
+import client.inventory.ItemVariationType;
 import client.inventory.item.templates.ItemTemplate;
+import client.inventory.slots.ItemSlot;
+import client.inventory.slots.ItemSlotBundle;
+import field.object.drop.ItemDrop;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NonNull;
 import managers.ItemManager;
 import net.maple.packets.CharacterPackets;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static net.maple.handlers.user.UserChatHandler.refreshCommandList;
 
@@ -44,6 +44,19 @@ public class CommandShortcut {
         ItemTemplate item = ItemManager.getItem(id);
 
         return item;
+    }
+
+    public void dropItem(int id, final int qty) {
+        ItemSlot it = getItemTemplate(id).toItemSlot(ItemVariationType.NONE);
+
+        if (it instanceof ItemSlotBundle) {
+            ((ItemSlotBundle) it).setNumber((short) qty);
+            ((ItemSlotBundle) it).setTitle(chr.getName());
+        }
+
+        ItemDrop drop = new ItemDrop((byte) 1, (byte) 1, chr.getId(), chr, it);
+        drop.setPosition(chr.getPosition());
+        chr.getField().enter(drop);
     }
 
     public void addItem(int id, final int qty) {
