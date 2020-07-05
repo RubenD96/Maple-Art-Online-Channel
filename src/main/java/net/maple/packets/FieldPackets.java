@@ -16,7 +16,7 @@ public class FieldPackets {
 
         pw.writeHeader(SendOpcode.SET_FIELD);
         pw.writeShort(0);
-        pw.writeInt(0); // channel?
+        pw.writeInt(chr.getChannel().getChannelId());
         pw.writeInt(0); // world
 
         pw.writeBool(true);

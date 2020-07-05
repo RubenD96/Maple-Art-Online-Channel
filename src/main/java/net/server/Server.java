@@ -15,7 +15,7 @@ public class Server {
 
     private static Server instance = null;
     private @Getter List<ChannelServer> channels = new ArrayList<>();
-    private @Getter final Map<Integer, String> clients = new HashMap<>();
+    private @Getter final Map<Integer, MigrateInfo> clients = new HashMap<>();
 
     public static Server getInstance() {
         if (instance == null) {

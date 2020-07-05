@@ -8,6 +8,7 @@ import lombok.Setter;
 import net.maple.packets.ConnectionPackets;
 import net.netty.NettyClient;
 import net.server.ChannelServer;
+import net.server.MigrateInfo;
 import net.server.Server;
 import org.jooq.Record;
 
@@ -18,7 +19,7 @@ import static database.jooq.Tables.ACCOUNTS;
 
 public class Client extends NettyClient {
 
-    private @Getter @Setter byte gmLevel = 0;
+    private @Getter @Setter boolean admin;
     private @Getter int accId;
     private @Getter @Setter String accountName;
     private @Setter long lastPong, clientStart; // Not too sure what to do with these
@@ -34,11 +35,12 @@ public class Client extends NettyClient {
         super(c, siv, riv);
     }
 
-    public void login(Record data) {
+    public void login(Record data, MigrateInfo mi) {
         accId = data.getValue(ACCOUNTS.ID);
         banned = data.getValue(ACCOUNTS.BANNED) == 1;
+        admin = data.getValue(ACCOUNTS.ADMIN) == 1;
 
-        worldChannel = Server.getInstance().getChannels().get(0);
+        worldChannel = Server.getInstance().getChannels().get(mi.getChannel());
 
         loggedIn = true;
     }
@@ -79,6 +81,7 @@ public class Client extends NettyClient {
 
     public void migrate(ChannelServer channel) {
         this.worldChannel = channel;
+        Server.getInstance().getClients().get(accId).setChannel(channel.getChannelId());
         write(ConnectionPackets.getChangeChannelPacket(channel));
     }
 }

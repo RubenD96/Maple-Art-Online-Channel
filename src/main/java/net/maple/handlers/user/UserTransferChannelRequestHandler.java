@@ -21,9 +21,6 @@ public class UserTransferChannelRequestHandler extends PacketHandler {
 
         try {
             ChannelServer channel = Server.getInstance().getChannels().get(channelId);
-            System.out.println(c.getWorldChannel());
-            System.out.println(channel);
-            System.out.println("channelid: " + channelId);
             if (channel != null) {
                 if (!c.getWorldChannel().equals(channel)) {
                     c.acquireMigrateState();
@@ -34,7 +31,8 @@ public class UserTransferChannelRequestHandler extends PacketHandler {
                     }
                     return;
                 }
-                c.close(this, "CC to same channel");
+                c.write(fail());
+                //c.close(this, "CC to same channel");
             } else {
                 System.err.println("[UserTransferChannelRequestHandler] Channel is null (" + chr + ")");
             }

@@ -9,6 +9,7 @@ import net.database.CharacterAPI;
 import net.database.ItemAPI;
 import net.maple.SendOpcode;
 import net.maple.handlers.PacketHandler;
+import net.server.MigrateInfo;
 import net.server.Server;
 import org.jooq.Record;
 import util.packet.Packet;
@@ -28,10 +29,10 @@ public class MigrateInHandler extends PacketHandler {
             int cid = reader.readInteger();
             Record accInfo = AccountAPI.getAccountInfoTemporary(cid);
 
-            String ip = Server.getInstance().getClients().get(accInfo.getValue(ACCOUNTS.ID));
-            ip = ip.substring(0, ip.length() - 2);
-            if (ip.equals(c.getIP())) {
-                c.login(accInfo);
+            MigrateInfo mi = Server.getInstance().getClients().get(accInfo.getValue(ACCOUNTS.ID));
+            if (mi.getIp().equals(c.getIP())) {
+                //Server.getInstance().getClients().remove(accInfo.getValue(ACCOUNTS.ID));
+                c.login(accInfo, mi);
 
                 Character chr = CharacterAPI.getNewCharacter(c, cid);
                 ItemAPI.loadInventories(chr);
@@ -44,7 +45,7 @@ public class MigrateInHandler extends PacketHandler {
                 c.write(initFuncKey(chr));
                 c.write(initQuickslot(chr));
             } else {
-                c.disconnect();
+                c.close(this, "IP mismatch");
             }
         } finally {
             c.releaseMigrateState();

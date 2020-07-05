@@ -1,14 +1,12 @@
 package net.server;
 
 import constants.ServerConstants;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
+import java.net.SocketException;
 import java.util.Scanner;
 
 @RequiredArgsConstructor
@@ -19,6 +17,10 @@ public class LoginConnector extends Thread {
 
     @Override
     public void run() {
+        connect();
+    }
+
+    public void connect() {
         try {
             Socket socket = new Socket(ServerConstants.IP, 8888);
 
@@ -26,8 +28,14 @@ public class LoginConnector extends Thread {
 
             new ReadThread(socket, this).start();
             new WriteThread(socket, this).start();
-        } catch (IOException uhe) {
-            uhe.printStackTrace();
+        } catch (IOException ioe) {
+            //ioe.printStackTrace();
+            try {
+                sleep(1000);
+                connect();
+            } catch (InterruptedException ie) {
+                ie.printStackTrace();
+            }
         }
     }
 
@@ -58,15 +66,16 @@ public class LoginConnector extends Thread {
                     String[] splitted = response.split(":");
                     switch (Integer.parseInt(splitted[0])) {
                         case 1: // SelectWorldHandler
-                            connector.server.getClients().put(Integer.parseInt(splitted[2]), splitted[1]);
+                            connector.server.getClients().put(Integer.parseInt(splitted[2]), new MigrateInfo(Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]), splitted[1]));
                             break;
                     }
                 } catch (IOException ioe) {
                     System.out.println("Error reading from server: " + ioe.getMessage());
-                    ioe.printStackTrace();
+                    //ioe.printStackTrace();
                     break;
                 }
             }
+            connector.connect();
         }
     }
 

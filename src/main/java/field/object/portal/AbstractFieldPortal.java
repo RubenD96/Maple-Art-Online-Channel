@@ -10,7 +10,7 @@ public abstract class AbstractFieldPortal {
 
     private int id, targetMap;
     private int type;
-    private String name, script, targetName;
+    private String name, script = "", targetName;
     private Point position;
 
     public void generate(PacketReader r) {
