@@ -259,6 +259,7 @@ public class ModifyInventoryContext implements ModifyInventoryContextInterface {
                 .map(Map.Entry::getKey).findFirst().get());
     }
 
+    @Override
     public void encode(PacketWriter pw) {
         pw.writeByte((byte) operations.size());
         operations.forEach(operation -> operation.encode(pw));

@@ -2,8 +2,12 @@ package net.maple.packets;
 
 import constants.ServerConstants;
 import net.maple.SendOpcode;
+import net.server.ChannelServer;
 import util.packet.Packet;
 import util.packet.PacketWriter;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class ConnectionPackets {
 
@@ -36,6 +40,21 @@ public class ConnectionPackets {
         final PacketWriter pw = new PacketWriter(2);
 
         pw.writeHeader(SendOpcode.PING);
+
+        return pw.createPacket();
+    }
+
+    public static Packet getChangeChannelPacket(ChannelServer channel) {
+        PacketWriter pw = new PacketWriter(9);
+
+        try {
+            pw.writeHeader(SendOpcode.MIGRATE_COMMAND);
+            pw.writeBool(true);
+            pw.write(InetAddress.getByName(channel.getIP()).getAddress());
+            pw.writeShort(channel.getPort());
+        } catch (UnknownHostException uhe) {
+            uhe.printStackTrace();
+        }
 
         return pw.createPacket();
     }

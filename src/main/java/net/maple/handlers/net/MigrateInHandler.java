@@ -1,4 +1,4 @@
-package net.maple.handlers.login;
+package net.maple.handlers.net;
 
 import client.Character;
 import client.Client;
@@ -9,9 +9,15 @@ import net.database.CharacterAPI;
 import net.database.ItemAPI;
 import net.maple.SendOpcode;
 import net.maple.handlers.PacketHandler;
+import net.server.Server;
+import org.jooq.Record;
 import util.packet.Packet;
 import util.packet.PacketReader;
 import util.packet.PacketWriter;
+
+import java.util.Map;
+
+import static database.jooq.Tables.ACCOUNTS;
 
 public class MigrateInHandler extends PacketHandler {
 
@@ -20,19 +26,26 @@ public class MigrateInHandler extends PacketHandler {
         c.acquireMigrateState();
         try {
             int cid = reader.readInteger();
+            Record accInfo = AccountAPI.getAccountInfoTemporary(cid);
 
-            c.login(AccountAPI.getAccountInfoTemporary(cid));
+            String ip = Server.getInstance().getClients().get(accInfo.getValue(ACCOUNTS.ID));
+            ip = ip.substring(0, ip.length() - 2);
+            if (ip.equals(c.getIP())) {
+                c.login(accInfo);
 
-            Character chr = CharacterAPI.getNewCharacter(c, cid);
-            ItemAPI.loadInventories(chr);
-            //chr.validateStats();
+                Character chr = CharacterAPI.getNewCharacter(c, cid);
+                ItemAPI.loadInventories(chr);
+                //chr.validateStats();
 
-            Field field = c.getWorldChannel().getFieldManager().getField(chr.getFieldId());
-            field.enter(chr);
+                Field field = c.getWorldChannel().getFieldManager().getField(chr.getFieldId());
+                field.enter(chr);
 
-            c.setCharacter(chr);
-            c.write(initFuncKey(chr));
-            c.write(initQuickslot(chr));
+                c.setCharacter(chr);
+                c.write(initFuncKey(chr));
+                c.write(initQuickslot(chr));
+            } else {
+                c.disconnect();
+            }
         } finally {
             c.releaseMigrateState();
         }

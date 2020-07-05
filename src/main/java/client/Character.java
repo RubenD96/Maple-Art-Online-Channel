@@ -157,7 +157,13 @@ public class Character extends AbstractFieldLife {
 
     public void modifyHPMP(int health, int mana) {
         this.health += health;
+        if (this.health > maxHealth) {
+            this.health = maxHealth;
+        }
         this.mana += mana;
+        if (this.mana > maxMana) {
+            this.mana = maxMana;
+        }
         updateStats(new ArrayList<>(Arrays.asList(StatType.HP, StatType.MP)), false);
     }
 

@@ -4,6 +4,7 @@ import util.packet.IntegerValue;
 
 public enum SendOpcode implements IntegerValue {
 
+    MIGRATE_COMMAND(0x10),
     PING(0x11),
     INVENTORY_OPERATION(0x1C),
     STAT_CHANGED(0x1E),

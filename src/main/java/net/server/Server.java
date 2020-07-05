@@ -7,12 +7,15 @@ import net.database.DatabaseCore;
 import util.crypto.MapleAESOFB;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Server {
 
     private static Server instance = null;
     private @Getter List<ChannelServer> channels = new ArrayList<>();
+    private @Getter final Map<Integer, String> clients = new HashMap<>();
 
     public static Server getInstance() {
         if (instance == null) {
@@ -23,9 +26,11 @@ public class Server {
 
     private void run() {
         for (int i = 0; i < ServerConstants.CHANNELS; i++) {
-            ChannelServer channel = new ChannelServer(i, 7575 + i);
+            ChannelServer channel = new ChannelServer(i, 7575 + i, ServerConstants.IP);
             channel.start();
             channels.add(channel);
+            LoginConnector loginConnector = new LoginConnector(this, channel);
+            loginConnector.start();
         }
     }
 

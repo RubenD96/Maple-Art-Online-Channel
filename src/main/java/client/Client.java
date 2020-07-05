@@ -59,6 +59,7 @@ public class Client extends NettyClient {
     }
 
     public void disconnect() {
+        System.out.println("disconnecting");
         if (!disconnecting) {
             disconnecting = true;
             if (ch.isOpen()) {
@@ -66,11 +67,18 @@ public class Client extends NettyClient {
             }
 
             loggedIn = false;
-            Field field = character.getField();
-            if (field != null) {
-                field.leave(character);
+            if (character != null) {
+                Field field = character.getField();
+                if (field != null) {
+                    field.leave(character);
+                }
+                character.save();
             }
-            character.save();
         }
+    }
+
+    public void migrate(ChannelServer channel) {
+        this.worldChannel = channel;
+        write(ConnectionPackets.getChangeChannelPacket(channel));
     }
 }
