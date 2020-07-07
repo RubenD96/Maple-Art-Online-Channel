@@ -1,5 +1,6 @@
 package net.server;
 
+import client.Character;
 import constants.ServerConstants;
 import lombok.Getter;
 import managers.ItemManager;
@@ -22,6 +23,15 @@ public class Server {
             instance = new Server();
         }
         return instance;
+    }
+
+    public Character getCharacter(int id) {
+        for (ChannelServer channel : channels) {
+            if (channel.getCharacter(id) != null) {
+                return channel.getCharacter(id);
+            }
+        }
+        return null;
     }
 
     private void run() {

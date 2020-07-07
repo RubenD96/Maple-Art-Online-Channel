@@ -4,6 +4,7 @@ import client.inventory.ItemInventory;
 import client.inventory.ItemInventoryType;
 import client.player.Job;
 import client.player.StatType;
+import client.player.friend.FriendList;
 import client.player.key.KeyBinding;
 import constants.UserConstants;
 import field.object.FieldObjectType;
@@ -47,8 +48,9 @@ public class Character extends AbstractFieldLife {
     final int[] quickSlotKeys = new int[8];
     Integer portableChair = null;
     private byte portal = -1;
-    @Getter List<FieldControlledObject> controlledObjects = new ArrayList<>();
-    @Getter Map<ItemInventoryType, ItemInventory> inventories = new HashMap<>();
+    List<FieldControlledObject> controlledObjects = new ArrayList<>();
+    Map<ItemInventoryType, ItemInventory> inventories = new HashMap<>();
+    FriendList friendList;
 
     public void init() {
         resetQuickSlot();
@@ -58,6 +60,8 @@ public class Character extends AbstractFieldLife {
         inventories.put(ItemInventoryType.INSTALL, new ItemInventory((short) 24));
         inventories.put(ItemInventoryType.ETC, new ItemInventory((short) 24));
         inventories.put(ItemInventoryType.CASH, new ItemInventory((short) 96));
+
+        friendList = new FriendList(this);
     }
 
     public void resetQuickSlot() {

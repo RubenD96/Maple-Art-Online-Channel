@@ -33,8 +33,12 @@ public class ChannelServer extends Thread {
         characters = new HashMap<>();
     }
 
-    public Character getCharacterByName(String name) {
+    public Character getCharacter(String name) {
         return characters.get(name);
+    }
+
+    public Character getCharacter(int id) {
+        return characters.values().stream().filter(c -> c.getId() == id).findFirst().orElse(null);
     }
 
     public void addCharacter(Character chr) {
