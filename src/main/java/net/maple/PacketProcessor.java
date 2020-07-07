@@ -53,6 +53,7 @@ public final class PacketProcessor {
         handlers.put(RecvOpcode.USER_CHARACTER_INFO_REQUEST, new UserCharacterInfoRequestHandler());
         handlers.put(RecvOpcode.USER_PORTAL_SCRIPT_REQUEST, new UserPortalScriptRequestHandler());
         handlers.put(RecvOpcode.ADMIN, new AdminVerificationHandler());
+        handlers.put(RecvOpcode.FRIEND_REQUEST, new FriendRequestHandler());
         handlers.put(RecvOpcode.FUNC_KEY_MAPPED_MODIFIED, new FuncKeyMappedModifiedHandler());
         handlers.put(RecvOpcode.QUICKSLOT_KEY_MAPPED_MODIFIED, new QuickSlotKeyMappedModifiedHandler());
         handlers.put(RecvOpcode.MOB_MOVE, new MobMoveHandler());

@@ -10,6 +10,7 @@ public enum SendOpcode implements IntegerValue {
     STAT_CHANGED(0x1E),
     MESSAGE(0x26),
     CHARACTER_INFO(0x3D),
+    FRIEND_RESULT(0x41),
     SET_FIELD(0x8D),
     TRANSFER_CHANNEL_REQ_IGNORED(0x94),
     QUICKSLOT_MAPPED_INIT(0xAF),
