@@ -18,6 +18,6 @@ public class Friend {
 
     public boolean isOnline() {
         Character friend = Server.getInstance().getCharacter(characterId);
-        return friend != null;
+        return friend != null && !friend.getClient().isDisconnecting();
     }
 }

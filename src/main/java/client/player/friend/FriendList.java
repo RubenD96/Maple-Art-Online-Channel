@@ -108,4 +108,16 @@ public class FriendList {
 
         return pw.createPacket();
     }
+
+    public void notifyMutualFriends() {
+        friends.keySet().forEach(f -> {
+            Character friend = Server.getInstance().getCharacter(f);
+            if (friend != null) {
+                System.out.println(owner.getName() + " - " + friend.getName());
+                if (friend.getFriendList().friends.containsKey(owner.getId())) {
+                    friend.getFriendList().updateFriendList();
+                }
+            }
+        });
+    }
 }

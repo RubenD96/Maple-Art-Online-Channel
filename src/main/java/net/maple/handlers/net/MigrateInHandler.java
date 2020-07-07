@@ -41,6 +41,7 @@ public class MigrateInHandler extends PacketHandler {
 
                 Field field = c.getWorldChannel().getFieldManager().getField(chr.getFieldId());
                 field.enter(chr);
+                chr.getFriendList().notifyMutualFriends();
 
                 c.setCharacter(chr);
                 c.write(initFuncKey(chr));

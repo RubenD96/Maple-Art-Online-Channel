@@ -74,6 +74,7 @@ public class Client extends NettyClient {
                 if (field != null) {
                     field.leave(character);
                 }
+                character.getFriendList().notifyMutualFriends();
                 worldChannel.removeCharacter(character);
                 character.save();
             }
