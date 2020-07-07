@@ -28,7 +28,7 @@ public class FriendRequestHandler extends PacketHandler {
 
             Character friend = c.getWorldChannel().getCharacterByName(name);
             if (friend != null) {
-                friend.write(getSendFriendRequestPacket(c.getCharacter(), friend.getId()));
+                friend.write(getSendFriendRequestPacket(c.getCharacter(), group));
             } else {
                 // todo print to game
                 System.out.println(name + " not found!");
@@ -36,26 +36,31 @@ public class FriendRequestHandler extends PacketHandler {
         }
     }
 
-    private Packet getSendFriendRequestPacket(Character from, int cid) {
+    private Packet getSendFriendRequestPacket(Character from, String group) {
         PacketWriter pw = new PacketWriter(8);
 
         pw.writeHeader(SendOpcode.FRIEND_RESULT);
         pw.write(FriendRequestOperationType.SEND);
 
-        pw.writeInt(from.getId());
-        pw.writeMapleString(from.getName());
-        pw.writeInt(from.getId());
-        pw.writeString(from.getName());
-        pw.fill(0x00, 11 - from.getName().length());
+        pw.writeInt(from.getId()); // dwFriendID
+        pw.writeMapleString(from.getName()); // v24
+        pw.writeInt(from.getLevel()); // nLevel
+        pw.writeInt(from.getJob()); // nJobCode
 
-        pw.write(0x09);
-        pw.write(0xf0);
-        pw.write(0x01);
-        pw.writeInt(0x0f);
-        pw.writeNullTerminatedString("Group Unknown");
-        pw.writeInt(cid);
+        encodeGWFriend(pw, from, group);
+        pw.write(0); // aInShop?
 
         return pw.createPacket();
+    }
+
+    private void encodeGWFriend(PacketWriter pw, Character from, String group) {
+        pw.writeInt(from.getId()); // dwFriendID
+        pw.writeString(from.getName()); // sFriendName
+        pw.fill(0x00, 13 - from.getName().length()); // [13]
+        pw.write(0); // nFlag
+        pw.writeInt(from.getChannel().getChannelId()); // nChannelID
+        pw.writeString(group);
+        pw.fill(0x00, 17 - group.length());
     }
 
     private static final class FriendRequestOperationType {

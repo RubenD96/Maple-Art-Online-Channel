@@ -75,6 +75,10 @@ public abstract class Writer {
                 write(i >>> 24);
     }
 
+    public final Writer writeInt(IntegerValue i) {
+        return writeInt(i.getValue());
+    }
+
     public final Writer writeFloat(float f) {
         return writeInt(Float.floatToIntBits(f));
     }
