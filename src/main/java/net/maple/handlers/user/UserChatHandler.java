@@ -35,21 +35,21 @@ public class UserChatHandler extends PacketHandler {
         boolean textBox = !reader.readBool();
 
         if (COMMAND_LIST.get(chr.getGmLevel()).contains(cmd[0].substring(1)) && msg.charAt(0) == '!') {
-            if (c.getEngine() == null) {
-                c.setEngine(GraalJSScriptEngine.create());
+            if (c.getEngines().get("cmd") == null) {
+                c.getEngines().put("cmd", GraalJSScriptEngine.create());
             }
 
             try {
                 String[] args = Arrays.copyOfRange(cmd, 1, cmd.length);
 
-                c.getEngine().put("cs", new CommandShortcut(c, args));
+                c.getEngines().get("cmd").put("cs", new CommandShortcut(c, args));
 
                 if (cmd[0].substring(1).equals("eval")) {
-                    c.getEngine().eval(msg.substring(6));
+                    c.getEngines().get("cmd").eval(msg.substring(6));
                     return;
                 }
 
-                c.getEngine().eval(COMMAND_FILE_LIST.get(cmd[0].substring(1)));
+                c.getEngines().get("cmd").eval(COMMAND_FILE_LIST.get(cmd[0].substring(1)));
 
             } catch (ScriptException e) {
                 e.printStackTrace();

@@ -47,6 +47,7 @@ public final class PacketProcessor {
         handlers.put(RecvOpcode.USER_CHAT, new UserChatHandler());
         handlers.put(RecvOpcode.USER_EMOTION, new UserEmotionHandler());
         handlers.put(RecvOpcode.USER_SELECT_NPC, new UserSelectNpcHandler());
+        handlers.put(RecvOpcode.USER_SCRIPT_MESSAGE_ANSWER, new UserScriptMessageAnswerHandler());
         handlers.put(RecvOpcode.USER_CHANGE_SLOT_POSITION_REQUEST, new UserChangeSlotPositionRequestHandler());
         handlers.put(RecvOpcode.USER_CHANGE_STAT_REQUEST, new UserChangeStatRequestHandler());
         handlers.put(RecvOpcode.USER_DROP_MESO_REQUEST, new UserDropMesoRequestHandler());

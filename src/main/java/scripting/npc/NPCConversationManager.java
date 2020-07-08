@@ -6,6 +6,7 @@ import lombok.NonNull;
 import net.maple.packets.ConversationPackets;
 
 @Getter
+@SuppressWarnings("unused")
 public class NPCConversationManager extends AbstractPlayerInteraction {
 
     @NonNull final int npcId;
@@ -21,5 +22,9 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public void sendOk(String text, int speaker) {
         c.write(ConversationPackets.getOkMessagePacket(npcId, speaker, text));
+    }
+
+    public void dispose() {
+        NPCScriptManager.getInstance().dispose(this);
     }
 }

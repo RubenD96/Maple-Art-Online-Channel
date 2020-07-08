@@ -13,6 +13,8 @@ import net.server.Server;
 import org.jooq.Record;
 
 import javax.script.ScriptEngine;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -23,14 +25,13 @@ public class Client extends NettyClient {
     private @Getter @Setter boolean admin;
     private @Getter int accId;
     private @Getter @Setter String accountName;
-    private @Setter long lastPong, clientStart; // Not too sure what to do with these
+    private @Setter long lastPong, clientStart, lastNpcClick;; // Not too sure what to do with these
     private @Getter boolean disconnecting = false, loggedIn = false;
     private @Getter @Setter ChannelServer worldChannel;
     private @Getter @Setter Character character;
     private @Getter @Setter Set<String> macs, hwids, ips;
     private @Getter @Setter boolean banned;
-    private @Getter int loginTries;
-    private @Getter @Setter ScriptEngine engine;
+    private @Getter Map<String, ScriptEngine> engines = new HashMap<>();
     private ScheduledFuture<?> ping;
 
     public Client(Channel c, byte[] siv, byte[] riv) {
@@ -58,8 +59,8 @@ public class Client extends NettyClient {
         }
     }
 
-    public void addLoginTry() {
-        this.loginTries++;
+    public boolean canClickNPC() {
+        return lastNpcClick + 500 < System.currentTimeMillis();
     }
 
     public void disconnect() {
