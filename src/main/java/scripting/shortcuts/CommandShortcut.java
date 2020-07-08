@@ -1,4 +1,4 @@
-package net.maple.shortcuts;
+package scripting.shortcuts;
 
 import client.Character;
 import client.Client;
@@ -9,7 +9,6 @@ import client.inventory.slots.ItemSlotBundle;
 import field.object.drop.ItemDrop;
 import field.object.life.FieldNPC;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import managers.ItemManager;
 import managers.NPCManager;

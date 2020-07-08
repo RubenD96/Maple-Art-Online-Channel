@@ -5,6 +5,7 @@ import client.Client;
 import field.object.FieldObjectType;
 import field.object.life.FieldNPC;
 import net.maple.handlers.PacketHandler;
+import net.maple.packets.ConversationPackets;
 import util.packet.PacketReader;
 
 public class UserSelectNpcHandler extends PacketHandler {
@@ -18,6 +19,8 @@ public class UserSelectNpcHandler extends PacketHandler {
                 .stream().filter(o -> o.getId() == npcObjectId).findFirst().orElse(null);
         if (npc != null) {
             System.out.println("[UserSelectNpcHandler] " + npc.getName() + " (" + npc.getNpcId() + ")");
+            c.write(ConversationPackets.getOkMessagePacket(npc.getNpcId(), 0, "Hello!"));
+            chr.enableActions();
         }
     }
 }

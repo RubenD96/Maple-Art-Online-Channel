@@ -5,7 +5,7 @@ import client.Client;
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 import net.maple.SendOpcode;
 import net.maple.handlers.PacketHandler;
-import net.maple.shortcuts.CommandShortcut;
+import scripting.shortcuts.CommandShortcut;
 import util.packet.Packet;
 import util.packet.PacketReader;
 import util.packet.PacketWriter;

@@ -39,6 +39,7 @@ public enum SendOpcode implements IntegerValue {
     NPC_CHANGE_CONTROLLER(0x139),
     DROP_ENTER_FIELD(0x142),
     DROP_LEAVE_FIELD(0x144),
+    SCRIPT_MESSAGE(0x16B),
     FUNC_KEY_MAPPED_INIT(0x18E);
     private int value;
 
