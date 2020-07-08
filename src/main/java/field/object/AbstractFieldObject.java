@@ -10,7 +10,7 @@ import java.awt.*;
 public abstract class AbstractFieldObject implements FieldObject {
 
     protected Point position = new Point();
-    protected  @Getter @Setter Field field;
+    protected @Getter @Setter Field field;
     protected int id;
 
     @Override

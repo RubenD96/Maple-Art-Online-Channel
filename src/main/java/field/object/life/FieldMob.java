@@ -2,7 +2,6 @@ package field.object.life;
 
 import client.Character;
 import client.messages.IncEXPMessage;
-import client.messages.Message;
 import field.object.FieldObjectType;
 import lombok.Getter;
 import lombok.Setter;

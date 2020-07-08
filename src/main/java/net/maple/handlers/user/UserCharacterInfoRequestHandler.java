@@ -57,7 +57,7 @@ public class UserCharacterInfoRequestHandler extends PacketHandler {
                 .get(ItemInventoryType.INSTALL)
                 .getItems()
                 .values().stream()
-                .filter(i -> i.getTemplateId()  / 10000 == 301)
+                .filter(i -> i.getTemplateId() / 10000 == 301)
                 .collect(Collectors.toList());
         pw.writeInt(chairs.size());
         chairs.forEach(chair -> pw.writeInt(chair.getTemplateId()));

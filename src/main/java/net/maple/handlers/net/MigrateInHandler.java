@@ -17,8 +17,6 @@ import util.packet.Packet;
 import util.packet.PacketReader;
 import util.packet.PacketWriter;
 
-import java.util.Map;
-
 import static database.jooq.Tables.ACCOUNTS;
 
 public class MigrateInHandler extends PacketHandler {

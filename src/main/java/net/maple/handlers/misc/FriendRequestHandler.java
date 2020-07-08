@@ -2,13 +2,13 @@ package net.maple.handlers.misc;
 
 import client.Character;
 import client.Client;
-import client.player.friend.Friend;
 import client.player.friend.FriendList;
 import net.database.FriendAPI;
 import net.maple.handlers.PacketHandler;
 import util.HexTool;
 import util.packet.PacketReader;
 
+// todo pending queue
 public class FriendRequestHandler extends PacketHandler {
 
     @Override

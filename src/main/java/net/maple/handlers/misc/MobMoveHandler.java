@@ -1,6 +1,5 @@
 package net.maple.handlers.misc;
 
-import client.Character;
 import client.Client;
 import field.object.life.FieldMob;
 import net.maple.SendOpcode;

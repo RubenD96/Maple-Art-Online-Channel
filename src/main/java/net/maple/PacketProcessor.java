@@ -1,12 +1,12 @@
 package net.maple;
 
-import net.maple.handlers.user.attack.AttackType;
 import net.maple.handlers.DoNothingHandler;
 import net.maple.handlers.PacketHandler;
 import net.maple.handlers.PongHandler;
-import net.maple.handlers.net.MigrateInHandler;
 import net.maple.handlers.misc.*;
+import net.maple.handlers.net.MigrateInHandler;
 import net.maple.handlers.user.*;
+import net.maple.handlers.user.attack.AttackType;
 import net.maple.handlers.user.attack.UserAttackHandler;
 
 import java.util.Arrays;
