@@ -24,6 +24,30 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         c.write(ConversationPackets.getOkMessagePacket(npcId, speaker, text));
     }
 
+    public void sendNext(String text) {
+        c.write(ConversationPackets.getNextMessagePacket(npcId, 0, text));
+    }
+
+    public void sendNext(String text, int speaker) {
+        c.write(ConversationPackets.getNextMessagePacket(npcId, speaker, text));
+    }
+
+    public void sendPrev(String text) {
+        c.write(ConversationPackets.getPrevMessagePacket(npcId, 0, text));
+    }
+
+    public void sendPrev(String text, int speaker) {
+        c.write(ConversationPackets.getPrevMessagePacket(npcId, speaker, text));
+    }
+
+    public void sendNextPrev(String text) {
+        c.write(ConversationPackets.getNextPrevMessagePacket(npcId, 0, text));
+    }
+
+    public void sendNextPrev(String text, int speaker) {
+        c.write(ConversationPackets.getNextPrevMessagePacket(npcId, speaker, text));
+    }
+
     public void dispose() {
         NPCScriptManager.getInstance().dispose(this);
     }

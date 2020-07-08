@@ -13,11 +13,11 @@ function converse(m, s) {
         if (status === 1) {
             cm.sendOk("Hello #h #");
         } else if (status === 2) {
-            cm.sendOk("How are you doing?");
+            cm.sendNext("How are you doing?");
         } else if (status === 3) {
-            cm.sendOk("Please stop clicking ok");
+            cm.sendPrev("Please stop clicking ok");
         } else {
-            cm.sendOk("I'M BEGGING YOU, STOP");
+            cm.sendNextPrev("I'M BEGGING YOU, STOP");
         }
     }
 }
