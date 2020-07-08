@@ -2,27 +2,25 @@ package net.database;
 
 import client.Character;
 import client.Client;
-import client.inventory.ItemInventoryType;
-import client.inventory.item.templates.ItemBundleTemplate;
-import client.inventory.item.templates.ItemEquipTemplate;
-import client.inventory.slots.ItemSlot;
-import client.inventory.slots.ItemSlotBundle;
-import client.inventory.slots.ItemSlotEquip;
 import client.player.Job;
 import client.player.key.KeyBinding;
-import managers.ItemManager;
 import org.jooq.Record;
-import org.jooq.Record1;
 import org.jooq.Result;
-import org.jooq.exception.DataAccessException;
-import util.HexTool;
 
-import java.util.*;
-import java.util.stream.IntStream;
+import java.util.HashMap;
+import java.util.Map;
 
-import static database.jooq.Tables.*;
+import static database.jooq.Tables.CHARACTERS;
+import static database.jooq.Tables.KEYBINDINGS;
 
 public class CharacterAPI {
+
+    public static String getOfflineName(int cid) {
+        return DatabaseCore.getConnection().select(CHARACTERS.NAME)
+                .from(CHARACTERS)
+                .where(CHARACTERS.ID.eq(cid)).fetchOne()
+                .getValue(CHARACTERS.NAME);
+    }
 
     public static Character getNewCharacter(Client c, int id) {
         Record record = DatabaseCore.getConnection().select().from(CHARACTERS).where(CHARACTERS.ID.eq(id)).fetchOne();

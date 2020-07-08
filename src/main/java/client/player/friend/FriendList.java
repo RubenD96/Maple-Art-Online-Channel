@@ -4,6 +4,7 @@ import client.Character;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import net.database.FriendAPI;
 import net.maple.SendOpcode;
 import net.maple.handlers.misc.FriendRequestHandler;
 import net.server.Server;
@@ -21,7 +22,15 @@ public class FriendList {
     private @Getter Map<Integer, Friend> friends = new LinkedHashMap<>();
 
     public void addFriend(Character friend, String group, boolean online) {
-        friends.put(friend.getId(), new Friend(friend.getId(), friend.getChannel().getChannelId(), friend.getName(), group, online));
+        addFriend(friend.getId(), friend.getChannel().getChannelId(), friend.getName(), group, online);
+    }
+
+    public void addFriend(int id, String name, String group) {
+        addFriend(id, -1, name, group, false);
+    }
+
+    public void addFriend(int id, int channel, String name, String group, boolean online) {
+        friends.put(id, new Friend(id, channel, name, group, online));
     }
 
     public void removeFriend(int id) {
@@ -76,6 +85,7 @@ public class FriendList {
         Character friend = owner.getChannel().getCharacter(name);
         if (friend != null) {
             addFriend(friend, group, false);
+            FriendAPI.addFriend(owner.getId(), friend.getId(), group);
             updateFriendList();
             if (!friend.getFriendList().getFriends().containsKey(owner.getId())) {
                 friend.write(getSendFriendRequestPacket(group));

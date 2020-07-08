@@ -20,4 +20,9 @@ public class Friend {
         Character friend = Server.getInstance().getCharacter(characterId);
         return friend != null && !friend.getClient().isDisconnecting();
     }
+
+    public int getChannel() {
+        Character friend = Server.getInstance().getCharacter(characterId);
+        return friend == null ? -1 : friend.getChannel().getChannelId();
+    }
 }

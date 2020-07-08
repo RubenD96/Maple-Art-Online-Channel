@@ -32,6 +32,9 @@ public class UserChatHandler extends PacketHandler {
         if (msg.equals("script")) {
             scriptExample();
             return;
+        } else if (msg.equals("friend")) {
+            chr.getFriendList().updateFriendList();
+            return;
         } else if (msg.split(" ")[0].equals("!eval")) {
             msg = msg.substring(6);
             // example use:

@@ -6,6 +6,7 @@ import client.player.key.KeyBinding;
 import field.Field;
 import net.database.AccountAPI;
 import net.database.CharacterAPI;
+import net.database.FriendAPI;
 import net.database.ItemAPI;
 import net.maple.SendOpcode;
 import net.maple.handlers.PacketHandler;
@@ -41,7 +42,7 @@ public class MigrateInHandler extends PacketHandler {
 
                 Field field = c.getWorldChannel().getFieldManager().getField(chr.getFieldId());
                 field.enter(chr);
-                chr.getFriendList().notifyMutualFriends();
+                FriendAPI.loadFriends(chr);
 
                 c.setCharacter(chr);
                 c.write(initFuncKey(chr));
