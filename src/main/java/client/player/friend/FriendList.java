@@ -56,6 +56,19 @@ public class FriendList {
         return pw.createPacket();
     }
 
+    public Packet getFriendChannelChangePacket(int cid, int channel) {
+        PacketWriter pw = new PacketWriter(12);
+
+        pw.writeHeader(SendOpcode.FRIEND_RESULT);
+        pw.write(FriendRequestHandler.FriendRequestOperationType.CHANNEL_CHANGE);
+
+        pw.writeInt(cid); // dwFriendID
+        pw.write(0); // aInShop
+        pw.writeInt(channel); // nChannelID
+
+        return pw.createPacket();
+    }
+
     private void encodeGWFriend(PacketWriter pw, String group, int fid, String name, int flag, int channel) {
         pw.writeInt(fid); // dwFriendID
         pw.writeString(name); // sFriendName
@@ -120,11 +133,13 @@ public class FriendList {
     }
 
     public void notifyMutualFriends() {
+        final int channel = owner.getClient().isDisconnecting() ? -1 : owner.getChannel().getChannelId();
         friends.keySet().forEach(f -> {
             Character friend = Server.getInstance().getCharacter(f);
             if (friend != null) {
                 System.out.println(owner.getName() + " - " + friend.getName());
                 if (friend.getFriendList().friends.containsKey(owner.getId())) {
+                    friend.write(getFriendChannelChangePacket(owner.getId(), channel));
                     friend.getFriendList().updateFriendList();
                 }
             }

@@ -48,11 +48,12 @@ public class FriendRequestHandler extends PacketHandler {
 
     public static final class FriendRequestOperationType {
 
-        public static final byte SET = 1;
-        public static final byte ACCEPT = 2;
-        public static final byte DELETE = 3;
-        public static final byte UPDATE = 7;
-        public static final byte SEND = 9;
+        public static final byte SET = 0x01;
+        public static final byte ACCEPT = 0x02;
+        public static final byte DELETE = 0x03;
+        public static final byte UPDATE = 0x07;
+        public static final byte SEND = 0x09;
+        public static final byte CHANNEL_CHANGE = 0x14;
 
         private FriendRequestOperationType() {
         }
