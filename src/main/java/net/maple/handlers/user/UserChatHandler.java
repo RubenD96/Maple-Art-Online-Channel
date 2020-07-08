@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
@@ -35,7 +34,7 @@ public class UserChatHandler extends PacketHandler {
         String[] cmd = msg.split(" ");
         boolean textBox = !reader.readBool();
 
-        if (COMMAND_LIST.get(chr.getGmLevel()).contains(cmd[0].substring(1)) && msg.charAt(0) == '#') {
+        if (COMMAND_LIST.get(chr.getGmLevel()).contains(cmd[0].substring(1)) && msg.charAt(0) == '!') {
             if (c.getEngine() == null) {
                 c.setEngine(GraalJSScriptEngine.create());
             }
@@ -56,7 +55,7 @@ public class UserChatHandler extends PacketHandler {
                 e.printStackTrace();
             }
 
-            chr.getField().broadcast(sendMessage(chr, "Successfully Executed Command!", textBox), null);
+            chr.write(sendMessage(chr, "Successfully Executed Command!", textBox));
             return;
         }
 
@@ -107,27 +106,6 @@ public class UserChatHandler extends PacketHandler {
         pw.writeBool(!textBox);
 
         return pw.createPacket();
-    }
-
-    private void scriptExample() {
-        ScriptEngine engine = GraalJSScriptEngine.create();
-        try {
-            ArrayList<Integer> list = new ArrayList<>();
-            list.add(10);
-            list.add(20);
-            list.add(30);
-            engine.put("list", list);
-            engine.eval(
-                    "execute();\n" +
-                            "function execute() {\n" +
-                            "   for (let value of list) {\n" +
-                            "       console.log(value);\n" +
-                            "   }\n" +
-                            "}"
-            );
-        } catch (ScriptException se) {
-            se.printStackTrace();
-        }
     }
 
     private void eval(Client c, String command) {
