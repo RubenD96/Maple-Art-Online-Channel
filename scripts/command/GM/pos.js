@@ -1,5 +1,5 @@
 execute = () => {
-	console.log(cs.getChr().getPosition().toString());
-}
+    console.log(cs.getChr().getPosition().toString());
+};
 
 execute();

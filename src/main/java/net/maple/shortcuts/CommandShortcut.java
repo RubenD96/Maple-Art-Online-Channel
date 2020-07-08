@@ -7,17 +7,20 @@ import client.inventory.item.templates.ItemTemplate;
 import client.inventory.slots.ItemSlot;
 import client.inventory.slots.ItemSlotBundle;
 import field.object.drop.ItemDrop;
+import field.object.life.FieldNPC;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.NonNull;
+import lombok.Setter;
 import managers.ItemManager;
+import managers.NPCManager;
 import net.maple.packets.CharacterPackets;
 
 import static net.maple.handlers.user.UserChatHandler.refreshCommandList;
 
 public class CommandShortcut {
-    @Getter @NonNull Client c;
-    @Getter @NonNull Character chr;
+
+    @Getter Client c;
+    @Getter Character chr;
     @Getter @Setter String[] args;
 
     public CommandShortcut(Client _c, String[] _args) {
@@ -31,13 +34,17 @@ public class CommandShortcut {
     }
 
     public void reloadScripts(String script) {
-        switch(script.toUpperCase()) {
+        switch (script.toUpperCase()) {
             case "COMMANDS":
                 refreshCommandList();
                 break;
             default:
                 break;
         }
+    }
+
+    public FieldNPC getNpc(int id) {
+        return NPCManager.getNPC(id);
     }
 
     public ItemTemplate getItemTemplate(int id) {
