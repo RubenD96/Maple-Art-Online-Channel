@@ -20,6 +20,11 @@ import net.netty.ServerHandler;
 import java.util.HashMap;
 import java.util.Map;
 
+import java.util.ArrayList;
+
+import static constants.ServerConstants.COMMAND_LIST;
+import static net.maple.handlers.user.UserChatHandler.refreshCommandList;
+
 @RequiredArgsConstructor
 public class ChannelServer extends Thread {
 
@@ -30,6 +35,10 @@ public class ChannelServer extends Thread {
 
     public void init() {
         fieldManager = new FieldManager();
+        COMMAND_LIST.add(new ArrayList<>());
+        COMMAND_LIST.add(new ArrayList<>());
+        COMMAND_LIST.add(new ArrayList<>());
+        refreshCommandList();
         characters = new HashMap<>();
     }
 
