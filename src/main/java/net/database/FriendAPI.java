@@ -11,7 +11,10 @@ import static database.jooq.Tables.FRIENDS;
 public class FriendAPI {
 
     public static void loadFriends(Character character) {
-        Result<Record> friends = DatabaseCore.getConnection().select().from(FRIENDS).where(FRIENDS.CID.eq(character.getId())).fetch();
+        Result<Record> friends = DatabaseCore.getConnection()
+                .select().from(FRIENDS)
+                .where(FRIENDS.CID.eq(character.getId()))
+                .fetch();
 
         FriendList friendList = character.getFriendList();
         for (Record record : friends) {
@@ -27,13 +30,36 @@ public class FriendAPI {
         friendList.notifyMutualFriends();
     }
 
-    public static void addFriend(int cid, int fid, String group) {
+    public static void loadPending(Character character) {
+        Result<Record> pending = DatabaseCore.getConnection()
+                .select().from(FRIENDS)
+                .where(FRIENDS.FID.eq(character.getId()))
+                .and(FRIENDS.PENDING.eq((byte) 1))
+                .fetch();
+
+        FriendList friendList = character.getFriendList();
+        for (Record record : pending) {
+            friendList.getPending().add(record.getValue(FRIENDS.CID));
+        }
+    }
+
+    public static void addFriend(int cid, int fid, String group, boolean pending) {
         DatabaseCore.getConnection()
                 .insertInto(FRIENDS,
                         FRIENDS.CID,
                         FRIENDS.FID,
-                        FRIENDS.GROUP)
-                .values(cid, fid, group)
+                        FRIENDS.GROUP,
+                        FRIENDS.PENDING)
+                .values(cid, fid, group, (byte) (pending ? 1 : 0))
+                .execute();
+    }
+
+    public static void removePendingStatus(int cid, int fid) {
+        DatabaseCore.getConnection()
+                .update(FRIENDS)
+                .set(FRIENDS.PENDING, (byte) 0)
+                .where(FRIENDS.CID.eq(cid))
+                .and(FRIENDS.FID.eq(fid))
                 .execute();
     }
 
@@ -45,11 +71,12 @@ public class FriendAPI {
                 .execute();
     }
 
-    public static void updateGroup(String oldName, String newName) {
+    public static void updateGroup(int cid, int fid, String groupName) {
         DatabaseCore.getConnection()
                 .update(FRIENDS)
-                .set(FRIENDS.GROUP, newName)
-                .where(FRIENDS.GROUP.eq(oldName))
+                .set(FRIENDS.GROUP, groupName)
+                .where(FRIENDS.CID.eq(cid))
+                .and(FRIENDS.FID.eq(fid))
                 .execute();
     }
 }

@@ -35,14 +35,17 @@ public class MigrateInHandler extends PacketHandler {
 
                 Character chr = CharacterAPI.getNewCharacter(c, cid);
                 c.getWorldChannel().addCharacter(chr);
+                c.setCharacter(chr);
+
                 ItemAPI.loadInventories(chr);
                 chr.validateStats();
 
                 Field field = c.getWorldChannel().getFieldManager().getField(chr.getFieldId());
                 field.enter(chr);
                 FriendAPI.loadFriends(chr);
+                FriendAPI.loadPending(chr);
+                chr.getFriendList().sendPendingRequest();
 
-                c.setCharacter(chr);
                 c.write(initFuncKey(chr));
                 c.write(initQuickslot(chr));
             } else {

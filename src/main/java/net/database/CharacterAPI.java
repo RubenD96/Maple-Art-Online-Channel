@@ -16,10 +16,30 @@ import static database.jooq.Tables.KEYBINDINGS;
 public class CharacterAPI {
 
     public static String getOfflineName(int cid) {
-        return DatabaseCore.getConnection().select(CHARACTERS.NAME)
-                .from(CHARACTERS)
-                .where(CHARACTERS.ID.eq(cid)).fetchOne()
-                .getValue(CHARACTERS.NAME);
+        Record rec = DatabaseCore.getConnection()
+                .select(CHARACTERS.NAME).from(CHARACTERS)
+                .where(CHARACTERS.ID.eq(cid)).fetchOne();
+        if (rec != null) {
+            return rec.getValue(CHARACTERS.NAME);
+        }
+        return "";
+    }
+
+    public static int getOfflineId(String name) {
+        Record rec = DatabaseCore.getConnection()
+                .select(CHARACTERS.ID).from(CHARACTERS)
+                .where(CHARACTERS.NAME.eq(name)).fetchOne();
+        if (rec != null) {
+            return rec.getValue(CHARACTERS.ID);
+        }
+        return -1;
+    }
+
+    public static Record getOfflineCharacter(int cid) {
+        return DatabaseCore.getConnection()
+                .select().from(CHARACTERS)
+                .where(CHARACTERS.ID.eq(cid))
+                .fetchOne();
     }
 
     public static Character getNewCharacter(Client c, int id) {

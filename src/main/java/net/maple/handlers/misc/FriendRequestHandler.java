@@ -2,13 +2,15 @@ package net.maple.handlers.misc;
 
 import client.Character;
 import client.Client;
+import client.player.friend.Friend;
 import client.player.friend.FriendList;
+import net.database.CharacterAPI;
 import net.database.FriendAPI;
 import net.maple.handlers.PacketHandler;
+import net.server.Server;
 import util.HexTool;
 import util.packet.PacketReader;
 
-// todo pending queue
 public class FriendRequestHandler extends PacketHandler {
 
     @Override
@@ -17,24 +19,51 @@ public class FriendRequestHandler extends PacketHandler {
         FriendList friendList = c.getCharacter().getFriendList();
 
         if (operation == FriendRequestOperationType.SET) {
-            friendList.sendFriendRequest(reader);
+            String name = reader.readMapleString();
+            String group = reader.readMapleString();
+            if (name.length() < 4 || name.length() > 12 || group.length() > 16) {
+                c.close(this, "Invalid name/group on SET friend request (" + name + "/" + group + ")");
+                return;
+            }
+            if (name.equals(c.getCharacter().getName())) {
+                c.close(this, "Adding yourself as friend");
+                return;
+            }
+
+            Friend friend = friendList.getFriends().get(CharacterAPI.getOfflineId(name));
+            if (friend == null) {
+                friendList.sendFriendRequest(name, group);
+            } else {
+                System.out.println(HexTool.toHex(reader.getData()));
+                friend.setGroup(group);
+                FriendAPI.updateGroup(c.getCharacter().getId(), friend.getCharacterId(), group);
+                friendList.updateFriendList();
+            }
         } else if (operation == FriendRequestOperationType.ACCEPT) {
-            int cid = reader.read(); // todo, check if this person actually sent a friendrequest?
-            Character toAdd = c.getWorldChannel().getCharacter(cid);
+            int cid = reader.read();
+            Character toAdd = Server.getInstance().getCharacter(cid);
             if (toAdd != null) {
                 friendList.addFriend(toAdd, "Group Unknown", true);
-                FriendAPI.addFriend(c.getCharacter().getId(), toAdd.getId(), "Group Unknown");
+                FriendAPI.addFriend(c.getCharacter().getId(), toAdd.getId(), "Group Unknown", false);
+                FriendAPI.removePendingStatus(toAdd.getId(), c.getCharacter().getId());
+                Friend f = toAdd.getFriendList().getFriends().get(c.getCharacter().getId());
+                if (f != null) {
+                    f.setChannel(c.getCharacter().getChannel().getChannelId());
+                }
                 toAdd.getFriendList().updateFriendList();
-            } else {
-                // todo get from DB
+            } else { // player is offline already
+                friendList.addFriend(cid, CharacterAPI.getOfflineName(cid), "Group Unknown");
+                FriendAPI.addFriend(c.getCharacter().getId(), cid, "Group Unknown", false);
+                FriendAPI.removePendingStatus(cid, c.getCharacter().getId());
             }
             friendList.updateFriendList();
+            friendList.sendPendingRequest();
         } else if (operation == FriendRequestOperationType.DELETE) {
             int cid = reader.read();
             if (friendList.getFriends().containsKey(cid)) {
                 friendList.removeFriend(cid);
                 FriendAPI.removeFriend(c.getCharacter().getId(), cid);
-                Character toRemove = c.getWorldChannel().getCharacter(cid);
+                Character toRemove = Server.getInstance().getCharacter(cid);
                 if (toRemove != null) {
                     toRemove.getFriendList().updateFriendList();
                 }

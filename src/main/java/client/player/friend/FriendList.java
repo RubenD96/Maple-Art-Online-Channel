@@ -4,22 +4,28 @@ import client.Character;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import net.database.CharacterAPI;
 import net.database.FriendAPI;
 import net.maple.SendOpcode;
 import net.maple.handlers.misc.FriendRequestHandler;
 import net.server.Server;
+import org.jooq.Record;
 import util.packet.Packet;
-import util.packet.PacketReader;
 import util.packet.PacketWriter;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
+
+import static database.jooq.Tables.CHARACTERS;
 
 @RequiredArgsConstructor
 public class FriendList {
 
     private @NonNull final Character owner;
-    private @Getter Map<Integer, Friend> friends = new LinkedHashMap<>();
+    private final @Getter Map<Integer, Friend> friends = new LinkedHashMap<>();
+    private final @Getter Queue<Integer> pending = new LinkedBlockingQueue<>();
 
     public void addFriend(Character friend, String group, boolean online) {
         addFriend(friend.getId(), friend.getChannel().getChannelId(), friend.getName(), group, online);
@@ -79,57 +85,80 @@ public class FriendList {
         pw.fill(0x00, 17 - group.length()); // [17]
     }
 
-    private void encodeGWFriend(PacketWriter pw, String group, int flag) {
-        encodeGWFriend(pw, group, owner.getId(), owner.getName(), flag, owner.getChannel().getChannelId());
-    }
-
-    public void sendFriendRequest(PacketReader reader) {
-        String name = reader.readMapleString();
-        String group = reader.readMapleString();
-        if (name.length() < 4 || name.length() > 12 || group.length() > 16) {
-            owner.getClient().close(this, "Invalid name/group on SET friend request (" + name + "/" + group + ")");
-            return;
-        }
-        if (name.equals(owner.getName())) {
-            owner.getClient().close(this, "Adding yourself as friend");
-            return;
-        }
-
+    public void sendFriendRequest(String name, String group) {
         Character friend = owner.getChannel().getCharacter(name);
         if (friend != null) {
             addFriend(friend, group, false);
-            FriendAPI.addFriend(owner.getId(), friend.getId(), group);
+            FriendAPI.addFriend(owner.getId(), friend.getId(), group, true);
             updateFriendList();
-            if (!friend.getFriendList().getFriends().containsKey(owner.getId())) {
-                friend.write(getSendFriendRequestPacket(group));
+            FriendList friendFriendList = friend.getFriendList(); // lul
+            if (!friendFriendList.getFriends().containsKey(owner.getId())) {
+                if (friendFriendList.getPending().isEmpty()) {
+                    friend.write(getSendFriendRequestPacket(group));
+                } else {
+                    friendFriendList.getPending().add(owner.getId());
+                }
             } else {
                 friend.getFriendList().updateFriendList();
             }
         } else {
-            // todo print to game
-            System.out.println(name + " not found!");
+            int id = CharacterAPI.getOfflineId(name);
+            if (id == -1) { // todo print ingame
+                System.out.println(name + " not found!");
+                return;
+            }
+            addFriend(id, name, group);
+            FriendAPI.addFriend(owner.getId(), id, group, true);
+            updateFriendList();
         }
     }
 
     public void updateFriendList() {
+        System.out.println("updating " + owner.getName() + "'s friendlist");
         owner.write(getUpdateFriendsPacket());
     }
 
-    public Packet getSendFriendRequestPacket(String group) {
+    private Packet getSendFriendRequestPacket(String group, int cid, String name, int level, int job, int channel) {
         PacketWriter pw = new PacketWriter(8);
 
         pw.writeHeader(SendOpcode.FRIEND_RESULT);
         pw.write(FriendRequestHandler.FriendRequestOperationType.SEND);
 
-        pw.writeInt(owner.getId()); // dwFriendID
-        pw.writeMapleString(owner.getName()); // v24
-        pw.writeInt(owner.getLevel()); // nLevel
-        pw.writeInt(owner.getJob()); // nJobCode
+        pw.writeInt(cid); // dwFriendID
+        pw.writeMapleString(name); // v24
+        pw.writeInt(level); // nLevel
+        pw.writeInt(job); // nJobCode
 
-        encodeGWFriend(pw, group, 1);
+        encodeGWFriend(pw, group, cid, name, 1, channel);
         pw.write(0); // aInShop?
 
         return pw.createPacket();
+    }
+
+    public Packet getSendFriendRequestPacket(String group) {
+        return getSendFriendRequestPacket(group, owner.getId(), owner.getName(), owner.getLevel(), owner.getJob().getValue(), owner.getChannel().getChannelId());
+    }
+
+    /**
+     * For pending requests
+     *
+     * @param cid character id of person that sent the request
+     * @return invite packet
+     */
+    public Packet getSendFriendRequestPacket(int cid) {
+        Character friend = Server.getInstance().getCharacter(cid);
+        if (friend != null) {
+            return friend.getFriendList().getSendFriendRequestPacket("Group Unknown");
+        } else {
+            Record rec = CharacterAPI.getOfflineCharacter(cid);
+            return getSendFriendRequestPacket(
+                    "Group Unknown", cid,
+                    rec.getValue(CHARACTERS.NAME),
+                    rec.getValue(CHARACTERS.LEVEL),
+                    rec.getValue(CHARACTERS.JOB),
+                    -1
+            );
+        }
     }
 
     public void notifyMutualFriends() {
@@ -147,6 +176,13 @@ public class FriendList {
                     }
                 }
             });
+        }
+    }
+
+    public void sendPendingRequest() {
+        Integer nextFriend = pending.poll();
+        if (nextFriend != null) {
+            owner.write(getSendFriendRequestPacket(nextFriend));
         }
     }
 }
