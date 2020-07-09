@@ -151,7 +151,6 @@ public class Character extends AbstractFieldLife {
         trueMaxMana = maxMana;
         for (ItemSlot item : inventories.get(ItemInventoryType.EQUIP).getItems().values()) {
             ItemSlotEquip equip = (ItemSlotEquip) item;
-            System.out.println(equip.getMaxHP());
             trueMaxHealth += equip.getMaxHP();
             trueMaxMana += equip.getMaxMP();
         }
@@ -199,6 +198,26 @@ public class Character extends AbstractFieldLife {
         setTrueMaxStats();
         if (health > trueMaxHealth) setHealth(trueMaxHealth);
         if (mana > trueMaxMana) setMana(trueMaxMana);
+    }
+
+    public void incStrength() {
+        strength++;
+    }
+
+    public void incDexterity() {
+        dexterity++;
+    }
+
+    public void incLuck() {
+        luck++;
+    }
+
+    public void incIntelligence() {
+        intelligence++;
+    }
+
+    public void decAP() {
+        ap--;
     }
 
     public void enableActions() {
