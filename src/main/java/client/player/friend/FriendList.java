@@ -47,7 +47,7 @@ public class FriendList {
         PacketWriter pw = new PacketWriter(8);
 
         pw.writeHeader(SendOpcode.FRIEND_RESULT);
-        pw.write(FriendRequestHandler.FriendRequestOperationType.UPDATE);
+        pw.write(FriendRequestHandler.FriendOperation.FRIEND_RES_LOAD_FRIEND_DONE.getValue());
 
         pw.write(friends.size());
         for (Friend f : friends.values()) {
@@ -66,7 +66,7 @@ public class FriendList {
         PacketWriter pw = new PacketWriter(12);
 
         pw.writeHeader(SendOpcode.FRIEND_RESULT);
-        pw.write(FriendRequestHandler.FriendRequestOperationType.CHANNEL_CHANGE);
+        pw.write(FriendRequestHandler.FriendOperation.FRIEND_RES_NOTIFY.getValue());
 
         pw.writeInt(cid); // dwFriendID
         pw.write(0); // aInShop
@@ -104,7 +104,7 @@ public class FriendList {
         } else {
             int id = CharacterAPI.getOfflineId(name);
             if (id == -1) { // todo print ingame
-                System.out.println(name + " not found!");
+                sendFriendMessage(FriendRequestHandler.FriendOperation.FRIEND_RES_SET_FRIEND_UNKNOWN_USER);
                 return;
             }
             addFriend(id, name, group);
@@ -122,7 +122,7 @@ public class FriendList {
         PacketWriter pw = new PacketWriter(8);
 
         pw.writeHeader(SendOpcode.FRIEND_RESULT);
-        pw.write(FriendRequestHandler.FriendRequestOperationType.SEND);
+        pw.write(FriendRequestHandler.FriendOperation.FRIEND_RES_INVITE.getValue());
 
         pw.writeInt(cid); // dwFriendID
         pw.writeMapleString(name); // v24
@@ -184,5 +184,14 @@ public class FriendList {
         if (nextFriend != null) {
             owner.write(getSendFriendRequestPacket(nextFriend));
         }
+    }
+
+    public void sendFriendMessage(FriendRequestHandler.FriendOperation operation) {
+        PacketWriter pw = new PacketWriter(3);
+
+        pw.writeHeader(SendOpcode.FRIEND_RESULT);
+        pw.write(operation.getValue());
+
+        owner.write(pw.createPacket());
     }
 }
