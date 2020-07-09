@@ -8,6 +8,7 @@ public enum SendOpcode implements IntegerValue {
     PING(0x11),
     INVENTORY_OPERATION(0x1C),
     STAT_CHANGED(0x1E),
+    GIVE_POPULARITY_RESULT(0x25),
     MESSAGE(0x26),
     CHARACTER_INFO(0x3D),
     FRIEND_RESULT(0x41),

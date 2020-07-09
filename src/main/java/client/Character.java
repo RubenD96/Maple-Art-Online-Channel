@@ -133,6 +133,16 @@ public class Character extends AbstractFieldLife {
         updateSingleStat(StatType.JOB);
     }
 
+    public void fame() {
+        fame++;
+        updateSingleStat(StatType.FAME, false);
+    }
+
+    public void defame() {
+        fame--;
+        updateSingleStat(StatType.FAME, false);
+    }
+
     public void setHealth(int health) {
         if (health > maxHealth) {
             health = maxHealth;

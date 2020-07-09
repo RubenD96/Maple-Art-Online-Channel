@@ -11,7 +11,9 @@ public class ConversationPackets {
 
     @RequiredArgsConstructor
     private enum ConversationType {
-        SAY(0x00);
+        SAY(0x00),
+        ASK_YES_NO(0x02),
+        ASK_TEXT(0x03);
 
         @Getter @NonNull private final int value;
     }
@@ -53,4 +55,10 @@ public class ConversationPackets {
     public static Packet getNextPrevMessagePacket(int npc, int speaker, String text) {
         return getSayMessagePacket(npc, speaker, text, true, true);
     }
+
+    public static Packet getYesNoMessagePacket(int npc, int speaker, String text) {
+        return getMessagePacket(npc, ConversationType.ASK_YES_NO, speaker, text).createPacket();
+    }
+
+
 }
