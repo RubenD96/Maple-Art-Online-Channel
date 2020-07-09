@@ -50,6 +50,7 @@ public final class PacketProcessor {
         handlers.put(RecvOpcode.USER_SCRIPT_MESSAGE_ANSWER, new UserScriptMessageAnswerHandler());
         handlers.put(RecvOpcode.USER_CHANGE_SLOT_POSITION_REQUEST, new UserChangeSlotPositionRequestHandler());
         handlers.put(RecvOpcode.USER_ABILITY_UP_REQUEST, new UserAbilityUpRequestHandler());
+        handlers.put(RecvOpcode.USER_ABILITY_MASS_UP_REQUEST, new UserAbilityMassUpRequestHandler());
         handlers.put(RecvOpcode.USER_CHANGE_STAT_REQUEST, new UserChangeStatRequestHandler());
         handlers.put(RecvOpcode.USER_DROP_MESO_REQUEST, new UserDropMesoRequestHandler());
         handlers.put(RecvOpcode.USER_GIVE_POPULARITY_REQUEST, new UserGivePopularityRequestHandler());
