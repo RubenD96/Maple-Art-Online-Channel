@@ -13,7 +13,6 @@ public class FriendRequestHandler extends PacketHandler {
 
     @Override
     public void handlePacket(PacketReader reader, Client c) {
-        System.out.println(HexTool.toHex(reader.getData()));
         byte operation = reader.readByte();
         FriendList friendList = c.getCharacter().getFriendList();
 

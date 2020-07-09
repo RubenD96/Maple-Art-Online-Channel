@@ -13,6 +13,7 @@ public class LoginConnector extends Thread {
 
     private @NonNull final Server server;
     private @NonNull final ChannelServer channel;
+    private WriteThread wt;
 
     @Override
     public void run() {
@@ -26,7 +27,8 @@ public class LoginConnector extends Thread {
             System.out.println("Connected to login server");
 
             new ReadThread(socket, this).start();
-            new WriteThread(socket, this).start();
+            wt = new WriteThread(socket, this);
+            wt.start();
         } catch (IOException ioe) {
             //ioe.printStackTrace();
             try {
@@ -36,6 +38,10 @@ public class LoginConnector extends Thread {
                 ie.printStackTrace();
             }
         }
+    }
+
+    public void messageLogin(String msg) {
+        wt.sendMessage(msg);
     }
 
     private static class ReadThread extends Thread {
@@ -96,6 +102,10 @@ public class LoginConnector extends Thread {
                 System.out.println("Error getting output stream: " + ex.getMessage());
                 ex.printStackTrace();
             }
+        }
+
+        public void sendMessage(String msg) {
+            writer.println(msg);
         }
 
         public void run() {

@@ -26,7 +26,7 @@ public class Client extends NettyClient {
     private @Getter int accId;
     private @Getter @Setter String accountName;
     private @Setter long lastPong, clientStart, lastNpcClick;; // Not too sure what to do with these
-    private @Getter boolean disconnecting = false, loggedIn = false;
+    private @Getter boolean disconnecting = false, loggedIn = false, cc = false;
     private @Getter @Setter ChannelServer worldChannel;
     private @Getter @Setter Character character;
     private @Getter @Setter Set<String> macs, hwids, ips;
@@ -44,6 +44,7 @@ public class Client extends NettyClient {
         admin = data.getValue(ACCOUNTS.ADMIN) == 1;
 
         worldChannel = Server.getInstance().getChannels().get(mi.getChannel());
+        worldChannel.getLoginConnector().messageLogin("1:" + accId);
 
         loggedIn = true;
     }
@@ -59,6 +60,10 @@ public class Client extends NettyClient {
         }
     }
 
+    public void executeIn(Runnable r, int seconds) {
+        ch.eventLoop().schedule(r, seconds, TimeUnit.SECONDS);
+    }
+
     public boolean canClickNPC() {
         return lastNpcClick + 500 < System.currentTimeMillis();
     }
@@ -67,6 +72,7 @@ public class Client extends NettyClient {
         System.out.println("disconnecting");
         if (!disconnecting) {
             disconnecting = true;
+            worldChannel.getLoginConnector().messageLogin("2:" + accId);
             if (ch.isOpen()) {
                 close(this, "Disconnect function called");
             }
@@ -86,6 +92,7 @@ public class Client extends NettyClient {
     }
 
     public void migrate(ChannelServer channel) {
+        this.cc = true;
         this.worldChannel = channel;
         Server.getInstance().getClients().get(accId).setChannel(channel.getChannelId());
         write(ConnectionPackets.getChangeChannelPacket(channel));

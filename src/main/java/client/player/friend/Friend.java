@@ -11,7 +11,8 @@ import net.server.Server;
 @RequiredArgsConstructor
 public class Friend {
 
-    private @NonNull int characterId, channel;
+    private @NonNull int characterId;
+    private @NonNull @Setter int channel;
     private @NonNull String name;
     private @NonNull @Setter String group;
     private @NonNull @Setter boolean online;
@@ -21,8 +22,8 @@ public class Friend {
         return friend != null && !friend.getClient().isDisconnecting();
     }
 
-    public int getChannel() {
+    /*public int getChannel() {
         Character friend = Server.getInstance().getCharacter(characterId);
         return friend == null ? -1 : friend.getChannel().getChannelId();
-    }
+    }*/
 }

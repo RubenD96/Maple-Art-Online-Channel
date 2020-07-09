@@ -40,6 +40,7 @@ public class Server {
             channels.add(channel);
             LoginConnector loginConnector = new LoginConnector(this, channel);
             loginConnector.start();
+            channel.setLoginConnector(loginConnector);
         }
     }
 

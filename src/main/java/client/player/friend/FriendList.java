@@ -133,16 +133,20 @@ public class FriendList {
     }
 
     public void notifyMutualFriends() {
-        final int channel = owner.getClient().isDisconnecting() ? -1 : owner.getChannel().getChannelId();
-        friends.keySet().forEach(f -> {
-            Character friend = Server.getInstance().getCharacter(f);
-            if (friend != null) {
-                System.out.println(owner.getName() + " - " + friend.getName());
-                if (friend.getFriendList().friends.containsKey(owner.getId())) {
-                    friend.write(getFriendChannelChangePacket(owner.getId(), channel));
-                    friend.getFriendList().updateFriendList();
+        if (!owner.getClient().isCc()) {
+            final int channel = owner.getClient().isDisconnecting() ? -1 : owner.getChannel().getChannelId();
+            System.out.println("Notifying buddies that " + owner.getName() + " will now go to channel: " + channel);
+            friends.keySet().forEach(f -> {
+                Character friend = Server.getInstance().getCharacter(f);
+                if (friend != null) {
+                    if (friend.getFriendList().friends.containsKey(owner.getId())) {
+                        System.out.println(friend.getName() + " thought " + owner.getName() + " was in channel " + friend.getFriendList().friends.get(owner.getId()).getChannel());
+                        friend.getFriendList().friends.get(owner.getId()).setChannel(channel);
+                        friend.write(getFriendChannelChangePacket(owner.getId(), channel));
+                        friend.getFriendList().updateFriendList();
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 }

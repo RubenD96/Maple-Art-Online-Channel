@@ -2,6 +2,7 @@ package net.database;
 
 import client.Character;
 import client.player.friend.FriendList;
+import net.server.Server;
 import org.jooq.Record;
 import org.jooq.Result;
 
@@ -16,6 +17,11 @@ public class FriendAPI {
         for (Record record : friends) {
             int fid = record.getValue(FRIENDS.FID);
             friendList.addFriend(fid, CharacterAPI.getOfflineName(fid), record.getValue(FRIENDS.GROUP));
+
+            Character chr = Server.getInstance().getCharacter(fid);
+            if (chr != null) {
+                friendList.getFriends().get(fid).setChannel(chr.getChannel().getChannelId());
+            }
         }
         friendList.updateFriendList();
         friendList.notifyMutualFriends();

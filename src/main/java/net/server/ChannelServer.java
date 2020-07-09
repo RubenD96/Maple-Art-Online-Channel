@@ -12,6 +12,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import managers.FieldManager;
 import net.netty.PacketDecoder;
 import net.netty.PacketEncoder;
@@ -32,6 +33,7 @@ public class ChannelServer extends Thread {
     @NonNull @Getter final String IP;
     @Getter FieldManager fieldManager;
     @Getter Map<String, Character> characters;
+    @Getter @Setter LoginConnector loginConnector;
 
     public void init() {
         fieldManager = new FieldManager();
