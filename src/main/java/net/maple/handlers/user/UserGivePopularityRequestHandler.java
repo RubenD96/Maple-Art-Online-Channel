@@ -50,9 +50,9 @@ public class UserGivePopularityRequestHandler extends PacketHandler {
             c.close(this, "Invalid byte");
             return;
         }
-        if (fame == 0) { // defame
+        if (fame == 0) {
             receiver.defame();
-        } else { // fame
+        } else {
             receiver.fame();
         }
 

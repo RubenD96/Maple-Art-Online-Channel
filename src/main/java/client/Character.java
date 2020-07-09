@@ -2,6 +2,8 @@ package client;
 
 import client.inventory.ItemInventory;
 import client.inventory.ItemInventoryType;
+import client.inventory.slots.ItemSlot;
+import client.inventory.slots.ItemSlotEquip;
 import client.player.Job;
 import client.player.StatType;
 import client.player.friend.FriendList;
@@ -51,6 +53,7 @@ public class Character extends AbstractFieldLife {
     List<FieldControlledObject> controlledObjects = new ArrayList<>();
     Map<ItemInventoryType, ItemInventory> inventories = new HashMap<>();
     FriendList friendList;
+    int trueMaxHealth, trueMaxMana;
 
     public void init() {
         resetQuickSlot();
@@ -143,17 +146,28 @@ public class Character extends AbstractFieldLife {
         updateSingleStat(StatType.FAME, false);
     }
 
+    public void setTrueMaxStats() {
+        trueMaxHealth = maxHealth;
+        trueMaxMana = maxMana;
+        for (ItemSlot item : inventories.get(ItemInventoryType.EQUIP).getItems().values()) {
+            ItemSlotEquip equip = (ItemSlotEquip) item;
+            System.out.println(equip.getMaxHP());
+            trueMaxHealth += equip.getMaxHP();
+            trueMaxMana += equip.getMaxMP();
+        }
+    }
+
     public void setHealth(int health) {
-        if (health > maxHealth) {
-            health = maxHealth;
+        if (health > trueMaxHealth) {
+            health = trueMaxHealth;
         }
         this.health = health;
         updateSingleStat(StatType.HP, false);
     }
 
     public void setMana(int mana) {
-        if (mana > maxMana) {
-            mana = maxMana;
+        if (mana > trueMaxMana) {
+            mana = trueMaxMana;
         }
         this.mana = mana;
         updateSingleStat(StatType.MP, false);
@@ -171,19 +185,20 @@ public class Character extends AbstractFieldLife {
 
     public void modifyHPMP(int health, int mana) {
         this.health += health;
-        if (this.health > maxHealth) {
-            this.health = maxHealth;
+        if (this.health > trueMaxHealth) {
+            this.health = trueMaxHealth;
         }
         this.mana += mana;
-        if (this.mana > maxMana) {
-            this.mana = maxMana;
+        if (this.mana > trueMaxMana) {
+            this.mana = trueMaxMana;
         }
         updateStats(new ArrayList<>(Arrays.asList(StatType.HP, StatType.MP)), false);
     }
 
     public void validateStats() {
-        if (health > maxHealth) setHealth(maxHealth);
-        if (mana > maxMana) setMana(maxMana);
+        setTrueMaxStats();
+        if (health > trueMaxHealth) setHealth(trueMaxHealth);
+        if (mana > trueMaxMana) setMana(trueMaxMana);
     }
 
     public void enableActions() {
