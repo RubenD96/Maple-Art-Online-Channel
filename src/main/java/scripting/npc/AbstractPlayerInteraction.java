@@ -1,5 +1,6 @@
 package scripting.npc;
 
+import client.Character;
 import client.Client;
 import lombok.Getter;
 import lombok.NonNull;
@@ -10,4 +11,8 @@ import lombok.RequiredArgsConstructor;
 public class AbstractPlayerInteraction {
 
     @NonNull final Client c;
+
+    public Character getPlayer() {
+        return c.getCharacter();
+    }
 }

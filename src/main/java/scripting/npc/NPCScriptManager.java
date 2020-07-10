@@ -26,7 +26,7 @@ public class NPCScriptManager extends AbstractScriptManager {
     }
 
     public boolean start(Client c, int npc) {
-        return start(c, npc, null, 0, 0);
+        return start(c, npc, null, 1, 0);
     }
 
     public boolean start(Client c, int mode, int selection) {

@@ -60,7 +60,7 @@ public class FriendRequestHandler extends PacketHandler {
                     FriendAPI.addFriend(c.getCharacter().getId(), cid, "Group Unknown", false);
                     FriendAPI.removePendingStatus(cid, c.getCharacter().getId());
                 } else {
-                    // todo tell person doesnt exist anymore
+                    friendList.sendFriendMessage(FriendRequestHandler.FriendOperation.FRIEND_RES_SET_FRIEND_UNKNOWN_USER);
                 }
             }
             friendList.updateFriendList();

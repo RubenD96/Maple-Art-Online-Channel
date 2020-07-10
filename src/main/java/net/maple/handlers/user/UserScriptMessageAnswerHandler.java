@@ -2,6 +2,8 @@ package net.maple.handlers.user;
 
 import client.Client;
 import net.maple.handlers.PacketHandler;
+import scripting.npc.ConversationType;
+import scripting.npc.NPCConversationManager;
 import scripting.npc.NPCScriptManager;
 import util.HexTool;
 import util.packet.PacketReader;
@@ -14,8 +16,16 @@ public class UserScriptMessageAnswerHandler extends PacketHandler {
         byte type = reader.readByte();
         byte action = reader.readByte(); // 1 = continue, 255 = end chat
 
-        if (NPCScriptManager.getInstance().getCms().get(c) != null) {
-            NPCScriptManager.getInstance().start(c, action, -1);
+        NPCConversationManager cm = NPCScriptManager.getInstance().getCms().get(c);
+        if (cm != null) {
+            int selection = -1;
+            if (type == ConversationType.ASK_MENU.getValue() || type == ConversationType.ASK_NUMBER.getValue()) {
+                selection = reader.readInteger();
+            }
+            if ((type == ConversationType.ASK_TEXT.getValue() || type == ConversationType.ASK_BOX_TEXT.getValue()) && action == 1) {
+                cm.setText(reader.readMapleString());
+            }
+            NPCScriptManager.getInstance().start(c, action, selection);
         }
     }
 }

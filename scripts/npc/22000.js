@@ -5,19 +5,16 @@
 let status = 0;
 
 function converse(m, s) {
-    if (m === -1) {
-        cm.sendOk("Bye.");
+    if (m !== 1) {
+        cm.sendOk("Bye. (" + m + ")");
         cm.dispose();
     } else {
         status++;
         if (status === 1) {
-            cm.sendOk("Hello #h #");
-        } else if (status === 2) {
-            cm.sendNext("How are you doing?");
-        } else if (status === 3) {
-            cm.sendPrev("Please stop clicking ok");
+            cm.sendGetTextBox("", 48, 8);
         } else {
-            cm.sendNextPrev("I'M BEGGING YOU, STOP");
+            cm.sendOk("hello " + cm.getText());
+            cm.dispose();
         }
     }
 }
