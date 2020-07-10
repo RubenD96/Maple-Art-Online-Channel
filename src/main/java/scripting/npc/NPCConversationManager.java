@@ -90,6 +90,14 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         c.write(ConversationPackets.getAcceptMessagePacket(npcId, speaker, text));
     }
 
+    public void sendGetTextBox() {
+        c.write(ConversationPackets.getBoxTextMessagePacket(npcId, 0, "", 48, 6));
+    }
+
+    public void sendGetTextBox(int speaker) {
+        c.write(ConversationPackets.getBoxTextMessagePacket(npcId, speaker, "", 48, 6));
+    }
+
     public void sendGetTextBox(String def, int cols, int rows) {
         c.write(ConversationPackets.getBoxTextMessagePacket(npcId, 0, def, cols, rows));
     }
