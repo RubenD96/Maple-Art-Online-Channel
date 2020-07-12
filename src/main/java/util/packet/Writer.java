@@ -97,6 +97,14 @@ public abstract class Writer {
         return write(s.getBytes(ASCII));
     }
 
+    public final Writer writeString(String s, int size) {
+        write(s.getBytes(ASCII));
+        for (int i = 0; i < size - s.length(); i++) {
+            write(0x00);
+        }
+        return this;
+    }
+
     public final Writer writeMapleString(String s) {
         return writeShort(s.length()).writeString(s);
     }

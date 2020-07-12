@@ -44,19 +44,19 @@ public class ChannelServer extends Thread {
         characters = new HashMap<>();
     }
 
-    public Character getCharacter(String name) {
+    public synchronized Character getCharacter(String name) {
         return characters.get(name);
     }
 
-    public Character getCharacter(int id) {
+    public synchronized Character getCharacter(int id) {
         return characters.values().stream().filter(c -> c.getId() == id).findFirst().orElse(null);
     }
 
-    public void addCharacter(Character chr) {
+    public synchronized void addCharacter(Character chr) {
         characters.put(chr.getName(), chr);
     }
 
-    public void removeCharacter(Character chr) {
+    public synchronized void removeCharacter(Character chr) {
         characters.remove(chr.getName());
     }
 

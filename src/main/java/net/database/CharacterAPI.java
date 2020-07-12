@@ -42,6 +42,20 @@ public class CharacterAPI {
                 .fetchOne();
     }
 
+    public static void resetParties() {
+        DatabaseCore.getConnection()
+                .update(CHARACTERS)
+                .set(CHARACTERS.PARTY, 0)
+                .execute();
+    }
+
+    public static int getOldPartyId(int cid) {
+        return DatabaseCore.getConnection()
+                .select(CHARACTERS.PARTY).from(CHARACTERS)
+                .where(CHARACTERS.ID.eq(cid)).fetchOne()
+                .getValue(CHARACTERS.PARTY);
+    }
+
     public static Character getNewCharacter(Client c, int id) {
         Record record = DatabaseCore.getConnection().select().from(CHARACTERS).where(CHARACTERS.ID.eq(id)).fetchOne();
 
@@ -115,6 +129,7 @@ public class CharacterAPI {
                 .set(CHARACTERS.MAX_MP, chr.getMaxMana())
                 .set(CHARACTERS.EXP, chr.getExp())
                 .set(CHARACTERS.MESO, chr.getMeso())
+                .set(CHARACTERS.PARTY, chr.getParty() == null ? 0 : chr.getParty().getId())
                 .where(CHARACTERS.ID.eq(chr.getId()))
                 .execute();
     }

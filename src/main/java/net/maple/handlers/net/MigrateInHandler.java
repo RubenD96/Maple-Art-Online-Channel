@@ -2,6 +2,8 @@ package net.maple.handlers.net;
 
 import client.Character;
 import client.Client;
+import client.party.Party;
+import client.party.PartyMember;
 import client.player.key.KeyBinding;
 import field.Field;
 import net.database.AccountAPI;
@@ -10,6 +12,7 @@ import net.database.FriendAPI;
 import net.database.ItemAPI;
 import net.maple.SendOpcode;
 import net.maple.handlers.PacketHandler;
+import net.maple.packets.PartyPackets;
 import net.server.MigrateInfo;
 import net.server.Server;
 import org.jooq.Record;
@@ -42,9 +45,11 @@ public class MigrateInHandler extends PacketHandler {
 
                 Field field = c.getWorldChannel().getFieldManager().getField(chr.getFieldId());
                 field.enter(chr);
+
                 FriendAPI.loadFriends(chr);
                 FriendAPI.loadPending(chr);
                 chr.getFriendList().sendPendingRequest();
+                loadParty(chr, mi.getChannel());
 
                 c.write(initFuncKey(chr));
                 c.write(initQuickslot(chr));
@@ -59,6 +64,27 @@ public class MigrateInHandler extends PacketHandler {
     @Override
     public boolean validateState(Client c) {
         return true; // todo
+    }
+
+    private static void loadParty(Character chr, int channel) {
+        Party party = Server.getInstance().getParties().get(CharacterAPI.getOldPartyId(chr.getId()));
+        if (party != null) {
+            PartyMember member = party.getMember(chr.getId());
+            if (member != null) { // kicked while offline
+                chr.setParty(party);
+                member.setOnline(true);
+                member.setField(chr.getFieldId());
+                member.setChannel(channel);
+
+                for (PartyMember pmember : party.getMembers()) {
+                    if (pmember.isOnline()) {
+                        Character pm = Server.getInstance().getCharacter(pmember.getCid());
+                        pm.write(PartyPackets.updateParty(party, pmember.getChannel()));
+                    }
+                }
+                chr.updatePartyHP(true);
+            }
+        }
     }
 
     private static Packet initFuncKey(Character chr) {

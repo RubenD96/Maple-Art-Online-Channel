@@ -71,9 +71,7 @@ public class LoginConnector extends Thread {
                     String[] splitted = response.split(":");
                     switch (Integer.parseInt(splitted[0])) {
                         case 1: // SelectWorldHandler
-                            if (connector.server.getClients().get(Integer.parseInt(splitted[2])) == null) {
-                                connector.server.getClients().put(Integer.parseInt(splitted[2]), new MigrateInfo(Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]), splitted[1]));
-                            }
+                            connector.server.getClients().put(Integer.parseInt(splitted[2]), new MigrateInfo(Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]), splitted[1]));
                             break;
                     }
                 } catch (IOException ioe) {

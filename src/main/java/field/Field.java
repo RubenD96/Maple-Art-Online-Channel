@@ -1,6 +1,7 @@
 package field;
 
 import client.Character;
+import client.party.PartyMember;
 import field.object.FieldObject;
 import field.object.FieldObjectType;
 import field.object.Foothold;
@@ -10,6 +11,7 @@ import field.object.portal.PortalType;
 import lombok.Data;
 import lombok.NonNull;
 import net.maple.packets.FieldPackets;
+import net.maple.packets.PartyPackets;
 import util.packet.Packet;
 
 import java.awt.*;
@@ -78,6 +80,20 @@ public class Field {
                     .forEach(o -> {
                         chr.write(o.getEnterFieldPacket());
                     }));
+
+            if (chr.getParty() != null) {
+                PartyMember me = chr.getParty().getMember(chr.getId());
+                me.setField(id);
+                chr.getParty().getMembers().forEach(member -> {
+                    if (member.isOnline() && member.getChannel() == chr.getChannel().getChannelId()) {
+                        Character mem = chr.getChannel().getCharacter(member.getCid());
+                        mem.write(PartyPackets.updateParty(chr.getParty(), member.getChannel()));
+                        if (member.getField() == id) {
+                            mem.updatePartyHP(true);
+                        }
+                    }
+                });
+            }
         } else {
             obj.setId(runningObjectId.addAndGet(1));
             broadcast(obj.getEnterFieldPacket());

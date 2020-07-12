@@ -1,8 +1,10 @@
 package net.server;
 
 import client.Character;
+import client.party.Party;
 import constants.ServerConstants;
 import lombok.Getter;
+import net.database.CharacterAPI;
 import net.database.DatabaseCore;
 import util.crypto.MapleAESOFB;
 
@@ -16,6 +18,7 @@ public class Server {
     private static Server instance = null;
     private @Getter List<ChannelServer> channels = new ArrayList<>();
     private @Getter final Map<Integer, MigrateInfo> clients = new HashMap<>();
+    private @Getter final Map<Integer, Party> parties = new HashMap<>();
 
     public static Server getInstance() {
         if (instance == null) {
@@ -26,14 +29,16 @@ public class Server {
 
     public Character getCharacter(int id) {
         for (ChannelServer channel : channels) {
-            if (channel.getCharacter(id) != null) {
-                return channel.getCharacter(id);
+            Character chr = channel.getCharacter(id);
+            if (chr != null) {
+                return chr;
             }
         }
         return null;
     }
 
     private void run() {
+        CharacterAPI.resetParties();
         for (int i = 0; i < ServerConstants.CHANNELS; i++) {
             ChannelServer channel = new ChannelServer(i, 7575 + i, ServerConstants.IP);
             channel.start();

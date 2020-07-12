@@ -13,4 +13,14 @@ public class MigrateInfo {
     private @NonNull int aid, channel;
     private @NonNull String ip;
     private int cid;
+
+    @Override
+    public String toString() {
+        return "MigrateInfo{" +
+                "aid=" + aid +
+                ", channel=" + channel +
+                ", ip='" + ip + '\'' +
+                ", cid=" + cid +
+                '}';
+    }
 }

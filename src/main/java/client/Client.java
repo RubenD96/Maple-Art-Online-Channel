@@ -1,11 +1,14 @@
 package client;
 
+import client.party.Party;
+import client.party.PartyMember;
 import field.Field;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.ScheduledFuture;
 import lombok.Getter;
 import lombok.Setter;
 import net.maple.packets.ConnectionPackets;
+import net.maple.packets.PartyPackets;
 import net.netty.NettyClient;
 import net.server.ChannelServer;
 import net.server.MigrateInfo;
@@ -14,6 +17,7 @@ import org.jooq.Record;
 
 import javax.script.ScriptEngine;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -83,6 +87,7 @@ public class Client extends NettyClient {
                 if (field != null) {
                     field.leave(character);
                 }
+                notifyPartyLogout();
                 character.getFriendList().notifyMutualFriends();
                 worldChannel.removeCharacter(character);
                 character.save();
@@ -96,5 +101,35 @@ public class Client extends NettyClient {
         this.worldChannel = channel;
         Server.getInstance().getClients().get(accId).setChannel(channel.getChannelId());
         write(ConnectionPackets.getChangeChannelPacket(channel));
+    }
+
+    public void notifyPartyLogout() {
+        Party party = character.getParty();
+        if (party != null) {
+            PartyMember member = party.getMember(character.getId());
+            if (!cc) {
+                List<PartyMember> online = party.getOnlineMembers();
+                member.setOnline(false);
+                member.setChannel(-2);
+                if (online.size() > 1 && character.getId() == party.getLeaderId()) {
+                    PartyMember newLeader = party.getRandomOnline(character.getId());
+                    party.setLeaderId(newLeader.getCid());
+                    for (PartyMember pmember : party.getMembers()) {
+                        if (pmember.isOnline()) {
+                            Character pm = Server.getInstance().getCharacter(pmember.getCid());
+                            pm.write(PartyPackets.getTransferLeaderMessagePacket(newLeader.getCid(), true));
+                            pm.write(PartyPackets.updateParty(party, pmember.getChannel()));
+                        }
+                    }
+                } else {
+                    for (PartyMember pmember : party.getMembers()) {
+                        if (pmember.isOnline()) {
+                            Character pm = Server.getInstance().getCharacter(pmember.getCid());
+                            pm.write(PartyPackets.updateParty(party, pmember.getChannel()));
+                        }
+                    }
+                }
+            }
+        }
     }
 }

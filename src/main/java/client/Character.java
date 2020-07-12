@@ -4,6 +4,7 @@ import client.inventory.ItemInventory;
 import client.inventory.ItemInventoryType;
 import client.inventory.slots.ItemSlot;
 import client.inventory.slots.ItemSlotEquip;
+import client.party.Party;
 import client.player.Job;
 import client.player.StatType;
 import client.player.friend.FriendList;
@@ -20,7 +21,9 @@ import net.database.CharacterAPI;
 import net.database.ItemAPI;
 import net.maple.packets.CharacterPackets;
 import net.maple.packets.FieldPackets;
+import net.maple.packets.PartyPackets;
 import net.server.ChannelServer;
+import net.server.Server;
 import util.packet.Packet;
 
 import java.util.*;
@@ -54,6 +57,7 @@ public class Character extends AbstractFieldLife {
     Map<ItemInventoryType, ItemInventory> inventories = new HashMap<>();
     FriendList friendList;
     int trueMaxHealth, trueMaxMana;
+    Party party;
 
     public void init() {
         resetQuickSlot();
@@ -162,6 +166,7 @@ public class Character extends AbstractFieldLife {
         }
         this.health = health;
         updateSingleStat(StatType.HP, false);
+        updatePartyHP(false);
     }
 
     public void setMana(int mana) {
@@ -172,9 +177,15 @@ public class Character extends AbstractFieldLife {
         updateSingleStat(StatType.MP, false);
     }
 
+    /**
+     * Only use for reduction of hp
+     *
+     * @param health reduction of hp
+     */
     public void modifyHealth(int health) {
         this.health += health;
         updateSingleStat(StatType.HP, false);
+        updatePartyHP(false);
     }
 
     public void modifyMana(int mana) {
@@ -192,6 +203,21 @@ public class Character extends AbstractFieldLife {
             this.mana = trueMaxMana;
         }
         updateStats(new ArrayList<>(Arrays.asList(StatType.HP, StatType.MP)), false);
+        updatePartyHP(false);
+    }
+
+    public void updatePartyHP(boolean receive) {
+        if (party != null) {
+            party.getMembers().forEach(m -> {
+                if (m.isOnline() && m.getChannel() == getChannel().getChannelId() && m.getField() == fieldId && m.getCid() != id) {
+                    Character chr = Server.getInstance().getCharacter(m.getCid());
+                    if (receive) {
+                        write(PartyPackets.getUpdatePartyHealthPacket(chr));
+                    }
+                    chr.write(PartyPackets.getUpdatePartyHealthPacket(this));
+                }
+            });
+        }
     }
 
     public void validateStats() {

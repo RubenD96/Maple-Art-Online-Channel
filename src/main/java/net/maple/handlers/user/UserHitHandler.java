@@ -23,9 +23,11 @@ public class UserHitHandler extends PacketHandler {
                 int objId = reader.readInteger();
                 byte dir = reader.readByte();
                 CharacterPackets.showDamage(chr, type, dmg, mobId, dir);
+                chr.modifyHealth(-dmg);
                 break;
             case DamageType.WORLD:
                 CharacterPackets.showDamage(chr, type, dmg, 0, (byte) 0);
+                chr.modifyHealth(-dmg);
                 break;
             default:
                 System.err.println("[UserHitHandler] Unknown damage type (" + type + ")");

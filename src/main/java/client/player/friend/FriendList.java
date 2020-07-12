@@ -114,7 +114,6 @@ public class FriendList {
     }
 
     public void updateFriendList() {
-        System.out.println("updating " + owner.getName() + "'s friendlist");
         owner.write(getUpdateFriendsPacket());
     }
 
@@ -164,12 +163,10 @@ public class FriendList {
     public void notifyMutualFriends() {
         if (!owner.getClient().isCc()) {
             final int channel = owner.getClient().isDisconnecting() ? -1 : owner.getChannel().getChannelId();
-            System.out.println("Notifying buddies that " + owner.getName() + " will now go to channel: " + channel);
             friends.keySet().forEach(f -> {
                 Character friend = Server.getInstance().getCharacter(f);
                 if (friend != null) {
                     if (friend.getFriendList().friends.containsKey(owner.getId())) {
-                        System.out.println(friend.getName() + " thought " + owner.getName() + " was in channel " + friend.getFriendList().friends.get(owner.getId()).getChannel());
                         friend.getFriendList().friends.get(owner.getId()).setChannel(channel);
                         friend.write(getFriendChannelChangePacket(owner.getId(), channel));
                         friend.getFriendList().updateFriendList();

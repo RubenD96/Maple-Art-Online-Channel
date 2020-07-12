@@ -56,6 +56,8 @@ public final class PacketProcessor {
         handlers.put(RecvOpcode.USER_GIVE_POPULARITY_REQUEST, new UserGivePopularityRequestHandler());
         handlers.put(RecvOpcode.USER_CHARACTER_INFO_REQUEST, new UserCharacterInfoRequestHandler());
         handlers.put(RecvOpcode.USER_PORTAL_SCRIPT_REQUEST, new UserPortalScriptRequestHandler());
+        handlers.put(RecvOpcode.PARTY_REQUEST, new PartyRequestHandler());
+        handlers.put(RecvOpcode.PARTY_RESULT, new PartyResultHandler());
         handlers.put(RecvOpcode.ADMIN, new AdminVerificationHandler());
         handlers.put(RecvOpcode.FRIEND_REQUEST, new FriendRequestHandler());
         handlers.put(RecvOpcode.USER_MIGRATE_TO_ITC_REQUEST, new UserMigrateToITCRequestHandler());
