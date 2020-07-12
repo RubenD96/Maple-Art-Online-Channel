@@ -49,7 +49,7 @@ public class MigrateInHandler extends PacketHandler {
                 FriendAPI.loadFriends(chr);
                 FriendAPI.loadPending(chr);
                 chr.getFriendList().sendPendingRequest();
-                loadParty(chr, mi.getChannel());
+                chr.loadParty();
 
                 c.write(initFuncKey(chr));
                 c.write(initQuickslot(chr));
@@ -64,27 +64,6 @@ public class MigrateInHandler extends PacketHandler {
     @Override
     public boolean validateState(Client c) {
         return true; // todo
-    }
-
-    private static void loadParty(Character chr, int channel) {
-        Party party = Server.getInstance().getParties().get(CharacterAPI.getOldPartyId(chr.getId()));
-        if (party != null) {
-            PartyMember member = party.getMember(chr.getId());
-            if (member != null) { // kicked while offline
-                chr.setParty(party);
-                member.setOnline(true);
-                member.setField(chr.getFieldId());
-                member.setChannel(channel);
-
-                for (PartyMember pmember : party.getMembers()) {
-                    if (pmember.isOnline()) {
-                        Character pm = Server.getInstance().getCharacter(pmember.getCid());
-                        pm.write(PartyPackets.updateParty(party, pmember.getChannel()));
-                    }
-                }
-                chr.updatePartyHP(true);
-            }
-        }
     }
 
     private static Packet initFuncKey(Character chr) {

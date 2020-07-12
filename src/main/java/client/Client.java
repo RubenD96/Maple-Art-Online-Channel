@@ -107,6 +107,7 @@ public class Client extends NettyClient {
         Party party = character.getParty();
         if (party != null) {
             PartyMember member = party.getMember(character.getId());
+            member.setCharacter(null);
             if (!cc) {
                 List<PartyMember> online = party.getOnlineMembers();
                 member.setOnline(false);

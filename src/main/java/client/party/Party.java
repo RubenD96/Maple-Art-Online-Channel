@@ -41,6 +41,14 @@ public class Party {
         return null;
     }
 
+    public synchronized void update() {
+        for (PartyMember member : getMembers()) {
+            if (member.isOnline()) {
+                member.getCharacter().write(PartyPackets.updateParty(this, member.getChannel()));
+            }
+        }
+    }
+
     /**
      * these 2 update packets are somehow borked
      */
@@ -128,8 +136,7 @@ public class Party {
         pw.writeInt(999999999); // dwTownID
         pw.writeInt(999999999); // dwFieldID
         pw.writeInt(0); // nSkillID
-        pw.writeInt(0);
-        pw.writeInt(0);
-        //pw.writePosition(new Point(0, 0)); // m_ptFieldPortal
+        pw.writeInt(0); // tagPOINT m_ptFieldPortal; x
+        pw.writeInt(0); // tagPOINT m_ptFieldPortal; y
     }
 }

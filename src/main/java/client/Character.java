@@ -5,6 +5,7 @@ import client.inventory.ItemInventoryType;
 import client.inventory.slots.ItemSlot;
 import client.inventory.slots.ItemSlotEquip;
 import client.party.Party;
+import client.party.PartyMember;
 import client.player.Job;
 import client.player.StatType;
 import client.player.friend.FriendList;
@@ -217,6 +218,18 @@ public class Character extends AbstractFieldLife {
                     chr.write(PartyPackets.getUpdatePartyHealthPacket(this));
                 }
             });
+        }
+    }
+
+    public void loadParty() {
+        Party party = Server.getInstance().getParties().get(CharacterAPI.getOldPartyId(id));
+        if (party != null) {
+            PartyMember member = party.getMember(id);
+            if (member != null) {
+                this.party = party;
+                member.setCharacter(this);
+                member.loadParty(party);
+            }
         }
     }
 
