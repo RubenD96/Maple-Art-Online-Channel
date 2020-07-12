@@ -7,6 +7,7 @@ import lombok.Setter;
 import net.maple.packets.PartyPackets;
 import net.server.Server;
 import util.packet.Packet;
+import util.packet.PacketWriter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,5 +89,47 @@ public class Party {
             member = members.get(new Random().nextInt(members.size()));
         } while (member.getCid() == exclude);
         return member;
+    }
+
+    public void encodePartyData(PacketWriter pw, int memChannel) {
+        List<PartyMember> members = new ArrayList<>(this.members);
+
+        while (members.size() < 6) {
+            members.add(new PartyMember());
+        }
+
+        encodeMembers(pw, members, leaderId); // PARTYMEMBER party
+        members.forEach(m -> {
+            if (m.getChannel() == memChannel) {
+                pw.writeInt(m.getField());
+            } else {
+                pw.writeInt(0);
+            }
+        }); // unsigned int adwFieldID[6]
+        members.forEach(m -> encodePortal(pw)); // PARTYDATA::TOWNPORTAL aTownPortal[6]
+        members.forEach(m -> pw.writeInt(0)); // int aPQReward
+        members.forEach(m -> pw.writeInt(0)); // int aPQRewardType
+        pw.writeInt(0); // unsigned int dwPQRewardMobTemplateID
+        pw.writeInt(0); // int bPQReward
+    }
+
+    public void encodeMembers(PacketWriter pw, List<PartyMember> members, int bossId) {
+        members.forEach(m -> pw.writeInt(m.getCid())); // unsigned int adwCharacterID[6]
+        members.forEach(m -> {
+            pw.writeString(m.getName(), 13); // char asCharacterName[6][13]
+        });
+        members.forEach(m -> pw.writeInt(m.getJob())); // int anJob[6]
+        members.forEach(m -> pw.writeInt(m.getLevel())); // int anLevel[6]
+        members.forEach(m -> pw.writeInt(m.getChannel())); // int anChannelID[6]
+        pw.writeInt(bossId); // unsigned int dwPartyBossCharacterID
+    }
+
+    public void encodePortal(PacketWriter pw) {
+        pw.writeInt(999999999); // dwTownID
+        pw.writeInt(999999999); // dwFieldID
+        pw.writeInt(0); // nSkillID
+        pw.writeInt(0);
+        pw.writeInt(0);
+        //pw.writePosition(new Point(0, 0)); // m_ptFieldPortal
     }
 }
