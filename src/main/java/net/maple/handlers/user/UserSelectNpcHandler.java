@@ -20,9 +20,14 @@ public class UserSelectNpcHandler extends PacketHandler {
                 .stream().filter(o -> o.getId() == npcObjectId).findFirst().orElse(null);
         if (npc != null) {
             System.out.println("[UserSelectNpcHandler] " + npc.getName() + " (" + npc.getNpcId() + ")");
-            //c.write(ConversationPackets.getOkMessagePacket(npc.getNpcId(), 0, "Hello!"));
-            boolean hasNpcScript = NPCScriptManager.getInstance().start(c, npc.getNpcId());
-            //chr.enableActions();
+            boolean hasNpcScript = NPCScriptManager.getInstance().converse(c, npc.getNpcId());
+            if (!hasNpcScript) {
+                c.write(ConversationPackets.getOkMessagePacket(npc.getNpcId(), 0,
+                        "This npc does not appear to have a script\r\n" +
+                                "Please report this to a staff member\r\n" +
+                                "ID: #r" + npc.getNpcId() + "#k\r\n" +
+                                "Map: #r" + chr.getFieldId()));
+            }
         }
     }
 }

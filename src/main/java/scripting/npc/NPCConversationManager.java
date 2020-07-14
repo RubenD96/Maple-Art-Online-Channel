@@ -5,12 +5,13 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import net.maple.packets.ConversationPackets;
+import scripting.AbstractPlayerInteraction;
 
 @Getter
 @SuppressWarnings("unused")
 public class NPCConversationManager extends AbstractPlayerInteraction {
 
-    @NonNull final int npcId;
+    protected @NonNull final int npcId;
     private @Setter String text = "";
 
     public NPCConversationManager(@NonNull Client c, int npcId) {

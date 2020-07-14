@@ -10,8 +10,8 @@ import java.util.Map;
 
 public class NPCScriptManager extends AbstractScriptManager {
 
-    private @Getter Map<Client, NPCConversationManager> cms = new HashMap<>();
-    private Map<Client, Invocable> scripts = new HashMap<>();
+    private final @Getter Map<Client, NPCConversationManager> cms = new HashMap<>();
+    private final Map<Client, Invocable> scripts = new HashMap<>();
     private static NPCScriptManager instance;
 
     public static NPCScriptManager getInstance() {
@@ -25,15 +25,15 @@ public class NPCScriptManager extends AbstractScriptManager {
 
     }
 
-    public boolean start(Client c, int npc) {
-        return start(c, npc, null, 1, 0);
+    public boolean converse(Client c, int npc) {
+        return converse(c, npc, null, 1, 0);
     }
 
-    public boolean start(Client c, int mode, int selection) {
-        return start(c, cms.get(c).npcId, null, mode, selection);
+    public void converse(Client c, int mode, int selection) {
+        converse(c, cms.get(c).npcId, null, mode, selection);
     }
 
-    public boolean start(Client c, int npc, String fileName, int mode, int selection) {
+    public boolean converse(Client c, int npc, String fileName, int mode, int selection) {
         try {
             if (scripts.get(c) == null) {
                 NPCConversationManager cm = new NPCConversationManager(c, npc);

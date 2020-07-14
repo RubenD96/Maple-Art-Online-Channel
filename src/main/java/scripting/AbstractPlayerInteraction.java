@@ -1,4 +1,4 @@
-package scripting.npc;
+package scripting;
 
 import client.Character;
 import client.Client;
@@ -11,9 +11,9 @@ import net.maple.packets.CharacterPackets;
 
 @RequiredArgsConstructor
 @Getter
-public class AbstractPlayerInteraction {
+public abstract class AbstractPlayerInteraction {
 
-    @NonNull final Client c;
+    protected @NonNull final Client c;
 
     public Character getPlayer() {
         return c.getCharacter();
