@@ -16,6 +16,12 @@ public class FieldNPC extends AbstractFieldControlledLife {
     @NonNull final private int npcId;
     @Setter protected boolean move;
 
+    public FieldNPC(FieldNPC npc) {
+        this.npcId = npc.npcId;
+        this.name = npc.name;
+        this.move = npc.move;
+    }
+
     @Override
     public FieldObjectType getFieldObjectType() {
         return FieldObjectType.NPC;

@@ -15,6 +15,7 @@ public enum SendOpcode implements IntegerValue {
     FRIEND_RESULT(0x41),
     SET_FIELD(0x8D),
     TRANSFER_CHANNEL_REQ_IGNORED(0x94),
+    GROUP_MESSAGE(0x96),
     QUICKSLOT_MAPPED_INIT(0xAF),
     USER_ENTER_FIELD(0xB3),
     USER_LEAVE_FIELD(0xB4),

@@ -32,7 +32,7 @@ public class ChannelServer extends Thread {
     @NonNull @Getter final int channelId, port;
     @NonNull @Getter final String IP;
     @Getter FieldManager fieldManager;
-    @Getter Map<String, Character> characters;
+    @Getter Map<Integer, Character> characters;
     @Getter @Setter LoginConnector loginConnector;
 
     public void init() {
@@ -45,19 +45,19 @@ public class ChannelServer extends Thread {
     }
 
     public synchronized Character getCharacter(String name) {
-        return characters.get(name);
+        return characters.values().stream().filter(c -> c.getName().equals(name)).findFirst().orElse(null);
     }
 
     public synchronized Character getCharacter(int id) {
-        return characters.values().stream().filter(c -> c.getId() == id).findFirst().orElse(null);
+        return characters.get(id);
     }
 
     public synchronized void addCharacter(Character chr) {
-        characters.put(chr.getName(), chr);
+        characters.put(chr.getId(), chr);
     }
 
     public synchronized void removeCharacter(Character chr) {
-        characters.remove(chr.getName());
+        characters.remove(chr.getId());
     }
 
     @Override

@@ -11,6 +11,7 @@ import client.player.StatType;
 import client.player.friend.FriendList;
 import client.player.key.KeyBinding;
 import constants.UserConstants;
+import field.Field;
 import field.object.FieldObjectType;
 import field.object.life.AbstractFieldLife;
 import field.object.life.FieldControlledObject;
@@ -92,13 +93,22 @@ public class Character extends AbstractFieldLife {
         updateSingleStat(StatType.MESO);
     }
 
+    public void changeField(int id) {
+        Field field = getChannel().getFieldManager().getField(id);
+        changeField(field);
+    }
+
+    public void changeField(Field field) {
+        field.enter(this);
+    }
+
     public void levelUp() {
         level++;
         maxHealth += 50; // just random number for now
         maxMana += 5;
-        health = maxHealth;
-        mana = maxMana;
         ap += 5;
+        setTrueMaxStats();
+        heal();
 
         List<StatType> statTypes = new ArrayList<>();
         statTypes.add(StatType.LEVEL);
@@ -192,6 +202,17 @@ public class Character extends AbstractFieldLife {
     public void modifyMana(int mana) {
         this.mana += mana;
         updateSingleStat(StatType.MP, false);
+    }
+
+    public void heal() {
+        heal(true);
+    }
+
+    public void heal(boolean update) {
+        health = trueMaxHealth;
+        mana = trueMaxMana;
+        if (update)
+            updateStats(new ArrayList<>(Arrays.asList(StatType.HP, StatType.MP)), false);
     }
 
     public void modifyHPMP(int health, int mana) {

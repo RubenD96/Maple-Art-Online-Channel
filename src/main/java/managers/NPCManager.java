@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class NPCManager extends AbstractManager {
 
-    private static Map<Integer, FieldNPC> npcs = new HashMap<>();
+    private final static Map<Integer, FieldNPC> npcs = new HashMap<>();
 
     public static synchronized FieldNPC getNPC(int id) {
         FieldNPC npc = npcs.get(id);

@@ -67,6 +67,7 @@ public class Field {
             // TODO: 4/3/2020 chr.getPortal() is always 0
 
             obj.setId(chr.getId());
+            chr.setFieldId(id);
             chr.setPosition(portal.getPosition());
             chr.setFoothold((short) (portal.getType() != PortalType.START_POINT
                     ? getFhByPortal(portal).getId()

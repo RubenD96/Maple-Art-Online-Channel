@@ -4,6 +4,7 @@ import field.Field;
 import field.object.Foothold;
 import field.object.life.AbstractFieldControlledLife;
 import field.object.life.FieldMob;
+import field.object.life.FieldMobTemplate;
 import field.object.life.FieldNPC;
 import field.object.portal.FieldPortal;
 import lombok.Getter;
@@ -97,20 +98,24 @@ public class FieldManager extends AbstractManager {
                 int rx1 = r.readInteger();
                 String type = r.readMapleString();
                 if (type.equals("m")) {
-                    FieldMob mob = new FieldMob(MobManager.getMob(id), f == 1);
+                    FieldMobTemplate template = MobManager.getMob(id);
+                    if (template == null) { // mob data doesn't exist
+                        return;
+                    }
+                    FieldMob mob = new FieldMob(template, f == 1);
                     mob.setHp(mob.getTemplate().getMaxHP());
                     mob.setMp(mob.getTemplate().getMaxMP());
                     mob.setHome((short) fh);
                     obj = mob;
                 } else { // npc
-                    FieldNPC npc = NPCManager.getNPC(id);
+                    FieldNPC npc = new FieldNPC(NPCManager.getNPC(id));
                     obj = npc;
                 }
                 obj.setRx0(rx0);
                 obj.setRx1(rx1);
                 obj.setPosition(new Point(x, y));
                 obj.setFoothold((short) fh);
-                obj.setF(f == 1);
+                obj.setF(f == 0);
                 obj.setCy(cy);
                 obj.setHide(hide == 1);
                 field.enter(obj);

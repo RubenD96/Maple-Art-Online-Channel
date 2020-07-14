@@ -31,14 +31,7 @@ public class PartyResultHandler extends PacketHandler {
             if (chr.getParty() == null) {
                 party.addMember(chr);
                 chr.setParty(party);
-                // using party.update somehow breaks this
-                for (PartyMember member : party.getMembers()) {
-                    if (member.isOnline()) {
-                        Character mem = Server.getInstance().getCharacter(member.getCid());
-                        mem.write(PartyPackets.getJoinPacket(party, chr.getName(), member.getChannel()));
-                        mem.updatePartyHP(true);
-                    }
-                }
+                party.update();
             }
         } else if (operation == PartyOperationType.PARTYRES_INVITEPARTY_ALREADYINVITEDBYINVITER.getValue()) {
             // todo send player is busy msg?

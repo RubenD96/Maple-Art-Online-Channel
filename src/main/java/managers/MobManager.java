@@ -8,19 +8,22 @@ import java.util.Map;
 
 public class MobManager extends AbstractManager {
 
-    private static Map<Integer, FieldMobTemplate> mobs = new HashMap<>();
+    private final static Map<Integer, FieldMobTemplate> mobs = new HashMap<>();
 
     public static synchronized FieldMobTemplate getMob(int id) {
         FieldMobTemplate mob = mobs.get(id);
         if (mob == null) {
             mob = new FieldMobTemplate(id);
-            loadMobData(mob);
-            mobs.put(id, mob);
+            if (loadMobData(mob)) {
+                mobs.put(id, mob);
+            } else {
+                return null;
+            }
         }
         return mob;
     }
 
-    private static void loadMobData(FieldMobTemplate mob) {
+    private static boolean loadMobData(FieldMobTemplate mob) {
         PacketReader r = getData("wz/Mob/" + mob.getId() + ".mao");
 
         if (r != null) {
@@ -29,6 +32,8 @@ public class MobManager extends AbstractManager {
             mob.setExp(r.readInteger());
             mob.setMaxHP(r.readInteger());
             mob.setMaxMP(r.readInteger());
+            return true;
         }
+        return false;
     }
 }

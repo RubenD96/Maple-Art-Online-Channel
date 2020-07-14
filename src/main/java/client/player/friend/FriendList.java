@@ -43,6 +43,15 @@ public class FriendList {
         friends.remove(id);
     }
 
+    public void sendMessage(Packet packet) {
+        friends.keySet().forEach(friendId -> {
+            Character friend = Server.getInstance().getCharacter(friendId);
+            if (friend != null && friend.getFriendList().getFriends().get(owner.getId()) != null) {
+                friend.write(packet);
+            }
+        });
+    }
+
     public Packet getUpdateFriendsPacket() {
         PacketWriter pw = new PacketWriter(8);
 

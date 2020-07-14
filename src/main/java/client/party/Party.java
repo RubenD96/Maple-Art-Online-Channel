@@ -41,10 +41,19 @@ public class Party {
         return null;
     }
 
+    public void sendMessage(Packet packet, int from) {
+        for (PartyMember member : getMembers()) {
+            if (member.isOnline() && from != member.getCid()) {
+                member.getCharacter().write(packet);
+            }
+        }
+    }
+
     public synchronized void update() {
         for (PartyMember member : getMembers()) {
             if (member.isOnline()) {
                 member.getCharacter().write(PartyPackets.updateParty(this, member.getChannel()));
+                member.getCharacter().updatePartyHP(true);
             }
         }
     }

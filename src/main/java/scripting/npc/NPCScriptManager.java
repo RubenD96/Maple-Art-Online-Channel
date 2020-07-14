@@ -57,9 +57,11 @@ public class NPCScriptManager extends AbstractScriptManager {
                     scripts.put(c, iv);
                     c.setLastNpcClick(System.currentTimeMillis());
                     try {
+                        iv.invokeFunction("init");
+                    } catch (final NoSuchMethodException ignored) {
+
+                    } finally {
                         iv.invokeFunction("converse", mode, selection);
-                    } catch (final NoSuchMethodException nsme) {
-                        nsme.printStackTrace();
                     }
                 } else {
                     c.getCharacter().enableActions();
@@ -70,6 +72,7 @@ public class NPCScriptManager extends AbstractScriptManager {
             }
             return true;
         } catch (final Exception e) {
+            System.err.println(e.getMessage());
             dispose(c);
             return false;
         }
