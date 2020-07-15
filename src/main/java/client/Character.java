@@ -3,6 +3,7 @@ package client;
 import client.inventory.ItemInventory;
 import client.inventory.ItemInventoryType;
 import client.inventory.slots.ItemSlot;
+import client.inventory.slots.ItemSlotBundle;
 import client.inventory.slots.ItemSlotEquip;
 import client.party.Party;
 import client.party.PartyMember;
@@ -29,6 +30,7 @@ import net.server.Server;
 import util.packet.Packet;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Getter
 @Setter
@@ -258,6 +260,22 @@ public class Character extends AbstractFieldLife {
         setTrueMaxStats();
         if (health > trueMaxHealth) setHealth(trueMaxHealth);
         if (mana > trueMaxMana) setMana(trueMaxMana);
+    }
+
+    public int getItemQuantity(int item) {
+        ItemInventoryType type = ItemInventoryType.values()[(item / 1000000) - 1];
+
+        AtomicInteger quantity = new AtomicInteger(0);
+        inventories.get(type).getItems().values().stream()
+                .filter(itemSlot -> itemSlot.getTemplateId() == item)
+                .forEach(itemSlot -> {
+                    if (itemSlot instanceof ItemSlotBundle) {
+                        quantity.addAndGet(((ItemSlotBundle) itemSlot).getNumber());
+                    } else {
+                        quantity.incrementAndGet();
+                    }
+                });
+        return quantity.get();
     }
 
     public void incStrength() {

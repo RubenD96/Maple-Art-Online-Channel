@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import scripting.npc.NPCConversationManager;
 
+@SuppressWarnings("unused")
 public class QuestConversationManager extends NPCConversationManager {
 
     private @Getter final int id;
@@ -19,5 +20,13 @@ public class QuestConversationManager extends NPCConversationManager {
     @Override
     public void dispose() {
         QuestScriptManager.getInstance().dispose(this, c);
+    }
+
+    public void startQuest() {
+        super.startQuest(id);
+    }
+
+    public void completeQuest() {
+        super.completeQuest(id);
     }
 }

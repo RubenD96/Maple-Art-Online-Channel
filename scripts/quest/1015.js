@@ -25,7 +25,7 @@ function start(m, s) {
                 "#i4000252# #r5 #b#t4000252#\r\n" +
                 "#i4000017# #r3 #b#t4000017#\r\n" +
                 "#i2010009# #r1 #b#t2010009#");
-            //qm.forceStartQuest();
+            cm.startQuest();
             cm.dispose();
         }
     }
@@ -60,7 +60,7 @@ function end(m, s) {
             cm.gainItem(4000252, -5);
             cm.gainItem(4000017, -3);
             cm.gainItem(2010009, -1);
-            cm.forceCompleteQuest();
+            cm.completeQuest();
             cm.dispose();
         }
     }

@@ -65,7 +65,8 @@ public class QuestScriptManager extends AbstractScriptManager {
                 scripts.get(c).invokeFunction(start ? "start" : "end", mode, selection);
             }
         } catch (final Exception e) {
-            System.err.println(e.getMessage());
+            //System.err.println(e.getMessage());
+            e.printStackTrace();
             dispose(c);
             return false;
         }

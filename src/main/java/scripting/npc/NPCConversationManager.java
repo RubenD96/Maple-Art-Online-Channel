@@ -1,10 +1,14 @@
 package scripting.npc;
 
 import client.Client;
+import client.messages.quest.CompleteQuestRecordMessage;
+import client.messages.quest.PerformQuestRecordMessage;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import net.maple.packets.CharacterPackets;
 import net.maple.packets.ConversationPackets;
+import net.maple.packets.QuestPackets;
 import scripting.AbstractPlayerInteraction;
 
 @Getter
@@ -117,5 +121,16 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public void dispose() {
         NPCScriptManager.getInstance().dispose(this);
+    }
+
+    public void startQuest(int qid) {
+        PerformQuestRecordMessage msg = new PerformQuestRecordMessage((short) qid, "");
+        c.write(CharacterPackets.message(msg));
+        c.write(QuestPackets.getStartQuestPacket(qid, npcId));
+    }
+
+    public void completeQuest(int qid) {
+        CompleteQuestRecordMessage msg = new CompleteQuestRecordMessage((short) qid, System.currentTimeMillis());
+        c.write(CharacterPackets.message(msg));
     }
 }

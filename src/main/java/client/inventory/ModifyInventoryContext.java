@@ -155,6 +155,7 @@ public class ModifyInventoryContext implements ModifyInventoryContextInterface {
         inventory.getItems().values().stream()
                 .filter(i -> i.getTemplateId() == id)
                 .forEach(item -> {
+                    System.out.println(item);
                     if (removed.get() >= quantity) return;
                     if (item instanceof ItemSlotBundle) {
                         ItemSlotBundle bundle = (ItemSlotBundle) item;
@@ -169,9 +170,10 @@ public class ModifyInventoryContext implements ModifyInventoryContextInterface {
                                 remove(bundle);
                             }
                         }
+                    } else {
+                        removed.incrementAndGet();
+                        remove(item);
                     }
-                    removed.incrementAndGet();
-                    remove(item);
                 });
     }
 
