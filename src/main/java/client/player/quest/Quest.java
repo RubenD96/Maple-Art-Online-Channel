@@ -1,7 +1,6 @@
 package client.player.quest;
 
 import client.Character;
-import client.messages.quest.AbstractQuestMessage;
 import client.messages.quest.AbstractQuestRecordMessage;
 import client.player.quest.requirement.EndingRequirement;
 import client.player.quest.requirement.Requirement;
@@ -11,6 +10,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import managers.QuestTemplateManager;
+import net.database.QuestAPI;
 import net.maple.packets.CharacterPackets;
 import scripting.quest.QuestScriptManager;
 
@@ -19,9 +19,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class Quest {
 
-    private final @NonNull int id;
-    private @Getter QuestState state;
-    private final @NonNull Character character;
+    private final @Getter @NonNull int id;
+    private @Getter @Setter QuestState state;
+    private final @Getter @NonNull Character character;
 
     private boolean reqCheck(Requirement reqs) {
         if (character.getLevel() < reqs.getMinLevel()) {
@@ -107,6 +107,12 @@ public class Quest {
         state = message.getState();
         character.write(CharacterPackets.message(message));
 
-        // todo save to db
+        if (state == QuestState.NONE) {
+            QuestAPI.remove(this);
+        } else if (state == QuestState.PERFORM) {
+            QuestAPI.register(this);
+        } else if (state == QuestState.COMPLETE) {
+            QuestAPI.update(this);
+        }
     }
 }

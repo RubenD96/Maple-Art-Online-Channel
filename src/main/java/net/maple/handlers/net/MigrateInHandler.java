@@ -6,10 +6,7 @@ import client.party.Party;
 import client.party.PartyMember;
 import client.player.key.KeyBinding;
 import field.Field;
-import net.database.AccountAPI;
-import net.database.CharacterAPI;
-import net.database.FriendAPI;
-import net.database.ItemAPI;
+import net.database.*;
 import net.maple.SendOpcode;
 import net.maple.handlers.PacketHandler;
 import net.maple.packets.PartyPackets;
@@ -42,6 +39,7 @@ public class MigrateInHandler extends PacketHandler {
 
                 ItemAPI.loadInventories(chr);
                 chr.validateStats();
+                QuestAPI.loadAll(chr);
 
                 Field field = c.getWorldChannel().getFieldManager().getField(chr.getFieldId());
                 field.enter(chr);

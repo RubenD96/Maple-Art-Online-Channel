@@ -108,7 +108,10 @@ public class FieldManager extends AbstractManager {
                     mob.setHome((short) fh);
                     obj = mob;
                 } else { // npc
-                    FieldNPC npc = new FieldNPC(NPCManager.getNPC(id));
+                    FieldNPC template = NPCManager.getNPC(id);
+                    if (template == null) continue;
+
+                    FieldNPC npc = new FieldNPC(template);
                     obj = npc;
                 }
                 obj.setRx0(rx0);

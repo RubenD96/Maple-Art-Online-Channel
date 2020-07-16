@@ -27,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.database.CharacterAPI;
 import net.database.ItemAPI;
+import net.database.QuestAPI;
 import net.maple.packets.CharacterPackets;
 import net.maple.packets.FieldPackets;
 import net.maple.packets.PartyPackets;

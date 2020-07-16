@@ -9,6 +9,8 @@ import client.inventory.operations.MoveInventoryOperation;
 import client.inventory.slots.ItemSlot;
 import client.messages.Message;
 import client.player.StatType;
+import client.player.quest.Quest;
+import client.player.quest.QuestState;
 import net.maple.SendOpcode;
 import util.packet.Packet;
 import util.packet.PacketWriter;
@@ -91,8 +93,19 @@ public class CharacterPackets {
         pw.writeShort(0);
 
         // quests
-        pw.writeShort(0); // active count
-        pw.writeShort(0); // completed count
+        Collection<Quest> active = chr.getQuests().values().stream().filter(quest -> quest.getState() == QuestState.PERFORM).collect(Collectors.toList());
+        pw.writeShort(active.size()); // active count
+        active.forEach(quest -> {
+            pw.writeShort(quest.getId());
+            pw.writeMapleString("");
+        });
+
+        Collection<Quest> completed = chr.getQuests().values().stream().filter(quest -> quest.getState() == QuestState.COMPLETE).collect(Collectors.toList());
+        pw.writeShort(completed.size()); // completed count
+        completed.forEach(quest -> {
+            pw.writeShort(quest.getId());
+            pw.writeLong(System.currentTimeMillis());
+        });
 
         // minigames
         pw.writeShort(0);
