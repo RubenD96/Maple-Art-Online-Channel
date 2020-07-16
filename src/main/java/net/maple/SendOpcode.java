@@ -13,6 +13,7 @@ public enum SendOpcode implements IntegerValue {
     CHARACTER_INFO(0x3D),
     PARTY_RESULT(0x3E),
     FRIEND_RESULT(0x41),
+    BROADCAST_MSG(0x47),
     SET_FIELD(0x8D),
     TRANSFER_CHANNEL_REQ_IGNORED(0x94),
     GROUP_MESSAGE(0x96),

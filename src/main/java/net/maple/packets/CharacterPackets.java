@@ -8,6 +8,7 @@ import client.inventory.ModifyInventoriesContext;
 import client.inventory.operations.MoveInventoryOperation;
 import client.inventory.slots.ItemSlot;
 import client.messages.Message;
+import client.messages.broadcast.BroadcastMessage;
 import client.player.StatType;
 import client.player.quest.Quest;
 import client.player.quest.QuestState;
@@ -404,6 +405,15 @@ public class CharacterPackets {
         PacketWriter pw = new PacketWriter(32);
 
         pw.writeHeader(SendOpcode.MESSAGE);
+        message.encode(pw);
+
+        return pw.createPacket();
+    }
+
+    public static Packet message(BroadcastMessage message) {
+        PacketWriter pw = new PacketWriter(32);
+
+        pw.writeHeader(SendOpcode.BROADCAST_MSG);
         message.encode(pw);
 
         return pw.createPacket();
