@@ -14,20 +14,24 @@ public class NPCManager extends AbstractManager {
         FieldNPC npc = npcs.get(id);
         if (npc == null) {
             npc = new FieldNPC(id);
-            loadNPCData(npc);
+            boolean exists = loadNPCData(npc);
+            if (!exists) return null;
             npcs.put(id, npc);
         }
         return npc;
     }
 
-    private static void loadNPCData(FieldNPC npc) {
+    private static boolean loadNPCData(FieldNPC npc) {
         PacketReader r = getData("wz/Npc/" + npc.getNpcId() + ".mao");
 
-        //npc.setId(r.readInteger());
-        if (r != null) {
-            r.readInteger();
-            npc.setName(r.readMapleString());
-            npc.setMove(r.readBool());
+        if (r == null) {
+            return false;
         }
+
+        //npc.setId(r.readInteger());
+        r.readInteger();
+        npc.setName(r.readMapleString());
+        npc.setMove(r.readBool());
+        return true;
     }
 }
