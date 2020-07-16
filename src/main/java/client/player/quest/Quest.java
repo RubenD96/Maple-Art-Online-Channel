@@ -40,7 +40,24 @@ public class Quest {
             }
         }
 
-        // todo quest check
+        if (!reqs.getQuests().isEmpty()) {
+            for (Map.Entry<Integer, Byte> quest : reqs.getQuests().entrySet()) {
+                if (quest.getValue() == 0) { // not started
+                    if (character.getQuests().containsKey(quest.getKey())) { // but does exist??
+                        if (character.getQuests().get(quest.getKey()).getState() != QuestState.NONE) { // shouldn't happen, I think? Checking anyway.
+                            return false;
+                        }
+                    }
+                } else {
+                    Quest q = character.getQuests().get(quest.getKey());
+                    if (q == null) { // does not exist but quest should be started or finished
+                        return false;
+                    } else if (q.getState().getValue() != quest.getValue()) { // quest is registered at started but should be completed, or other way around
+                        return false;
+                    }
+                }
+            }
+        }
         return true;
     }
 

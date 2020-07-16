@@ -20,12 +20,6 @@ public class UserQuestRequestHandler extends PacketHandler {
         short ptUserPosX = reader.readShort();
         short ptUserPosY = reader.readShort();
 
-        /*System.out.println("action: " + action);
-        System.out.println("QuestId: " + questId);
-        System.out.println("npcId: " + npcId);
-        System.out.println("pos-x: " + ptUserPosX);
-        System.out.println("pos-y: " + ptUserPosY);*/
-
         if (action == QuestRequest.OPENING_SCRIPT.getValue()) {
             QuestScriptManager.getInstance().converse(c, npcId, questId, true);
         } else if (action == QuestRequest.COMPLETE_SCRIPT.getValue()) {
