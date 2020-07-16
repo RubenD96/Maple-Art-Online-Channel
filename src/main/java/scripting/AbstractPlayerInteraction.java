@@ -46,4 +46,16 @@ public abstract class AbstractPlayerInteraction {
     public void gainExp(int exp) {
         getPlayer().gainExp(exp);
     }
+
+    public void warp(int id, String portal) {
+        getPlayer().changeField(id, portal);
+    }
+
+    public void warp(int id) {
+        getPlayer().changeField(id);
+    }
+
+    public int getMapId() {
+        return getPlayer().getFieldId();
+    }
 }

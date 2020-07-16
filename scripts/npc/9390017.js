@@ -2,7 +2,7 @@
  * Created by Ruben on 7/14/2020.
  */
 
-let map;
+let field;
 
 function converse(m, s) {
     cm.sendOk("Asuna-chaaan~~~");

@@ -48,6 +48,10 @@ public class MigrateInHandler extends PacketHandler {
                 FriendAPI.loadPending(chr);
                 chr.getFriendList().sendPendingRequest();
                 chr.loadParty();
+                TownsAPI.load(chr);
+                if (chr.getTowns().isEmpty()) {
+                    chr.addTown(100);
+                }
 
                 c.write(initFuncKey(chr));
                 c.write(initQuickslot(chr));

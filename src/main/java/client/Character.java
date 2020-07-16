@@ -15,7 +15,6 @@ import client.player.StatType;
 import client.player.friend.FriendList;
 import client.player.key.KeyBinding;
 import client.player.quest.Quest;
-import client.player.quest.QuestState;
 import constants.UserConstants;
 import field.Field;
 import field.object.FieldObjectType;
@@ -27,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.database.CharacterAPI;
 import net.database.ItemAPI;
-import net.database.QuestAPI;
+import net.database.TownsAPI;
 import net.maple.packets.CharacterPackets;
 import net.maple.packets.FieldPackets;
 import net.maple.packets.PartyPackets;
@@ -70,6 +69,7 @@ public class Character extends AbstractFieldLife {
     int trueMaxHealth, trueMaxMana;
     Party party;
     Map<Integer, Quest> quests = new HashMap<>();
+    Set<Integer> towns = new TreeSet<>();
 
     public void init() {
         resetQuickSlot();
@@ -104,12 +104,26 @@ public class Character extends AbstractFieldLife {
     }
 
     public void changeField(int id) {
-        Field field = getChannel().getFieldManager().getField(id);
-        changeField(field);
+        changeField(id, (byte) 0);
     }
 
-    public void changeField(Field field) {
-        field.enter(this);
+    public void changeField(int id, String portal) {
+        Field field = getChannel().getFieldManager().getField(id);
+        field.enter(this, portal);
+    }
+
+    public void changeField(int id, int portal) {
+        Field field = getChannel().getFieldManager().getField(id);
+        field.enter(this, (byte) portal);
+    }
+
+    public void addTown(int id) {
+        TownsAPI.add(this, id);
+        towns.add(id);
+    }
+
+    public boolean isTownUnlocked(int id) {
+        return towns.contains(id);
     }
 
     public void forfeitQuest(int qid) {

@@ -12,6 +12,7 @@ import lombok.Data;
 import lombok.NonNull;
 import net.maple.packets.FieldPackets;
 import net.maple.packets.PartyPackets;
+import scripting.map.FieldScriptManager;
 import util.packet.Packet;
 
 import java.awt.*;
@@ -46,6 +47,10 @@ public class Field {
 
     public void broadcast(Packet packet) {
         broadcast(packet, null);
+    }
+
+    public synchronized void enter(Character chr, String portal) {
+        enter(chr, (byte) getPortalByName(portal).getId());
     }
 
     public synchronized void enter(Character chr, byte portal) {
@@ -94,6 +99,10 @@ public class Field {
                         }
                     }
                 });
+            }
+
+            if (!script.isEmpty()) {
+                FieldScriptManager.getInstance().execute(chr.getClient(), this, script);
             }
         } else {
             obj.setId(runningObjectId.addAndGet(1));
