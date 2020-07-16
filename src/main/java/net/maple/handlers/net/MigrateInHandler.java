@@ -41,6 +41,11 @@ public class MigrateInHandler extends PacketHandler {
                 chr.validateStats();
                 QuestAPI.loadAll(chr);
 
+                TownsAPI.load(chr); // before entering field, in case of FirstVisit mapscript
+                if (chr.getTowns().isEmpty()) {
+                    chr.addTown(100);
+                }
+
                 Field field = c.getWorldChannel().getFieldManager().getField(chr.getFieldId());
                 field.enter(chr);
 
@@ -48,10 +53,6 @@ public class MigrateInHandler extends PacketHandler {
                 FriendAPI.loadPending(chr);
                 chr.getFriendList().sendPendingRequest();
                 chr.loadParty();
-                TownsAPI.load(chr);
-                if (chr.getTowns().isEmpty()) {
-                    chr.addTown(100);
-                }
 
                 c.write(initFuncKey(chr));
                 c.write(initQuickslot(chr));

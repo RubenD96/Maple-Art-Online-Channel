@@ -30,7 +30,6 @@ public class FieldScriptManager extends AbstractScriptManager {
                 return;
             }
             engine.put("field", map);
-            c.setLastNpcClick(System.currentTimeMillis());
             iv.invokeFunction("execute");
         } catch (final Exception e) {
             //System.err.println(e.getMessage());

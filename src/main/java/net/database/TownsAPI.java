@@ -2,9 +2,6 @@ package net.database;
 
 import client.Character;
 
-import java.util.Collections;
-import java.util.stream.Collectors;
-
 import static database.jooq.Tables.UNLOCKEDTOWNS;
 
 public class TownsAPI {
