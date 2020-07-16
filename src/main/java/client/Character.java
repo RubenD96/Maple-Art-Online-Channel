@@ -5,12 +5,17 @@ import client.inventory.ItemInventoryType;
 import client.inventory.slots.ItemSlot;
 import client.inventory.slots.ItemSlotBundle;
 import client.inventory.slots.ItemSlotEquip;
+import client.messages.quest.CompleteQuestRecordMessage;
+import client.messages.quest.PerformQuestRecordMessage;
+import client.messages.quest.ResignQuestRecordMessage;
 import client.party.Party;
 import client.party.PartyMember;
 import client.player.Job;
 import client.player.StatType;
 import client.player.friend.FriendList;
 import client.player.key.KeyBinding;
+import client.player.quest.Quest;
+import client.player.quest.QuestState;
 import constants.UserConstants;
 import field.Field;
 import field.object.FieldObjectType;
@@ -25,6 +30,7 @@ import net.database.ItemAPI;
 import net.maple.packets.CharacterPackets;
 import net.maple.packets.FieldPackets;
 import net.maple.packets.PartyPackets;
+import net.maple.packets.QuestPackets;
 import net.server.ChannelServer;
 import net.server.Server;
 import util.packet.Packet;
@@ -62,6 +68,7 @@ public class Character extends AbstractFieldLife {
     FriendList friendList;
     int trueMaxHealth, trueMaxMana;
     Party party;
+    Map<Integer, Quest> quests = new HashMap<>();
 
     public void init() {
         resetQuickSlot();
@@ -102,6 +109,44 @@ public class Character extends AbstractFieldLife {
 
     public void changeField(Field field) {
         field.enter(this);
+    }
+
+    public void forfeitQuest(int qid) {
+        Quest quest = quests.get(qid);
+        if (quest == null) {
+            return;
+        }
+        quests.remove(qid);
+
+        quest.updateState(new ResignQuestRecordMessage((short) qid, false));
+    }
+
+    public void startQuest(int qid, int npcId) {
+        if (quests.containsKey(qid)) {
+            return;
+        }
+        Quest quest = new Quest(qid, this);
+        if (!quest.canStart()) {
+            client.close(this, "Invalid quest start requirements (" + qid + ")");
+            return;
+        }
+        quests.put(qid, quest);
+
+        quest.updateState(new PerformQuestRecordMessage((short) qid, ""));
+        write(QuestPackets.getStartQuestPacket(qid, npcId));
+    }
+
+    public void completeQuest(int qid) {
+        Quest quest = quests.get(qid);
+        if (quest == null) {
+            return;
+        }
+        if (!quest.canFinish()) {
+            client.close(this, "Invalid quest finish requirements (" + qid + ")");
+            return;
+        }
+
+        quest.updateState(new CompleteQuestRecordMessage((short) qid, System.currentTimeMillis()));
     }
 
     public void levelUp() {

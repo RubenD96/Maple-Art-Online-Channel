@@ -124,13 +124,10 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     }
 
     public void startQuest(int qid) {
-        PerformQuestRecordMessage msg = new PerformQuestRecordMessage((short) qid, "");
-        c.write(CharacterPackets.message(msg));
-        c.write(QuestPackets.getStartQuestPacket(qid, npcId));
+        getPlayer().startQuest(qid, npcId);
     }
 
     public void completeQuest(int qid) {
-        CompleteQuestRecordMessage msg = new CompleteQuestRecordMessage((short) qid, System.currentTimeMillis());
-        c.write(CharacterPackets.message(msg));
+        getPlayer().completeQuest(qid);
     }
 }

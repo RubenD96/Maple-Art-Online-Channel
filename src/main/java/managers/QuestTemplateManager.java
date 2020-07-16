@@ -1,9 +1,13 @@
-package client.player.quest;
+package managers;
+
+import client.player.quest.QuestRequirementType;
+import client.player.quest.QuestTemplate;
+import util.packet.PacketReader;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class QuestTemplateManager {
+public class QuestTemplateManager extends AbstractManager {
 
     private final Map<Integer, QuestTemplate> templates;
     private static QuestTemplateManager instance;
@@ -30,6 +34,16 @@ public class QuestTemplateManager {
     }
 
     private void loadQuestData(QuestTemplate template) {
-        // todo
+        PacketReader r = getData("wz/Quest/" + template.getId() + ".mao");
+
+        if (r != null) {
+            int sflags = r.readInteger();
+            int eflags = r.readInteger();
+
+            template.getStartingRequirements().decode(sflags, r);
+            template.getEndingRequirements().decode(eflags, r);
+
+            System.out.println("Finished initializing quest: " + template.getId());
+        }
     }
 }

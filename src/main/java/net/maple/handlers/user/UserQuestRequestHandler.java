@@ -27,11 +27,11 @@ public class UserQuestRequestHandler extends PacketHandler {
         System.out.println("pos-y: " + ptUserPosY);*/
 
         if (action == QuestRequest.OPENING_SCRIPT.getValue()) {
-            System.out.println("start quest script");
             QuestScriptManager.getInstance().converse(c, npcId, questId, true);
         } else if (action == QuestRequest.COMPLETE_SCRIPT.getValue()) {
-            System.out.println("end quest script");
             QuestScriptManager.getInstance().converse(c, npcId, questId, false);
+        } else if (action == QuestRequest.RESIGN_QUEST.getValue()) {
+            c.getCharacter().forfeitQuest(questId);
         } else {
             System.out.println("Unknown/unhandled quest action (" + action + ")");
             if (!c.isAdmin()) {
