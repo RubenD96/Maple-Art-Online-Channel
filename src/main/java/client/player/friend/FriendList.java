@@ -112,7 +112,7 @@ public class FriendList {
             }
         } else {
             int id = CharacterAPI.getOfflineId(name);
-            if (id == -1) { // todo print ingame
+            if (id == -1) {
                 sendFriendMessage(FriendRequestHandler.FriendOperation.FRIEND_RES_SET_FRIEND_UNKNOWN_USER);
                 return;
             }

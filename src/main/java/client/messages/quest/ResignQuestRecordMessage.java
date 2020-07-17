@@ -5,7 +5,6 @@ import util.packet.PacketWriter;
 
 public class ResignQuestRecordMessage extends AbstractQuestRecordMessage {
 
-    // todo state
     private final boolean completed;
 
     public ResignQuestRecordMessage(short questId, boolean completed) {

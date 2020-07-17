@@ -68,7 +68,7 @@ public class MigrateInHandler extends PacketHandler {
 
     @Override
     public boolean validateState(Client c) {
-        return true; // todo
+        return true;
     }
 
     private static Packet initFuncKey(Character chr) {
