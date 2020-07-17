@@ -3,7 +3,6 @@ package net.maple.handlers.misc;
 import client.Character;
 import client.Client;
 import client.party.Party;
-import client.party.PartyMember;
 import client.party.PartyOperationType;
 import net.maple.handlers.PacketHandler;
 import net.maple.packets.PartyPackets;

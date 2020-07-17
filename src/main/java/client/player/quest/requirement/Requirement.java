@@ -19,12 +19,14 @@ public abstract class Requirement {
         if (containsFlag(flags, QuestRequirementType.MIN_LEVEL)) minLevel = reader.readShort();
         if (containsFlag(flags, QuestRequirementType.NPC)) npc = reader.readInteger();
         if (containsFlag(flags, QuestRequirementType.ITEM)) {
-            for (int i = 0; i < reader.readShort(); i++) {
+            int size = reader.readShort();
+            for (int i = 0; i < size; i++) {
                 items.put(reader.readInteger(), reader.readShort());
             }
         }
         if (containsFlag(flags, QuestRequirementType.QUEST)) {
-            for (int i = 0; i < reader.readShort(); i++) {
+            int size = reader.readShort();
+            for (int i = 0; i < size; i++) {
                 quests.put(reader.readInteger(), reader.readByte());
             }
         }

@@ -3,7 +3,6 @@ package net.maple.handlers.user;
 import client.Client;
 import client.player.quest.QuestRequest;
 import net.maple.handlers.PacketHandler;
-import scripting.quest.QuestConversationManager;
 import scripting.quest.QuestScriptManager;
 import util.HexTool;
 import util.packet.PacketReader;

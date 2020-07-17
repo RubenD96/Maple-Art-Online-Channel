@@ -22,8 +22,26 @@ import java.util.stream.Collectors;
 
 public class CharacterPackets {
 
+    /**
+     * -DBCHAR_CHARACTER = 0x1,
+     * -DBCHAR_MONEY = 0x2,
+     * -DBCHAR_ITEMSLOTEQUIP = 0x4,
+     * -DBCHAR_ITEMSLOTCONSUME = 0x8,
+     * -DBCHAR_ITEMSLOTINSTALL = 0x10,
+     * -DBCHAR_ITEMSLOTETC = 0x20,
+     * -DBCHAR_ITEMSLOTCASH = 0x40,
+     * -DBCHAR_INVENTORYSIZE = 0x80,
+     * -DBCHAR_SKILLRECORD = 0x100,
+     * -DBCHAR_QUESTRECORD = 0x200,
+     * -BCHAR_QUESTCOMPLETE = 0x4000,
+     * -DBCHAR_SKILLCOOLTIME = 0x8000,
+     *
+     * @param chr Character
+     * @param pw  packet
+     */
     public static void encodeData(Character chr, PacketWriter pw) {
-        pw.writeLong(-1); // flags
+        pw.writeLong(50175); // flags
+        //pw.writeLong(-1); // all flags
         pw.write(0);
         pw.write(0);
 
@@ -41,8 +59,8 @@ public class CharacterPackets {
         pw.write(chr.getInventories().get(ItemInventoryType.CASH).getSlotMax()); // cash
 
         // admin shop
-        pw.writeInt(0);
-        pw.writeInt(0);
+        /*pw.writeInt(0);
+        pw.writeInt(0);*/
 
         // equips
         Map<ItemInventoryType, ItemInventory> inventories = chr.getInventories();
@@ -98,7 +116,7 @@ public class CharacterPackets {
         pw.writeShort(active.size()); // active count
         active.forEach(quest -> {
             pw.writeShort(quest.getId());
-            pw.writeMapleString("");
+            pw.writeMapleString(quest.getProgress());
         });
 
         Collection<Quest> completed = chr.getQuests().values().stream().filter(quest -> quest.getState() == QuestState.COMPLETE).collect(Collectors.toList());
@@ -109,26 +127,26 @@ public class CharacterPackets {
         });
 
         // minigames
-        pw.writeShort(0);
+        //pw.writeShort(0);
 
         // couples?
-        pw.writeShort(0); // couple
-        pw.writeShort(0); // friend
-        pw.writeShort(0); // marriage
+        //pw.writeShort(0); // couple
+        //pw.writeShort(0); // friend
+        //pw.writeShort(0); // marriage
 
         // uuuh
-        for (int i = 0; i < 15; i++) {
+        /*for (int i = 0; i < 15; i++) {
             pw.writeInt(0);
-        }
+        }*/
 
         // new year card
-        pw.writeShort(0);
+        //pw.writeShort(0);
 
         // more quests?
-        pw.writeShort(0); // count
+        //pw.writeShort(0); // count
 
         // wild hunter data (probably wont use this
-        if (chr.getJob().getId() / 100 == 33) {
+        /*if (chr.getJob().getId() / 100 == 33) {
             pw.write(0);
             for (int i = 0; i < 5; i++) {
                 pw.writeInt(0);
@@ -136,7 +154,7 @@ public class CharacterPackets {
         }
 
         pw.writeShort(0); // quest complete old?
-        pw.writeShort(0); // visitor log
+        pw.writeShort(0); // visitor log*/
     }
 
     private static void encodeStats(final PacketWriter pw, Character chr, boolean ingame) {

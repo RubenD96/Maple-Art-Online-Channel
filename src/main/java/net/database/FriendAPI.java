@@ -40,7 +40,7 @@ public class FriendAPI {
         FriendList friendList = character.getFriendList();
         for (Record record : pending) {
             int toPend = record.getValue(FRIENDS.CID);
-            if (!friendList.getFriends().containsKey(toPend)){
+            if (!friendList.getFriends().containsKey(toPend)) {
                 friendList.getPending().add(toPend);
             }
         }

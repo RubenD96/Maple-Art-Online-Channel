@@ -3,6 +3,7 @@ package scripting;
 import client.Character;
 import client.Client;
 import client.inventory.item.templates.ItemTemplate;
+import client.messages.broadcast.types.NoticeWithoutPrefixMessage;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -57,5 +58,9 @@ public abstract class AbstractPlayerInteraction {
 
     public int getMapId() {
         return getPlayer().getFieldId();
+    }
+
+    public void sendBlue(String message) {
+        getPlayer().write(CharacterPackets.message(new NoticeWithoutPrefixMessage(message)));
     }
 }

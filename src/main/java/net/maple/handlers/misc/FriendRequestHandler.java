@@ -11,7 +11,6 @@ import net.database.CharacterAPI;
 import net.database.FriendAPI;
 import net.maple.handlers.PacketHandler;
 import net.server.Server;
-import util.HexTool;
 import util.packet.PacketReader;
 
 public class FriendRequestHandler extends PacketHandler {

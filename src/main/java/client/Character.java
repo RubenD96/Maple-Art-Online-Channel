@@ -26,11 +26,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.database.CharacterAPI;
 import net.database.ItemAPI;
+import net.database.QuestAPI;
 import net.database.TownsAPI;
 import net.maple.packets.CharacterPackets;
 import net.maple.packets.FieldPackets;
 import net.maple.packets.PartyPackets;
-import net.maple.packets.QuestPackets;
 import net.server.ChannelServer;
 import net.server.Server;
 import util.packet.Packet;
@@ -70,6 +70,7 @@ public class Character extends AbstractFieldLife {
     Party party;
     Map<Integer, Quest> quests = new HashMap<>();
     Set<Integer> towns = new TreeSet<>();
+    Set<Integer> registeredQuestMobs = new HashSet<>();
 
     public void init() {
         resetQuickSlot();
@@ -92,6 +93,7 @@ public class Character extends AbstractFieldLife {
         CharacterAPI.saveCharacterStats(this);
         CharacterAPI.updateKeyBindings(this);
         ItemAPI.saveInventories(this);
+        QuestAPI.saveInfo(this);
     }
 
     public boolean isGM() {
@@ -145,10 +147,11 @@ public class Character extends AbstractFieldLife {
             client.close(this, "Invalid quest start requirements (" + qid + ")");
             return;
         }
+        quest.initializeMobs();
         quests.put(qid, quest);
 
         quest.updateState(new PerformQuestRecordMessage((short) qid, ""));
-        write(QuestPackets.getStartQuestPacket(qid, npcId));
+        write(quest.startQuestPacket(npcId));
     }
 
     public void completeQuest(int qid) {

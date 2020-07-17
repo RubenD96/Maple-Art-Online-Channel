@@ -13,17 +13,18 @@ import lombok.Setter;
 import managers.ItemManager;
 import managers.NPCManager;
 import net.maple.packets.CharacterPackets;
+import scripting.AbstractPlayerInteraction;
 
 import static net.maple.handlers.user.UserChatHandler.refreshCommandList;
 
-public class CommandShortcut {
+public class CommandShortcut extends AbstractPlayerInteraction {
 
     @Getter Client c;
     @Getter Character chr;
     @Getter @Setter String[] args;
 
-    public CommandShortcut(Client _c, String[] _args) {
-        c = _c;
+    public CommandShortcut(Client c, String[] _args) {
+        super(c);
         chr = c.getCharacter();
         args = _args;
     }

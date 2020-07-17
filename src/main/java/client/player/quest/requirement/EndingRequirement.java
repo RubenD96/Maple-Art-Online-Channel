@@ -17,8 +17,10 @@ public class EndingRequirement extends Requirement {
         super.decode(flags, reader);
 
         if (containsFlag(flags, QuestRequirementType.MOB)) {
-            for (int i = 0; i < reader.readShort(); i++) {
-                mobs.put(reader.readInteger(), reader.readShort());
+            int size = reader.readShort();
+            for (int i = 0; i < size; i++) {
+                int b = reader.readInteger();
+                mobs.put(b, reader.readShort());
             }
         }
     }

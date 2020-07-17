@@ -39,7 +39,9 @@ public final class PacketWriter extends Writer {
             SendOpcode.NPC_ENTER_FIELD.getValue(),
             SendOpcode.NPC_MOVE.getValue(),
             SendOpcode.MOB_MOVE.getValue(),
-            SendOpcode.MOB_CTRL_ACK.getValue()
+            SendOpcode.MOB_CTRL_ACK.getValue(),
+            SendOpcode.MOB_ENTER_FIELD.getValue(),
+            SendOpcode.MOB_CHANGE_CONTROLLER.getValue()
     };
     private int offset;
     private byte[] data;

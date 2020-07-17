@@ -29,7 +29,8 @@ public class Client extends NettyClient {
     private @Getter @Setter boolean admin;
     private @Getter int accId;
     private @Getter @Setter String accountName;
-    private @Setter long lastPong, clientStart, lastNpcClick;; // Not too sure what to do with these
+    private @Setter long lastPong, clientStart, lastNpcClick;
+    ; // Not too sure what to do with these
     private @Getter boolean disconnecting = false, loggedIn = false, cc = false;
     private @Getter @Setter ChannelServer worldChannel;
     private @Getter @Setter Character character;
@@ -90,7 +91,7 @@ public class Client extends NettyClient {
                 notifyPartyLogout();
                 character.getFriendList().notifyMutualFriends();
                 worldChannel.removeCharacter(character);
-                character.save();
+                if (!cc) character.save();
                 disconnecting = false;
             }
         }
@@ -98,6 +99,7 @@ public class Client extends NettyClient {
 
     public void migrate(ChannelServer channel) {
         this.cc = true;
+        character.save();
         this.worldChannel = channel;
         Server.getInstance().getClients().get(accId).setChannel(channel.getChannelId());
         write(ConnectionPackets.getChangeChannelPacket(channel));

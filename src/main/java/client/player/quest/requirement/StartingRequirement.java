@@ -19,7 +19,8 @@ public class StartingRequirement extends Requirement {
         super.decode(flags, reader);
 
         if (containsFlag(flags, QuestRequirementType.JOB)) {
-            for (int i = 0; i < reader.readShort(); i++) {
+            int size = reader.readShort();
+            for (int i = 0; i < size; i++) {
                 jobs.add(reader.readShort());
             }
         }

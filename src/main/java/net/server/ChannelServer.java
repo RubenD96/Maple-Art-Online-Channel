@@ -18,10 +18,9 @@ import net.netty.PacketDecoder;
 import net.netty.PacketEncoder;
 import net.netty.ServerHandler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import java.util.ArrayList;
 
 import static constants.ServerConstants.COMMAND_LIST;
 import static net.maple.handlers.user.UserChatHandler.refreshCommandList;

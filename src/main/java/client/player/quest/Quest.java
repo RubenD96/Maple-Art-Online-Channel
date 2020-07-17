@@ -2,6 +2,7 @@ package client.player.quest;
 
 import client.Character;
 import client.messages.quest.AbstractQuestRecordMessage;
+import client.messages.quest.PerformQuestRecordMessage;
 import client.player.quest.requirement.EndingRequirement;
 import client.player.quest.requirement.Requirement;
 import client.player.quest.requirement.StartingRequirement;
@@ -11,9 +12,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import managers.QuestTemplateManager;
 import net.database.QuestAPI;
+import net.maple.SendOpcode;
 import net.maple.packets.CharacterPackets;
 import scripting.quest.QuestScriptManager;
+import util.packet.Packet;
+import util.packet.PacketWriter;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -22,6 +27,19 @@ public class Quest {
     private final @Getter @NonNull int id;
     private @Getter @Setter QuestState state;
     private final @Getter @NonNull Character character;
+    private final @Getter Map<Integer, String> mobs = new LinkedHashMap<>();
+
+    public void initializeMobs() {
+        QuestTemplate template = QuestTemplateManager.getInstance().getQuest(id);
+        EndingRequirement reqs = template.getEndingRequirements();
+
+        if (!reqs.getMobs().isEmpty()) {
+            reqs.getMobs().keySet().forEach(mob -> {
+                character.getRegisteredQuestMobs().add(mob);
+                mobs.put(mob, "000");
+            });
+        }
+    }
 
     private boolean reqCheck(Requirement reqs) {
         if (character.getLevel() < reqs.getMinLevel()) {
@@ -103,6 +121,29 @@ public class Quest {
         return true;
     }
 
+    public void progress(int mob) {
+        int count = Integer.parseInt(mobs.get(mob)) + 1;
+        StringBuilder newCount = new StringBuilder(String.valueOf(count));
+        while (newCount.length() < 3) {
+            newCount.insert(0, "0");
+        }
+
+        mobs.put(mob, newCount.toString());
+
+        updateMobs(new PerformQuestRecordMessage((short) id, getProgress()));
+    }
+
+    public String getProgress() {
+        StringBuilder sb = new StringBuilder();
+        mobs.values().forEach(count -> sb.insert(0, count));
+
+        return sb.toString();
+    }
+
+    private void updateMobs(PerformQuestRecordMessage message) {
+        character.write(CharacterPackets.message(message));
+    }
+
     public void updateState(AbstractQuestRecordMessage message) {
         state = message.getState();
         character.write(CharacterPackets.message(message));
@@ -114,5 +155,17 @@ public class Quest {
         } else if (state == QuestState.COMPLETE) {
             QuestAPI.update(this);
         }
+    }
+
+    public Packet startQuestPacket(int npc) {
+        PacketWriter pw = new PacketWriter(5);
+
+        pw.writeHeader(SendOpcode.USER_QUEST_RESULT);
+        pw.write(0x0A); // QUESTRES_ACT_SUCCESS
+        pw.writeShort(id);
+        pw.writeInt(npc);
+        pw.writeInt(0); // nextQuest
+
+        return pw.createPacket();
     }
 }

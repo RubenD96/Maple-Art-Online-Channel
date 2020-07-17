@@ -6,6 +6,7 @@ import client.player.quest.QuestState;
 import org.jooq.Record;
 import org.jooq.Result;
 
+import static database.jooq.Tables.QUESTINFO;
 import static database.jooq.Tables.QUESTS;
 
 public class QuestAPI {
@@ -16,10 +17,20 @@ public class QuestAPI {
      * @param quest object
      */
     public static void register(Quest quest) {
-        DatabaseCore.getConnection()
+        int dbId = DatabaseCore.getConnection()
                 .insertInto(QUESTS, QUESTS.QID, QUESTS.CID, QUESTS.STATE)
                 .values(quest.getId(), quest.getCharacter().getId(), (byte) quest.getState().getValue())
-                .execute();
+                .returning(QUESTS.ID)
+                .fetchOne().getId();
+
+        if (!quest.getMobs().isEmpty()) {
+            quest.getMobs().keySet().forEach(mob -> {
+                DatabaseCore.getConnection()
+                        .insertInto(QUESTINFO, QUESTINFO.QID, QUESTINFO.TYPE, QUESTINFO.KEY, QUESTINFO.VALUE)
+                        .values(dbId, (byte) 1, mob, "000")
+                        .execute();
+            });
+        }
     }
 
     public static void update(Quest quest) {
@@ -48,8 +59,41 @@ public class QuestAPI {
         res.forEach(rec -> {
             Quest quest = new Quest(rec.getValue(QUESTS.QID), chr);
             byte state = rec.getValue(QUESTS.STATE);
+            loadInfo(quest, rec.getValue(QUESTS.ID));
             quest.setState(state == 0 ? QuestState.NONE : (state == 1 ? QuestState.PERFORM : QuestState.COMPLETE));
             chr.getQuests().put(quest.getId(), quest);
         });
+    }
+
+    private static void loadInfo(Quest quest, int dbId) {
+        System.out.println("start loading");
+        Result<Record> res = DatabaseCore.getConnection()
+                .select().from(QUESTINFO)
+                .where(QUESTINFO.QID.eq(dbId))
+                .and(QUESTINFO.TYPE.eq((byte) 1))
+                .fetch();
+
+        res.forEach(rec -> {
+            int mob = rec.getValue(QUESTINFO.KEY);
+            quest.getMobs().put(mob, rec.getValue(QUESTINFO.VALUE));
+            quest.getCharacter().getRegisteredQuestMobs().add(mob);
+        });
+        System.out.println("finish loading");
+    }
+
+    public static void saveInfo(Character chr) {
+        System.out.println("start saving");
+        chr.getQuests().values().stream()
+                .filter(quest -> quest.getState() == QuestState.PERFORM)
+                .forEach(quest -> {
+                    quest.getMobs().forEach((mob, count) -> {
+                        DatabaseCore.getConnection()
+                                .update(QUESTINFO)
+                                .set(QUESTINFO.VALUE, count)
+                                .where(QUESTINFO.KEY.eq(mob))
+                                .execute();
+                    });
+                });
+        System.out.println("finish saving");
     }
 }

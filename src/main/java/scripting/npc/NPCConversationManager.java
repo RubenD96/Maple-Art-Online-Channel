@@ -1,14 +1,10 @@
 package scripting.npc;
 
 import client.Client;
-import client.messages.quest.CompleteQuestRecordMessage;
-import client.messages.quest.PerformQuestRecordMessage;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import net.maple.packets.CharacterPackets;
 import net.maple.packets.ConversationPackets;
-import net.maple.packets.QuestPackets;
 import scripting.AbstractPlayerInteraction;
 
 @Getter

@@ -2,6 +2,7 @@ package field.object.life;
 
 import client.Character;
 import client.messages.IncEXPMessage;
+import client.player.quest.QuestState;
 import field.object.FieldObjectType;
 import lombok.Getter;
 import lombok.Setter;
@@ -47,6 +48,13 @@ public class FieldMob extends AbstractFieldControlledLife {
         msg.setLastHit(true);
         msg.setExp(template.getExp());
         chr.write(CharacterPackets.message(msg));
+
+        if (chr.getRegisteredQuestMobs().contains(template.getId())) {
+            chr.getQuests().values().stream()
+                    .filter(quest -> quest.getState() == QuestState.PERFORM)
+                    .filter(quest -> quest.getMobs().containsKey(template.getId()))
+                    .forEach(quest -> quest.progress(template.getId()));
+        }
 
         // todo drops
     }

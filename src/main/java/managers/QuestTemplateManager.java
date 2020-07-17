@@ -1,6 +1,5 @@
 package managers;
 
-import client.player.quest.QuestRequirementType;
 import client.player.quest.QuestTemplate;
 import util.packet.PacketReader;
 
