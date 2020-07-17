@@ -74,4 +74,7 @@ public class CommandShortcut {
         }
     }
 
+    public void reloadMap() {
+        chr.getChannel().getFieldManager().reloadField(chr.getFieldId());
+    }
 }

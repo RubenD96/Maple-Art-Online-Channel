@@ -31,6 +31,10 @@ public class FieldManager extends AbstractManager {
         return field;
     }
 
+    public synchronized void reloadField(int id) {
+        fields.remove(id);
+    }
+
     private void loadFieldData(Field field) {
         PacketReader r = getData("wz/Map/" + field.getId() + ".mao");
         int flags = r.readInteger();
