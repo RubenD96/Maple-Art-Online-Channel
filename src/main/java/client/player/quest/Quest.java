@@ -116,13 +116,21 @@ public class Quest {
             return false;
         }
 
-        // todo mobs check
+        if (!reqs.getMobs().isEmpty()) { // unnecessary?
+            for (Map.Entry<Integer, Short> mob : reqs.getMobs().entrySet()) {
+                if (Integer.parseInt(mobs.get(mob.getKey())) < mob.getValue()) {
+                    return false;
+                }
+            }
+        }
 
         return true;
     }
 
     public void progress(int mob) {
         int count = Integer.parseInt(mobs.get(mob)) + 1;
+        if (count > QuestTemplateManager.getInstance().getQuest(id).getEndingRequirements().getMobs().get(mob)) return;
+
         StringBuilder newCount = new StringBuilder(String.valueOf(count));
         while (newCount.length() < 3) {
             newCount.insert(0, "0");
