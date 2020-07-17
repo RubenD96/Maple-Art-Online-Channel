@@ -2,10 +2,12 @@ package net.maple.handlers.misc;
 
 import client.Character;
 import client.Client;
+import client.messages.broadcast.types.AlertMessage;
 import client.party.Party;
 import client.party.PartyMember;
 import client.party.PartyOperationType;
 import net.maple.handlers.PacketHandler;
+import net.maple.packets.CharacterPackets;
 import net.maple.packets.PartyPackets;
 import net.server.Server;
 import util.HexTool;
@@ -73,9 +75,7 @@ public class PartyRequestHandler extends PacketHandler {
                         c.write(PartyPackets.getPartyMessage(PartyOperationType.PARTYRES_CREATENEWPARTY_ALREAYJOINED));
                     }
                 } else {
-                    // todo send msg to client, fking nexon
-                    System.out.println("Unknown user");
-                    // c.write(PartyPackets.getPartyMessage(PartyOperationType.PARTYRES_JOINPARTY_ALREADYJOINED));
+                    c.write(CharacterPackets.message(new AlertMessage(name + " is not present in the current channel.")));
                 }
             }
         } else if (operation == PartyOperationType.PARTYREQ_KICKPARTY.getValue()) {

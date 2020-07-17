@@ -49,6 +49,10 @@ public class Party {
         }
     }
 
+    public PartyMember getLeader() {
+        return getMember(leaderId);
+    }
+
     public synchronized void update() {
         for (PartyMember member : getMembers()) {
             if (member.isOnline()) {

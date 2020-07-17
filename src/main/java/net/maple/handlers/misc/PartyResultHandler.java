@@ -25,7 +25,7 @@ public class PartyResultHandler extends PacketHandler {
         }
 
         if (operation == PartyOperationType.PARTYRES_INVITEPARTY_REJECTED.getValue()) {
-            // todo send reject msg
+            party.getLeader().getCharacter().write(PartyPackets.getServerMsgPacket(c.getCharacter().getName() + " has rejected the invite to the party."));
         } else if (operation == PartyOperationType.PARTYRES_INVITEPARTY_ACCEPTED.getValue()) {
             Character chr = c.getCharacter();
             if (chr.getParty() == null) {
@@ -34,7 +34,7 @@ public class PartyResultHandler extends PacketHandler {
                 party.update();
             }
         } else if (operation == PartyOperationType.PARTYRES_INVITEPARTY_ALREADYINVITEDBYINVITER.getValue()) {
-            // todo send player is busy msg?
+            party.getLeader().getCharacter().write(PartyPackets.getServerMsgPacket(c.getCharacter().getName() + " is busy."));
         } else if (operation == PartyOperationType.PARTYRES_INVITEPARTY_SENT.getValue()) {
             // nothing?
         } else {

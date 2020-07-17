@@ -41,7 +41,7 @@ public class PartyPackets {
 
         pw.writeBool(true);
         pw.writeBool(expel); // false = leave / true = expel
-        pw.writeMapleString(name); // CharacterName todo
+        pw.writeMapleString(name); // CharacterName
         party.encodePartyData(pw, memChannel);
 
         return pw.createPacket();
@@ -59,19 +59,19 @@ public class PartyPackets {
         return getBasePacket(message).createPacket();
     }
 
-    public static Packet test(int message) {
-        PacketWriter pw = new PacketWriter(8);
-
-        pw.writeHeader(SendOpcode.PARTY_RESULT);
-        pw.write(message);
-
-        return pw.createPacket();
-    }
-
     public static Packet getPartyMessageExtra(PartyOperationType message, String extra) {
         PacketWriter pw = getBasePacket(message);
 
         pw.writeMapleString(extra);
+
+        return pw.createPacket();
+    }
+
+    public static Packet getServerMsgPacket(String message) {
+        PacketWriter pw = getBasePacket(PartyOperationType.PARTYRES_SERVERMSG);
+
+        pw.write(1);
+        pw.writeMapleString(message);
 
         return pw.createPacket();
     }
