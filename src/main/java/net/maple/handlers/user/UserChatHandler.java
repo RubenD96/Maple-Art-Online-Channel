@@ -2,9 +2,11 @@ package net.maple.handlers.user;
 
 import client.Character;
 import client.Client;
+import client.messages.broadcast.types.NoticeWithoutPrefixMessage;
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 import net.maple.SendOpcode;
 import net.maple.handlers.PacketHandler;
+import net.maple.packets.CharacterPackets;
 import scripting.shortcuts.CommandShortcut;
 import util.packet.Packet;
 import util.packet.PacketReader;
@@ -51,11 +53,11 @@ public class UserChatHandler extends PacketHandler {
 
                 c.getEngines().get("cmd").eval(COMMAND_FILE_LIST.get(cmd[0].substring(1)));
 
+                if (chr.isGM())
+                    c.write(CharacterPackets.message(new NoticeWithoutPrefixMessage("Successfully executed command!")));
             } catch (ScriptException e) {
                 e.printStackTrace();
             }
-
-            chr.write(sendMessage(chr, "Successfully Executed Command!", textBox));
             return;
         }
 
