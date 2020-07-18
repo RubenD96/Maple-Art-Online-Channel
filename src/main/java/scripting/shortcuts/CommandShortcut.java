@@ -61,7 +61,7 @@ public class CommandShortcut extends AbstractPlayerInteraction {
             ((ItemSlotBundle) it).setTitle(chr.getName());
         }
 
-        ItemDrop drop = new ItemDrop((byte) 1, (byte) 1, chr.getId(), chr, it);
+        ItemDrop drop = new ItemDrop((byte) 1, chr.getId(), chr, it);
         drop.setPosition(chr.getPosition());
         chr.getField().enter(drop);
     }

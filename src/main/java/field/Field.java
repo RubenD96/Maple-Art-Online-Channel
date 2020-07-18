@@ -5,6 +5,7 @@ import client.party.PartyMember;
 import field.object.FieldObject;
 import field.object.FieldObjectType;
 import field.object.Foothold;
+import field.object.drop.AbstractFieldDrop;
 import field.object.life.FieldControlledObject;
 import field.object.life.FieldMob;
 import field.object.life.FieldMobSpawnPoint;
@@ -12,7 +13,6 @@ import field.object.life.FieldMobTemplate;
 import field.object.portal.FieldPortal;
 import field.object.portal.PortalType;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import managers.MobManager;
@@ -138,9 +138,10 @@ public class Field {
 
     public void respawn() {
         List<Respawn> spawned = new ArrayList<>();
+        long time = System.currentTimeMillis();
         toRespawn.forEach(respawn -> {
-            if (System.currentTimeMillis() > respawn.time) {
-                FieldMobSpawnPoint newSpawn = getRandomViableSpawnPoint(respawn.mob);
+            if (time > respawn.time) {
+                FieldMobSpawnPoint newSpawn = getRandomViableMobSpawnPoint(respawn.mob);
 
                 FieldMobTemplate template = MobManager.getMob(respawn.mob);
                 FieldMob mob = new FieldMob(template, false);
@@ -164,9 +165,22 @@ public class Field {
         spawned.forEach(toRespawn::remove);
     }
 
-    public FieldMobSpawnPoint getRandomViableSpawnPoint(int mob) {
+    public FieldMobSpawnPoint getRandomViableMobSpawnPoint(int mob) {
         Object[] spawnPoints = mobSpawnPoints.stream().filter(sp -> sp.getId() == mob).toArray();
         return (FieldMobSpawnPoint) spawnPoints[new Random().nextInt(spawnPoints.length)];
+    }
+
+    public void removeExpiredDrops() {
+        List<AbstractFieldDrop> drops = new ArrayList<>();
+        long time = System.currentTimeMillis();
+        getObjects(FieldObjectType.DROP).forEach(obj -> {
+            AbstractFieldDrop drop = (AbstractFieldDrop) obj;
+            if (time > drop.getExpire()) {
+                drops.add(drop);
+            }
+        });
+
+        drops.forEach(drop -> leave(drop, drop.getLeaveFieldPacket()));
     }
 
     public synchronized void updateControlledObjects() {

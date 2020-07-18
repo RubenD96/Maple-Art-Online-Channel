@@ -10,8 +10,8 @@ public class ItemDrop extends AbstractFieldDrop {
 
     private final ItemSlot item;
 
-    public ItemDrop(@NonNull byte enterType, @NonNull byte leaveType, @NonNull int owner, @NonNull FieldObject source, ItemSlot item) {
-        super(enterType, leaveType, owner, source);
+    public ItemDrop(@NonNull byte enterType, @NonNull int owner, @NonNull FieldObject source, ItemSlot item) {
+        super(enterType, owner, source);
         this.item = item;
     }
 
@@ -27,6 +27,7 @@ public class ItemDrop extends AbstractFieldDrop {
 
     @Override
     public void pickUp(Character chr) {
+        leaveType = LeaveType.PICKUP;
         field.leave(this, getLeaveFieldPacket(chr));
         CharacterPackets.modifyInventory(chr, i -> i.add(item), true);
     }

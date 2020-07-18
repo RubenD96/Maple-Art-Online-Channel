@@ -11,13 +11,15 @@ import lombok.Setter;
 import net.maple.packets.FieldPackets;
 import util.packet.Packet;
 
+@Getter
 @RequiredArgsConstructor
 public abstract class AbstractFieldDrop extends AbstractFieldObject {
 
-    @NonNull @Getter final byte enterType, leaveType;
-    @NonNull @Getter final int owner;
-    @NonNull @Getter final FieldObject source;
-    @Getter @Setter long expire;
+    @NonNull final byte enterType;
+    @NonNull final int owner;
+    @NonNull final FieldObject source;
+    byte leaveType = 0x00;
+    @Setter long expire;
 
     public abstract boolean isMeso();
 
