@@ -1,22 +1,37 @@
 package field.object.life;
 
 import client.Character;
+import client.inventory.ItemVariationType;
+import client.inventory.item.templates.ItemTemplate;
+import client.inventory.slots.ItemSlot;
+import client.inventory.slots.ItemSlotBundle;
 import client.messages.IncEXPMessage;
 import client.player.quest.QuestState;
 import field.object.FieldObjectType;
+import field.object.drop.AbstractFieldDrop;
+import field.object.drop.EnterType;
+import field.object.drop.ItemDrop;
+import field.object.drop.MesoDrop;
 import lombok.Getter;
 import lombok.Setter;
+import managers.ItemManager;
+import net.database.DropAPI;
 import net.maple.SendOpcode;
 import net.maple.packets.CharacterPackets;
 import util.packet.Packet;
 import util.packet.PacketWriter;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 public class FieldMob extends AbstractFieldControlledLife {
 
-    private FieldMobTemplate template;
+    private final FieldMobTemplate template;
     @Setter private int hp, mp;
     @Setter private short home;
+    @Setter private int time;
 
     public FieldMob(FieldMobTemplate template, boolean left) {
         this.template = template;
@@ -41,7 +56,7 @@ public class FieldMob extends AbstractFieldControlledLife {
     }
 
     public void kill(Character chr) {
-        field.leave(this);
+        field.leave(this, getLeaveFieldPacket());
         chr.gainExp(template.getExp()); // todo share
 
         IncEXPMessage msg = new IncEXPMessage();
@@ -56,7 +71,51 @@ public class FieldMob extends AbstractFieldControlledLife {
                     .forEach(quest -> quest.progress(template.getId()));
         }
 
-        // todo drops
+        field.queueRespawn(template.getId(), time, System.currentTimeMillis() + (time * 1000));
+
+        if (template.getDrops() == null) {
+            template.setDrops(DropAPI.getMobDrops(template.getId()));
+        }
+
+        drop(chr);
+    }
+
+    public void drop(Character owner) {
+        List<AbstractFieldDrop> drops = new ArrayList<>();
+        template.getDrops().forEach(drop -> {
+            if (Math.random() < (1 / (double) drop.getChance())) {
+                if (drop.getId() == 0) { // meso
+                    int amount = (int) (Math.random() * drop.getMax() + drop.getMin());
+                    drops.add(new MesoDrop(EnterType.PARTY, (byte) 0x02, owner.getId(), this, amount));
+                } else { // item
+                    ItemTemplate template = ItemManager.getItem(drop.getId());
+                    if (template != null) {
+                        ItemSlot item = template.toItemSlot(ItemVariationType.NORMAL);
+
+                        if (item instanceof ItemSlotBundle) {
+                            ((ItemSlotBundle) item).setNumber((short) (Math.random() * drop.getMax() + drop.getMin()));
+                        }
+                        drops.add(new ItemDrop(EnterType.PARTY, (byte) 0x02, owner.getId(), this, item));
+                    } else {
+                        System.out.println("Invalid item drop " + drop.getId() + " from " + this.template.getId());
+                    }
+                }
+            }
+        });
+        Rectangle bounds = field.getMapArea();
+
+        drops.forEach(drop -> {
+            int x = position.x + (drops.indexOf(drop) - (drops.size() - 1) / 2) * 28;
+            int y = position.y;
+
+            x = (int) Math.min(bounds.getMaxX() - 10, x);
+            x = (int) Math.max(bounds.getMinX() + 10, x);
+
+            drop.setPosition(new Point(x, y));
+            drop.setExpire(System.currentTimeMillis() + 300000);
+        });
+
+        drops.forEach(field::enter);
     }
 
     private Packet showHpBar(float indicator) {

@@ -1,11 +1,9 @@
 package net.server;
 
 import client.Character;
+import field.object.FieldObjectType;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -41,6 +39,7 @@ public class ChannelServer extends Thread {
         COMMAND_LIST.add(new ArrayList<>());
         refreshCommandList();
         characters = new HashMap<>();
+        new MobSpawner().start();
     }
 
     public synchronized Character getCharacter(String name) {
@@ -57,6 +56,25 @@ public class ChannelServer extends Thread {
 
     public synchronized void removeCharacter(Character chr) {
         characters.remove(chr.getId());
+    }
+
+    public class MobSpawner extends Thread {
+
+        @Override
+        public void run() {
+            try {
+                Thread.sleep(5000);
+                fieldManager.getFields().values().forEach(field -> {
+                    if (!field.getObjects(FieldObjectType.CHARACTER).isEmpty()) {
+                        field.respawn();
+                    }
+                });
+            } catch (InterruptedException ie) {
+                ie.printStackTrace();
+            } finally {
+                run();
+            }
+        }
     }
 
     @Override

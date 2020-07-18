@@ -6,10 +6,16 @@ import field.object.FieldObject;
 import field.object.FieldObjectType;
 import field.object.Foothold;
 import field.object.life.FieldControlledObject;
+import field.object.life.FieldMob;
+import field.object.life.FieldMobSpawnPoint;
+import field.object.life.FieldMobTemplate;
 import field.object.portal.FieldPortal;
 import field.object.portal.PortalType;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import managers.MobManager;
 import net.maple.packets.FieldPackets;
 import net.maple.packets.PartyPackets;
 import scripting.map.FieldScriptManager;
@@ -32,6 +38,8 @@ public class Field {
     private final Map<Byte, FieldPortal> portals = new HashMap<>();
     private final Map<Integer, Foothold> footholds = new HashMap<>();
     private final Map<FieldObjectType, Set<FieldObject>> objects = new LinkedHashMap<>();
+    private final List<FieldMobSpawnPoint> mobSpawnPoints = new ArrayList<>();
+    private final List<Respawn> toRespawn = new ArrayList<>();
 
     public void init() {
         for (FieldObjectType type : FieldObjectType.values()) {
@@ -60,7 +68,7 @@ public class Field {
 
     public synchronized void enter(FieldObject obj) {
         if (obj.getField() != null) {
-            obj.getField().leave(obj);
+            obj.getField().leave(obj, obj.getLeaveFieldPacket());
         }
         obj.setField(this);
 
@@ -113,15 +121,52 @@ public class Field {
     }
 
     public synchronized void leave(FieldObject obj) {
+        leave(obj, null);
+    }
+
+    public synchronized void leave(FieldObject obj, Packet leaveFieldPacket) {
         removeObject(obj);
         if (obj instanceof Character) {
             Character chr = (Character) obj;
             broadcast(chr.getLeaveFieldPacket(), chr);
         } else {
-            broadcast(obj.getLeaveFieldPacket());
+            broadcast(leaveFieldPacket);
         }
 
         updateControlledObjects();
+    }
+
+    public void respawn() {
+        List<Respawn> spawned = new ArrayList<>();
+        toRespawn.forEach(respawn -> {
+            if (System.currentTimeMillis() > respawn.time) {
+                FieldMobSpawnPoint newSpawn = getRandomViableSpawnPoint(respawn.mob);
+
+                FieldMobTemplate template = MobManager.getMob(respawn.mob);
+                FieldMob mob = new FieldMob(template, false);
+                mob.setHp(mob.getTemplate().getMaxHP());
+                mob.setMp(mob.getTemplate().getMaxMP());
+                mob.setHome(newSpawn.getFh());
+                mob.setTime(respawn.cooldown);
+
+                mob.setRx0(newSpawn.getRx0());
+                mob.setRx1(newSpawn.getRx1());
+                mob.setPosition(newSpawn.getPoint());
+                mob.setFoothold(newSpawn.getFh());
+                mob.setCy(newSpawn.getCy());
+                mob.setHide(false);
+                enter(mob);
+
+                spawned.add(respawn);
+            }
+        });
+
+        spawned.forEach(toRespawn::remove);
+    }
+
+    public FieldMobSpawnPoint getRandomViableSpawnPoint(int mob) {
+        Object[] spawnPoints = mobSpawnPoints.stream().filter(sp -> sp.getId() == mob).toArray();
+        return (FieldMobSpawnPoint) spawnPoints[new Random().nextInt(spawnPoints.length)];
     }
 
     public synchronized void updateControlledObjects() {
@@ -210,5 +255,16 @@ public class Field {
                 ", name='" + name + '\'' +
                 ", objects=" + objects +
                 '}';
+    }
+
+    public void queueRespawn(int mob, int cooldown, long time) {
+        toRespawn.add(new Respawn(mob, cooldown, time));
+    }
+
+    @RequiredArgsConstructor
+    private static class Respawn {
+        private final int mob;
+        private final int cooldown;
+        private final long time;
     }
 }

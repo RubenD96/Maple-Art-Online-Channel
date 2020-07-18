@@ -144,14 +144,18 @@ public class FieldPackets {
     }
 
     public static Packet leaveField(AbstractFieldDrop drop) {
-        PacketWriter pw = new PacketWriter(32);
+        return leaveField(drop, null);
+    }
+
+    public static Packet leaveField(AbstractFieldDrop drop, FieldObject source) {
+        PacketWriter pw = new PacketWriter(14);
 
         pw.writeHeader(SendOpcode.DROP_LEAVE_FIELD);
-        pw.write(drop.getLeaveType()); // animation or something
+        pw.write(drop.getLeaveType()); // nLeaveType
         pw.writeInt(drop.getId());
 
         if (drop.getLeaveType() == 0x02 || drop.getLeaveType() == 0x03 || drop.getLeaveType() == 0x05) {
-            pw.writeInt(drop.getSource().getId());
+            pw.writeInt(source == null ? 0 : source.getId());
         } else if (drop.getLeaveType() == 0x04) {
             pw.writeShort(0);
         }

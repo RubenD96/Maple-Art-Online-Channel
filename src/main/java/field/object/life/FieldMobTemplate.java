@@ -1,18 +1,23 @@
 package field.object.life;
 
+import field.object.drop.DropEntry;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
 @RequiredArgsConstructor
 public class FieldMobTemplate {
 
-    @NonNull private int id;
+    private final int id;
     private String name;
     private MoveAbilityType moveType;
+    private List<DropEntry> drops;
 
     private short level;
     private int exp, maxHP, maxMP;

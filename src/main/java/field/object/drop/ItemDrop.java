@@ -27,7 +27,7 @@ public class ItemDrop extends AbstractFieldDrop {
 
     @Override
     public void pickUp(Character chr) {
-        field.leave(this);
+        field.leave(this, getLeaveFieldPacket(chr));
         CharacterPackets.modifyInventory(chr, i -> i.add(item), true);
     }
 }

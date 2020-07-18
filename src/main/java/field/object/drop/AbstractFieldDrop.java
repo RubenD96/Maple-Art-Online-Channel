@@ -37,6 +37,10 @@ public abstract class AbstractFieldDrop extends AbstractFieldObject {
 
     @Override
     public Packet getLeaveFieldPacket() {
-        return FieldPackets.leaveField(this);
+        return getLeaveFieldPacket(null);
+    }
+
+    public Packet getLeaveFieldPacket(Character chr) {
+        return FieldPackets.leaveField(this, chr);
     }
 }
