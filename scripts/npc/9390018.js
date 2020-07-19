@@ -10,19 +10,19 @@ let tempsel;
 let tempsel2;
 let hardcore = false;
 let skipDispose = false;
-let map;
+let field;
 
 function init() {
-    map = cm.getPlayer().getFieldId();
-    if (map !== 0 && map !== 2) {
+    field = cm.getPlayer().getFieldId();
+    if (field !== 0 && field !== 2) {
         cm.dispose();
     }
 }
 
 function converse(m, s) {
-    if (map === 0) {
+    if (field === 0) {
         explanation(m, s);
-    } else if (map === 2) {
+    } else if (field === 2) {
         decision(m, s);
     }
 }

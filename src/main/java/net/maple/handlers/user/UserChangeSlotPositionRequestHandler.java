@@ -44,6 +44,7 @@ public class UserChangeSlotPositionRequestHandler extends PacketHandler {
 
                         ItemDrop drop = new ItemDrop((byte) 1, chr.getId(), chr, item);
                         drop.setPosition(chr.getPosition());
+                        drop.setExpire(System.currentTimeMillis() + 600000);
                         chr.getField().enter(drop);
                     }, true);
         } else {

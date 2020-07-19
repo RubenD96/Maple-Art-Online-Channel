@@ -126,4 +126,109 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     public void completeQuest(int qid) {
         getPlayer().completeQuest(qid);
     }
+
+    /**
+     * cm.letters("Hello world"); will show Christmas letters Hello world
+     *
+     * @param input the text to turn into christmas :)
+     * @return String with item images
+     */
+    public String letters(String input) {
+        StringBuilder str = new StringBuilder();
+        for (int i = 0; i < input.length(); i++) {
+            if (input.charAt(i) == ' ') {
+                str.append("\t");
+            } else {
+                str.append("#i").append(convert(input.charAt(i))).append("#");
+            }
+        }
+        return str.toString();
+    }
+
+    private int convert(char in) {
+        int upper = 3991000;
+        int lower = 3991026;
+        int output = Character.isUpperCase(in) ? upper : lower;
+        switch (Character.toLowerCase(in)) {
+            case 'a':
+                output += 0;
+                break;
+            case 'b':
+                output += 1;
+                break;
+            case 'c':
+                output += 2;
+                break;
+            case 'd':
+                output += 3;
+                break;
+            case 'e':
+                output += 4;
+                break;
+            case 'f':
+                output += 5;
+                break;
+            case 'g':
+                output += 6;
+                break;
+            case 'h':
+                output += 7;
+                break;
+            case 'i':
+                output += 8;
+                break;
+            case 'j':
+                output += 9;
+                break;
+            case 'k':
+                output += 10;
+                break;
+            case 'l':
+                output += 11;
+                break;
+            case 'm':
+                output += 12;
+                break;
+            case 'n':
+                output += 13;
+                break;
+            case 'o':
+                output += 14;
+                break;
+            case 'p':
+                output += 15;
+                break;
+            case 'q':
+                output += 16;
+                break;
+            case 'r':
+                output += 17;
+                break;
+            case 's':
+                output += 18;
+                break;
+            case 't':
+                output += 19;
+                break;
+            case 'u':
+                output += 20;
+                break;
+            case 'v':
+                output += 21;
+                break;
+            case 'w':
+                output += 22;
+                break;
+            case 'x':
+                output += 23;
+                break;
+            case 'y':
+                output += 24;
+                break;
+            case 'z':
+                output += 25;
+                break;
+        }
+        return output;
+    }
 }

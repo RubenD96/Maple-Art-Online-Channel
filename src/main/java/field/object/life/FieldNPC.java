@@ -66,4 +66,21 @@ public class FieldNPC extends AbstractFieldControlledLife {
 
         return pw.createPacket();
     }
+
+    @Override
+    public String toString() {
+        return "FieldNPC{" +
+                "npcId=" + npcId +
+                ", move=" + move +
+                ", rx0=" + rx0 +
+                ", rx1=" + rx1 +
+                ", cy=" + cy +
+                ", name='" + name + '\'' +
+                ", hide=" + hide +
+                ", f=" + f +
+                ", foothold=" + foothold +
+                ", position=" + position +
+                ", id=" + id +
+                '}';
+    }
 }

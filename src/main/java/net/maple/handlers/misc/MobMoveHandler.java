@@ -1,7 +1,9 @@
 package net.maple.handlers.misc;
 
 import client.Client;
+import field.object.life.FieldControlledObject;
 import field.object.life.FieldMob;
+import field.object.life.FieldNPC;
 import net.maple.SendOpcode;
 import net.maple.handlers.PacketHandler;
 import util.packet.Packet;
@@ -14,29 +16,36 @@ public class MobMoveHandler extends PacketHandler {
 
     @Override
     public void handlePacket(PacketReader reader, Client c) {
-        FieldMob mob = (FieldMob) c.getCharacter().getField().getControlledObject(c.getCharacter(), reader.readInteger());
-
-        if (mob != null) {
-            short mobCtrlSN = reader.readShort();
-            boolean mobMove = (reader.readByte() & 0xF) != 0;
-            byte split = reader.readByte();
-            int velocity = reader.readInteger();
-            reader.readByte();
-
-            int multiTargetForBall = reader.readInteger(); // wtf
-            IntStream.range(0, multiTargetForBall).forEach(i -> reader.readLong());
-
-            int areaAttack = reader.readInteger();
-            IntStream.range(0, areaAttack).forEach(i -> reader.readInteger());
-
-            reader.readInteger();
-            reader.readInteger();
-            reader.readInteger();
-            reader.readInteger();
-
-            mob.getController().write(sendMobControl(mob, mobCtrlSN, mobMove));
-            mob.getField().broadcast(sendMobMovement(reader, mob, mobMove, split, velocity), mob.getController());
+        int id = reader.readInteger();
+        FieldControlledObject obj = c.getCharacter().getField().getControlledObject(c.getCharacter(), id);
+        if (obj == null) {
+            return;
         }
+        if (obj instanceof FieldNPC) {
+            System.err.println("[MobMoveHandler] Packet sent from FieldNPC object: " + id);
+            return;
+        }
+
+        FieldMob mob = (FieldMob) obj;
+        short mobCtrlSN = reader.readShort();
+        boolean mobMove = (reader.readByte() & 0xF) != 0;
+        byte split = reader.readByte();
+        int velocity = reader.readInteger();
+        reader.readByte();
+
+        int multiTargetForBall = reader.readInteger(); // wtf
+        IntStream.range(0, multiTargetForBall).forEach(i -> reader.readLong());
+
+        int areaAttack = reader.readInteger();
+        IntStream.range(0, areaAttack).forEach(i -> reader.readInteger());
+
+        reader.readInteger();
+        reader.readInteger();
+        reader.readInteger();
+        reader.readInteger();
+
+        mob.getController().write(sendMobControl(mob, mobCtrlSN, mobMove));
+        mob.getField().broadcast(sendMobMovement(reader, mob, mobMove, split, velocity), mob.getController());
     }
 
     private static Packet sendMobControl(FieldMob mob, short SN, boolean move) {

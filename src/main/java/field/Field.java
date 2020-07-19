@@ -217,12 +217,32 @@ public class Field {
         }
     }
 
+    public Map<FieldObjectType, Set<FieldObject>> getObjects() {
+        return objects;
+    }
+
     public Set<FieldObject> getObjects(FieldObjectType... t) {
         Set<FieldObject> objects = new HashSet<>();
         for (FieldObjectType type : t) {
             objects.addAll(this.objects.get(type));
         }
         return objects;
+    }
+
+    /**
+     * Try not to use this version too much, in most cases you should already know the type.
+     * Use {@link #getObject(FieldObjectType, int)} instead
+     *
+     * @param i obj id
+     * @return FieldObject of any type
+     */
+    public FieldObject getObject(int i) {
+        for (FieldObjectType type : objects.keySet()) {
+            for (FieldObject obj : getObjects(type)) {
+                if (obj.getId() == i) return obj;
+            }
+        }
+        return null;
     }
 
     public FieldObject getObject(FieldObjectType t, int i) {
