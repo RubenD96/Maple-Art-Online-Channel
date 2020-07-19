@@ -1,6 +1,7 @@
 package net.maple.handlers.user;
 
 import client.Client;
+import client.player.quest.Quest;
 import client.player.quest.QuestRequest;
 import net.maple.handlers.PacketHandler;
 import scripting.quest.QuestScriptManager;
@@ -22,6 +23,11 @@ public class UserQuestRequestHandler extends PacketHandler {
         if (action == QuestRequest.OPENING_SCRIPT.getValue()) {
             QuestScriptManager.getInstance().converse(c, npcId, questId, true);
         } else if (action == QuestRequest.COMPLETE_SCRIPT.getValue()) {
+            Quest quest = c.getCharacter().getQuests().get((int) questId);
+            if (quest == null || !quest.canFinish()) {
+                c.close(this, "Invalid quest finish requirements (" + questId + ")");
+                return;
+            }
             QuestScriptManager.getInstance().converse(c, npcId, questId, false);
         } else if (action == QuestRequest.RESIGN_QUEST.getValue()) {
             c.getCharacter().forfeitQuest(questId);

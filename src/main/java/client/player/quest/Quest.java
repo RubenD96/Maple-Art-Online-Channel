@@ -119,6 +119,9 @@ public class Quest {
         if (!reqs.getMobs().isEmpty()) { // unnecessary?
             for (Map.Entry<Integer, Short> mob : reqs.getMobs().entrySet()) {
                 if (Integer.parseInt(mobs.get(mob.getKey())) < mob.getValue()) {
+                    System.out.println(mob.getKey());
+                    System.out.println(mobs.get(mob.getKey()));
+                    System.out.println(mob.getValue());
                     return false;
                 }
             }

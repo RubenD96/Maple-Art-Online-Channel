@@ -199,6 +199,8 @@ public class Character extends AbstractFieldLife {
     public void gainExp(int exp) {
         if (level >= UserConstants.maxLevel) return;
 
+        System.out.println("[gainExp] " + exp);
+
         this.exp += exp;
         int needed = level < 50 ? UserConstants.expTable[level] : 1242;
         if (this.exp >= needed) {
