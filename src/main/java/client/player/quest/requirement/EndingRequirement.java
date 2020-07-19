@@ -4,13 +4,13 @@ import client.player.quest.QuestRequirementType;
 import lombok.Getter;
 import util.packet.PacketReader;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Getter
 public class EndingRequirement extends Requirement {
 
-    private final Map<Integer, Short> mobs = new HashMap<>();
+    private final Map<Integer, Short> mobs = new LinkedHashMap<>();
 
     @Override
     public void decode(int flags, PacketReader reader) {

@@ -18,7 +18,9 @@ import scripting.quest.QuestScriptManager;
 import util.packet.Packet;
 import util.packet.PacketWriter;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -146,7 +148,7 @@ public class Quest {
 
     public String getProgress() {
         StringBuilder sb = new StringBuilder();
-        mobs.values().forEach(count -> sb.insert(0, count));
+        mobs.values().forEach(sb::append);
 
         return sb.toString();
     }

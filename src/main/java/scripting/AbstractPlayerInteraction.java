@@ -4,6 +4,8 @@ import client.Character;
 import client.Client;
 import client.inventory.item.templates.ItemTemplate;
 import client.messages.broadcast.types.NoticeWithoutPrefixMessage;
+import client.messages.quest.PerformQuestRecordMessage;
+import client.player.quest.Quest;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -62,5 +64,13 @@ public abstract class AbstractPlayerInteraction {
 
     public void sendBlue(String message) {
         getPlayer().write(CharacterPackets.message(new NoticeWithoutPrefixMessage(message)));
+    }
+
+    public void testProgress(String progress) {
+        c.write(CharacterPackets.message((new PerformQuestRecordMessage((short) 1002, progress))));
+    }
+
+    public Quest getQuest(int id) {
+        return getPlayer().getQuests().get(id);
     }
 }

@@ -53,7 +53,7 @@ public class UserChatHandler extends PacketHandler {
 
                 c.getEngines().get("cmd").eval(COMMAND_FILE_LIST.get(cmd[0].substring(1)));
 
-                if (chr.isGM())
+                if (c.isAdmin())
                     c.write(CharacterPackets.message(new NoticeWithoutPrefixMessage("Successfully executed command!")));
             } catch (ScriptException e) {
                 e.printStackTrace();

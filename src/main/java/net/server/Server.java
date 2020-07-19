@@ -4,6 +4,7 @@ import client.Character;
 import client.party.Party;
 import constants.ServerConstants;
 import lombok.Getter;
+import managers.QuestTemplateManager;
 import net.database.CharacterAPI;
 import net.database.DatabaseCore;
 import util.crypto.MapleAESOFB;
