@@ -1,8 +1,8 @@
 execute = () => {
-    const args = cs.getArgs();
+    //const args = cs.getArgs();
 
-    const quest = cs.getQuest(args[0]);
-    cs.sendBlue(quest.getMobs().toString());
+    //const quest = cs.getQuest(args[0]);
+    cs.getPlayer().setHealth(-10);
 };
 
 execute();

@@ -1,5 +1,8 @@
 package field.object.drop;
 
+/**
+ * This is very wrong :)
+ */
 public final class EnterType {
 
     public final static byte REGULAR = 0x00;

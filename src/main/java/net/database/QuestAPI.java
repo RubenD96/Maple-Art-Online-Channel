@@ -22,6 +22,7 @@ public class QuestAPI {
                 .values(quest.getId(), quest.getCharacter().getId(), (byte) quest.getState().getValue())
                 .returning(QUESTS.ID)
                 .fetchOne().getId();
+        quest.setDbId(dbId);
 
         if (!quest.getMobs().isEmpty()) {
             quest.getMobs().keySet().forEach(mob -> {
@@ -40,6 +41,14 @@ public class QuestAPI {
                 .where(QUESTS.QID.eq(quest.getId()))
                 .and(QUESTS.CID.eq(quest.getCharacter().getId()))
                 .execute();
+
+        // dont need this data anymore
+        if (quest.getState() == QuestState.COMPLETE) {
+            DatabaseCore.getConnection()
+                    .deleteFrom(QUESTINFO)
+                    .where(QUESTINFO.QID.eq(quest.getDbId()))
+                    .execute();
+        }
     }
 
     public static void remove(Quest quest) {
@@ -59,8 +68,11 @@ public class QuestAPI {
         res.forEach(rec -> {
             Quest quest = new Quest(rec.getValue(QUESTS.QID), chr);
             byte state = rec.getValue(QUESTS.STATE);
-            loadInfo(quest, rec.getValue(QUESTS.ID));
+            if (state == QuestState.PERFORM.getValue()) {
+                loadInfo(quest, rec.getValue(QUESTS.ID));
+            }
             quest.setState(state == 0 ? QuestState.NONE : (state == 1 ? QuestState.PERFORM : QuestState.COMPLETE));
+            quest.setDbId(rec.getValue(QUESTS.ID));
             chr.getQuests().put(quest.getId(), quest);
         });
     }

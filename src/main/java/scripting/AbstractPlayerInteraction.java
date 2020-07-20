@@ -2,10 +2,13 @@ package scripting;
 
 import client.Character;
 import client.Client;
+import client.effects.field.TrembleFieldEffect;
+import client.effects.user.QuestEffect;
 import client.inventory.ItemVariationType;
 import client.inventory.item.templates.ItemEquipTemplate;
 import client.inventory.item.templates.ItemTemplate;
 import client.inventory.slots.ItemSlotEquip;
+import client.messages.IncEXPMessage;
 import client.messages.broadcast.types.NoticeWithoutPrefixMessage;
 import client.messages.quest.PerformQuestRecordMessage;
 import client.player.quest.Quest;
@@ -42,10 +45,11 @@ public abstract class AbstractPlayerInteraction {
                     i -> i.take(id, (short) -quantity),
                     false);
         }
+        c.write(CharacterPackets.localEffect(new QuestEffect(id, quantity)));
     }
 
     public void gainMeso(int meso) {
-        getPlayer().gainMeso(meso);
+        getPlayer().gainMeso(meso, true);
     }
 
     public boolean haveItem(int id, int quantity) {
@@ -54,6 +58,11 @@ public abstract class AbstractPlayerInteraction {
 
     public void gainExp(int exp) {
         getPlayer().gainExp(exp);
+
+        IncEXPMessage msg = new IncEXPMessage();
+        msg.setExp(exp);
+        msg.setOnQuest(true);
+        getPlayer().write(CharacterPackets.message(msg));
     }
 
     public void warp(int id, String portal) {
@@ -72,8 +81,11 @@ public abstract class AbstractPlayerInteraction {
         getPlayer().write(CharacterPackets.message(new NoticeWithoutPrefixMessage(message)));
     }
 
-    public void testProgress(String progress) {
-        c.write(CharacterPackets.message((new PerformQuestRecordMessage((short) 1002, progress))));
+    public void setQuestProgress(int qid, int mob, String progress) {
+        Quest quest = getPlayer().getQuests().get(qid);
+        if (quest != null) {
+            quest.progress(mob, Integer.parseInt(progress));
+        }
     }
 
     public Quest getQuest(int id) {
@@ -98,8 +110,8 @@ public abstract class AbstractPlayerInteraction {
         return (ItemSlotEquip) template.toItemSlot(ItemVariationType.NONE);
     }
 
+    @SuppressWarnings({"unchecked"})
     public void gainStatItem(int id, Object obj) {
-        @SuppressWarnings({"unchecked"})
         AbstractMap<String, Integer> stats = (AbstractMap) obj;
         ItemSlotEquip equip = getEquipById(id);
         if (equip != null) {
@@ -121,5 +133,9 @@ public abstract class AbstractPlayerInteraction {
 
             CharacterPackets.modifyInventory(getPlayer(), i -> i.add(equip), false);
         }
+    }
+
+    public void tremble(boolean heavy, int delay) {
+        getPlayer().getField().broadcast(CharacterPackets.fieldEffect(new TrembleFieldEffect(heavy, delay)));
     }
 }

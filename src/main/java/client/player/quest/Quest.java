@@ -18,18 +18,18 @@ import scripting.quest.QuestScriptManager;
 import util.packet.Packet;
 import util.packet.PacketWriter;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
+@Getter
 @RequiredArgsConstructor
 public class Quest {
 
-    private final @Getter @NonNull int id;
-    private @Getter @Setter QuestState state;
-    private final @Getter @NonNull Character character;
-    private final @Getter Map<Integer, String> mobs = new LinkedHashMap<>();
+    private final @NonNull int id;
+    private @Setter QuestState state;
+    private final @NonNull Character character;
+    private final Map<Integer, String> mobs = new LinkedHashMap<>();
+    private @Setter int dbId;
 
     public void initializeMobs() {
         QuestTemplate template = QuestTemplateManager.getInstance().getQuest(id);
@@ -121,9 +121,9 @@ public class Quest {
         if (!reqs.getMobs().isEmpty()) { // unnecessary?
             for (Map.Entry<Integer, Short> mob : reqs.getMobs().entrySet()) {
                 if (Integer.parseInt(mobs.get(mob.getKey())) < mob.getValue()) {
-                    System.out.println(mob.getKey());
-                    System.out.println(mobs.get(mob.getKey()));
-                    System.out.println(mob.getValue());
+                    System.err.println(mob.getKey());
+                    System.err.println(mobs.get(mob.getKey()));
+                    System.err.println(mob.getValue());
                     return false;
                 }
             }
@@ -133,7 +133,11 @@ public class Quest {
     }
 
     public void progress(int mob) {
-        int count = Integer.parseInt(mobs.get(mob)) + 1;
+        progress(mob, 1);
+    }
+
+    public void progress(int mob, int increase) {
+        int count = Integer.parseInt(mobs.get(mob)) + increase;
         if (count > QuestTemplateManager.getInstance().getQuest(id).getEndingRequirements().getMobs().get(mob)) return;
 
         StringBuilder newCount = new StringBuilder(String.valueOf(count));

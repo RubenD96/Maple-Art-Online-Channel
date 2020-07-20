@@ -113,13 +113,13 @@ public class FieldPackets {
         return pw.createPacket();
     }
 
-    public static Packet enterField(AbstractFieldDrop drop) {
+    public static Packet enterField(AbstractFieldDrop drop, byte enterType) {
         PacketWriter pw = new PacketWriter(32);
-        byte type = drop.getEnterType();
+        //byte type = drop.getEnterType();
         FieldObject source = drop.getSource();
 
         pw.writeHeader(SendOpcode.DROP_ENTER_FIELD);
-        pw.write(type);
+        pw.write(enterType);
         pw.writeInt(drop.getId());
         pw.writeBool(drop.isMeso());
         pw.writeInt(drop.getInfo());
@@ -128,7 +128,7 @@ public class FieldPackets {
         pw.writePosition(drop.getPosition());
         pw.writeInt(source instanceof Character ? 0 : source.getId()); // source
 
-        if (type != EnterType.FFA) {
+        if (enterType != EnterType.FFA) {
             pw.writePosition(source.getPosition());
             pw.writeShort(0); // delay
         }

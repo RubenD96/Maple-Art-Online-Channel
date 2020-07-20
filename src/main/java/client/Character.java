@@ -5,6 +5,7 @@ import client.inventory.ItemInventoryType;
 import client.inventory.slots.ItemSlot;
 import client.inventory.slots.ItemSlotBundle;
 import client.inventory.slots.ItemSlotEquip;
+import client.messages.IncMesoMessage;
 import client.messages.quest.CompleteQuestRecordMessage;
 import client.messages.quest.PerformQuestRecordMessage;
 import client.messages.quest.ResignQuestRecordMessage;
@@ -101,8 +102,15 @@ public class Character extends AbstractFieldLife {
     }
 
     public void gainMeso(int meso) {
+        gainMeso(meso, false);
+    }
+
+    public void gainMeso(int meso, boolean effect) {
         this.meso += meso;
         updateSingleStat(StatType.MESO);
+        if (effect) {
+            write(CharacterPackets.message(new IncMesoMessage(meso)));
+        }
     }
 
     public void changeField(int id) {
@@ -159,10 +167,11 @@ public class Character extends AbstractFieldLife {
         if (quest == null) {
             return;
         }
-        if (!quest.canFinish()) {
+        // if you enable this, completeQuest() has to be called before taking any items, risky
+        /*if (!quest.canFinish()) {
             client.close(this, "Invalid quest finish requirements (" + qid + ")");
             return;
-        }
+        }*/
 
         quest.updateState(new CompleteQuestRecordMessage((short) qid, System.currentTimeMillis()));
     }
@@ -229,10 +238,12 @@ public class Character extends AbstractFieldLife {
     public void setTrueMaxStats() {
         trueMaxHealth = maxHealth;
         trueMaxMana = maxMana;
-        for (ItemSlot item : inventories.get(ItemInventoryType.EQUIP).getItems().values()) {
-            ItemSlotEquip equip = (ItemSlotEquip) item;
-            trueMaxHealth += equip.getMaxHP();
-            trueMaxMana += equip.getMaxMP();
+        for (Map.Entry<Short, ItemSlot> item : inventories.get(ItemInventoryType.EQUIP).getItems().entrySet()) {
+            if (item.getKey() < 0) {
+                ItemSlotEquip equip = (ItemSlotEquip) item.getValue();
+                trueMaxHealth += equip.getMaxHP();
+                trueMaxMana += equip.getMaxMP();
+            }
         }
     }
 
@@ -260,12 +271,14 @@ public class Character extends AbstractFieldLife {
      */
     public void modifyHealth(int health) {
         this.health += health;
+        if (this.health < 0) this.health = 0;
         updateSingleStat(StatType.HP, false);
         updatePartyHP(false);
     }
 
     public void modifyMana(int mana) {
         this.mana += mana;
+        if (this.mana < 0) this.mana = 0;
         updateSingleStat(StatType.MP, false);
     }
 
@@ -284,11 +297,11 @@ public class Character extends AbstractFieldLife {
         this.health += health;
         if (this.health > trueMaxHealth) {
             this.health = trueMaxHealth;
-        }
+        } else if (this.health < 0) this.health = 0;
         this.mana += mana;
         if (this.mana > trueMaxMana) {
             this.mana = trueMaxMana;
-        }
+        } else if (this.mana < 0) this.mana = 0;
         updateStats(new ArrayList<>(Arrays.asList(StatType.HP, StatType.MP)), false);
         updatePartyHP(false);
     }

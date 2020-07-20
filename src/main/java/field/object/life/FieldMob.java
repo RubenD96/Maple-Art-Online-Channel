@@ -86,7 +86,7 @@ public class FieldMob extends AbstractFieldControlledLife {
             if (Math.random() < (1 / (double) drop.getChance())) {
                 if (drop.getId() == 0) { // meso
                     int amount = (int) (Math.random() * drop.getMax() + drop.getMin());
-                    drops.add(new MesoDrop(EnterType.PARTY, owner.getId(), this, amount));
+                    drops.add(new MesoDrop(owner.getId(), this, amount));
                 } else { // item
                     ItemTemplate template = ItemManager.getItem(drop.getId());
                     if (template != null) {
@@ -95,7 +95,7 @@ public class FieldMob extends AbstractFieldControlledLife {
                         if (item instanceof ItemSlotBundle) {
                             ((ItemSlotBundle) item).setNumber((short) (Math.random() * drop.getMax() + drop.getMin()));
                         }
-                        drops.add(new ItemDrop(EnterType.PARTY, owner.getId(), this, item));
+                        drops.add(new ItemDrop(owner.getId(), this, item));
                     } else {
                         System.out.println("Invalid item drop " + drop.getId() + " from " + this.template.getId());
                     }
@@ -115,7 +115,7 @@ public class FieldMob extends AbstractFieldControlledLife {
             drop.setExpire(System.currentTimeMillis() + 300000);
         });
 
-        drops.forEach(field::enter);
+        drops.forEach(drop -> field.enter(drop));
     }
 
     private Packet showHpBar(float indicator) {

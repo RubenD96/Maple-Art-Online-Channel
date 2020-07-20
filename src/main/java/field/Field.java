@@ -6,6 +6,7 @@ import field.object.FieldObject;
 import field.object.FieldObjectType;
 import field.object.Foothold;
 import field.object.drop.AbstractFieldDrop;
+import field.object.drop.EnterType;
 import field.object.life.FieldControlledObject;
 import field.object.life.FieldMob;
 import field.object.life.FieldMobSpawnPoint;
@@ -114,7 +115,11 @@ public class Field {
             }
         } else {
             obj.setId(runningObjectId.addAndGet(1));
-            broadcast(obj.getEnterFieldPacket());
+            if (obj.getFieldObjectType() == FieldObjectType.DROP) {
+                broadcast(((AbstractFieldDrop) obj).getEnterFieldPacket(EnterType.PARTY));
+            } else {
+                broadcast(obj.getEnterFieldPacket());
+            }
         }
 
         updateControlledObjects();

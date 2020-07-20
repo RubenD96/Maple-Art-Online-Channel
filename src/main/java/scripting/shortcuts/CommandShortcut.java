@@ -6,6 +6,7 @@ import client.inventory.ItemVariationType;
 import client.inventory.item.templates.ItemTemplate;
 import client.inventory.slots.ItemSlot;
 import client.inventory.slots.ItemSlotBundle;
+import field.object.drop.EnterType;
 import field.object.drop.ItemDrop;
 import field.object.life.FieldNPC;
 import lombok.Getter;
@@ -61,7 +62,7 @@ public class CommandShortcut extends AbstractPlayerInteraction {
             ((ItemSlotBundle) it).setTitle(chr.getName());
         }
 
-        ItemDrop drop = new ItemDrop((byte) 1, chr.getId(), chr, it);
+        ItemDrop drop = new ItemDrop(chr.getId(), chr, it);
         drop.setPosition(chr.getPosition());
         chr.getField().enter(drop);
     }

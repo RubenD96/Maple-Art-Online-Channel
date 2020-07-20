@@ -11,8 +11,8 @@ public class MesoDrop extends AbstractFieldDrop {
 
     @Getter final int meso;
 
-    public MesoDrop(@NonNull byte enterType, @NonNull int owner, @NonNull FieldObject source, int meso) {
-        super(enterType, owner, source);
+    public MesoDrop(@NonNull int owner, @NonNull FieldObject source, int meso) {
+        super(owner, source);
         this.meso = meso;
     }
 

@@ -2,6 +2,8 @@ package net.maple.packets;
 
 import client.Character;
 import client.Pet;
+import client.effects.EffectInterface;
+import client.effects.FieldEffectInterface;
 import client.inventory.ItemInventory;
 import client.inventory.ItemInventoryType;
 import client.inventory.ModifyInventoriesContext;
@@ -433,6 +435,34 @@ public class CharacterPackets {
 
         pw.writeHeader(SendOpcode.BROADCAST_MSG);
         message.encode(pw);
+
+        return pw.createPacket();
+    }
+
+    public static Packet localEffect(EffectInterface effect) {
+        PacketWriter pw = new PacketWriter(12);
+
+        pw.writeHeader(SendOpcode.USER_EFFECT_LOCAL);
+        effect.encode(pw);
+
+        return pw.createPacket();
+    }
+
+    public static Packet remoteEffect(Character chr, EffectInterface effect) {
+        PacketWriter pw = new PacketWriter(12);
+
+        pw.writeHeader(SendOpcode.USER_EFFECT_LOCAL);
+        pw.writeInt(chr.getId());
+        effect.encode(pw);
+
+        return pw.createPacket();
+    }
+
+    public static Packet fieldEffect(FieldEffectInterface effect) {
+        PacketWriter pw = new PacketWriter(12);
+
+        pw.writeHeader(SendOpcode.FIELD_EFFECT);
+        effect.encode(pw);
 
         return pw.createPacket();
     }

@@ -15,7 +15,6 @@ import util.packet.Packet;
 @RequiredArgsConstructor
 public abstract class AbstractFieldDrop extends AbstractFieldObject {
 
-    @NonNull final byte enterType;
     @NonNull final int owner;
     @NonNull final FieldObject source;
     byte leaveType = 0x00;
@@ -34,7 +33,11 @@ public abstract class AbstractFieldDrop extends AbstractFieldObject {
 
     @Override
     public Packet getEnterFieldPacket() {
-        return FieldPackets.enterField(this);
+        return getEnterFieldPacket(EnterType.FFA);
+    }
+
+    public Packet getEnterFieldPacket(byte enterType) {
+        return FieldPackets.enterField(this, enterType);
     }
 
     @Override

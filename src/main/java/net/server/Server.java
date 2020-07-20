@@ -2,6 +2,7 @@ package net.server;
 
 import client.Character;
 import client.party.Party;
+import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 import constants.ServerConstants;
 import lombok.Getter;
 import managers.QuestTemplateManager;
@@ -54,5 +55,8 @@ public class Server {
         MapleAESOFB.initialize(ServerConstants.VERSION);
         new DatabaseCore();
         getInstance().run();
+
+        // the first script engine takes a few sec to load, all subsequent engines are hella fast
+        GraalJSScriptEngine.create();
     }
 }
