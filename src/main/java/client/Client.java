@@ -97,12 +97,16 @@ public class Client extends NettyClient {
         }
     }
 
-    public void migrate(ChannelServer channel) {
+    public void changeChannel(ChannelServer channel) {
         this.cc = true;
         character.save();
         this.worldChannel = channel;
-        Server.getInstance().getClients().get(accId).setChannel(channel.getChannelId());
-        write(ConnectionPackets.getChangeChannelPacket(channel));
+        migrate();
+    }
+
+    public void migrate() {
+        Server.getInstance().getClients().get(accId).setChannel(worldChannel.getChannelId());
+        write(ConnectionPackets.getChangeChannelPacket(worldChannel));
     }
 
     public void notifyPartyLogout() {

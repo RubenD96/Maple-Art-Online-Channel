@@ -69,6 +69,8 @@ public class Character extends AbstractFieldLife {
     FriendList friendList;
     int trueMaxHealth, trueMaxMana;
     Party party;
+    boolean inCashShop;
+    int fitness;
     Map<Integer, Quest> quests = new HashMap<>();
     Set<Integer> towns = new TreeSet<>();
     Set<Integer> registeredQuestMobs = new HashSet<>();

@@ -25,8 +25,8 @@ public class UserTransferChannelRequestHandler extends PacketHandler {
                 if (!c.getWorldChannel().equals(channel)) {
                     c.acquireMigrateState();
                     try {
-                        c.getCharacter().save();
-                        c.migrate(channel);
+                        //c.getCharacter().save();
+                        c.changeChannel(channel);
                     } finally {
                         c.releaseMigrateState();
                     }

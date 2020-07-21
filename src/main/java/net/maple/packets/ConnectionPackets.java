@@ -1,6 +1,9 @@
 package net.maple.packets;
 
+import client.Client;
 import constants.ServerConstants;
+import database.jooq.tables.Accounts;
+import net.database.AccountAPI;
 import net.maple.SendOpcode;
 import net.server.ChannelServer;
 import util.packet.Packet;

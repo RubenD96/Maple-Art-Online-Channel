@@ -15,6 +15,7 @@ public enum SendOpcode implements IntegerValue {
     FRIEND_RESULT(0x41),
     BROADCAST_MSG(0x47),
     SET_FIELD(0x8D),
+    SET_CASH_SHOP(0x8F),
     TRANSFER_CHANNEL_REQ_IGNORED(0x94),
     GROUP_MESSAGE(0x96),
     FIELD_EFFECT(0x9A),
@@ -49,6 +50,8 @@ public enum SendOpcode implements IntegerValue {
     DROP_ENTER_FIELD(0x142),
     DROP_LEAVE_FIELD(0x144),
     SCRIPT_MESSAGE(0x16B),
+    CASH_SHOP_QUERY_CASH_RESULT(0x17F),
+    CASH_SHOP_CASH_ITEM_RESULT(0x180),
     FUNC_KEY_MAPPED_INIT(0x18E);
     private int value;
 

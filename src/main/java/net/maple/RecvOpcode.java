@@ -1,11 +1,15 @@
 package net.maple;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public enum RecvOpcode {
 
     MIGRATE_IN(0x14),
     PONG(0x19),
     USER_TRANSFER_FIELD_REQUEST(0x29),
     USER_TRANSFER_CHANNEL_REQUEST(0x2A),
+    USER_MIGRATE_TO_CASH_SHOP_REQUEST(0x2B),
     USER_MOVE(0x2C),
     USER_SIT_REQUEST(0x2D),
     USER_PORTABLE_CHAIR_SIT_REQUEST(0x2E),
@@ -41,12 +45,11 @@ public enum RecvOpcode {
     NPC_MOVE(0xF1),
     DROP_PICK_UP_REQUEST(0xF6),
     REQUIRE_FIELD_OBSTACLE_STATUS(0xFB),
-    CANCEL_INVITE_PARTY_MATCH(0x10B);
-    private int code;
+    CANCEL_INVITE_PARTY_MATCH(0x10B),
+    CASH_SHOP_QUERY_CASH_REQUEST(0x112),
+    CASH_SHOP_CASH_ITEM_REQUEST(0x113);
 
-    RecvOpcode(int code) {
-        this.code = code;
-    }
+    private final int code;
 
     public int getValue() {
         return code;

@@ -44,6 +44,10 @@ public class MigrateInHandler extends PacketHandler {
                 }
 
                 Field field = c.getWorldChannel().getFieldManager().getField(chr.getFieldId());
+                if (field == null) {
+                    System.err.println("Invalid field id upon migrate " + chr.getFieldId());
+                    field = c.getWorldChannel().getFieldManager().getField(1000);
+                }
                 field.enter(chr);
 
                 FriendAPI.loadFriends(chr);

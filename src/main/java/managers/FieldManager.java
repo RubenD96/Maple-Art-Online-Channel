@@ -22,7 +22,9 @@ public class FieldManager extends AbstractManager {
         if (field == null) {
             field = new Field(id);
             field.init();
-            loadFieldData(field);
+            if (!loadFieldData(field)) {
+                return null;
+            }
             fields.put(id, field);
         }
         return field;
@@ -32,7 +34,7 @@ public class FieldManager extends AbstractManager {
         fields.remove(id);
     }
 
-    private void loadFieldData(Field field) {
+    private boolean loadFieldData(Field field) {
         PacketReader r = getData("wz/Map/" + field.getId() + ".mao");
         if (r != null) {
             int flags = r.readInteger();
@@ -131,9 +133,11 @@ public class FieldManager extends AbstractManager {
                 }
             }
             System.out.println("Finished initializing field: " + field.getId());
+            return true;
         } else {
             System.err.println("Field " + field.getId() + " does not exist!");
         }
+        return false;
     }
 
     public boolean containsFlag(int flags, FieldFlag flag) {

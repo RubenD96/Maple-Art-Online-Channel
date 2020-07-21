@@ -117,7 +117,7 @@ public class CharacterAPI {
                 .set(CHARACTERS.AP, chr.getAp())
                 .set(CHARACTERS.SP, chr.getSp())
                 .set(CHARACTERS.FAME, chr.getFame())
-                .set(CHARACTERS.MAP, chr.getField().getId())
+                .set(CHARACTERS.MAP, chr.getFieldId())
                 .set(CHARACTERS.SPAWNPOINT, chr.getSpawnpoint())
                 .set(CHARACTERS.STR, chr.getStrength())
                 .set(CHARACTERS.DEX, chr.getDexterity())

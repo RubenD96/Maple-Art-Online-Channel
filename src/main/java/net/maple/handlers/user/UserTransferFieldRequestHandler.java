@@ -12,21 +12,31 @@ public class UserTransferFieldRequestHandler extends PacketHandler {
     public void handlePacket(PacketReader reader, Client c) {
         Character chr = c.getCharacter();
 
-        reader.readByte(); // ?
-        int id = reader.readInteger();
-
-        if (id != -1) {
-            if (c.isAdmin()) {
-                chr.changeField(id);
-                System.out.println("Hello! Moving " + chr.getName() + " to " + id);
-            } else {
-                c.close(this, "Using /m without admin acc");
+        boolean cashShop = !reader.readBool();
+        if (cashShop) {
+            if (!chr.isInCashShop()) {
+                c.close(this, "Not in CashShop");
+                return;
             }
+            chr.setInCashShop(false);
+            //chr.setField(c.getWorldChannel().getFieldManager().getField(chr.getFieldId()));
+            c.migrate();
         } else {
-            String portalName = reader.readMapleString();
-            Portal portal = chr.getField().getPortalByName(portalName);
+            int id = reader.readInteger();
 
-            portal.enter(chr);
+            if (id != -1) {
+                if (c.isAdmin()) {
+                    chr.changeField(id);
+                    System.out.println("Hello! Moving " + chr.getName() + " to " + id);
+                } else {
+                    c.close(this, "Using /m without admin acc");
+                }
+            } else {
+                String portalName = reader.readMapleString();
+                Portal portal = chr.getField().getPortalByName(portalName);
+
+                portal.enter(chr);
+            }
         }
     }
 }

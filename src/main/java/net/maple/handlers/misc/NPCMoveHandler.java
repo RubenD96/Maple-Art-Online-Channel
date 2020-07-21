@@ -18,7 +18,7 @@ public class NPCMoveHandler extends PacketHandler {
         int npcObjectId = reader.readInteger();
 
         FieldControlledObject npc = chr.getField().getControlledObject(chr, npcObjectId);
-        if (npc != null) {
+        if (npc instanceof FieldNPC) {
             chr.getField().broadcast(moveNPC((FieldNPC) npc, reader));
         }
     }

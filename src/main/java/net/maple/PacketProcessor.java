@@ -40,6 +40,7 @@ public final class PacketProcessor {
         handlers.put(RecvOpcode.PONG, new PongHandler());
         handlers.put(RecvOpcode.USER_TRANSFER_FIELD_REQUEST, new UserTransferFieldRequestHandler());
         handlers.put(RecvOpcode.USER_TRANSFER_CHANNEL_REQUEST, new UserTransferChannelRequestHandler());
+        handlers.put(RecvOpcode.USER_MIGRATE_TO_CASH_SHOP_REQUEST, new UserMigrateToCashShopRequestHandler());
         handlers.put(RecvOpcode.USER_MOVE, new UserMoveHandler());
         handlers.put(RecvOpcode.USER_SIT_REQUEST, new UserSitRequestHandler());
         handlers.put(RecvOpcode.USER_PORTABLE_CHAIR_SIT_REQUEST, new UserPortableChairSitRequestHandler());
@@ -68,6 +69,8 @@ public final class PacketProcessor {
         handlers.put(RecvOpcode.MOB_MOVE, new MobMoveHandler());
         handlers.put(RecvOpcode.NPC_MOVE, new NPCMoveHandler());
         handlers.put(RecvOpcode.DROP_PICK_UP_REQUEST, new DropPickUpRequestHandler());
+        handlers.put(RecvOpcode.CASH_SHOP_QUERY_CASH_REQUEST, new CashShopQueryCashRequestHandler());
+        handlers.put(RecvOpcode.CASH_SHOP_CASH_ITEM_REQUEST, new CashShopCashItemRequestHandler());
 
         handlers.put(RecvOpcode.USER_MELEE_ATTACK, new UserAttackHandler(AttackType.MELEE));
         handlers.put(RecvOpcode.USER_SHOOT_ATTACK, new UserAttackHandler(AttackType.SHOOT));
