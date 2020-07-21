@@ -40,17 +40,9 @@ function end(m, s) {
             cm.sendNext("What? You brought the teeth? Okay, let's see...");
         } else if (status === 2) {
             cm.sendOk("Wow thanks a lot, you really made my day! I hope to see you around more often!");
-            reward();
+            cm.reward(exp, col, items);
+            cm.completeQuest();
             cm.dispose();
         }
     }
-}
-
-function reward() {
-    if (exp !== 0) cm.gainExp(exp);
-    if (col !== 0) cm.gainMeso(col);
-    for (let item of items) {
-        cm.gainItem(item[0], item[1]);
-    }
-    cm.completeQuest();
 }

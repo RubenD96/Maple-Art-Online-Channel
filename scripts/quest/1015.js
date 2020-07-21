@@ -5,6 +5,16 @@
  * @author Chronos
  */
 
+const exp = 1000;
+const col = 0;
+const items = [
+    [4000009, -10],
+    [4000001, -10],
+    [4000253, -10],
+    [4000252, -5],
+    [4000017, -3],
+    [2010009, -1]
+];
 let status = 0;
 
 function start(m, s) {
@@ -38,28 +48,12 @@ function end(m, s) {
     } else {
         status++;
         if (status === 1) {
-            if (cm.haveItem(4000009, 10) &&
-                cm.haveItem(4000001, 10) &&
-                cm.haveItem(4000253, 10) &&
-                cm.haveItem(4000252, 5) &&
-                cm.haveItem(4000017, 3) &&
-                cm.haveItem(2010009, 1)) {
-                cm.sendNext("I see you've gotten the ingredients, I'll be making the stew now!");
-            } else {
-                cm.dispose();
-            }
+            cm.sendNext("I see you've gotten the ingredients, I'll be making the stew now!");
         } else if (status === 2) {
             cm.sendNext("That was delicious! I feel a lot stronger!", 2);
         } else if (status === 3) {
             cm.sendOk("Of course, that's the power of a good stew.");
-
-            cm.gainExp(1000);
-            cm.gainItem(4000009, -10);
-            cm.gainItem(4000001, -10);
-            cm.gainItem(4000253, -10);
-            cm.gainItem(4000252, -5);
-            cm.gainItem(4000017, -3);
-            cm.gainItem(2010009, -1);
+            cm.reward(exp, col, items);
             cm.completeQuest();
             cm.dispose();
         }

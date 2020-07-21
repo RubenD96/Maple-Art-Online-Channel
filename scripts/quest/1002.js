@@ -33,15 +33,7 @@ function start(m, s) {
 
 function end(m, s) {
     cm.sendOk("Alright now that you have the data, I need to research a bit. Please accept this token of my appreciation");
-    reward();
-    cm.dispose();
-}
-
-function reward() {
-    if (exp !== 0) cm.gainExp(exp);
-    if (col !== 0) cm.gainMeso(col);
-    for (let item of items) {
-        cm.gainItem(item[0], item[1]);
-    }
+    cm.reward(exp, col, items);
     cm.completeQuest();
+    cm.dispose();
 }

@@ -29,15 +29,7 @@ function start(m, s) {
 
 function end(m, s) {
     cm.sendOk("Thanks kind... warrior, I... feel a bit... better now\nBut... its not over!");
-    reward();
-    cm.dispose();
-}
-
-function reward() {
-    if (exp !== 0) cm.gainExp(exp);
-    if (col !== 0) cm.gainMeso(col);
-    for (let item of items) {
-        cm.gainItem(item[0], item[1]);
-    }
+    cm.reward(exp, col, items);
     cm.completeQuest();
+    cm.dispose();
 }

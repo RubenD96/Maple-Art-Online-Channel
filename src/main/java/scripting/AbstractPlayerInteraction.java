@@ -17,9 +17,13 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import managers.ItemManager;
 import net.maple.packets.CharacterPackets;
+import org.graalvm.collections.Pair;
 import scripting.npc.NPCScriptManager;
 
 import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Getter
@@ -33,6 +37,20 @@ public abstract class AbstractPlayerInteraction {
     }
 
     public void gainItem(int id, int quantity) {
+        gainItemInternal(id, quantity);
+        c.write(CharacterPackets.localEffect(new QuestEffect(id, quantity)));
+    }
+
+    public void massGainItem(int[][] items) {
+        List<Pair<Integer, Integer>> entries = new ArrayList<>();
+        Arrays.stream(items).forEach(item -> {
+            gainItemInternal(item[0], item[1]);
+            entries.add(Pair.create(item[0], item[1]));
+        });
+        c.write(CharacterPackets.localEffect(new QuestEffect(entries)));
+    }
+
+    private void gainItemInternal(int id, int quantity) {
         if (quantity > 0) {
             ItemTemplate item = ItemManager.getItem(id);
             if (item != null) {
@@ -45,7 +63,6 @@ public abstract class AbstractPlayerInteraction {
                     i -> i.take(id, (short) -quantity),
                     false);
         }
-        c.write(CharacterPackets.localEffect(new QuestEffect(id, quantity)));
     }
 
     public void gainMeso(int meso) {

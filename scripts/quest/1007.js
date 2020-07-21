@@ -43,17 +43,9 @@ function end(m, s) {
             cm.sendNext("Is that the ring I see!.. Thank you so much!");
         } else {
             cm.sendOk("I'm at the end of my days. And you fulfilled my wish to see the ring one last time. As a reward I want you to keep the ring!");
-            reward();
+            cm.reward(exp, col, items);
+            cm.completeQuest();
             cm.dispose();
         }
     }
-}
-
-function reward() {
-    if (exp !== 0) cm.gainExp(exp);
-    if (col !== 0) cm.gainMeso(col);
-    for (let item of items) {
-        cm.gainItem(item[0], item[1]);
-    }
-    cm.completeQuest();
 }

@@ -29,4 +29,14 @@ public class QuestConversationManager extends NPCConversationManager {
     public void completeQuest() {
         super.completeQuest(id);
     }
+
+    public void reward(int exp, int col, int[][] items) {
+        if (exp != 0) gainExp(exp);
+        if (col != 0) gainMeso(col);
+        if (items.length > 1) {
+            massGainItem(items);
+        } else if (items.length == 1) {
+            gainItem(items[0][0], items[0][1]);
+        }
+    }
 }
