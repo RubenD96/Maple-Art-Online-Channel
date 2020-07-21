@@ -45,7 +45,7 @@ function initializeCollections() {
                 break;
         }
     }
-    portals = field.getPortals().values();
+    portals = field.getPortals();
 }
 
 function converse(m, s) {
@@ -71,7 +71,7 @@ function converse(m, s) {
             listObjects();
         } else if (status === 3) {
             if (type === 9) {
-                cm.sendOk("Todo?");
+                cm.sendOk(portals.get(s).toString());
             } else {
                 cm.sendOk(field.getObject(s).toString());
             }
@@ -146,8 +146,9 @@ function listNpcs() {
 
 function listPortals() {
     let str = "\r\n\r\nThere are a total of: #b" + portals.size() + "#k portals on this map!";
-    for (let portal of portals) {
+    for (let portal of portals.values()) {
         str += "\r\n#L" + portal.getId() + "##b" + portal.getName() + " - #r#eType: " + portal.getType() + "#k#n";
+        str += "\r\n" + portal.toString();
         if (portal.getScript() !== "") {
             str += "\r\n\t\t\tScript: " + portal.getScript();
         }

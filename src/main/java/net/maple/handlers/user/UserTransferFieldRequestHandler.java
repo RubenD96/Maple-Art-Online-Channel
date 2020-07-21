@@ -2,8 +2,11 @@ package net.maple.handlers.user;
 
 import client.Character;
 import client.Client;
+import client.messages.broadcast.types.AlertMessage;
+import field.object.portal.FieldPortal;
 import field.object.portal.Portal;
 import net.maple.handlers.PacketHandler;
+import net.maple.packets.CharacterPackets;
 import util.packet.PacketReader;
 
 public class UserTransferFieldRequestHandler extends PacketHandler {
@@ -19,7 +22,6 @@ public class UserTransferFieldRequestHandler extends PacketHandler {
                 return;
             }
             chr.setInCashShop(false);
-            //chr.setField(c.getWorldChannel().getFieldManager().getField(chr.getFieldId()));
             c.migrate();
         } else {
             int id = reader.readInteger();
@@ -33,8 +35,13 @@ public class UserTransferFieldRequestHandler extends PacketHandler {
                 }
             } else {
                 String portalName = reader.readMapleString();
-                Portal portal = chr.getField().getPortalByName(portalName);
+                FieldPortal portal = chr.getField().getPortalByName(portalName);
 
+                if (portal == null) {
+                    chr.enableActions();
+                    chr.write(CharacterPackets.message(new AlertMessage("There is a problem with the portal!\r\nName: " + portalName)));
+                    return;
+                }
                 portal.enter(chr);
             }
         }
