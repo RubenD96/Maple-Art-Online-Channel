@@ -1,9 +1,10 @@
 package field.object.drop;
 
 import lombok.Data;
+import lombok.NonNull;
 
 @Data
 public class DropEntry {
 
-    private final int id, chance, min, max, quest;
+    @NonNull private int id, chance, min, max, quest;
 }

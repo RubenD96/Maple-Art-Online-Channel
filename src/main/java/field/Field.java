@@ -132,7 +132,7 @@ public class Field {
         updateControlledObjects();
     }
 
-    public void enterItemDrop(AbstractFieldDrop drop, Packet enterPacket) {
+    private void enterItemDrop(AbstractFieldDrop drop, Packet enterPacket) {
         getObjects(FieldObjectType.CHARACTER).forEach(c -> {
             Character chr = (Character) c;
             if (drop.getQuestId() != 0) {

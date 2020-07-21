@@ -34,6 +34,7 @@ import net.maple.packets.FieldPackets;
 import net.maple.packets.PartyPackets;
 import net.server.ChannelServer;
 import net.server.Server;
+import scripting.npc.NPCScriptManager;
 import util.packet.Packet;
 
 import java.util.*;
@@ -377,6 +378,7 @@ public class Character extends AbstractFieldLife {
     }
 
     public void enableActions() {
+        NPCScriptManager.getInstance().dispose(client);
         CharacterPackets.statUpdate(this, new ArrayList<>(), true);
     }
 

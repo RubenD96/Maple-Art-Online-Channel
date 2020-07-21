@@ -1,11 +1,17 @@
 package scripting.npc;
 
 import client.Client;
+import field.object.drop.DropEntry;
+import field.object.life.FieldMobTemplate;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import managers.MobManager;
+import net.database.DropAPI;
 import net.maple.packets.ConversationPackets;
 import scripting.AbstractPlayerInteraction;
+
+import java.util.List;
 
 @Getter
 @SuppressWarnings("unused")
@@ -230,5 +236,40 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
                 break;
         }
         return output;
+    }
+
+    public List<DropEntry> getMobDrops(int id) {
+        FieldMobTemplate template = MobManager.getMob(id);
+        if (template != null) {
+            if (template.getDrops() == null) {
+                template.setDrops(DropAPI.getMobDrops(template.getId()));
+            }
+            return template.getDrops();
+        }
+        return null;
+    }
+
+    public void addMobDrop(int mid, int iid, int chance) {
+        addMobDrop(mid, iid, 1, 1, 0, chance);
+    }
+
+    public void addMobDrop(int mid, int iid, int min, int max, int chance) {
+        addMobDrop(mid, iid, min, max, 0, chance);
+    }
+
+    public void addMobDrop(int mid, int iid, int min, int max, int questid, int chance) {
+        DropAPI.addMobDrop(mid, iid, min, max, questid, chance);
+    }
+
+    public void editDropChance(int mid, int iid, int chance) {
+        DropAPI.updateDropChance(mid, iid, chance);
+    }
+
+    public void removeDrop(int mid, int iid) {
+        DropAPI.removeDrop(mid, iid);
+    }
+
+    public void editMinMaxChance(int mid, int iid, int min, int max, int chance) {
+        DropAPI.updateMinMaxChance(mid, iid, min, max, chance);
     }
 }
