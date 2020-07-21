@@ -1,6 +1,7 @@
 package field.object.drop;
 
 import client.Character;
+import client.inventory.item.templates.ItemTemplate;
 import field.object.AbstractFieldObject;
 import field.object.FieldObject;
 import field.object.FieldObjectType;
@@ -17,6 +18,7 @@ public abstract class AbstractFieldDrop extends AbstractFieldObject {
 
     @NonNull final int owner;
     @NonNull final FieldObject source;
+    @NonNull final int questId;
     byte leaveType = 0x00;
     @Setter long expire;
 

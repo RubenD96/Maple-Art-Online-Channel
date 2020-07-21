@@ -43,7 +43,7 @@ public class UserChangeSlotPositionRequestHandler extends PacketHandler {
                             i.getInventoryContext(type).remove(item);
                         }
 
-                        ItemDrop drop = new ItemDrop(chr.getId(), chr, item);
+                        ItemDrop drop = new ItemDrop(chr.getId(), chr, item, 0);
                         drop.setPosition(chr.getPosition());
                         drop.setExpire(System.currentTimeMillis() + 600000);
                         chr.getField().enter(drop);

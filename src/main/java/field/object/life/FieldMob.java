@@ -6,6 +6,7 @@ import client.inventory.item.templates.ItemTemplate;
 import client.inventory.slots.ItemSlot;
 import client.inventory.slots.ItemSlotBundle;
 import client.messages.IncEXPMessage;
+import client.player.quest.Quest;
 import client.player.quest.QuestState;
 import field.object.FieldObjectType;
 import field.object.drop.AbstractFieldDrop;
@@ -83,10 +84,16 @@ public class FieldMob extends AbstractFieldControlledLife {
     public void drop(Character owner) {
         List<AbstractFieldDrop> drops = new ArrayList<>();
         template.getDrops().forEach(drop -> {
+            if (drop.getQuest() != 0) {
+                Quest quest = owner.getQuests().get(drop.getQuest());
+                if (quest != null && quest.getState() != QuestState.PERFORM) {
+                    return;
+                }
+            }
             if (Math.random() < (1 / (double) drop.getChance())) {
                 if (drop.getId() == 0) { // meso
                     int amount = (int) (Math.random() * drop.getMax() + drop.getMin());
-                    drops.add(new MesoDrop(owner.getId(), this, amount));
+                    drops.add(new MesoDrop(owner.getId(), this, amount, drop.getQuest()));
                 } else { // item
                     ItemTemplate template = ItemManager.getItem(drop.getId());
                     if (template != null) {
@@ -95,7 +102,7 @@ public class FieldMob extends AbstractFieldControlledLife {
                         if (item instanceof ItemSlotBundle) {
                             ((ItemSlotBundle) item).setNumber((short) (Math.random() * drop.getMax() + drop.getMin()));
                         }
-                        drops.add(new ItemDrop(owner.getId(), this, item));
+                        drops.add(new ItemDrop(owner.getId(), this, item, drop.getQuest()));
                     } else {
                         System.out.println("Invalid item drop " + drop.getId() + " from " + this.template.getId());
                     }

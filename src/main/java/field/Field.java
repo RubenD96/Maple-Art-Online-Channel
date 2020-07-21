@@ -2,6 +2,8 @@ package field;
 
 import client.Character;
 import client.party.PartyMember;
+import client.player.quest.Quest;
+import client.player.quest.QuestState;
 import field.object.FieldObject;
 import field.object.FieldObjectType;
 import field.object.Foothold;
@@ -93,7 +95,11 @@ public class Field {
             objects.values().forEach(set -> set.stream()
                     .filter(o -> !o.equals(obj))
                     .forEach(o -> {
-                        chr.write(o.getEnterFieldPacket());
+                        if (o instanceof AbstractFieldDrop) {
+                            enterItemDrop((AbstractFieldDrop) o, o.getEnterFieldPacket());
+                        } else {
+                            chr.write(o.getEnterFieldPacket());
+                        }
                     }));
 
             if (chr.getParty() != null) {
@@ -116,13 +122,27 @@ public class Field {
         } else {
             obj.setId(runningObjectId.addAndGet(1));
             if (obj.getFieldObjectType() == FieldObjectType.DROP) {
-                broadcast(((AbstractFieldDrop) obj).getEnterFieldPacket(EnterType.PARTY));
+                AbstractFieldDrop drop = (AbstractFieldDrop) obj;
+                enterItemDrop(drop, drop.getEnterFieldPacket(EnterType.PARTY));
             } else {
                 broadcast(obj.getEnterFieldPacket());
             }
         }
 
         updateControlledObjects();
+    }
+
+    public void enterItemDrop(AbstractFieldDrop drop, Packet enterPacket) {
+        getObjects(FieldObjectType.CHARACTER).forEach(c -> {
+            Character chr = (Character) c;
+            if (drop.getQuestId() != 0) {
+                Quest quest = chr.getQuests().get(drop.getQuestId());
+                if (quest != null && quest.getState() != QuestState.PERFORM) {
+                    return;
+                }
+            }
+            chr.write(enterPacket.clone());
+        });
     }
 
     public synchronized void leave(FieldObject obj) {

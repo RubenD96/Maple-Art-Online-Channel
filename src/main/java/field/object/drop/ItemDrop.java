@@ -10,8 +10,8 @@ public class ItemDrop extends AbstractFieldDrop {
 
     private final ItemSlot item;
 
-    public ItemDrop(@NonNull int owner, @NonNull FieldObject source, ItemSlot item) {
-        super(owner, source);
+    public ItemDrop(@NonNull int owner, @NonNull FieldObject source, ItemSlot item, int questId) {
+        super(owner, source, questId);
         this.item = item;
     }
 

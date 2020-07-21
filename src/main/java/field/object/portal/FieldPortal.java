@@ -12,7 +12,7 @@ import net.maple.packets.CharacterPackets;
 @RequiredArgsConstructor
 public class FieldPortal extends AbstractFieldPortal implements Portal {
 
-    @NonNull private Field field;
+    private final Field field;
 
     @Override
     public void enter(Character chr) {
