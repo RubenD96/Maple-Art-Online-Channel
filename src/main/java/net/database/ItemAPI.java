@@ -1,13 +1,19 @@
 package net.database;
 
 import client.Character;
+import client.Client;
 import client.inventory.ItemInventoryType;
 import client.inventory.item.templates.ItemBundleTemplate;
 import client.inventory.item.templates.ItemEquipTemplate;
+import client.inventory.item.templates.ItemTemplate;
 import client.inventory.slots.ItemSlot;
 import client.inventory.slots.ItemSlotBundle;
 import client.inventory.slots.ItemSlotEquip;
+import client.inventory.slots.ItemSlotLocker;
+import database.jooq.tables.records.InventoriesRecord;
 import managers.ItemManager;
+import org.jooq.DeleteConditionStep;
+import org.jooq.DeleteUsingStep;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.exception.DataAccessException;
@@ -36,7 +42,7 @@ public class ItemAPI {
             var inv = chr.getInventories().get(type).getItems();
             inv.forEach((slot, item) -> {
                 if (item.getUuid() == null || (item.isNewItem() && uuids.stream().noneMatch(uuid -> Arrays.equals(item.getUuid(), uuid)))) { // item is new, insert new entry
-                    insertNewItem(chr, i + 1, slot, item);
+                    insertNewItem(chr, 1, i + 1, slot, item, null);
                     if (type == ItemInventoryType.EQUIP) {
                         insertNewEquip((ItemSlotEquip) item);
                     }
@@ -72,6 +78,10 @@ public class ItemAPI {
                     toDelete.remove(uuid);
                 }
             });
+            if (chr.getClient().getLocker().stream().anyMatch(item -> Arrays.equals(item.getItem().getUuid(), uuid))) {
+                keep.add(uuid);
+                toDelete.remove(uuid);
+            }
         }
 
         toDelete.forEach(ItemAPI::deleteItemByUUID);
@@ -119,7 +129,7 @@ public class ItemAPI {
                 .execute();
     }
 
-    private static void insertNewItem(Character chr, int type, short slot, ItemSlot item) {
+    private static void insertNewItem(Character chr, int storageType, int type, short slot, ItemSlot item, String giftFrom) {
         try {
             byte[] uuid = item.getUuid();
             if (uuid == null) {
@@ -137,16 +147,18 @@ public class ItemAPI {
                             INVENTORIES.INVENTORY_TYPE,
                             INVENTORIES.POSITION,
                             INVENTORIES.QUANTITY,
-                            INVENTORIES.OWNER)
+                            INVENTORIES.OWNER,
+                            INVENTORIES.GIFTFROM)
                     .values(uuid,
                             chr.getId(),
-                            1,
+                            storageType,
                             chr.getClient().getAccId(),
                             item.getTemplateId(),
                             type,
                             slot,
                             quantity,
-                            null)
+                            null,
+                            giftFrom)
                     .execute();
         } catch (DataAccessException dae) {
             System.err.println("[ItemAPI] Duplicate UUID for " + chr.getName() + " on " + item);
@@ -303,5 +315,64 @@ public class ItemAPI {
                 equips.put(rec.getValue(INVENTORIES.POSITION), equip);
             }
         }
+    }
+
+    /**
+     * Cashshop inventory
+     *
+     * @param c client
+     */
+    public static void loadLocker(Client c) {
+        Result<Record> locker = DatabaseCore.getConnection()
+                .select().from(INVENTORIES)
+                .where(INVENTORIES.STORAGE_TYPE.eq(3))
+                .and(INVENTORIES.AID.eq(c.getAccId()))
+                .fetch();
+
+        List<Integer> toRemove = new ArrayList<>();
+        Map<Short, ItemSlotLocker> toAdd = new TreeMap<>();
+        locker.forEach(item -> {
+            int itemId = item.getValue(INVENTORIES.ITEMID);
+            ItemTemplate template = ItemManager.getItem(itemId);
+            String giftFrom = item.getValue(INVENTORIES.GIFTFROM);
+            if (template != null) { // mmhm
+                ItemSlotLocker lockerItem = new ItemSlotLocker(template.toItemSlot());
+                lockerItem.getItem().setUuid(item.getValue(INVENTORIES.ID));
+                lockerItem.setBuyCharacterName(giftFrom == null ? "" : giftFrom);
+                toAdd.put(item.getValue(INVENTORIES.POSITION), lockerItem);
+            } else {
+                toRemove.add(itemId);
+            }
+        });
+
+        c.getLocker().addAll(toAdd.values());
+
+        if (!toRemove.isEmpty()) {
+            DeleteUsingStep<InventoriesRecord> del = DatabaseCore.getConnection().deleteFrom(INVENTORIES);
+            DeleteConditionStep<InventoriesRecord> conditionStep = del.where(INVENTORIES.ITEMID.eq(toRemove.get(0)));
+            toRemove.remove(0); // this is pretty derpy...
+            for (Integer r : toRemove) {
+                conditionStep = conditionStep.or(INVENTORIES.ITEMID.eq(r));
+            }
+            del.execute();
+        }
+    }
+
+    public static void addLockerItem(Client c, ItemSlotLocker item) {
+        int type = item.getItem().getTemplateId() / 1000000;
+        insertNewItem(c.getCharacter(), 3, type, (short) (c.getLocker().indexOf(item) + 1), item.getItem(), item.getBuyCharacterName());
+
+        if (ItemInventoryType.values()[type - 1] == ItemInventoryType.EQUIP) {
+            insertNewEquip((ItemSlotEquip) item.getItem());
+        }
+    }
+
+    public static void moveLockerToStorage(ItemSlotLocker item, short slot) {
+        DatabaseCore.getConnection()
+                .update(INVENTORIES)
+                .set(INVENTORIES.STORAGE_TYPE, 1)
+                .set(INVENTORIES.POSITION, slot)
+                .where(INVENTORIES.ID.eq(item.getItem().getUuid()))
+                .execute();
     }
 }

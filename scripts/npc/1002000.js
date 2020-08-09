@@ -6,7 +6,7 @@
  */
 
 let status = 0;
-let mobid = 9700041;
+let mobid = 100100;
 let tempsel;
 let tempsel2;
 let tempselIns;
@@ -25,6 +25,9 @@ function init() {
     if (!cm.getC().isAdmin()) {
         cm.sendOk("Bye :)");
         cm.sendOk("Bye :)");
+    }
+    if (cm.getPlayer().getPhilId() !== 0) {
+        mobid = cm.getPlayer().getPhilId();
     }
 }
 
@@ -121,7 +124,7 @@ function converse(m, s) {
                         status = 1;
                         converse(m, 2);
                     } else if (tempselIns === 1) { // Change drop chance
-                        newChance = s;
+                        newChance = parseFloat(cm.getText());
                         status = 1;
                         converse(m, 2);
                     } else if (tempselIns === 2) { // Add item
@@ -134,7 +137,7 @@ function converse(m, s) {
                     } else if (tempselIns === 1) { // change min value
                         mesoMax = s;
                     } else if (tempselIns === 2) { // change meso chance
-                        mesoChance = s;
+                        mesoChance = parseFloat(cm.getText());
                     }
                     status = 1;
                     converse(m, 3);
@@ -144,10 +147,11 @@ function converse(m, s) {
             switch (tempsel) {
                 case 1: // manage drops
                     if (tempsel2 === 0) { // edit chance
-                        if (s === item.getChance()) {
+                        let c = parseFloat(cm.getText());
+                        if (c === item.getChance()) {
                             cm.sendOk(cm.letters("Failed") + `\r\nNo changes were made as the new chance was the same as the old chance.`);
                         } else {
-                            updateDropChance(s);
+                            updateDropChance(c);
                         }
                     } else if (tempsel2 === 1) { // remove item
                         deleteDrop();
@@ -187,12 +191,13 @@ function sendItemList() {
         cm.sendOk(str);
         restart = true;
     } else {
-        let i = 0;
+        let i = -1;
         for (let drop of drops) {
             let id = drop.getId();
+            i++;
             if (id !== 0) { // meso
-                let chance = 1 / drop.getChance() * 100;
-                str += `\r\n#L${i++}##i${id}# #b#z${id}##k ${chance}%#l`
+                let chance = drop.getChance();
+                str += `\r\n#L${i}##i${id}# #b#z${id}##k ${chance}%#l`
             }
         }
         cm.sendSimple(str);
@@ -201,7 +206,7 @@ function sendItemList() {
 
 function sendEditDropEntry() {
     let itemid = item.getId();
-    let chance = 1 / item.getChance() * 100;
+    let chance = item.getChance();
     cm.sendSimple(cm.letters("Edit Item") + `
     \r\nYou've selected: #i${itemid}# #b#t${itemid}#
     \r\nThe current drop chance for this item is: #r${chance}%#k.
@@ -212,11 +217,11 @@ function sendEditDropEntry() {
 
 function sendEditDropChance() {
     let itemid = item.getId();
-    let chance = 1 / item.getChance() * 100;
-    cm.sendGetNumber(cm.letters("Change Chance") + `
+    let chance = item.getChance();
+    cm.sendGetText(cm.letters("Change Chance") + `
     \r\nYou've selected: #i${itemid}# #b#t${itemid}##k.
     \r\nThe current drop chance for this item is: #r${chance}%#k.
-    \r\nNew drop chance (1 / chance (eg current is 1/${item.getChance()} so ${chance}%)):`,
+    \r\nNew drop chance:`,
         item.getChance(), 1, 1000000);
 }
 
@@ -230,7 +235,7 @@ function updateDropChance(newChance) {
     let itemid = item.getId();
     cm.editDropChance(mobid, itemid, newChance);
     cm.sendOk(cm.letters("Success") + `
-    \r\n\r\n#i${itemid}# drop chance is changed to #r${1 / newChance * 100}%#k for #d#o${mobid}#`);
+    \r\n\r\n#i${itemid}# drop chance is changed to #r${newChance}%#k for #d#o${mobid}#`);
 }
 
 function deleteDrop() {
@@ -244,7 +249,7 @@ function sendNewDropPrompt() {
     cm.sendSimple(cm.letters("Add Item") + `
     \r\nCurrent mob: #b#o${mobid}##k (#r${mobid}#k)
     \r\nCurrent item to add: #b` + (newItem === undefined ? `not set yet!#k` : `#i${newItem}##k (#r${newItem}#k)`) + `
-    \r\nDrop chance for item to add: #r` + (newChance === undefined ? `not set yet!` : `${1 / newChance * 100}%`) + `#k
+    \r\nDrop chance for item to add: #r` + (newChance === undefined ? `not set yet!` : `${newChance}%`) + `#k
     \r\n#b#L0#Change itemid#l
     \r\n#L1#Change drop chance#l
     \r\n#L2#Add item#l`);
@@ -257,10 +262,10 @@ function sendChangeItemIdPrompt() {
 }
 
 function sendChangeDropChancePrompt() {
-    cm.sendGetNumber(cm.letters("Change Chance") + `
+    cm.sendGetText(cm.letters("Change Chance") + `
     \r\nCurrent item to add: #b` + (newItem === undefined ? `not set yet!#k` : `#i${newItem}##k (#r${newItem}#k)`) + `
-    \r\nDrop chance for item to add: #r` + (newChance === undefined ? `not set yet!` : (1 / newChance * 100 + `%`)) + `
-    \r\nNew drop chance (1 / chance):`,
+    \r\nDrop chance for item to add: #r` + (newChance === undefined ? `not set yet!` : (newChance + `%`)) + `
+    \r\nNew drop chance:`,
         (newChance === undefined ? 1 : newChance), 1, 1000000);
 }
 
@@ -268,13 +273,13 @@ function sendAddItemPrompt() {
     if (newItem === undefined || newChance === undefined) {
         cm.sendPrev(`You have not provided enough data to add an item.`, 1);
     } else {
-        cm.sendYesNo(`Are you sure you want to add #b#i${newItem}##k (#r${newItem}#k) with a drop chance of #r${1 / newChance * 100}%#k into: #b#o${mobid}##k?`);
+        cm.sendYesNo(`Are you sure you want to add #b#i${newItem}##k (#r${newItem}#k) with a drop chance of #r${newChance}%#k into: #b#o${mobid}##k?`);
     }
 }
 
 function insertItem() {
     cm.addMobDrop(mobid, newItem, newChance);
-    cm.sendOk(`#i${newItem}# #b#t${newItem}##k has been added to #d#o${mobid}##k with a drop chance of #r${1 / newChance * 100}%#k.`);
+    cm.sendOk(`#i${newItem}# #b#t${newItem}##k has been added to #d#o${mobid}##k with a drop chance of #r${newChance}%#k.`);
 }
 
 function setMesoValues() {
@@ -284,6 +289,7 @@ function setMesoValues() {
             mesoMin = drop.getMin();
             mesoMax = drop.getMax();
             mesoChance = drop.getChance();
+            console.log(mesoChance);
             meso = true;
             break;
         }
@@ -295,7 +301,7 @@ function sendEditMesoPrompt() {
     \r\nCurrent mob: #b#o${mobid}##k (#r${mobid}#k)
     \r\nMin meso: #b` + (mesoMin === undefined ? `not set yet!` : mesoMin) + `#k
     \r\nMax meso: #b` + (mesoMax === undefined ? `not set yet!` : mesoMax) + `#k
-    \r\nChance to drop: #r` + (mesoChance === undefined ? `not set yet!` : 1 / mesoChance * 100 + `%`) + `#b
+    \r\nChance to drop: #r` + (mesoChance === undefined ? `not set yet!` : mesoChance + `%`) + `#b
     \r\n#L0#Change min value#l
     \r\n#L1#Change max value#l
     \r\n#L2#Change drop chance#l
@@ -309,10 +315,10 @@ function sendChangeMesoPrompt(current, str) {
 }
 
 function sendChangeMesoChancePrompt() {
-    cm.sendGetNumber(cm.letters("Drop Chance") + `
-    \r\nChance to drop: #r` + (mesoChance === undefined ? "not set yet!" : (1 / mesoChance * 100) + `%`) + `#k
-    \r\nNew drop chance (1 / chance):`,
-        mesoChance ? 1 : mesoChance, 1, 10000);
+    cm.sendGetText(cm.letters("Drop Chance") + `
+    \r\nChance to drop: #r` + (mesoChance === undefined ? "not set yet!" : (mesoChance) + `%`) + `#k
+    \r\nNew drop chance:`,
+        mesoChance === undefined ? 100 : mesoChance, 1, 10000);
 }
 
 function sendApplyMesoChanges() {
@@ -321,7 +327,8 @@ function sendApplyMesoChanges() {
     } else {
         cm.addMobDrop(mobid, 0, mesoMin, mesoMax, 0, mesoChance);
     }
-    cm.sendOk(`Meso drop (${mesoMin} - ${mesoMax}) has been ` + (meso ? `changed for` : `added to`) + ` #d#o${mobid}##k with a drop chance of #r${1 / mesoChance * 100}%#k.`);
+    status = 0;
+    cm.sendOk(`Meso drop (${mesoMin} - ${mesoMax}) has been ` + (meso ? `changed for` : `added to`) + ` #d#o${mobid}##k with a drop chance of #r${mesoChance}%#k.`);
 }
 
 function restartScript() {

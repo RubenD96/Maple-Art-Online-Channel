@@ -1,0 +1,5 @@
+execute = () => {
+    cs.kickMe();
+}
+
+execute();

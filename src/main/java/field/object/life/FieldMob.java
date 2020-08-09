@@ -90,7 +90,7 @@ public class FieldMob extends AbstractFieldControlledLife {
                     return;
                 }
             }
-            if (Math.random() < (1 / (double) drop.getChance())) {
+            if (Math.random() * 100 < drop.getChance()) {
                 if (drop.getId() == 0) { // meso
                     int amount = (int) (Math.random() * drop.getMax() + drop.getMin());
                     drops.add(new MesoDrop(owner.getId(), this, amount, drop.getQuest()));

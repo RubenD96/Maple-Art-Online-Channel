@@ -24,6 +24,8 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 @RequiredArgsConstructor
 @Getter
@@ -124,7 +126,7 @@ public abstract class AbstractPlayerInteraction {
     public ItemSlotEquip getEquipById(int id) {
         ItemTemplate template = ItemManager.getItem(id);
         if (template == null) return null;
-        return (ItemSlotEquip) template.toItemSlot(ItemVariationType.NONE);
+        return (ItemSlotEquip) template.toItemSlot();
     }
 
     @SuppressWarnings({"unchecked"})
@@ -154,5 +156,23 @@ public abstract class AbstractPlayerInteraction {
 
     public void tremble(boolean heavy, int delay) {
         getPlayer().getField().broadcast(CharacterPackets.fieldEffect(new TrembleFieldEffect(heavy, delay)));
+    }
+
+    public void openNpcIn(int npc, int time, boolean dispose) {
+        c.getCh().eventLoop().schedule(() -> {
+            if (dispose) {
+                c.setLastNpcClick(0);
+                NPCScriptManager.getInstance().dispose(c);
+            }
+            NPCScriptManager.getInstance().converse(c, npc);
+        }, time, TimeUnit.MILLISECONDS);
+    }
+
+    public void openNpcIn(int npc, int time) {
+        openNpcIn(npc, time, true);
+    }
+
+    public void executeAfter(Function<AbstractPlayerInteraction, Void> func, int after) {
+        c.getCh().eventLoop().schedule(() -> func.apply(this), after, TimeUnit.MILLISECONDS);
     }
 }

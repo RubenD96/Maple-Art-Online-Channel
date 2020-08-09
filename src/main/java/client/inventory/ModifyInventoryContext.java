@@ -84,7 +84,7 @@ public class ModifyInventoryContext implements ModifyInventoryContextInterface {
 
     @Override
     public void add(ItemTemplate item, short quantity) {
-        ItemSlot i = item.toItemSlot(ItemVariationType.NONE);
+        ItemSlot i = item.toItemSlot();
 
         if (i instanceof ItemSlotBundle) {
             ((ItemSlotBundle) i).setNumber(quantity);
@@ -100,7 +100,7 @@ public class ModifyInventoryContext implements ModifyInventoryContextInterface {
 
     @Override
     public void set(short slot, ItemTemplate item, short quantity) {
-        ItemSlot i = item.toItemSlot(ItemVariationType.NONE);
+        ItemSlot i = item.toItemSlot();
 
         if (i instanceof ItemSlotBundle) {
             ((ItemSlotBundle) i).setNumber(quantity);

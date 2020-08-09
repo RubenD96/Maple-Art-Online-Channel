@@ -6,5 +6,6 @@ import lombok.NonNull;
 @Data
 public class DropEntry {
 
-    @NonNull private int id, chance, min, max, quest;
+    @NonNull private int id, min, max, quest;
+    @NonNull private double chance;
 }

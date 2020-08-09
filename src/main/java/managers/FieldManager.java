@@ -140,7 +140,7 @@ public class FieldManager extends AbstractManager {
         return false;
     }
 
-    public boolean containsFlag(int flags, FieldFlag flag) {
+    private boolean containsFlag(int flags, FieldFlag flag) {
         return (flags & flag.getValue()) == flag.getValue();
     }
 }

@@ -2,6 +2,8 @@ package field.object.drop;
 
 import client.Character;
 import client.inventory.slots.ItemSlot;
+import client.messages.ItemDropPickUpMessage;
+import client.messages.MesoDropPickUpMessage;
 import field.object.FieldObject;
 import lombok.NonNull;
 import net.maple.packets.CharacterPackets;
@@ -30,5 +32,6 @@ public class ItemDrop extends AbstractFieldDrop {
         leaveType = LeaveType.PICKUP;
         field.leave(this, getLeaveFieldPacket(chr));
         CharacterPackets.modifyInventory(chr, i -> i.add(item), true);
+        chr.write(CharacterPackets.message(new ItemDropPickUpMessage(item.getTemplateId())));
     }
 }

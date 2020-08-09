@@ -24,7 +24,9 @@ public class UserMoveHandler extends PacketHandler {
 
         MovePath path = chr.move(reader);
 
-        chr.getField().broadcast(movePlayer(chr, path), chr);
+        if (chr.getField() != null) {
+            chr.getField().broadcast(movePlayer(chr, path), chr);
+        }
     }
 
     private static Packet movePlayer(Character chr, MovePath path) {

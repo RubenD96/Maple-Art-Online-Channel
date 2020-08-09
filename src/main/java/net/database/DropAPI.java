@@ -22,16 +22,16 @@ public class DropAPI {
 
         res.forEach(rec -> drops.add(new DropEntry(
                 rec.get(MOBDROPS.IID),
-                rec.get(MOBDROPS.CHANCE),
                 rec.get(MOBDROPS.MIN),
                 rec.get(MOBDROPS.MAX),
-                rec.get(MOBDROPS.QUESTID)
+                rec.get(MOBDROPS.QUESTID),
+                rec.get(MOBDROPS.CHANCE)
         )));
 
         return drops;
     }
 
-    public static void addMobDrop(int mid, int iid, int min, int max, int questid, int chance) {
+    public static void addMobDrop(int mid, int iid, int min, int max, int questid, double chance) {
         FieldMobTemplate template = MobManager.getMob(mid);
         if (template != null) {
             DatabaseCore.getConnection()
@@ -50,11 +50,11 @@ public class DropAPI {
                             chance
                     ).execute();
 
-            template.getDrops().add(new DropEntry(iid, chance, min, max, questid));
+            template.getDrops().add(new DropEntry(iid, min, max, questid, chance));
         }
     }
 
-    public static void updateDropChance(int mid, int iid, int chance) {
+    public static void updateDropChance(int mid, int iid, double chance) {
         FieldMobTemplate template = MobManager.getMob(mid);
         if (template != null) {
             template.getDrops().stream().filter(drop -> drop.getId() == iid).forEach(drop -> drop.setChance(chance));
@@ -67,7 +67,7 @@ public class DropAPI {
                 .execute();
     }
 
-    public static void updateMinMaxChance(int mid, int iid, int min, int max, int chance) {
+    public static void updateMinMaxChance(int mid, int iid, int min, int max, double chance) {
         FieldMobTemplate template = MobManager.getMob(mid);
         if (template != null) {
             template.getDrops().stream().filter(drop -> drop.getId() == iid).forEach(drop -> {

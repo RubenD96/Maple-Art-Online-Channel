@@ -53,6 +53,10 @@ public class ItemTemplate {
                 '}';
     }
 
+    public ItemSlot toItemSlot() {
+        return toItemSlot(ItemVariationType.NONE);
+    }
+
     public ItemSlot toItemSlot(ItemVariationType type) {
         if (this instanceof ItemEquipTemplate) {
             return ((ItemEquipTemplate) this).toItemSlot(type);

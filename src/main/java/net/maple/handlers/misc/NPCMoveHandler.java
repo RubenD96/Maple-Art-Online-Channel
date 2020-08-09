@@ -2,6 +2,7 @@ package net.maple.handlers.misc;
 
 import client.Character;
 import client.Client;
+import field.Field;
 import field.object.life.FieldControlledObject;
 import field.object.life.FieldNPC;
 import net.maple.SendOpcode;
@@ -17,9 +18,13 @@ public class NPCMoveHandler extends PacketHandler {
         Character chr = c.getCharacter();
         int npcObjectId = reader.readInteger();
 
-        FieldControlledObject npc = chr.getField().getControlledObject(chr, npcObjectId);
-        if (npc instanceof FieldNPC) {
-            chr.getField().broadcast(moveNPC((FieldNPC) npc, reader));
+        Field field = chr.getField();
+
+        if (field != null) { // might happen anytime user leaves the field but client still sent the packet when field was already set to null server sided
+            FieldControlledObject npc = field.getControlledObject(chr, npcObjectId);
+            if (npc instanceof FieldNPC) {
+                field.broadcast(moveNPC((FieldNPC) npc, reader));
+            }
         }
     }
 

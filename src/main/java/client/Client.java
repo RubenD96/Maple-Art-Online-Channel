@@ -1,5 +1,6 @@
 package client;
 
+import client.inventory.slots.ItemSlotLocker;
 import client.party.Party;
 import client.party.PartyMember;
 import field.Field;
@@ -16,10 +17,7 @@ import net.server.Server;
 import org.jooq.Record;
 
 import javax.script.ScriptEngine;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static database.jooq.Tables.ACCOUNTS;
@@ -30,14 +28,15 @@ public class Client extends NettyClient {
     private @Getter int accId;
     private @Getter @Setter String accountName;
     private @Setter long lastPong, clientStart, lastNpcClick;
-    ; // Not too sure what to do with these
     private @Getter boolean disconnecting = false, loggedIn = false, cc = false;
     private @Getter @Setter ChannelServer worldChannel;
     private @Getter @Setter Character character;
     private @Getter @Setter Set<String> macs, hwids, ips;
     private @Getter @Setter boolean banned;
-    private @Getter Map<String, ScriptEngine> engines = new HashMap<>();
+    private final @Getter Map<String, ScriptEngine> engines = new HashMap<>();
+    private @Getter @Setter Integer cash;
     private ScheduledFuture<?> ping;
+    private final  @Getter List<ItemSlotLocker> locker = new ArrayList<>();
 
     public Client(Channel c, byte[] siv, byte[] riv) {
         super(c, siv, riv);

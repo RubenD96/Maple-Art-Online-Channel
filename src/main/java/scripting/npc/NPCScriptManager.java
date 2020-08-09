@@ -72,7 +72,8 @@ public class NPCScriptManager extends AbstractScriptManager {
             }
             return true;
         } catch (final Exception e) {
-            System.err.println(e.getMessage());
+            //System.err.println(e.getMessage());
+            e.printStackTrace();
             dispose(c);
             return false;
         }

@@ -68,10 +68,9 @@ public class Character extends AbstractFieldLife {
     List<FieldControlledObject> controlledObjects = new ArrayList<>();
     Map<ItemInventoryType, ItemInventory> inventories = new HashMap<>();
     FriendList friendList;
-    int trueMaxHealth, trueMaxMana;
+    int trueMaxHealth, trueMaxMana, philId;
     Party party;
     boolean inCashShop;
-    int fitness;
     Map<Integer, Quest> quests = new HashMap<>();
     Set<Integer> towns = new TreeSet<>();
     Set<Integer> registeredQuestMobs = new HashSet<>();
@@ -355,6 +354,29 @@ public class Character extends AbstractFieldLife {
                     }
                 });
         return quantity.get();
+    }
+
+    public boolean hasInvSpace(ItemSlot item) {
+        return hasInvSpace(item.getTemplateId());
+    }
+
+    public boolean hasInvSpace(int item) {
+        return hasInvSpace(ItemInventoryType.values()[(item / 1000000) - 1]);
+    }
+
+    public boolean hasInvSpace(ItemInventoryType type) {
+        return getAvailableSlots(type) > 0;
+    }
+
+    public int getAvailableSlots(ItemInventoryType type) {
+        ItemInventory inv = inventories.get(type);
+
+        short used = (short) inv.getItems().keySet().stream()
+                .filter(s -> s > 0)
+                .filter(s -> s <= inv.getSlotMax())
+                .count();
+
+        return inv.getSlotMax() - used;
     }
 
     public void incStrength() {

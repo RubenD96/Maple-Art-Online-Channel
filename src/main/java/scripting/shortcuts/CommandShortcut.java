@@ -55,7 +55,7 @@ public class CommandShortcut extends AbstractPlayerInteraction {
     }
 
     public void dropItem(int id, final int qty) {
-        ItemSlot it = getItemTemplate(id).toItemSlot(ItemVariationType.NONE);
+        ItemSlot it = getItemTemplate(id).toItemSlot();
 
         if (it instanceof ItemSlotBundle) {
             ((ItemSlotBundle) it).setNumber((short) qty);
@@ -78,5 +78,9 @@ public class CommandShortcut extends AbstractPlayerInteraction {
 
     public void reloadMap() {
         chr.getChannel().getFieldManager().reloadField(chr.getFieldId());
+    }
+
+    public void kickMe() {
+        chr.getClient().close();
     }
 }

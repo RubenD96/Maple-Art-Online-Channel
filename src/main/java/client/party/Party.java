@@ -44,7 +44,7 @@ public class Party {
     public void sendMessage(Packet packet, int from) {
         for (PartyMember member : getMembers()) {
             if (member.isOnline() && from != member.getCid()) {
-                member.getCharacter().write(packet);
+                member.getCharacter().write(packet.clone());
             }
         }
     }
@@ -56,26 +56,8 @@ public class Party {
     public synchronized void update() {
         for (PartyMember member : getMembers()) {
             if (member.isOnline()) {
-                member.getCharacter().write(PartyPackets.updateParty(this, member.getChannel()));
+                member.getCharacter().write(PartyPackets.updateParty(this, member.getChannel()).clone());
                 member.getCharacter().updatePartyHP(true);
-            }
-        }
-    }
-
-    /**
-     * these 2 update packets are somehow borked
-     */
-    public void update(Packet packet) {
-        for (PartyMember member : members) {
-            Character chr = Server.getInstance().getCharacter(member.getCid());
-            chr.write(packet);
-        }
-    }
-
-    public void update(Packet packet, int ignore) {
-        for (PartyMember member : members) {
-            if (member.getCid() != ignore) {
-                Server.getInstance().getCharacter(member.getCid()).write(packet);
             }
         }
     }

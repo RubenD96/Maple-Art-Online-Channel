@@ -19,6 +19,7 @@ package net.netty;
 
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
+import lombok.Getter;
 import util.crypto.MapleAESOFB;
 import util.packet.Packet;
 import util.packet.PacketReader;
@@ -64,7 +65,7 @@ public class NettyClient {
      * Channel object associated with this specific client. Used for all
      * I/O operations regarding a MapleStory game session.
      */
-    protected final Channel ch;
+    protected final @Getter Channel ch;
 
     /**
      * Lock regarding the encoding of packets to be sent to remote
@@ -176,11 +177,11 @@ public class NettyClient {
      */
     public void close(Object cl, String reason) {
         System.out.println("[" + cl.getClass().getName() + "] " + reason + " - " + getIP());
-        ch.close();
+        ch.flush().close();
     }
 
     public void close() {
-        ch.close();
+        ch.flush().close();
     }
 
     /**

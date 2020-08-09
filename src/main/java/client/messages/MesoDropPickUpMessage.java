@@ -9,7 +9,7 @@ import util.packet.PacketWriter;
 public class MesoDropPickUpMessage extends AbstractMessage {
 
     private @Getter @Setter boolean failed;
-    private final  @Getter int meso;
+    private final @Getter int meso;
     private @Getter @Setter short premiumIPMesoBonus; // wtf
 
     @Override
@@ -19,7 +19,7 @@ public class MesoDropPickUpMessage extends AbstractMessage {
 
     @Override
     protected void encodeData(PacketWriter pw) {
-        pw.write(1);
+        pw.write(1); // meso
 
         pw.writeBool(failed);
         pw.writeInt(meso);

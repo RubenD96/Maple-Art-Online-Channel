@@ -12,7 +12,7 @@ public class FieldPackets {
 
     public static Packet setField(Character chr) {
         boolean isInstantiated = false;
-        PacketWriter pw = new PacketWriter(32); // mhm hard to know
+        PacketWriter pw = new PacketWriter(32); // impossible to know exactly
 
         pw.writeHeader(SendOpcode.SET_FIELD);
         pw.writeShort(0);

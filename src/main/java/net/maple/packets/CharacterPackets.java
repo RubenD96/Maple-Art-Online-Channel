@@ -47,9 +47,9 @@ public class CharacterPackets {
         pw.write(0);
         pw.write(0);
 
-        encodeStats(pw, chr, true);
+        encodeStats(pw, chr);
         pw.write(250); // friends
-        pw.writeBool(false);
+        pw.writeBool(false); // something with link
 
         pw.writeInt(chr.getMeso());
 
@@ -159,7 +159,7 @@ public class CharacterPackets {
         pw.writeShort(0); // visitor log*/
     }
 
-    private static void encodeStats(final PacketWriter pw, Character chr, boolean ingame) {
+    private static void encodeStats(final PacketWriter pw, Character chr) {
         pw.writeInt(chr.getId()); // character id
         pw.writeString(chr.getName());
         pw.fill(0x00, 13 - chr.getName().length());
@@ -187,7 +187,7 @@ public class CharacterPackets {
         pw.writeInt(chr.getMana());
         pw.writeInt(chr.getMaxMana());
         pw.writeShort(chr.getAp());
-        pw.writeShort(ingame ? chr.getSp() : 0);
+        pw.writeShort(chr.getSp());
         pw.writeInt(chr.getExp());
         pw.writeShort(chr.getFame());
         pw.writeInt(0); // Gacha Exp
@@ -418,7 +418,9 @@ public class CharacterPackets {
         pw.writeInt(dmg); // result*/
 
 
-        chr.getField().broadcast(pw.createPacket(), chr);
+        if (chr.getField() != null) {
+            chr.getField().broadcast(pw.createPacket(), chr);
+        }
     }
 
     public static Packet message(Message message) {

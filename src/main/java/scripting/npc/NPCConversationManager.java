@@ -11,7 +11,9 @@ import net.database.DropAPI;
 import net.maple.packets.ConversationPackets;
 import scripting.AbstractPlayerInteraction;
 
+import java.util.AbstractMap;
 import java.util.List;
+import java.util.function.Function;
 
 @Getter
 @SuppressWarnings("unused")
@@ -249,19 +251,19 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         return null;
     }
 
-    public void addMobDrop(int mid, int iid, int chance) {
+    public void addMobDrop(int mid, int iid, double chance) {
         addMobDrop(mid, iid, 1, 1, 0, chance);
     }
 
-    public void addMobDrop(int mid, int iid, int min, int max, int chance) {
+    public void addMobDrop(int mid, int iid, int min, int max, double chance) {
         addMobDrop(mid, iid, min, max, 0, chance);
     }
 
-    public void addMobDrop(int mid, int iid, int min, int max, int questid, int chance) {
+    public void addMobDrop(int mid, int iid, int min, int max, int questid, double chance) {
         DropAPI.addMobDrop(mid, iid, min, max, questid, chance);
     }
 
-    public void editDropChance(int mid, int iid, int chance) {
+    public void editDropChance(int mid, int iid, double chance) {
         DropAPI.updateDropChance(mid, iid, chance);
     }
 
@@ -269,7 +271,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         DropAPI.removeDrop(mid, iid);
     }
 
-    public void editMinMaxChance(int mid, int iid, int min, int max, int chance) {
+    public void editMinMaxChance(int mid, int iid, int min, int max, double chance) {
         DropAPI.updateMinMaxChance(mid, iid, min, max, chance);
     }
 }

@@ -34,7 +34,7 @@ public class CashShopPackets {
         pw.writeShort(0); // DecodeZeroGoods
 
         pw.writeBool(false); // m_bEventOn
-        pw.writeInt(20); // highest character on account
+        pw.writeInt(AccountAPI.getHighestLevelOnAccount(c.getAccId())); // highest character on account
 
         c.write(pw.createPacket());
 
@@ -49,11 +49,13 @@ public class CashShopPackets {
         pw.writeHeader(SendOpcode.CASH_SHOP_CASH_ITEM_RESULT);
         pw.write(CashItemResult.LOAD_LOCKER_DONE.getValue());
 
-        pw.writeShort(0); // locker size
+        pw.writeShort(c.getLocker().size());
+        c.getLocker().forEach(l -> l.encode(c, pw));
+
         pw.writeShort(4); // storage max size
         pw.writeShort(6); // total character slots
         pw.writeShort(0); // ?
-        pw.writeShort(2); // character slots used
+        pw.writeShort(AccountAPI.getCharacterCount(c.getAccId())); // character slots used
 
         c.write(pw.createPacket());
     }
@@ -74,9 +76,12 @@ public class CashShopPackets {
         PacketWriter pw = new PacketWriter(9);
 
         pw.writeHeader(SendOpcode.CASH_SHOP_QUERY_CASH_RESULT);
-        pw.writeInt(10000); // nexon cash
-        pw.writeInt(10000); // maple points
-        pw.writeInt(10000); // prepaid
+
+        if (c.getCash() == null) AccountAPI.loadNXCash(c);
+
+        pw.writeInt(c.getCash()); // nexon cash
+        pw.writeInt(0); // maple points
+        pw.writeInt(0); // prepaid
 
         c.write(pw.createPacket());
     }

@@ -5,7 +5,6 @@ import client.party.Party;
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 import constants.ServerConstants;
 import lombok.Getter;
-import managers.QuestTemplateManager;
 import net.database.CharacterAPI;
 import net.database.DatabaseCore;
 import util.crypto.MapleAESOFB;
@@ -18,7 +17,7 @@ import java.util.Map;
 public class Server {
 
     private static Server instance = null;
-    private @Getter List<ChannelServer> channels = new ArrayList<>();
+    private final @Getter List<ChannelServer> channels = new ArrayList<>();
     private @Getter final Map<Integer, MigrateInfo> clients = new HashMap<>();
     private @Getter final Map<Integer, Party> parties = new HashMap<>();
 

@@ -70,7 +70,10 @@ function converse(m, s) {
             type = s;
             listObjects();
         } else if (status === 3) {
-            if (type === 9) {
+            if (type === 3) {
+                cm.getPlayer().setPhilId(field.getObject(s).getTemplate().getId());
+                cm.openNpcIn(1002000, 200);
+            } else if (type === 9) {
                 cm.sendOk(portals.get(s).toString());
             } else {
                 cm.sendOk(field.getObject(s).toString());
