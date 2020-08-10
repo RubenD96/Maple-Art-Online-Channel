@@ -69,9 +69,9 @@ public class CashShopPackets {
 
         if (c.getCash() == null) AccountAPI.loadNXCash(c);
 
-        pw.writeInt(c.getCash()); // nexon cash
+        pw.writeInt(0); // nexon cash
         pw.writeInt(0); // maple points
-        pw.writeInt(0); // prepaid
+        pw.writeInt(c.getCash()); // prepaid
 
         c.write(pw.createPacket());
     }
