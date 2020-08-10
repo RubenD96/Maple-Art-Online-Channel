@@ -21,7 +21,7 @@ public class ModifyInventoryContext implements ModifyInventoryContextInterface {
     private final ItemInventoryType type;
     private final ItemInventory inventory;
 
-    @Getter private Queue<AbstractModifyInventoryOperation> operations;
+    @Getter private final Queue<AbstractModifyInventoryOperation> operations;
 
     public ModifyInventoryContext(ItemInventoryType type, ItemInventory inventory) {
         this.type = type;

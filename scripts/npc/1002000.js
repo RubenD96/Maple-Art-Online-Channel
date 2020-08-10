@@ -25,9 +25,10 @@ function init() {
     if (!cm.getC().isAdmin()) {
         cm.sendOk("Bye :)");
         cm.sendOk("Bye :)");
-    }
-    if (cm.getPlayer().getPhilId() !== 0) {
-        mobid = cm.getPlayer().getPhilId();
+    } else {
+        if (cm.getPlayer().getPhilId() !== 0) {
+            mobid = cm.getPlayer().getPhilId();
+        }
     }
 }
 
@@ -289,7 +290,6 @@ function setMesoValues() {
             mesoMin = drop.getMin();
             mesoMax = drop.getMax();
             mesoChance = drop.getChance();
-            console.log(mesoChance);
             meso = true;
             break;
         }

@@ -3,6 +3,7 @@ package net.maple.handlers.net;
 import client.Character;
 import client.Client;
 import client.player.key.KeyBinding;
+import database.jooq.tables.Wishlist;
 import field.Field;
 import net.database.*;
 import net.maple.SendOpcode;
@@ -39,6 +40,7 @@ public class MigrateInHandler extends PacketHandler {
                 chr.validateStats();
                 QuestAPI.loadAll(chr);
 
+                WishlistAPI.load(chr);
                 TownsAPI.load(chr); // before entering field, in case of FirstVisit mapscript
                 if (chr.getTowns().isEmpty()) {
                     chr.addTown(100);

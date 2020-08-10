@@ -8,7 +8,7 @@ public class TownsAPI {
 
     public static void load(Character chr) {
         DatabaseCore.getConnection()
-                .select().from(UNLOCKEDTOWNS)
+                .select(UNLOCKEDTOWNS.TOWN).from(UNLOCKEDTOWNS)
                 .where(UNLOCKEDTOWNS.CID.eq(chr.getId()))
                 .fetch()
                 .forEach(rec -> chr.getTowns().add(rec.getValue(UNLOCKEDTOWNS.TOWN)));

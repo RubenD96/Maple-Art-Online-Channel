@@ -11,6 +11,8 @@ import util.packet.Packet;
 import util.packet.PacketReader;
 import util.packet.PacketWriter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,14 +43,18 @@ public class UserCharacterInfoRequestHandler extends PacketHandler {
         pw.writeMapleString("Chronos is");
         pw.writeMapleString("the best");
 
-        pw.write(0); // medal?
+        pw.write(0); // pMedalInfo
 
         // pets
         pw.writeBool(false);
 
         pw.write(0); // taming mob
-        pw.write(0); // wishlist
 
+        int[] writeableWishlist = Arrays.stream(target.getWishlist()).filter(i -> i != 0).toArray();
+        pw.write(writeableWishlist.length); // wishlist
+        Arrays.stream(writeableWishlist).forEach(pw::writeInt);
+
+        // MedalAchievementInfo::Decode
         pw.writeInt(0);
         pw.writeShort(0);
 

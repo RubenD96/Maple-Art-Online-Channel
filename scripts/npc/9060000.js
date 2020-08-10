@@ -28,7 +28,7 @@ function converse(m, s) {
                 id = s;
             }
             if (!cm.isEquip(id)) {
-                cm.sendOk(cm.letters("Error") + "\r\n\r\nThe id you entered is not an equip!\r\nYour input was: #r" + id + "\r\n#kPotential item name: #r#z" + id);
+                cm.sendOk(cm.letters("Error") + "\r\n\r\nThe id you entered is not an equip!\r\nYour input was: #r" + id + "\r\n#kPotential item name: #r#z" + id + "#");
                 cm.dispose();
                 return;
             } else if (stats === undefined) {

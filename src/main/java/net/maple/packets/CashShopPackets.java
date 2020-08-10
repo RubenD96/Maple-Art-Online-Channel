@@ -7,6 +7,8 @@ import net.database.AccountAPI;
 import net.maple.SendOpcode;
 import util.packet.PacketWriter;
 
+import java.util.Arrays;
+
 public class CashShopPackets {
 
     public static void sendSetCashShop(Client c) {
@@ -39,7 +41,7 @@ public class CashShopPackets {
         c.write(pw.createPacket());
 
         sendLockerData(c);
-        sendWishListData(c);
+        loadWishList(c);
         sendCashData(c);
     }
 
@@ -60,18 +62,6 @@ public class CashShopPackets {
         c.write(pw.createPacket());
     }
 
-    private static void sendWishListData(Client c) {
-        PacketWriter pw = new PacketWriter(9);
-
-        pw.writeHeader(SendOpcode.CASH_SHOP_CASH_ITEM_RESULT);
-        pw.write(CashItemResult.LOAD_WISH_DONE.getValue());
-        for (int i = 0; i < 10; i++) {
-            pw.writeInt(0);
-        }
-
-        c.write(pw.createPacket());
-    }
-
     public static void sendCashData(Client c) {
         PacketWriter pw = new PacketWriter(9);
 
@@ -84,5 +74,29 @@ public class CashShopPackets {
         pw.writeInt(0); // prepaid
 
         c.write(pw.createPacket());
+    }
+
+    public static void updateWishlist(Client c) {
+        PacketWriter pw = new PacketWriter(43);
+
+        pw.writeHeader(SendOpcode.CASH_SHOP_CASH_ITEM_RESULT);
+        pw.write(CashItemResult.SET_WISH_DONE.getValue());
+        encodeWishlist(pw, c.getCharacter().getWishlist());
+
+        c.write(pw.createPacket());
+    }
+
+    public static void loadWishList(Client c) {
+        PacketWriter pw = new PacketWriter(43);
+
+        pw.writeHeader(SendOpcode.CASH_SHOP_CASH_ITEM_RESULT);
+        pw.write(CashItemResult.LOAD_WISH_DONE.getValue());
+        encodeWishlist(pw, c.getCharacter().getWishlist());
+
+        c.write(pw.createPacket());
+    }
+
+    private static void encodeWishlist(PacketWriter pw, int[] wishlist) {
+        Arrays.stream(wishlist).forEach(pw::writeInt);
     }
 }

@@ -30,6 +30,8 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
         if (type == CashItemRequest.BUY.getValue()) {
             reader.readByte();
             sendOnBuyPacket(reader, c);
+        } else if (type == CashItemRequest.SET_WISH.getValue()) {
+            sendSetWish(reader, c);
         } else if (type == CashItemRequest.MOVE_L_TO_S.getValue()) {
             sendOnMoveLtoS(reader, c);
         } else if (type == CashItemRequest.MOVE_S_TO_L.getValue()) {
@@ -137,5 +139,29 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
         ItemPackets.encode(slot.getItem(), pw);
 
         return pw.createPacket();
+    }
+
+    private static void sendSetWish(PacketReader reader, Client c) {
+        c.getCharacter().setWishlist(new int[10]);
+        for (int i = 0; i < 10; i++) {
+            int sn = reader.readInteger();
+            if (sn == 0) {
+                continue;
+            }
+
+            Commodity commodity = CommodityManager.getInstance().getCommodity(sn);
+
+            if (commodity == null) {
+                System.err.println("[SET_WISH] commodity is null");
+                continue;
+            }
+            if (!commodity.isOnSale()) {
+                System.err.println("[SET_WISH] commodity is not on sale");
+                continue;
+            }
+
+            c.getCharacter().getWishlist()[i] = sn;
+        }
+        CashShopPackets.updateWishlist(c);
     }
 }

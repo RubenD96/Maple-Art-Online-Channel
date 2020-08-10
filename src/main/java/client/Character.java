@@ -25,10 +25,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import net.database.CharacterAPI;
-import net.database.ItemAPI;
-import net.database.QuestAPI;
-import net.database.TownsAPI;
+import net.database.*;
 import net.maple.packets.CharacterPackets;
 import net.maple.packets.FieldPackets;
 import net.maple.packets.PartyPackets;
@@ -74,6 +71,7 @@ public class Character extends AbstractFieldLife {
     Map<Integer, Quest> quests = new HashMap<>();
     Set<Integer> towns = new TreeSet<>();
     Set<Integer> registeredQuestMobs = new HashSet<>();
+    int[] wishlist = new int[10];
 
     public void init() {
         resetQuickSlot();
@@ -97,6 +95,7 @@ public class Character extends AbstractFieldLife {
         CharacterAPI.updateKeyBindings(this);
         ItemAPI.saveInventories(this);
         QuestAPI.saveInfo(this);
+        WishlistAPI.save(this);
     }
 
     public boolean isGM() {
