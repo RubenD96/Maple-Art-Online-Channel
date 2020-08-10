@@ -20,6 +20,7 @@ import org.jooq.exception.DataAccessException;
 import util.HexTool;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 import static database.jooq.Tables.EQUIPS;
@@ -130,6 +131,10 @@ public class ItemAPI {
     }
 
     private static void insertNewItem(Character chr, int storageType, int type, short slot, ItemSlot item, String giftFrom) {
+        insertNewItem(chr.getId(), chr.getClient().getAccId(), storageType, type, slot, item, giftFrom);
+    }
+
+    private static void insertNewItem(int cid, int aid, int storageType, int type, short slot, ItemSlot item, String giftFrom) {
         try {
             byte[] uuid = item.getUuid();
             if (uuid == null) {
@@ -150,9 +155,9 @@ public class ItemAPI {
                             INVENTORIES.OWNER,
                             INVENTORIES.GIFTFROM)
                     .values(uuid,
-                            chr.getId(),
+                            cid,
                             storageType,
-                            chr.getClient().getAccId(),
+                            aid,
                             item.getTemplateId(),
                             type,
                             slot,
@@ -161,7 +166,7 @@ public class ItemAPI {
                             giftFrom)
                     .execute();
         } catch (DataAccessException dae) {
-            System.err.println("[ItemAPI] Duplicate UUID for " + chr.getName() + " on " + item);
+            System.err.println("[ItemAPI] Duplicate UUID for " + cid + " on " + item);
             dae.printStackTrace();
         }
     }
@@ -318,6 +323,36 @@ public class ItemAPI {
     }
 
     /**
+     * Used for offline gift sending check
+     *
+     * @param aid account id
+     * @return size of account locker
+     */
+    public static int getLockerSize(int aid) {
+        return DatabaseCore.getConnection()
+                .fetchCount(DatabaseCore.getConnection()
+                        .select().from(INVENTORIES)
+                        .where(INVENTORIES.STORAGE_TYPE.eq(3))
+                        .and(INVENTORIES.AID.eq(aid)));
+    }
+
+    public static int getAvailableLockerSlot(int aid) {
+        AtomicInteger highest = new AtomicInteger(1);
+        DatabaseCore.getConnection()
+                .select().from(INVENTORIES)
+                .where(INVENTORIES.STORAGE_TYPE.eq(3))
+                .and(INVENTORIES.AID.eq(aid))
+                .fetch()
+                .forEach(item -> {
+                    int slot = item.getValue(INVENTORIES.POSITION);
+                    if (highest.get() < slot) {
+                        highest.set(slot + 1);
+                    }
+                });
+        return highest.get();
+    }
+
+    /**
      * Cashshop inventory
      *
      * @param c client
@@ -355,6 +390,15 @@ public class ItemAPI {
                 conditionStep = conditionStep.or(INVENTORIES.ITEMID.eq(r));
             }
             del.execute();
+        }
+    }
+
+    public static void addLockerItem(int cid, int aid, ItemSlotLocker item) {
+        int type = item.getItem().getTemplateId() / 1000000;
+        insertNewItem(cid, aid, 3, type, (short) getAvailableLockerSlot(aid), item.getItem(), item.getBuyCharacterName());
+
+        if (ItemInventoryType.values()[type - 1] == ItemInventoryType.EQUIP) {
+            insertNewEquip((ItemSlotEquip) item.getItem());
         }
     }
 

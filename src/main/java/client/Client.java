@@ -30,6 +30,7 @@ public class Client extends NettyClient {
     private @Setter long lastPong, clientStart, lastNpcClick;
     private @Getter boolean disconnecting = false, loggedIn = false, cc = false;
     private @Getter @Setter ChannelServer worldChannel;
+    private @Getter String pic;
     private @Getter @Setter Character character;
     private @Getter @Setter Set<String> macs, hwids, ips;
     private @Getter @Setter boolean banned;
@@ -46,6 +47,7 @@ public class Client extends NettyClient {
         accId = data.getValue(ACCOUNTS.ID);
         banned = data.getValue(ACCOUNTS.BANNED) == 1;
         admin = data.getValue(ACCOUNTS.ADMIN) == 1;
+        pic = data.getValue(ACCOUNTS.PIC);
 
         worldChannel = Server.getInstance().getChannels().get(mi.getChannel());
         worldChannel.getLoginConnector().messageLogin("1:" + accId);

@@ -45,7 +45,7 @@ public class CashShopPackets {
         sendCashData(c);
     }
 
-    private static void sendLockerData(Client c) {
+    public static void sendLockerData(Client c) {
         PacketWriter pw = new PacketWriter(13);
 
         pw.writeHeader(SendOpcode.CASH_SHOP_CASH_ITEM_RESULT);

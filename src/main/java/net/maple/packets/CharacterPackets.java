@@ -176,21 +176,21 @@ public class CharacterPackets {
             }
         }
 
-        pw.write(chr.getLevel());
+        pw.write(chr.getLevel()); // 51
         pw.writeShort(chr.getJob());
         pw.writeShort(chr.getStrength());
         pw.writeShort(chr.getDexterity());
         pw.writeShort(chr.getIntelligence());
-        pw.writeShort(chr.getLuck());
+        pw.writeShort(chr.getLuck()); // 61
         pw.writeInt(chr.getHealth());
         pw.writeInt(chr.getMaxHealth());
         pw.writeInt(chr.getMana());
-        pw.writeInt(chr.getMaxMana());
+        pw.writeInt(chr.getMaxMana()); // 77
         pw.writeShort(chr.getAp());
         pw.writeShort(chr.getSp());
         pw.writeInt(chr.getExp());
-        pw.writeShort(chr.getFame());
-        pw.writeInt(0); // Gacha Exp
+        pw.writeShort(chr.getFame()); // 87
+        pw.writeInt(0); // Gacha Exp (87-91)
         pw.writeInt(chr.getField().getId());
         pw.write(chr.getPortal());
         pw.writeInt(0); // playtime

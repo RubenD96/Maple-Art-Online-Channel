@@ -3,23 +3,30 @@ package net.maple.handlers.misc;
 import cashshop.commodities.Commodity;
 import cashshop.types.CashItemRequest;
 import cashshop.types.CashItemResult;
+import client.Character;
 import client.Client;
 import client.inventory.ItemInventory;
 import client.inventory.ItemInventoryType;
 import client.inventory.ModifyInventoriesContext;
 import client.inventory.item.templates.ItemTemplate;
+import client.inventory.slots.ItemSlotBundle;
 import client.inventory.slots.ItemSlotLocker;
 import managers.CommodityManager;
 import managers.ItemManager;
+import net.database.AccountAPI;
+import net.database.CharacterAPI;
 import net.database.ItemAPI;
 import net.maple.SendOpcode;
 import net.maple.handlers.PacketHandler;
 import net.maple.packets.CashShopPackets;
 import net.maple.packets.ItemPackets;
+import net.server.Server;
 import util.HexTool;
 import util.packet.Packet;
 import util.packet.PacketReader;
 import util.packet.PacketWriter;
+
+import static database.jooq.Tables.ACCOUNTS;
 
 public class CashShopCashItemRequestHandler extends PacketHandler {
 
@@ -31,7 +38,7 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
             reader.readByte();
             sendOnBuyPacket(reader, c);
         } else if (type == CashItemRequest.GIFT.getValue()) {
-            // todo 07 00 39 39 39 39 39 39 39 7E A1 98 00 00 05 00 62 6C 61 61 61 04 00 62 79 65 0A
+            sendGift(reader, c);
         } else if (type == CashItemRequest.SET_WISH.getValue()) {
             sendSetWish(reader, c);
         } else if (type == CashItemRequest.MOVE_L_TO_S.getValue()) {
@@ -39,6 +46,8 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
         } else if (type == CashItemRequest.MOVE_S_TO_L.getValue()) {
             long id = reader.readLong();
             System.out.println("[MOVE_S_TO_L] " + id);
+        } else if (type == CashItemRequest.PURCHASE_RECORD.getValue()) {
+            // ignore...
         } else {
             System.err.println("[CashShopCashItemRequestHandler] Unhandled cash item operation " + HexTool.toHex(type) + " (" + type + ")\n " + HexTool.toHex(reader.getData()));
         }
@@ -62,7 +71,7 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
             return;
         }
         if (!commodity.isOnSale()) {
-            System.out.println("[BUY] commodity (" + commoditySN + ") is not for sale" + " - " + c.getCharacter().getName());
+            System.err.println("[BUY] commodity (" + commoditySN + ") is not for sale" + " - " + c.getCharacter().getName());
             failRequest(c, 30);
             return;
         }
@@ -70,7 +79,7 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
         int price = commodity.getPrice();
         if (c.getCash() < price) {
             System.err.println("[BUY] not enough NX for " + commoditySN + ". Price:" + price + " NX: " + c.getCash() + " - " + c.getCharacter().getName());
-            failRequest(c, 2);
+            failRequest(c, 3);
             return;
         }
         if (c.getLocker().size() >= 999) {
@@ -105,6 +114,109 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
         return pw.createPacket();
     }
 
+    private static void sendGift(PacketReader reader, Client c) {
+        String spw = reader.readMapleString();
+        System.out.println("spw: " + spw);
+        int sn = reader.readInteger();
+        System.out.println("sn: " + sn);
+        reader.readByte(); // bRequestBuyOneADay
+        String recipient = reader.readMapleString();
+        System.out.println("recipient: " + recipient);
+        String text = reader.readMapleString();
+        System.out.println("text: " + text);
+
+        if (!spw.equals(c.getPic())) {
+            failRequest(c, 34);
+            return;
+        }
+        if (text.length() > 73) {
+            failRequest(c, 2);
+            return;
+        }
+        int cid = CharacterAPI.getOfflineId(recipient);
+        if (cid == -1) { // player doesn't exist
+            failRequest(c, 28);
+            return;
+        }
+        Character chr = Server.getInstance().getCharacter(cid);
+        int aid = 0;
+        if (chr == null) {
+            aid = AccountAPI.getAccountInfoTemporary(cid).getValue(ACCOUNTS.ID);
+            if (aid == c.getAccId()) {
+                failRequest(c, 6);
+                return;
+            }
+        }
+
+        Commodity commodity = CommodityManager.getInstance().getCommodity(sn);
+        if (commodity == null) {
+            System.err.println("[GIFT] commodity (" + sn + ") is null" + " - " + c.getCharacter().getName());
+            failRequest(c, 2);
+            return;
+        }
+        if (!commodity.isOnSale()) {
+            System.err.println("[GIFT] commodity (" + sn + ") is not for sale" + " - " + c.getCharacter().getName());
+            failRequest(c, 30);
+            return;
+        }
+
+        int price = commodity.getPrice();
+        if (c.getCash() < price) {
+            System.err.println("[GIFT] not enough NX for " + sn + ". Price:" + price + " NX: " + c.getCash() + " - " + c.getCharacter().getName());
+            failRequest(c, 3);
+            return;
+        }
+
+        if (chr != null) {
+            if (chr.getClient().getLocker().size() >= 999) {
+                failRequest(c, 10);
+                return;
+            }
+        } else {
+            if (ItemAPI.getLockerSize(aid) >= 999) {
+                failRequest(c, 10);
+                return;
+            }
+        }
+
+        ItemTemplate template = ItemManager.getItem(commodity.getItemId());
+        if (template == null) {
+            failRequest(c, 2);
+            return;
+        }
+        ItemSlotLocker slot = new ItemSlotLocker(template.toItemSlot());
+        slot.setBuyCharacterName(c.getCharacter().getName());
+        slot.setCommodityId(sn);
+
+        if (chr == null) { // offline
+            ItemAPI.addLockerItem(cid, aid, slot);
+        } else {
+            chr.getClient().getLocker().add(slot);
+            if (chr.isInCashShop()) { // todo test
+                CashShopPackets.sendLockerData(chr.getClient());
+            }
+            ItemAPI.addLockerItem(chr.getClient(), slot);
+        }
+
+        c.write(getOnGiftDonePacket(recipient, commodity));
+        c.setCash(c.getCash() - price);
+        CashShopPackets.sendCashData(c);
+    }
+
+    private static Packet getOnGiftDonePacket(String recipient, Commodity commodity) {
+        PacketWriter pw = new PacketWriter(16);
+
+        pw.writeHeader(SendOpcode.CASH_SHOP_CASH_ITEM_RESULT);
+        pw.write(CashItemResult.GIFT_DONE.getValue());
+
+        pw.writeMapleString(recipient);
+        pw.writeInt(commodity.getItemId());
+        pw.writeShort(commodity.getItemId());
+        pw.writeInt(commodity.getPrice());
+
+        return pw.createPacket();
+    }
+
     private static void sendOnMoveLtoS(PacketReader reader, Client c) {
         long sn = reader.readLong();
         byte inv = reader.readByte();
@@ -121,7 +233,7 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
         }
         if (!c.getCharacter().hasInvSpace(slot.getItem())) {
             System.err.println("[MOVE_L_TO_S] No inv space " + c.getCharacter().getName());
-            failRequest(c, 10);
+            failRequest(c, 25);
             return;
         }
         if ((slot.getItem().getTemplateId() / 1000000) != inv) {
@@ -137,12 +249,12 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
         ItemInventory inventory = c.getCharacter().getInventories().get(ItemInventoryType.values()[inv - 1]);
         if (inventory.getItems().get(pos) != null) {
             System.err.println("[MOVE_L_TO_S] Position is not free inv: " + inv + " pos: " + pos + " " + c.getCharacter().getName());
-            failRequest(c, 10);
+            failRequest(c, 25);
             return;
         }
         if (inventory.getSlotMax() < pos || pos < 0) {
             System.err.println("[MOVE_L_TO_S] Position too high/low: " + inv + " pos: " + pos + " slotmax: " + inventory.getSlotMax() + " " + c.getCharacter().getName());
-            failRequest(c, 10);
+            failRequest(c, 25);
             return;
         }
 
@@ -196,8 +308,7 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
     }
 
     /**
-     *
-     * @param c Client to send to
+     * @param c      Client to send to
      * @param reason 1: Request timed out.\r\nPlease try again.
      *               3: You don't have enough cash.
      *               4: You can't buy someone a cash item gift if you're under 14.
