@@ -5,8 +5,10 @@ import client.party.Party;
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 import constants.ServerConstants;
 import lombok.Getter;
+import lombok.Setter;
 import net.database.CharacterAPI;
 import net.database.DatabaseCore;
+import net.database.ShopAPI;
 import util.crypto.MapleAESOFB;
 
 import java.util.ArrayList;
@@ -20,6 +22,7 @@ public class Server {
     private final @Getter List<ChannelServer> channels = new ArrayList<>();
     private @Getter final Map<Integer, MigrateInfo> clients = new HashMap<>();
     private @Getter final Map<Integer, Party> parties = new HashMap<>();
+    private @Getter @Setter List<Integer> shops;
 
     public static Server getInstance() {
         if (instance == null) {
@@ -40,6 +43,7 @@ public class Server {
 
     private void run() {
         CharacterAPI.resetParties();
+        shops = ShopAPI.getShops();
         for (int i = 0; i < ServerConstants.CHANNELS; i++) {
             ChannelServer channel = new ChannelServer(i, 7575 + i, ServerConstants.IP);
             channel.start();

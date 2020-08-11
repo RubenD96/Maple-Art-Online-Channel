@@ -1,0 +1,5 @@
+execute = () => {
+    cs.reloadShops();
+};
+
+execute();

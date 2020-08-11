@@ -16,6 +16,7 @@ import client.player.StatType;
 import client.player.friend.FriendList;
 import client.player.key.KeyBinding;
 import client.player.quest.Quest;
+import client.shop.NPCShop;
 import constants.UserConstants;
 import field.Field;
 import field.object.FieldObjectType;
@@ -72,6 +73,7 @@ public class Character extends AbstractFieldLife {
     Set<Integer> towns = new TreeSet<>();
     Set<Integer> registeredQuestMobs = new HashSet<>();
     int[] wishlist = new int[10];
+    NPCShop npcShop = null;
 
     public void init() {
         resetQuickSlot();

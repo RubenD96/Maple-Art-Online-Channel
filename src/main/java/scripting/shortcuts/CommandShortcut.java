@@ -13,7 +13,10 @@ import lombok.Getter;
 import lombok.Setter;
 import managers.ItemManager;
 import managers.NPCManager;
+import managers.NPCShopManager;
+import net.database.ShopAPI;
 import net.maple.packets.CharacterPackets;
+import net.server.Server;
 import scripting.AbstractPlayerInteraction;
 
 import static net.maple.handlers.user.UserChatHandler.refreshCommandList;
@@ -65,6 +68,11 @@ public class CommandShortcut extends AbstractPlayerInteraction {
         ItemDrop drop = new ItemDrop(chr.getId(), chr, it, 0);
         drop.setPosition(chr.getPosition());
         chr.getField().enter(drop);
+    }
+
+    public void reloadShops() {
+        Server.getInstance().setShops(ShopAPI.getShops());
+        NPCShopManager.getInstance().reload();
     }
 
     public void addItem(int id, final int qty) {
