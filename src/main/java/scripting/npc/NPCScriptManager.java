@@ -12,14 +12,7 @@ public class NPCScriptManager extends AbstractScriptManager {
 
     private final @Getter Map<Client, NPCConversationManager> cms = new HashMap<>();
     private final Map<Client, Invocable> scripts = new HashMap<>();
-    private static NPCScriptManager instance;
-
-    public static NPCScriptManager getInstance() {
-        if (instance == null) {
-            instance = new NPCScriptManager();
-        }
-        return instance;
-    }
+    private static final @Getter NPCScriptManager instance = new NPCScriptManager();
 
     private NPCScriptManager() {
 

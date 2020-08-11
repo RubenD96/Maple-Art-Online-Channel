@@ -12,17 +12,9 @@ public class QuestScriptManager extends AbstractScriptManager {
 
     private final @Getter Map<Client, QuestConversationManager> qms = new HashMap<>();
     private final Map<Client, Invocable> scripts = new HashMap<>();
-    private static QuestScriptManager instance;
-
-    public static QuestScriptManager getInstance() {
-        if (instance == null) {
-            instance = new QuestScriptManager();
-        }
-        return instance;
-    }
+    private static final @Getter QuestScriptManager instance = new QuestScriptManager();
 
     private QuestScriptManager() {
-
     }
 
     public void converse(Client c, int npc, int questId, boolean start) {

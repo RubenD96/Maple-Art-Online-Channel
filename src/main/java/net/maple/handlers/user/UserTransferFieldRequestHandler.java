@@ -29,7 +29,6 @@ public class UserTransferFieldRequestHandler extends PacketHandler {
             if (id != -1) {
                 if (c.isAdmin()) {
                     chr.changeField(id);
-                    System.out.println("Hello! Moving " + chr.getName() + " to " + id);
                 } else {
                     c.close(this, "Using /m without admin acc");
                 }

@@ -8,10 +8,10 @@ import java.awt.*;
 @Getter
 public abstract class AbstractFieldPortal {
 
-    private int id, targetMap;
-    private int type;
-    private String name, script = "", targetName;
-    private Point position;
+    protected int id, targetMap;
+    protected int type;
+    protected String name, script = "", targetName;
+    protected Point position;
 
     public void generate(PacketReader r) {
         name = r.readMapleString();
