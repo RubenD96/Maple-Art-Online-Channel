@@ -5,7 +5,8 @@ import util.packet.IntegerValue;
 public enum Job implements IntegerValue {
 
     BEGINNER(0),
-    WARRIOR(100);
+    WARRIOR(100),
+    MAGE(200);
 
     final int jobid;
 

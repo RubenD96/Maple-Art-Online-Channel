@@ -6,6 +6,7 @@ import client.inventory.slots.ItemSlot;
 import client.inventory.slots.ItemSlotBundle;
 import client.inventory.slots.ItemSlotEquip;
 import client.messages.IncMesoMessage;
+import client.messages.broadcast.types.AlertMessage;
 import client.messages.quest.CompleteQuestRecordMessage;
 import client.messages.quest.PerformQuestRecordMessage;
 import client.messages.quest.ResignQuestRecordMessage;
@@ -224,8 +225,13 @@ public class Character extends AbstractFieldLife {
     }
 
     public void setJob(int jobId) {
-        job = Job.getById(jobId);
-        updateSingleStat(StatType.JOB);
+        Job job = Job.getById(jobId);
+        if (job != null) {
+            this.job = job;
+            updateSingleStat(StatType.JOB);
+        } else {
+            write(CharacterPackets.message(new AlertMessage("This job does not exist!")));
+        }
     }
 
     public void fame() {

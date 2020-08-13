@@ -190,7 +190,7 @@ public class CharacterPackets {
         pw.writeShort(chr.getSp());
         pw.writeInt(chr.getExp());
         pw.writeShort(chr.getFame()); // 87
-        pw.writeInt(0); // Gacha Exp (87-91)
+        pw.writeInt(69); // Gacha Exp (87-91)
         pw.writeInt(chr.getField().getId());
         pw.write(chr.getPortal());
         pw.writeInt(0); // playtime
@@ -215,27 +215,20 @@ public class CharacterPackets {
     }
 
     private static void encodeVisualEquips(final PacketWriter pw, Character chr) {
-        Map<Short, ItemSlot> equips = chr.getInventories().get(ItemInventoryType.EQUIP)
-                .getItems().entrySet().stream()
-                .filter(kv -> kv.getKey() < 0)
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue
-                ));
-        Map<Short, ItemSlot> base = equips.entrySet().stream()
-                .map(kv -> equips.containsKey((short) (kv.getKey() - 100))
-                        ? new AbstractMap.SimpleEntry<>(kv.getKey(), equips.get((short) (kv.getKey() - 100)))
-                        : kv)
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue
-                ));
-        Map<Short, ItemSlot> mask = equips.entrySet().stream()
-                .filter(kv -> !base.entrySet().contains(kv))
-                .collect(Collectors.toMap(
-                        kv -> (short) (kv.getKey() <= -100 ? kv.getKey() - 100 : kv.getKey()),
-                        Map.Entry::getValue
-                ));
+        Map<Short, ItemSlot> equips = chr.getInventories().get(ItemInventoryType.EQUIP).getItems();
+        var base = equips.entrySet().stream()
+                .filter(kv -> kv.getKey() >= -100 && kv.getKey() < 0)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        var mask = new HashMap<Short, ItemSlot>();
+        equips.entrySet().stream()
+                .filter(kv -> kv.getKey() >= -1000 && kv.getKey() < -100 && kv.getKey() != -111)
+                .forEach(kv -> {
+                    var pos = (short) (kv.getKey() + 100);
+                    if (base.containsKey(pos)) {
+                        mask.put(pos, kv.getValue());
+                    }
+                    base.put(pos, kv.getValue());
+                });
 
         base.forEach((k, v) -> pw.write(Math.abs(k)).writeInt(v.getTemplateId()));
         pw.write(0xFF);
