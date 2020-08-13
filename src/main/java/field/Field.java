@@ -79,7 +79,7 @@ public class Field {
         if (obj instanceof Character) {
             Character chr = (Character) obj;
 
-            FieldPortal portal = portals.getOrDefault(chr.getPortal(), getSpawnpoint());
+            FieldPortal portal = portals.getOrDefault(chr.getPortal(), getFirstSpawnpoint());
             // TODO: 4/3/2020 chr.getPortal() is always 0
 
             obj.setId(chr.getId());
@@ -277,7 +277,20 @@ public class Field {
         return null;
     }
 
-    public FieldPortal getSpawnpoint() {
+    public FieldPortal getClosestSpawnpoint(Point point) {
+        FieldPortal sp = null;
+        double shortestDistance = Double.POSITIVE_INFINITY;
+        for (FieldPortal portal : portals.values()) {
+            double distance = portal.getPosition().distanceSq(point);
+            if (portal.getType() == PortalType.START_POINT && distance < shortestDistance && portal.getTargetMap() == 999999999) {
+                sp = portal;
+                shortestDistance = distance;
+            }
+        }
+        return sp;
+    }
+
+    public FieldPortal getFirstSpawnpoint() {
         return portals.values().stream().filter(p -> p.getType() == PortalType.START_POINT).findFirst().orElse(null);
     }
 

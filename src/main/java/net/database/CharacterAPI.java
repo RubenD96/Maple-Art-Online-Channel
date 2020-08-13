@@ -4,6 +4,7 @@ import client.Character;
 import client.Client;
 import client.player.Job;
 import client.player.key.KeyBinding;
+import field.object.portal.FieldPortal;
 import org.jooq.Record;
 import org.jooq.Result;
 
@@ -107,6 +108,17 @@ public class CharacterAPI {
      * @param chr character to save
      */
     public static void saveCharacterStats(Character chr) {
+        // yikes
+        int sp = 0;
+        int fid;
+        if (chr.getField() == null) {
+            sp = chr.getSpawnpoint();
+            fid = chr.getFieldId();
+        } else {
+            FieldPortal fp = chr.getField().getClosestSpawnpoint(chr.getPosition());
+            if (fp != null) sp = fp.getId();
+            fid = chr.getField().getForcedReturnMap();
+        }
         DatabaseCore.getConnection()
                 .update(CHARACTERS)
                 .set(CHARACTERS.LEVEL, chr.getLevel())
@@ -117,8 +129,8 @@ public class CharacterAPI {
                 .set(CHARACTERS.AP, chr.getAp())
                 .set(CHARACTERS.SP, chr.getSp())
                 .set(CHARACTERS.FAME, chr.getFame())
-                .set(CHARACTERS.MAP, chr.getField() == null ? chr.getFieldId() : chr.getField().getForcedReturnMap())
-                .set(CHARACTERS.SPAWNPOINT, chr.getSpawnpoint())
+                .set(CHARACTERS.MAP, fid)
+                .set(CHARACTERS.SPAWNPOINT, sp)
                 .set(CHARACTERS.STR, chr.getStrength())
                 .set(CHARACTERS.DEX, chr.getDexterity())
                 .set(CHARACTERS.INT, chr.getIntelligence())

@@ -77,6 +77,7 @@ public class Character extends AbstractFieldLife {
     NPCShop npcShop = null;
 
     public void init() {
+        portal = (byte) spawnpoint;
         resetQuickSlot();
         keyBindings = CharacterAPI.getKeyBindings(id);
         inventories.put(ItemInventoryType.EQUIP, new ItemInventory((short) 24));
