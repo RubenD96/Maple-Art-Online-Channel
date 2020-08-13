@@ -80,7 +80,6 @@ public class Field {
             Character chr = (Character) obj;
 
             FieldPortal portal = portals.getOrDefault(chr.getPortal(), getFirstSpawnpoint());
-            // TODO: 4/3/2020 chr.getPortal() is always 0
 
             obj.setId(chr.getId());
             chr.setFieldId(id);
