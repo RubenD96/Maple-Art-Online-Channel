@@ -57,8 +57,7 @@ public class FieldManager extends AbstractManager {
                 }
             }
 
-            if (containsFlag(flags, FieldFlag.FORCED_RETURN))
-                field.setForcedReturnMap(r.readInteger());
+            field.setForcedReturnMap(containsFlag(flags, FieldFlag.FORCED_RETURN) ? r.readInteger() : field.getId());
 
             if (containsFlag(flags, FieldFlag.FIELD_LIMIT))
                 field.setFieldLimit(r.readInteger());
