@@ -9,6 +9,7 @@ import client.inventory.item.templates.ItemEquipTemplate;
 import client.inventory.item.templates.ItemTemplate;
 import client.inventory.slots.ItemSlotEquip;
 import client.messages.IncEXPMessage;
+import client.messages.broadcast.types.AlertMessage;
 import client.messages.broadcast.types.NoticeWithoutPrefixMessage;
 import client.messages.quest.PerformQuestRecordMessage;
 import client.player.quest.Quest;
@@ -174,5 +175,9 @@ public abstract class AbstractPlayerInteraction {
 
     public void executeAfter(Function<AbstractPlayerInteraction, Void> func, int after) {
         c.getCh().eventLoop().schedule(() -> func.apply(this), after, TimeUnit.MILLISECONDS);
+    }
+
+    public void alert(String msg) {
+        c.write(CharacterPackets.message(new AlertMessage(msg)));
     }
 }
