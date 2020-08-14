@@ -78,7 +78,6 @@ public class QuestAPI {
     }
 
     private static void loadInfo(Quest quest, int dbId) {
-        System.out.println("start loading");
         Result<Record> res = DatabaseCore.getConnection()
                 .select().from(QUESTINFO)
                 .where(QUESTINFO.QID.eq(dbId))
@@ -90,11 +89,9 @@ public class QuestAPI {
             quest.getMobs().put(mob, rec.getValue(QUESTINFO.VALUE));
             quest.getCharacter().getRegisteredQuestMobs().add(mob);
         });
-        System.out.println("finish loading");
     }
 
     public static void saveInfo(Character chr) {
-        System.out.println("start saving");
         chr.getQuests().values().stream()
                 .filter(quest -> quest.getState() == QuestState.PERFORM)
                 .forEach(quest -> {
@@ -106,6 +103,5 @@ public class QuestAPI {
                                 .execute();
                     });
                 });
-        System.out.println("finish saving");
     }
 }

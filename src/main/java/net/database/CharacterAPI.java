@@ -58,6 +58,7 @@ public class CharacterAPI {
     }
 
     public static Character getNewCharacter(Client c, int id) {
+        System.out.println("start loading " + id);
         Record record = DatabaseCore.getConnection().select().from(CHARACTERS).where(CHARACTERS.ID.eq(id)).fetchOne();
 
         String name = record.getValue(CHARACTERS.NAME);
@@ -97,6 +98,7 @@ public class CharacterAPI {
                 meso
         );
         character.init();
+        System.out.println("finished loading " + name);
         return character;
     }
 
@@ -108,6 +110,7 @@ public class CharacterAPI {
      * @param chr character to save
      */
     public static void saveCharacterStats(Character chr) {
+        System.out.println("start saving " + chr.getName());
         // yikes
         int sp = 0;
         int fid;
@@ -144,6 +147,7 @@ public class CharacterAPI {
                 .set(CHARACTERS.PARTY, chr.getParty() == null ? 0 : chr.getParty().getId())
                 .where(CHARACTERS.ID.eq(chr.getId()))
                 .execute();
+        System.out.println("finished saving " + chr.getName());
     }
 
     /**

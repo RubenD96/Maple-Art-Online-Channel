@@ -139,8 +139,8 @@ public abstract class AbstractPlayerInteraction {
             equip.setDEX(stats.get("DEX").shortValue());
             equip.setLUK(stats.get("LUK").shortValue());
             equip.setINT(stats.get("INT").shortValue());
-            equip.setPDD(stats.get("PDD").shortValue());
-            equip.setMDD(stats.get("MDD").shortValue());
+            equip.setPAD(stats.get("PAD").shortValue());
+            equip.setMAD(stats.get("MAD").shortValue());
             equip.setACC(stats.get("ACC").shortValue());
             equip.setEVA(stats.get("EVA").shortValue());
             equip.setJump(stats.get("JUMP").shortValue());

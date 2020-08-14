@@ -3,7 +3,6 @@ package net.maple.handlers.net;
 import client.Character;
 import client.Client;
 import client.player.key.KeyBinding;
-import database.jooq.tables.Wishlist;
 import field.Field;
 import net.database.*;
 import net.maple.SendOpcode;

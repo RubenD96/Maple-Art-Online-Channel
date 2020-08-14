@@ -2,8 +2,9 @@ package net.maple;
 
 import net.maple.handlers.DoNothingHandler;
 import net.maple.handlers.PacketHandler;
-import net.maple.handlers.PongHandler;
+import net.maple.handlers.net.PongHandler;
 import net.maple.handlers.misc.*;
+import net.maple.handlers.net.ClientDumpLogHandler;
 import net.maple.handlers.net.MigrateInHandler;
 import net.maple.handlers.user.*;
 import net.maple.handlers.user.attack.AttackType;
@@ -38,6 +39,7 @@ public final class PacketProcessor {
     public void initializeHandlers() {
         handlers.put(RecvOpcode.MIGRATE_IN, new MigrateInHandler());
         handlers.put(RecvOpcode.PONG, new PongHandler());
+        handlers.put(RecvOpcode.CLIENT_DUMP_LOG, new ClientDumpLogHandler());
         handlers.put(RecvOpcode.USER_TRANSFER_FIELD_REQUEST, new UserTransferFieldRequestHandler());
         handlers.put(RecvOpcode.USER_TRANSFER_CHANNEL_REQUEST, new UserTransferChannelRequestHandler());
         handlers.put(RecvOpcode.USER_MIGRATE_TO_CASH_SHOP_REQUEST, new UserMigrateToCashShopRequestHandler());
