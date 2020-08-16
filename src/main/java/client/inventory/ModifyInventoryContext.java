@@ -49,10 +49,12 @@ public class ModifyInventoryContext implements ModifyInventoryContextInterface {
                 add(Objects.requireNonNull(ItemManager.getItem(item.getTemplateId())), bundle.getMaxNumber());
             }
 
-            ItemSlotBundle mergeable = (ItemSlotBundle) inventory.getItems().values().stream().filter(i -> {
-                ItemSlotBundle b = (ItemSlotBundle) i;
-                return bundle.getNumber() + b.getNumber() <= b.getMaxNumber();
-            }).filter(i -> i.equals(bundle)).findFirst().orElse(null);
+            ItemSlotBundle mergeable = (ItemSlotBundle) inventory.getItems().values().stream()
+                    .filter(i -> i instanceof ItemSlotBundle)
+                    .filter(i -> {
+                        ItemSlotBundle b = (ItemSlotBundle) i;
+                        return bundle.getNumber() + b.getNumber() <= b.getMaxNumber();
+                    }).filter(i -> i.equals(bundle)).findFirst().orElse(null);
 
             if (mergeable != null) {
                 int quantity = bundle.getNumber() + mergeable.getNumber();

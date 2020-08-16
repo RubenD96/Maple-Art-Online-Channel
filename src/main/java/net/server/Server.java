@@ -6,11 +6,13 @@ import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 import constants.ServerConstants;
 import lombok.Getter;
 import lombok.Setter;
+import managers.*;
 import net.database.CharacterAPI;
 import net.database.DatabaseCore;
 import net.database.ShopAPI;
 import util.crypto.MapleAESOFB;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,5 +63,74 @@ public class Server {
 
         // the first script engine takes a few sec to load, all subsequent engines are hella fast
         GraalJSScriptEngine.create();
+
+        // benchmark();
+    }
+
+    private static void benchmark() {
+        long timeToTake;
+
+        ArrayList<Integer> ids = getIds("Map");
+        timeToTake = System.currentTimeMillis();
+        FieldManager fm = new FieldManager();
+        for (int id : ids) {
+            fm.getField(id);
+        }
+        System.out.println(ids.size() + " fields loaded in " + ((System.currentTimeMillis() - timeToTake) / 1000.0) + " seconds");
+
+        ids = getIds("Mob");
+        timeToTake = System.currentTimeMillis();
+        for (int id : ids) {
+            MobManager.getMob(id);
+        }
+        System.out.println(ids.size() + " mobs loaded in " + ((System.currentTimeMillis() - timeToTake) / 1000.0) + " seconds");
+
+        ids = getIds("Npc");
+        timeToTake = System.currentTimeMillis();
+        for (int id : ids) {
+            NPCManager.getNPC(id);
+        }
+        System.out.println(ids.size() + " npcs loaded in " + ((System.currentTimeMillis() - timeToTake) / 1000.0) + " seconds");
+
+        ids = getIds("Equip");
+        timeToTake = System.currentTimeMillis();
+        for (int id : ids) {
+            ItemManager.getItem(id);
+        }
+        System.out.println(ids.size() + " equips loaded in " + ((System.currentTimeMillis() - timeToTake) / 1000.0) + " seconds");
+
+        ids = getIds("Item");
+        timeToTake = System.currentTimeMillis();
+        for (int id : ids) {
+            ItemManager.getItem(id);
+        }
+        System.out.println(ids.size() + " items loaded in " + ((System.currentTimeMillis() - timeToTake) / 1000.0) + " seconds");
+
+        ids = getIds("Commodity");
+        timeToTake = System.currentTimeMillis();
+        for (int id : ids) {
+            CommodityManager.getCommodity(id);
+        }
+        System.out.println(ids.size() + " commodities loaded in " + ((System.currentTimeMillis() - timeToTake) / 1000.0) + " seconds");
+
+        ids = getIds("Quest");
+        timeToTake = System.currentTimeMillis();
+        for (int id : ids) {
+            QuestTemplateManager.getQuest(id);
+        }
+        System.out.println(ids.size() + " quests loaded in " + ((System.currentTimeMillis() - timeToTake) / 1000.0) + " seconds");
+    }
+
+    private static ArrayList<Integer> getIds(String loc) {
+        File folder = new File("wz/" + loc);
+        File[] listOfFiles = folder.listFiles();
+
+        ArrayList<Integer> ids = new ArrayList<>();
+        for (File field : listOfFiles) {
+            if (field.isFile()) {
+                ids.add(Integer.parseInt(field.getName().substring(0, field.getName().length() - 4)));
+            }
+        }
+        return ids;
     }
 }

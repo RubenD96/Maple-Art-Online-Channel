@@ -2,7 +2,7 @@ package net.maple.handlers.user;
 
 import client.Character;
 import client.Client;
-import client.shop.NPCShop;
+import client.interaction.shop.NPCShop;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.maple.SendOpcode;

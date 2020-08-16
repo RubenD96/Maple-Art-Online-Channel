@@ -1,5 +1,6 @@
 package client;
 
+import client.interaction.storage.ItemStorageInteraction;
 import client.inventory.ItemInventory;
 import client.inventory.ItemInventoryType;
 import client.inventory.slots.ItemSlot;
@@ -17,7 +18,7 @@ import client.player.StatType;
 import client.player.friend.FriendList;
 import client.player.key.KeyBinding;
 import client.player.quest.Quest;
-import client.shop.NPCShop;
+import client.interaction.shop.NPCShop;
 import constants.UserConstants;
 import field.Field;
 import field.object.FieldObjectType;
@@ -75,6 +76,7 @@ public class Character extends AbstractFieldLife {
     Set<Integer> registeredQuestMobs = new HashSet<>();
     int[] wishlist = new int[10];
     NPCShop npcShop = null;
+    ItemStorageInteraction activeStorage = null;
 
     public void init() {
         portal = (byte) spawnpoint;

@@ -1,6 +1,6 @@
 package managers;
 
-import client.shop.NPCShop;
+import client.interaction.shop.NPCShop;
 import lombok.Getter;
 
 import java.util.HashMap;

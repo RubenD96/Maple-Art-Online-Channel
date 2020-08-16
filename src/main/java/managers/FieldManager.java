@@ -131,7 +131,7 @@ public class FieldManager extends AbstractManager {
                     field.enter(obj);
                 }
             }
-            System.out.println("Finished initializing field: " + field.getId());
+            //System.out.println("Finished initializing field: " + field.getId());
             return true;
         } else {
             System.err.println("Field " + field.getId() + " does not exist!");

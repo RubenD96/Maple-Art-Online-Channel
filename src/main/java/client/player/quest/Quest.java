@@ -32,7 +32,7 @@ public class Quest {
     private @Setter int dbId;
 
     public void initializeMobs() {
-        QuestTemplate template = QuestTemplateManager.getInstance().getQuest(id);
+        QuestTemplate template = QuestTemplateManager.getQuest(id);
         EndingRequirement reqs = template.getEndingRequirements();
 
         if (!reqs.getMobs().isEmpty()) {
@@ -82,7 +82,7 @@ public class Quest {
     }
 
     public boolean canStart() {
-        QuestTemplate template = QuestTemplateManager.getInstance().getQuest(id);
+        QuestTemplate template = QuestTemplateManager.getQuest(id);
         StartingRequirement reqs = template.getStartingRequirements();
 
         if (!reqCheck(reqs)) {
@@ -111,7 +111,7 @@ public class Quest {
     }
 
     public boolean canFinish() {
-        QuestTemplate template = QuestTemplateManager.getInstance().getQuest(id);
+        QuestTemplate template = QuestTemplateManager.getQuest(id);
         EndingRequirement reqs = template.getEndingRequirements();
 
         if (!reqCheck(reqs)) {
@@ -138,7 +138,7 @@ public class Quest {
 
     public void progress(int mob, int increase) {
         int count = Integer.parseInt(mobs.get(mob)) + increase;
-        if (count > QuestTemplateManager.getInstance().getQuest(id).getEndingRequirements().getMobs().get(mob)) return;
+        if (count > QuestTemplateManager.getQuest(id).getEndingRequirements().getMobs().get(mob)) return;
 
         StringBuilder newCount = new StringBuilder(String.valueOf(count));
         while (newCount.length() < 3) {

@@ -4,6 +4,7 @@ import client.Character;
 import client.Client;
 import client.effects.field.TrembleFieldEffect;
 import client.effects.user.QuestEffect;
+import client.interaction.storage.ItemStorageInteraction;
 import client.inventory.ItemVariationType;
 import client.inventory.item.templates.ItemEquipTemplate;
 import client.inventory.item.templates.ItemTemplate;
@@ -179,5 +180,9 @@ public abstract class AbstractPlayerInteraction {
 
     public void alert(String msg) {
         c.write(CharacterPackets.message(new AlertMessage(msg)));
+    }
+
+    public void openStorage(int npcId) {
+        new ItemStorageInteraction(npcId, c.getStorage()).open(getPlayer());
     }
 }

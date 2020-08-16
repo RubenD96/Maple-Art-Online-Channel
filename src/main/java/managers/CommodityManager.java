@@ -11,13 +11,9 @@ import java.util.Map;
 @Getter
 public class CommodityManager extends AbstractManager {
 
-    private static final @Getter CommodityManager instance = new CommodityManager();
-    private final Map<Integer, Commodity> commodities = new HashMap<>();
+    private static final Map<Integer, Commodity> commodities = new HashMap<>();
 
-    private CommodityManager() {
-    }
-
-    public synchronized Commodity getCommodity(int sn) {
+    public static synchronized Commodity getCommodity(int sn) {
         Commodity commodity = commodities.get(sn);
         if (commodity == null) {
             commodity = new Commodity(sn);
@@ -29,7 +25,7 @@ public class CommodityManager extends AbstractManager {
         return commodity;
     }
 
-    private boolean loadData(Commodity commodity) {
+    private static boolean loadData(Commodity commodity) {
         PacketReader r = getData("wz/Commodity/" + commodity.getSN() + ".mao");
         if (r != null) {
             int flags = r.readInteger();
@@ -60,7 +56,7 @@ public class CommodityManager extends AbstractManager {
         return false;
     }
 
-    private boolean containsFlag(int flags, CommodityFlag flag) {
+    private static boolean containsFlag(int flags, CommodityFlag flag) {
         return (flags & flag.getValue()) == flag.getValue();
     }
 }

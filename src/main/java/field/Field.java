@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 public class Field {
 
     @NonNull private final int id;
-    private AtomicInteger runningObjectId = new AtomicInteger(1000000000);
+    private static AtomicInteger runningObjectId = new AtomicInteger(1000000000);
     private int returnMap, forcedReturnMap, fieldLimit;
     private String name, script;
     private Rectangle mapArea;

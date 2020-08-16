@@ -32,12 +32,12 @@ public class FieldNPC extends AbstractFieldControlledLife {
         PacketWriter pw = new PacketWriter(22);
 
         pw.writeHeader(SendOpcode.NPC_ENTER_FIELD);
-        pw.writeInt(getId()); // obj id
+        pw.writeInt(id); // obj id
         pw.writeInt(npcId);
 
-        pw.writePosition(getPosition());
+        pw.writePosition(position);
         pw.write(f ? 1 : 0);
-        pw.writeShort(getFoothold());
+        pw.writeShort(foothold);
 
         pw.writeShort(rx0);
         pw.writeShort(rx1);

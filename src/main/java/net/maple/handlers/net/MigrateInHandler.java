@@ -35,7 +35,6 @@ public class MigrateInHandler extends PacketHandler {
                 c.setCharacter(chr);
 
                 ItemAPI.loadInventories(chr);
-                ItemAPI.loadLocker(c);
                 chr.validateStats();
                 QuestAPI.loadAll(chr);
 

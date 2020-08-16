@@ -274,4 +274,8 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     public void editMinMaxChance(int mid, int iid, int min, int max, double chance) {
         DropAPI.updateMinMaxChance(mid, iid, min, max, chance);
     }
+
+    public void openStorage() {
+        openStorage(npcId);
+    }
 }

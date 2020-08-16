@@ -1,4 +1,4 @@
-package net.maple.handlers.misc;
+package net.maple.handlers.mob;
 
 import client.Client;
 import field.Field;
@@ -55,7 +55,7 @@ public class MobMoveHandler extends PacketHandler {
     }
 
     private static Packet sendMobControl(FieldMob mob, short SN, boolean move) {
-        PacketWriter pw = new PacketWriter(32);
+        PacketWriter pw = new PacketWriter(13);
 
         pw.writeHeader(SendOpcode.MOB_CTRL_ACK);
         pw.writeInt(mob.getId());
@@ -63,7 +63,7 @@ public class MobMoveHandler extends PacketHandler {
         pw.writeBool(move);
         pw.writeShort(0); // nMP
         pw.write(0); // skill command
-        pw.write(0); // slv?
+        pw.write(0); // skill level
 
         return pw.createPacket();
     }

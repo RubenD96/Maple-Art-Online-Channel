@@ -2,10 +2,12 @@ package net.maple;
 
 import net.maple.handlers.DoNothingHandler;
 import net.maple.handlers.PacketHandler;
-import net.maple.handlers.net.PongHandler;
 import net.maple.handlers.misc.*;
+import net.maple.handlers.mob.MobApplyCtrlHandler;
+import net.maple.handlers.mob.MobMoveHandler;
 import net.maple.handlers.net.ClientDumpLogHandler;
 import net.maple.handlers.net.MigrateInHandler;
+import net.maple.handlers.net.PongHandler;
 import net.maple.handlers.user.*;
 import net.maple.handlers.user.attack.AttackType;
 import net.maple.handlers.user.attack.UserAttackHandler;
@@ -17,7 +19,7 @@ import java.util.Map;
 public final class PacketProcessor {
 
     private static PacketProcessor instance;
-    private Map<RecvOpcode, PacketHandler> handlers = new HashMap<>();
+    private final Map<RecvOpcode, PacketHandler> handlers = new HashMap<>();
 
     public synchronized static PacketProcessor getInstance() {
         if (instance == null) {
@@ -52,6 +54,7 @@ public final class PacketProcessor {
         handlers.put(RecvOpcode.USER_SELECT_NPC, new UserSelectNpcHandler());
         handlers.put(RecvOpcode.USER_SCRIPT_MESSAGE_ANSWER, new UserScriptMessageAnswerHandler());
         handlers.put(RecvOpcode.USER_SHOP_REQUEST, new UserShopRequestHandler());
+        handlers.put(RecvOpcode.USER_STORAGE_REQUEST, new UserStorageRequestHandler());
         handlers.put(RecvOpcode.USER_CHANGE_SLOT_POSITION_REQUEST, new UserChangeSlotPositionRequestHandler());
         handlers.put(RecvOpcode.USER_ABILITY_UP_REQUEST, new UserAbilityUpRequestHandler());
         handlers.put(RecvOpcode.USER_ABILITY_MASS_UP_REQUEST, new UserAbilityMassUpRequestHandler());
@@ -70,6 +73,7 @@ public final class PacketProcessor {
         handlers.put(RecvOpcode.FUNC_KEY_MAPPED_MODIFIED, new FuncKeyMappedModifiedHandler());
         handlers.put(RecvOpcode.QUICKSLOT_KEY_MAPPED_MODIFIED, new QuickSlotKeyMappedModifiedHandler());
         handlers.put(RecvOpcode.MOB_MOVE, new MobMoveHandler());
+        handlers.put(RecvOpcode.MOB_APPLY_CTRL, new MobApplyCtrlHandler());
         handlers.put(RecvOpcode.NPC_MOVE, new NPCMoveHandler());
         handlers.put(RecvOpcode.DROP_PICK_UP_REQUEST, new DropPickUpRequestHandler());
         handlers.put(RecvOpcode.CASH_SHOP_QUERY_CASH_REQUEST, new CashShopQueryCashRequestHandler());

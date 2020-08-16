@@ -1,7 +1,8 @@
-package client.shop;
+package client.interaction.shop;
 
 import client.Character;
 import client.Client;
+import client.interaction.Interactable;
 import client.inventory.ItemInventory;
 import client.inventory.ItemInventoryType;
 import client.inventory.item.templates.ItemBundleTemplate;
@@ -25,7 +26,7 @@ import java.util.Map;
 import static database.jooq.Tables.SHOPITEMS;
 
 @Getter
-public class NPCShop {
+public class NPCShop implements Interactable {
 
     private final int id;
     private final Map<Integer, NPCShopItem> items = new LinkedHashMap<>();
@@ -51,7 +52,12 @@ public class NPCShop {
         });
     }
 
+    @Override
     public void open(Character chr) {
+        if (chr.getNpcShop() != null) {
+            chr.getClient().close(this, "Attempting to open a shop while in a shop");
+            return;
+        }
         PacketWriter pw = new PacketWriter(32);
 
         pw.writeHeader(SendOpcode.OPEN_SHOP_DLG);
@@ -80,6 +86,7 @@ public class NPCShop {
         chr.setNpcShop(this);
     }
 
+    @Override
     public void close(Client c) {
         c.getCharacter().setNpcShop(null);
     }

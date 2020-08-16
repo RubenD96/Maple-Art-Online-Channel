@@ -42,19 +42,26 @@ public class ItemAPI {
             var type = ItemInventoryType.values()[i];
             var inv = chr.getInventories().get(type).getItems();
             inv.forEach((slot, item) -> {
-                if (item.getUuid() == null || (item.isNewItem() && uuids.stream().noneMatch(uuid -> Arrays.equals(item.getUuid(), uuid)))) { // item is new, insert new entry
-                    insertNewItem(chr, 1, i + 1, slot, item, null);
-                    if (type == ItemInventoryType.EQUIP) {
-                        insertNewEquip((ItemSlotEquip) item);
-                    }
-                } else {
-                    updateExistingItem(slot, item);
-                    if (type == ItemInventoryType.EQUIP) {
-                        updateExistingEquip((ItemSlotEquip) item);
-                    }
-                }
+                updateItem(chr, item, uuids, slot, type, 1);
             });
         });
+        chr.getClient().getStorage().getItems().forEach((slot, item) -> {
+            updateItem(chr, item, uuids, slot, ItemInventoryType.values()[item.getTemplateId() / 1000000 - 1], 2);
+        });
+    }
+
+    private static void updateItem(Character chr, ItemSlot item, Set<byte[]> uuids, Short slot, ItemInventoryType invType, int storageType) {
+        if (item.getUuid() == null || (item.isNewItem() && uuids.stream().noneMatch(uuid -> Arrays.equals(item.getUuid(), uuid)))) { // item is new, insert new entry
+            insertNewItem(chr, storageType, invType.getType(), slot, item, null);
+            if (invType == ItemInventoryType.EQUIP) {
+                insertNewEquip((ItemSlotEquip) item);
+            }
+        } else {
+            updateExistingItem(slot, item, storageType);
+            if (invType == ItemInventoryType.EQUIP) {
+                updateExistingEquip((ItemSlotEquip) item);
+            }
+        }
     }
 
     /**
@@ -83,6 +90,10 @@ public class ItemAPI {
                 keep.add(uuid);
                 toDelete.remove(uuid);
             }
+            if (chr.getClient().getStorage().getItems().values().stream().anyMatch(item -> Arrays.equals(item.getUuid(), uuid))) {
+                keep.add(uuid);
+                toDelete.remove(uuid);
+            }
         }
 
         toDelete.forEach(ItemAPI::deleteItemByUUID);
@@ -96,10 +107,11 @@ public class ItemAPI {
                 .execute();
     }
 
-    private static void updateExistingItem(short slot, ItemSlot item) {
+    private static void updateExistingItem(short slot, ItemSlot item, int storageType) {
         int quantity = item instanceof ItemSlotBundle ? ((ItemSlotBundle) item).getNumber() : 1;
         DatabaseCore.getConnection()
                 .update(INVENTORIES)
+                .set(INVENTORIES.STORAGE_TYPE, storageType)
                 .set(INVENTORIES.POSITION, slot)
                 .set(INVENTORIES.QUANTITY, quantity)
                 .where(INVENTORIES.ID.eq(item.getUuid()))
@@ -223,6 +235,8 @@ public class ItemAPI {
     public static void loadInventories(Character chr) {
         deleteBrokenEquips(chr);
         loadEquips(chr);
+        loadLocker(chr.getClient());
+        loadStorage(chr.getClient());
 
         Result<Record> itemData = DatabaseCore.getConnection()
                 .select()
@@ -232,11 +246,10 @@ public class ItemAPI {
                 .and(INVENTORIES.CID.eq(chr.getId()))
                 .fetch();
 
-        for (Record rec : itemData) {
+        itemData.forEach(rec -> {
             Map<Short, ItemSlot> items = chr.getInventories()
                     .get(ItemInventoryType.values()[rec.getValue(INVENTORIES.INVENTORY_TYPE) - 1])
                     .getItems();
-
             ItemBundleTemplate template = (ItemBundleTemplate) ItemManager.getItem(rec.getValue(INVENTORIES.ITEMID));
             if (template != null) {
                 ItemSlotBundle bundle = template.toItemSlot();
@@ -247,7 +260,29 @@ public class ItemAPI {
                 bundle.setNewItem(false);
                 items.put(rec.getValue(INVENTORIES.POSITION), bundle);
             }
-        }
+        });
+    }
+
+    private static void loadStorage(Client c) {
+        Result<Record> itemData = DatabaseCore.getConnection()
+                .select()
+                .from(INVENTORIES)
+                .where(INVENTORIES.STORAGE_TYPE.eq(2))
+                .and(INVENTORIES.AID.eq(c.getAccId()))
+                .fetch();
+
+        itemData.forEach(rec -> {
+            ItemTemplate template = ItemManager.getItem(rec.getValue(INVENTORIES.ITEMID));
+            if (template != null) {
+                ItemSlot item = template.toItemSlot();
+                if (rec.getValue(INVENTORIES.QUANTITY) > 1) {
+                    ((ItemSlotBundle) item).setNumber(rec.getValue(INVENTORIES.QUANTITY).shortValue());
+                }
+                item.setUuid(rec.getValue(INVENTORIES.ID));
+                item.setNewItem(false);
+                c.getStorage().getItems().put(rec.getValue(INVENTORIES.POSITION), item);
+            }
+        });
     }
 
     /**
@@ -357,7 +392,7 @@ public class ItemAPI {
      *
      * @param c client
      */
-    public static void loadLocker(Client c) {
+    private static void loadLocker(Client c) {
         Result<Record> locker = DatabaseCore.getConnection()
                 .select().from(INVENTORIES)
                 .where(INVENTORIES.STORAGE_TYPE.eq(3))

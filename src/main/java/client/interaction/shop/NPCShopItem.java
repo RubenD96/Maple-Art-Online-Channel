@@ -1,4 +1,4 @@
-package client.shop;
+package client.interaction.shop;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

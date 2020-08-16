@@ -8,21 +8,9 @@ import java.util.Map;
 
 public class QuestTemplateManager extends AbstractManager {
 
-    private final Map<Integer, QuestTemplate> templates;
-    private static QuestTemplateManager instance;
+    private static final Map<Integer, QuestTemplate> templates = new HashMap<>();
 
-    public static QuestTemplateManager getInstance() {
-        if (instance == null) {
-            instance = new QuestTemplateManager();
-        }
-        return instance;
-    }
-
-    private QuestTemplateManager() {
-        templates = new HashMap<>();
-    }
-
-    public QuestTemplate getQuest(int id) {
+    public static QuestTemplate getQuest(int id) {
         QuestTemplate template = templates.get(id);
         if (template == null) {
             template = new QuestTemplate(id);
@@ -32,7 +20,7 @@ public class QuestTemplateManager extends AbstractManager {
         return template;
     }
 
-    private void loadQuestData(QuestTemplate template) {
+    private static void loadQuestData(QuestTemplate template) {
         PacketReader r = getData("wz/Quest/" + template.getId() + ".mao");
 
         if (r != null) {
@@ -42,7 +30,7 @@ public class QuestTemplateManager extends AbstractManager {
             template.getStartingRequirements().decode(sflags, r);
             template.getEndingRequirements().decode(eflags, r);
 
-            System.out.println("Finished initializing quest: " + template.getId());
+            //System.out.println("Finished initializing quest: " + template.getId());
         }
     }
 }

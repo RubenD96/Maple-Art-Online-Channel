@@ -63,7 +63,7 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
         int commoditySN = reader.readInteger();
         System.out.println("[BUY] " + cashType + " - " + commoditySN);
 
-        Commodity commodity = CommodityManager.getInstance().getCommodity(commoditySN);
+        Commodity commodity = CommodityManager.getCommodity(commoditySN);
 
         if (commodity == null) {
             System.err.println("[BUY] commodity (" + commoditySN + ") is null" + " - " + c.getCharacter().getName());
@@ -148,7 +148,7 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
             }
         }
 
-        Commodity commodity = CommodityManager.getInstance().getCommodity(sn);
+        Commodity commodity = CommodityManager.getCommodity(sn);
         if (commodity == null) {
             System.err.println("[GIFT] commodity (" + sn + ") is null" + " - " + c.getCharacter().getName());
             failRequest(c, 2);
@@ -291,7 +291,7 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
                 continue;
             }
 
-            Commodity commodity = CommodityManager.getInstance().getCommodity(sn);
+            Commodity commodity = CommodityManager.getCommodity(sn);
 
             if (commodity == null) {
                 System.err.println("[SET_WISH] commodity is null");
