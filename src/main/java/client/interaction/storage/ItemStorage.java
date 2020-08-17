@@ -8,7 +8,8 @@ public class ItemStorage extends ItemInventory {
 
     private @Getter @Setter int meso;
 
-    public ItemStorage(short slotMax) {
+    public ItemStorage(short slotMax, int meso) {
         super(slotMax);
+        this.meso = meso;
     }
 }

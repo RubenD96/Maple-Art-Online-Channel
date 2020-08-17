@@ -2,6 +2,7 @@ package net.database;
 
 import client.Character;
 import client.Client;
+import client.interaction.storage.ItemStorage;
 import client.inventory.ItemInventoryType;
 import client.inventory.item.templates.ItemBundleTemplate;
 import client.inventory.item.templates.ItemEquipTemplate;
@@ -23,8 +24,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
-import static database.jooq.Tables.EQUIPS;
-import static database.jooq.Tables.INVENTORIES;
+import static database.jooq.Tables.*;
 
 public class ItemAPI {
 
@@ -38,6 +38,7 @@ public class ItemAPI {
     public static void saveInventories(Character chr) {
         Set<byte[]> uuids = deleteOldItems(chr);
 
+        // inventories
         IntStream.range(0, 5).forEach(i -> {
             var type = ItemInventoryType.values()[i];
             var inv = chr.getInventories().get(type).getItems();
@@ -45,6 +46,9 @@ public class ItemAPI {
                 updateItem(chr, item, uuids, slot, type, 1);
             });
         });
+
+        // storage
+        updateStorageStats(chr.getClient());
         chr.getClient().getStorage().getItems().forEach((slot, item) -> {
             updateItem(chr, item, uuids, slot, ItemInventoryType.values()[item.getTemplateId() / 1000000 - 1], 2);
         });
@@ -62,6 +66,21 @@ public class ItemAPI {
                 updateExistingEquip((ItemSlotEquip) item);
             }
         }
+    }
+
+    /**
+     * Update meso and storage size
+     *
+     * @param c account to update
+     */
+    private static void updateStorageStats(Client c) {
+        ItemStorage storage = c.getStorage();
+        DatabaseCore.getConnection()
+                .update(STORAGES)
+                .set(STORAGES.SIZE, storage.getSlotMax())
+                .set(STORAGES.MESO, storage.getMeso())
+                .where(STORAGES.AID.eq(c.getAccId()))
+                .execute();
     }
 
     /**
@@ -264,6 +283,23 @@ public class ItemAPI {
     }
 
     private static void loadStorage(Client c) {
+        Record storage = DatabaseCore.getConnection()
+                .select()
+                .from(STORAGES)
+                .where(STORAGES.AID.eq(c.getAccId()))
+                .fetchOne();
+        ItemStorage itemStorage;
+        if (storage == null) {
+            DatabaseCore.getConnection()
+                    .insertInto(STORAGES, STORAGES.AID)
+                    .values(c.getAccId())
+                    .execute();
+            itemStorage = new ItemStorage((short) 4, 0);
+        } else {
+            itemStorage = new ItemStorage(storage.getValue(STORAGES.SIZE), storage.getValue(STORAGES.MESO));
+        }
+        c.setStorage(itemStorage);
+
         Result<Record> itemData = DatabaseCore.getConnection()
                 .select()
                 .from(INVENTORIES)

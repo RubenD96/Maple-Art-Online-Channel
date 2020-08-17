@@ -39,7 +39,7 @@ public class Client extends NettyClient {
     private @Getter @Setter Integer cash;
     private ScheduledFuture<?> ping;
     private final @Getter List<ItemSlotLocker> locker = new ArrayList<>();
-    private @Getter ItemStorage storage;
+    private @Getter @Setter ItemStorage storage;
 
     public Client(Channel c, byte[] siv, byte[] riv) {
         super(c, siv, riv);
@@ -50,7 +50,6 @@ public class Client extends NettyClient {
         banned = data.getValue(ACCOUNTS.BANNED) == 1;
         admin = data.getValue(ACCOUNTS.ADMIN) == 1;
         pic = data.getValue(ACCOUNTS.PIC);
-        storage = new ItemStorage(data.getValue(ACCOUNTS.STORAGE_SIZE));
 
         worldChannel = Server.getInstance().getChannels().get(mi.getChannel());
         worldChannel.getLoginConnector().messageLogin("1:" + accId);
