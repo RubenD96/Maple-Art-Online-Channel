@@ -22,6 +22,17 @@ public class MobApplyCtrlHandler extends PacketHandler {
         FieldMob mob = (FieldMob) field.getObject(FieldObjectType.MOB, oid);
         if (mob == null) return;
 
-        System.out.println("[MobApplyCtrlHandler] " + mob.getName() + " (" + oid + ") distance: " + distanceToPlayer);
+        //System.out.println("[MobApplyCtrlHandler] (" + chr.getName() + ") " + mob.getName() + " (" + oid + ") distance: " + distanceToPlayer);
+        if (mob.getController() == null) {
+            mob.setControllerDistance(distanceToPlayer);
+            mob.setController(chr);
+            field.updateControlledObjects();
+        } else if (mob.getController().equals(chr)) {
+            mob.setControllerDistance(distanceToPlayer);
+        } else if (distanceToPlayer < mob.getControllerDistance()) {
+            mob.setControllerDistance(distanceToPlayer);
+            mob.setController(chr);
+            field.updateControlledObjects();
+        }
     }
 }

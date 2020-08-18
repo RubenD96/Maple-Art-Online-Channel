@@ -25,6 +25,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
             RecvOpcode.NPC_MOVE.getValue(),
             RecvOpcode.USER_CHANGE_STAT_REQUEST.getValue(),
             RecvOpcode.MOB_MOVE.getValue(),
+            RecvOpcode.MOB_APPLY_CTRL.getValue(),
             RecvOpcode.ADMIN.getValue()
     };
 

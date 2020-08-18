@@ -33,6 +33,7 @@ public class FieldMob extends AbstractFieldControlledLife {
     @Setter private int hp, mp;
     @Setter private short home;
     @Setter private int time;
+    @Setter private int controllerDistance;
 
     public FieldMob(FieldMobTemplate template, boolean left) {
         this.template = template;

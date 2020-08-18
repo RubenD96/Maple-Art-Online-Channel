@@ -8,10 +8,12 @@ import client.inventory.slots.ItemSlot;
 import client.inventory.slots.ItemSlotBundle;
 import field.object.drop.EnterType;
 import field.object.drop.ItemDrop;
+import field.object.life.FieldMob;
 import field.object.life.FieldNPC;
 import lombok.Getter;
 import lombok.Setter;
 import managers.ItemManager;
+import managers.MobManager;
 import managers.NPCManager;
 import managers.NPCShopManager;
 import net.database.ShopAPI;
@@ -49,6 +51,14 @@ public class CommandShortcut extends AbstractPlayerInteraction {
 
     public FieldNPC getNpc(int id) {
         return NPCManager.getNPC(id);
+    }
+
+    public FieldMob getMob(int id) {
+        FieldMob mob = new FieldMob(MobManager.getMob(id), false);
+        mob.setHp(mob.getTemplate().getMaxHP());
+        mob.setMp(mob.getTemplate().getMaxMP());
+
+        return mob;
     }
 
     public ItemTemplate getItemTemplate(int id) {
