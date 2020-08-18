@@ -372,7 +372,7 @@ public class CharacterPackets {
         chr.getField().broadcast(pw.createPacket(), chr);
     }
 
-    public static void showDamage(Character chr, byte type, int dmg, int mobId, byte dir) {
+    public static void showDamage(Character chr, byte type, int dmg, int mobId, byte left) {
         PacketWriter pw = new PacketWriter(32);
 
         pw.writeHeader(SendOpcode.USER_HIT);
@@ -382,34 +382,29 @@ public class CharacterPackets {
         pw.writeInt(dmg);
         if (type > -2) {
             pw.writeInt(mobId);
-            pw.write(dir);
-            pw.write(0); // ?
-            pw.write(0); // power guard
-            pw.writeBool(false); // stance
-        }
-        pw.writeInt(dmg);
-        /*byte v5 = 0;
-        pw.write(v5);
-        pw.writeInt(chr.getId()); // v61
-        if (v5 > -2) {
-            pw.writeInt(mobId); // v51
-            pw.write(1); // v48, unsure
-            byte v19 = 0;
-            pw.write(v19); // v19 powerguard?
-            if (v19 > 0) {
-                pw.writeBool(true); // v49
-                pw.writeInt(oid); // v51
+            pw.write(left);
 
-                pw.write(1); // v27 ?
-                *//*pw.writeShort(0);
-                pw.writeShort(0);*//*
-                pw.writePosition(chr.getPosition()); // v51 + v28
-            }
-            pw.write(0); // v4
-            pw.write(0); // v34 skill
+            byte v22 = 0;
+            pw.write(v22); // stance?
+            if (v22 > 0) {
+                pw.write(0); // bPowerGuard
+                pw.writeInt(0); // ptHit.x
+                pw.write(0); // nHitAction
+                pw.writeShort(0); // ptHit.x
+                pw.writeShort(0); // ptHit.y
+            }/* else {
+                pw.write(0);
+                pw.writeShort(0);
+                pw.writeShort(0);
+            }*/
+            pw.write(0); // bGuard
+            pw.writeBool(false); // v36, flag of 1 or 2
         }
-        pw.writeInt(dmg); // result*/
+        pw.writeInt(dmg); // nDelta
 
+        if (dmg < 0) {
+            pw.writeInt(4120002); // thief dodge skill
+        }
 
         if (chr.getField() != null) {
             chr.getField().broadcast(pw.createPacket(), chr);
