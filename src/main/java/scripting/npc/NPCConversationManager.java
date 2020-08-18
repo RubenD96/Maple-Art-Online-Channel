@@ -12,7 +12,9 @@ import net.maple.packets.ConversationPackets;
 import scripting.AbstractPlayerInteraction;
 
 import java.util.AbstractMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 @Getter
@@ -277,5 +279,21 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public void openStorage() {
         openStorage(npcId);
+    }
+
+    public void postRewards(Object rewards) {
+        AbstractMap<String, Object> map = (AbstractMap) rewards;
+
+        int counter = 1;
+        boolean isNull = false;
+        Object exp = map.get("exp");
+        Object mesos = map.get("mesos");
+        Object fame = map.get("fame");
+        Object random = map.get("random");
+
+        AbstractMap items = (AbstractMap) map.get("items");
+        Map<Integer, Integer> readableItemMap = new LinkedHashMap<>();
+        items.values().forEach(pair -> readableItemMap.put((int) ((AbstractMap) pair).get("0"), (int) ((AbstractMap) pair).get("1")));
+        System.out.println(readableItemMap);
     }
 }
