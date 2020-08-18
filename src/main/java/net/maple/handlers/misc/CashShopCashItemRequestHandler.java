@@ -26,6 +26,8 @@ import util.packet.Packet;
 import util.packet.PacketReader;
 import util.packet.PacketWriter;
 
+import java.util.Objects;
+
 import static database.jooq.Tables.ACCOUNTS;
 
 public class CashShopCashItemRequestHandler extends PacketHandler {
@@ -46,10 +48,12 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
         } else if (type == CashItemRequest.MOVE_S_TO_L.getValue()) {
             long id = reader.readLong();
             System.out.println("[MOVE_S_TO_L] " + id);
+        } else if (type == CashItemRequest.FRIENDSHIP.getValue()) {
+            sendOnBuyFriendship(reader, c);
         } else if (type == CashItemRequest.PURCHASE_RECORD.getValue()) {
             // ignore...
         } else {
-            System.err.println("[CashShopCashItemRequestHandler] Unhandled cash item operation " + HexTool.toHex(type) + " (" + type + ")\n " + HexTool.toHex(reader.getData()));
+            System.err.println("[CashShopCashItemRequestHandler] Unhandled cash item operation 0x" + HexTool.toHex(type) + " (" + type + ")\n " + HexTool.toHex(reader.getData()));
         }
     }
 
@@ -114,72 +118,91 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
         return pw.createPacket();
     }
 
-    private static void sendGift(PacketReader reader, Client c) {
-        String spw = reader.readMapleString();
-        System.out.println("spw: " + spw);
-        int sn = reader.readInteger();
-        System.out.println("sn: " + sn);
-        reader.readByte(); // bRequestBuyOneADay
-        String recipient = reader.readMapleString();
-        System.out.println("recipient: " + recipient);
-        String text = reader.readMapleString();
-        System.out.println("text: " + text);
-
+    private static boolean giftChecks(Client c, String spw, String text, int cid) {
         if (!spw.equals(c.getPic())) {
             failRequest(c, 34);
-            return;
+            return false;
         }
         if (text.length() > 73) {
             failRequest(c, 2);
-            return;
-        }
-        int cid = CharacterAPI.getOfflineId(recipient);
-        if (cid == -1) { // player doesn't exist
-            failRequest(c, 28);
-            return;
-        }
-        Character chr = Server.getInstance().getCharacter(cid);
-        int aid = 0;
-        if (chr == null) {
-            aid = AccountAPI.getAccountInfoTemporary(cid).getValue(ACCOUNTS.ID);
-            if (aid == c.getAccId()) {
-                failRequest(c, 6);
-                return;
-            }
+            return false;
         }
 
-        Commodity commodity = CommodityManager.getCommodity(sn);
+        if (cid == -1) { // player doesn't exist
+            failRequest(c, 28);
+            return false;
+        }
+
+        return true;
+    }
+
+    private static boolean commodityBuyChecks(Client c, Commodity commodity, int sn, Character chr, int aid) {
         if (commodity == null) {
             System.err.println("[GIFT] commodity (" + sn + ") is null" + " - " + c.getCharacter().getName());
             failRequest(c, 2);
-            return;
+            return false;
         }
         if (!commodity.isOnSale()) {
             System.err.println("[GIFT] commodity (" + sn + ") is not for sale" + " - " + c.getCharacter().getName());
             failRequest(c, 30);
-            return;
+            return false;
         }
 
         int price = commodity.getPrice();
         if (c.getCash() < price) {
             System.err.println("[GIFT] not enough NX for " + sn + ". Price:" + price + " NX: " + c.getCash() + " - " + c.getCharacter().getName());
             failRequest(c, 3);
-            return;
+            return false;
         }
 
         if (chr != null) {
             if (chr.getClient().getLocker().size() >= 999) {
                 failRequest(c, 10);
-                return;
+                return false;
             }
         } else {
             if (ItemAPI.getLockerSize(aid) >= 999) {
                 failRequest(c, 10);
-                return;
+                return false;
             }
         }
 
-        ItemTemplate template = ItemManager.getItem(commodity.getItemId());
+        return true;
+    }
+
+    private static int getOfflineAccountId(Client c, Character chr, int cid) {
+        int aid;
+        if (chr == null) {
+            aid = AccountAPI.getAccountInfoTemporary(cid).getValue(ACCOUNTS.ID);
+            if (aid == c.getAccId()) {
+                failRequest(c, 6);
+                return -1;
+            }
+        } else {
+            aid = chr.getClient().getAccId();
+        }
+        return aid;
+    }
+
+    private static void sendGift(PacketReader reader, Client c) {
+        String spw = reader.readMapleString();
+        int sn = reader.readInteger();
+        reader.readByte(); // bRequestBuyOneADay
+        String giftTo = reader.readMapleString();
+        String text = reader.readMapleString();
+
+        int cid = CharacterAPI.getOfflineId(giftTo);
+        if (!giftChecks(c, spw, text, cid)) return;
+
+        Character chr = Server.getInstance().getCharacter(cid);
+
+        int aid = getOfflineAccountId(c, chr, cid);
+        if (aid == -1) return;
+
+        Commodity commodity = CommodityManager.getCommodity(sn);
+        if (!commodityBuyChecks(c, commodity, sn, chr, aid)) return;
+
+        ItemTemplate template = ItemManager.getItem(Objects.requireNonNull(commodity).getItemId());
         if (template == null) {
             failRequest(c, 2);
             return;
@@ -198,8 +221,8 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
             ItemAPI.addLockerItem(chr.getClient(), slot);
         }
 
-        c.write(getOnGiftDonePacket(recipient, commodity));
-        c.setCash(c.getCash() - price);
+        c.write(getOnGiftDonePacket(giftTo, commodity));
+        c.setCash(c.getCash() - commodity.getPrice());
         CashShopPackets.sendCashData(c);
     }
 
@@ -305,6 +328,40 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
             c.getCharacter().getWishlist()[i] = sn;
         }
         CashShopPackets.updateWishlist(c);
+    }
+
+    private static void sendOnBuyFriendship(PacketReader reader, Client c) {
+        String spw = reader.readMapleString();
+        if (!spw.equals(c.getPic())) {
+            failRequest(c, 34);
+            return;
+        }
+
+        int cashType = reader.readInteger();
+        if (cashType != 4) {
+            System.err.println("[BUY] invalid cash type " + cashType + " - " + c.getCharacter().getName());
+            failRequest(c, 2);
+            return; // we don't support anything but "NX Prepaid"
+        }
+
+        int sn = reader.readInteger();
+        String giveTo = reader.readMapleString();
+        String text = reader.readMapleString();
+
+        int cid = CharacterAPI.getOfflineId(giveTo);
+        if (!giftChecks(c, spw, text, cid)) return;
+
+        Character chr = Server.getInstance().getCharacter(cid);
+        int aid = getOfflineAccountId(c, chr, cid);
+        if (aid == -1) return;
+
+        Commodity commodity = CommodityManager.getCommodity(sn);
+        if (!commodityBuyChecks(c, commodity, sn, chr, aid)) return;
+
+        System.out.println("spw: " + spw);
+        System.out.println("nCommSN: " + sn);
+        System.out.println("giveTo: " + giveTo);
+        System.out.println("text: " + text);
     }
 
     /**
