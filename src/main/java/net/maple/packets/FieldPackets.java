@@ -1,6 +1,7 @@
 package net.maple.packets;
 
 import client.Character;
+import client.guild.Guild;
 import field.object.FieldObject;
 import field.object.drop.AbstractFieldDrop;
 import field.object.drop.EnterType;
@@ -53,11 +54,13 @@ public class FieldPackets {
         pw.writeMapleString(chr.getName());
 
         // guild
-        pw.writeMapleString("Guild"); // GuildName
-        pw.writeShort(1021); // GuildMarkBg
-        pw.write(14); // GuildMarkBgColor
-        pw.writeShort(4017); // GuildMark
-        pw.write(11); // GuildMarkColor
+        Guild guild = chr.getGuild();
+        pw.writeMapleString(guild == null ? "" : guild.getName());
+        if (guild != null && guild.getMark() != null) {
+            guild.getMark().encode(pw);
+        } else {
+            pw.write(new byte[6]);
+        }
 
         // temp stats
         // masks
