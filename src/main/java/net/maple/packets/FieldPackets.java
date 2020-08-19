@@ -53,11 +53,11 @@ public class FieldPackets {
         pw.writeMapleString(chr.getName());
 
         // guild
-        pw.writeMapleString("");
-        pw.writeShort(0);
-        pw.write(0);
-        pw.writeShort(0);
-        pw.write(0);
+        pw.writeMapleString("Guild"); // GuildName
+        pw.writeShort(1021); // GuildMarkBg
+        pw.write(14); // GuildMarkBgColor
+        pw.writeShort(4017); // GuildMark
+        pw.write(11); // GuildMarkColor
 
         // temp stats
         // masks

@@ -7,6 +7,7 @@ import field.Field;
 import net.database.*;
 import net.maple.SendOpcode;
 import net.maple.handlers.PacketHandler;
+import net.maple.packets.GuildPackets;
 import net.server.MigrateInfo;
 import net.server.Server;
 import org.jooq.Record;
@@ -55,6 +56,7 @@ public class MigrateInHandler extends PacketHandler {
                 FriendAPI.loadPending(chr);
                 chr.getFriendList().sendPendingRequest();
                 chr.loadParty();
+                GuildPackets.loadGuild(chr);
 
                 c.write(initFuncKey(chr));
                 c.write(initQuickslot(chr));

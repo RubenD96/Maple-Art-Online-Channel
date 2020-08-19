@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import net.maple.packets.PartyPackets;
-import net.server.Server;
 import util.packet.Packet;
 import util.packet.PacketWriter;
 
@@ -119,7 +118,7 @@ public class Party {
     public void encodeMembers(PacketWriter pw, List<PartyMember> members, int bossId) {
         members.forEach(m -> pw.writeInt(m.getCid())); // unsigned int adwCharacterID[6]
         members.forEach(m -> {
-            pw.writeString(m.getName(), 13); // char asCharacterName[6][13]
+            pw.writeFixedString(m.getName(), 13); // char asCharacterName[6][13]
         });
         members.forEach(m -> pw.writeInt(m.getJob())); // int anJob[6]
         members.forEach(m -> pw.writeInt(m.getLevel())); // int anLevel[6]

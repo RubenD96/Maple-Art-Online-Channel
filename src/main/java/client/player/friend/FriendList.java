@@ -86,11 +86,11 @@ public class FriendList {
 
     private void encodeGWFriend(PacketWriter pw, String group, int fid, String name, int flag, int channel) {
         pw.writeInt(fid); // dwFriendID
-        pw.writeString(name); // sFriendName
+        pw.writeFixedString(name); // sFriendName
         pw.fill(0x00, 13 - name.length()); // [13]
         pw.write(flag); // nFlag
         pw.writeInt(channel); // nChannelID
-        pw.writeString(group); // sFriendGroup
+        pw.writeFixedString(group); // sFriendGroup
         pw.fill(0x00, 17 - group.length()); // [17]
     }
 

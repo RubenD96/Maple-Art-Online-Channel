@@ -91,7 +91,7 @@ public class ItemPackets {
         pw.write(3);
         encodeBase(item, pw);
 
-        pw.writeString(item.getPetName());
+        pw.writeFixedString(item.getPetName());
         pw.fill(0x00, 13 - item.getPetName().length());
 
         pw.write(item.getLevel());

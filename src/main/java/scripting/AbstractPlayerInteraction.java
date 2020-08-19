@@ -19,6 +19,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import managers.ItemManager;
 import net.maple.packets.CharacterPackets;
+import net.maple.packets.GuildPackets;
 import org.graalvm.collections.Pair;
 import scripting.npc.NPCScriptManager;
 
@@ -184,5 +185,13 @@ public abstract class AbstractPlayerInteraction {
 
     public void openStorage(int npcId) {
         new ItemStorageInteraction(npcId, c.getStorage()).open(getPlayer());
+    }
+
+    public void changeGuildName(String name) {
+        GuildPackets.changeGuildName(getPlayer(), name);
+    }
+
+    public void loadGuild() {
+        GuildPackets.loadGuild(getPlayer());
     }
 }

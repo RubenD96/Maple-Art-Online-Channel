@@ -93,11 +93,11 @@ public abstract class Writer {
         return writeLong(Double.doubleToLongBits(d));
     }
 
-    public final Writer writeString(String s) {
+    public final Writer writeFixedString(String s) {
         return write(s.getBytes(ASCII));
     }
 
-    public final Writer writeString(String s, int size) {
+    public final Writer writeFixedString(String s, int size) {
         write(s.getBytes(ASCII));
         for (int i = 0; i < size - s.length(); i++) {
             write(0x00);
@@ -106,11 +106,11 @@ public abstract class Writer {
     }
 
     public final Writer writeMapleString(String s) {
-        return writeShort(s.length()).writeString(s);
+        return writeShort(s.length()).writeFixedString(s);
     }
 
     public final Writer writeNullTerminatedString(String s) {
-        return writeString(s).write(0);
+        return writeFixedString(s).write(0);
     }
 
     public final Writer writeHex(String s) {

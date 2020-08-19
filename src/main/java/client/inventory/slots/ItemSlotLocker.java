@@ -26,7 +26,7 @@ public class ItemSlotLocker {
         pw.writeInt(item.getTemplateId());
         pw.writeInt(commodityId);
         pw.writeShort(item instanceof ItemSlotBundle ? ((ItemSlotBundle) item).getNumber() : 1);
-        pw.writeString(buyCharacterName, 13);
+        pw.writeFixedString(buyCharacterName, 13);
         pw.writeLong(ItemConstants.PERMANENT); // todo?
         pw.writeInt(paybackRate);
         pw.writeInt(discountRate);

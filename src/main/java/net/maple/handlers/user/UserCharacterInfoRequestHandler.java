@@ -38,10 +38,10 @@ public class UserCharacterInfoRequestHandler extends PacketHandler {
         pw.writeShort(target.getJob());
         pw.writeShort(target.getFame());
 
-        pw.write(0);
+        pw.writeBool(false); // married or not
 
-        pw.writeMapleString("Chronos is");
-        pw.writeMapleString("the best");
+        pw.writeMapleString("Guild");
+        pw.writeMapleString("");
 
         pw.write(0); // pMedalInfo
 
