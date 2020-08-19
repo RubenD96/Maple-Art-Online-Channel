@@ -1,6 +1,7 @@
 package client.guild;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import util.packet.PacketWriter;
 
@@ -10,9 +11,11 @@ import java.util.LinkedHashMap;
 
 @Setter
 @Getter
+@RequiredArgsConstructor
 public class Guild {
 
-    private int id, maxSize;
+    private final int id;
+    private int maxSize, leader;
     private String name, notice;
     private final String[] ranks = new String[5];
     private final HashMap<Integer, GuildMember> members = new LinkedHashMap<>();
@@ -30,7 +33,11 @@ public class Guild {
         members.values().forEach(member -> member.encode(pw));
 
         pw.writeInt(maxSize);
-        mark.encode(pw);
+        if (mark != null) {
+            mark.encode(pw);
+        } else {
+            pw.write(new byte[6]);
+        }
         pw.writeMapleString(notice);
 
         pw.writeInt(0); // Point

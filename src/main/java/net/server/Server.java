@@ -1,6 +1,7 @@
 package net.server;
 
 import client.Character;
+import client.guild.Guild;
 import client.party.Party;
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 import constants.ServerConstants;
@@ -24,6 +25,7 @@ public class Server {
     private final @Getter List<ChannelServer> channels = new ArrayList<>();
     private @Getter final Map<Integer, MigrateInfo> clients = new HashMap<>();
     private @Getter final Map<Integer, Party> parties = new HashMap<>();
+    private @Getter final Map<Integer, Guild> guilds = new HashMap<>();
     private @Getter @Setter List<Integer> shops;
 
     public static Server getInstance() {

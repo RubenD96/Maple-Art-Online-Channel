@@ -56,7 +56,7 @@ public class MigrateInHandler extends PacketHandler {
                 FriendAPI.loadPending(chr);
                 chr.getFriendList().sendPendingRequest();
                 chr.loadParty();
-                GuildPackets.loadGuild(chr);
+                chr.loadGuild();
 
                 c.write(initFuncKey(chr));
                 c.write(initQuickslot(chr));

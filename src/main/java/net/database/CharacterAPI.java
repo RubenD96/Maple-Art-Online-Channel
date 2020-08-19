@@ -191,4 +191,8 @@ public class CharacterAPI {
                     .execute();
         }
     }
+
+    public static Record getCharacterInfo(int id) {
+        return DatabaseCore.getConnection().select().from(CHARACTERS).where(CHARACTERS.ID.eq(id)).fetchOne();
+    }
 }

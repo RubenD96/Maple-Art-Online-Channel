@@ -34,6 +34,7 @@ import lombok.Setter;
 import net.database.*;
 import net.maple.packets.CharacterPackets;
 import net.maple.packets.FieldPackets;
+import net.maple.packets.GuildPackets;
 import net.maple.packets.PartyPackets;
 import net.server.ChannelServer;
 import net.server.Server;
@@ -93,20 +94,6 @@ public class Character extends AbstractFieldLife {
         inventories.put(ItemInventoryType.CASH, new ItemInventory((short) 96));
 
         friendList = new FriendList(this);
-        guild = new Guild();
-        guild.setId(1);
-        guild.setName("Guild");
-        guild.setMaxSize(100);
-        guild.setMark(new GuildMark((short) 1021, (short) 4017, (byte) 14, (byte) 11));
-        guild.setNotice("Welcome to Guild :)");
-
-        guild.getRanks()[0] = "Leader";
-        guild.getRanks()[1] = "Leader";
-        guild.getRanks()[2] = "Leader";
-        guild.getRanks()[3] = "Leader";
-        guild.getRanks()[4] = "Leader";
-
-        guild.getMembers().put(id, new GuildMember(name, job.getValue(), level, 1, 0, 0, true));
     }
 
     public void resetQuickSlot() {
@@ -359,6 +346,19 @@ public class Character extends AbstractFieldLife {
                 member.setCharacter(this);
                 member.loadParty(party);
             }
+        }
+    }
+
+    public void loadGuild() {
+        int gid = GuildAPI.getGuildId(this);
+        if (gid != -1) {
+            Guild guild = GuildAPI.load(gid);
+            if (guild == null) {
+                client.close(this, "Guild is null after database retrieval gid: " + gid);
+            }
+
+            this.guild = guild;
+            GuildPackets.loadGuild(this);
         }
     }
 
