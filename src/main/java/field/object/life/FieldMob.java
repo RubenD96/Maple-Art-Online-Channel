@@ -10,7 +10,6 @@ import client.player.quest.Quest;
 import client.player.quest.QuestState;
 import field.object.FieldObjectType;
 import field.object.drop.AbstractFieldDrop;
-import field.object.drop.EnterType;
 import field.object.drop.ItemDrop;
 import field.object.drop.MesoDrop;
 import lombok.Getter;

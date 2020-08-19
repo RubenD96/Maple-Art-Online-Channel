@@ -9,10 +9,7 @@ import field.object.FieldObjectType;
 import field.object.Foothold;
 import field.object.drop.AbstractFieldDrop;
 import field.object.drop.EnterType;
-import field.object.life.FieldControlledObject;
-import field.object.life.FieldMob;
-import field.object.life.FieldMobSpawnPoint;
-import field.object.life.FieldMobTemplate;
+import field.object.life.*;
 import field.object.portal.FieldPortal;
 import field.object.portal.PortalType;
 import lombok.Data;
@@ -96,6 +93,8 @@ public class Field {
                     .forEach(o -> {
                         if (o instanceof AbstractFieldDrop) {
                             enterItemDrop((AbstractFieldDrop) o, o.getEnterFieldPacket());
+                        } else if (o instanceof FieldMob) {
+                            chr.write(((FieldMob) o).getEnterFieldPacket(MobSummonType.NORMAL));
                         } else {
                             chr.write(o.getEnterFieldPacket());
                         }
