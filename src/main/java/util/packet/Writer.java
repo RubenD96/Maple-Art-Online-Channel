@@ -93,7 +93,7 @@ public abstract class Writer {
         return writeLong(Double.doubleToLongBits(d));
     }
 
-    public final Writer writeFixedString(String s) {
+    private final Writer writeFixedString(String s) {
         return write(s.getBytes(ASCII));
     }
 

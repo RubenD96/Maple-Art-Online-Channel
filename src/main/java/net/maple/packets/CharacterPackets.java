@@ -161,8 +161,7 @@ public class CharacterPackets {
 
     private static void encodeStats(final PacketWriter pw, Character chr) {
         pw.writeInt(chr.getId()); // character id
-        pw.writeFixedString(chr.getName());
-        pw.fill(0x00, 13 - chr.getName().length());
+        pw.writeFixedString(chr.getName(), 13);
         pw.write(chr.getGender());
         pw.write(chr.getSkinColor()); // skin color
         pw.writeInt(chr.getFace()); // face
