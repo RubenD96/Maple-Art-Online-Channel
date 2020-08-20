@@ -3,6 +3,7 @@ package client.guild;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import util.packet.Packet;
 import util.packet.PacketWriter;
 
 import java.util.Arrays;
@@ -49,5 +50,11 @@ public class Guild {
             pw.writeInt(k);
             v.encode(pw);
         });
+    }
+
+    public void broadcast(Packet packet) {
+        members.values().stream()
+                .filter(GuildMember::isOnline)
+                .forEach(member -> member.getCharacter().write(packet.clone()));
     }
 }

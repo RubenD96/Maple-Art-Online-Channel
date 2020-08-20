@@ -1,7 +1,9 @@
 package net.maple.packets;
 
 import client.Character;
+import client.guild.Guild;
 import net.maple.SendOpcode;
+import util.packet.Packet;
 import util.packet.PacketWriter;
 
 public class GuildPackets {
@@ -29,17 +31,15 @@ public class GuildPackets {
         chr.getField().broadcast(pw.createPacket(), chr);
     }
 
-    public static void loadGuild(Character chr) {
-        if (chr.getGuild() == null) return;
-
+    public static Packet getLoadGuildPacket(Guild guild) {
         PacketWriter pw = new PacketWriter(32);
 
         pw.writeHeader(SendOpcode.GUILD_RESULT);
         pw.writeByte(GuildRes.LOAD_GUILD_DONE);
         pw.writeBool(true);
-        chr.getGuild().encode(pw);
+        guild.encode(pw);
 
-        chr.write(pw.createPacket());
+        return pw.createPacket();
     }
 
     public static void expel(Character chr) {

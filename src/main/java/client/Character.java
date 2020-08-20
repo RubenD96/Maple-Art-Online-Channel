@@ -355,10 +355,13 @@ public class Character extends AbstractFieldLife {
             Guild guild = GuildAPI.load(gid);
             if (guild == null) {
                 client.close(this, "Guild is null after database retrieval gid: " + gid);
+                return;
             }
 
+            guild.getMembers().get(id).setCharacter(this);
+            guild.getMembers().get(id).setOnline(true);
             this.guild = guild;
-            GuildPackets.loadGuild(this);
+            guild.broadcast(GuildPackets.getLoadGuildPacket(guild));
         }
     }
 

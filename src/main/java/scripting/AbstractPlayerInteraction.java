@@ -192,6 +192,7 @@ public abstract class AbstractPlayerInteraction {
     }
 
     public void loadGuild() {
-        GuildPackets.loadGuild(getPlayer());
+        if (getPlayer().getGuild() == null) return;
+        c.write(GuildPackets.getLoadGuildPacket(getPlayer().getGuild()));
     }
 }

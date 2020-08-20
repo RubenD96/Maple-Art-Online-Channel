@@ -2,6 +2,7 @@ package client.guild;
 
 import client.Character;
 import lombok.Getter;
+import lombok.Setter;
 import net.database.CharacterAPI;
 import net.server.Server;
 import org.jooq.Record;
@@ -11,11 +12,13 @@ import static database.jooq.Tables.CHARACTERS;
 import static database.jooq.Tables.GUILDMEMBERS;
 
 @Getter
+@Setter
 public class GuildMember {
 
     private String name;
     private int job, level, grade, commitment, allianceGrade;
     private boolean online;
+    private Character character;
 
     public GuildMember(String name, int job, int level, int grade, int commitment, int allianceGrade, boolean online) {
         this.name = name;
@@ -36,6 +39,7 @@ public class GuildMember {
             this.job = chr.getJob().getId();
             this.level = chr.getLevel();
             this.online = true;
+            this.character = chr;
         } else {
             Record info = CharacterAPI.getCharacterInfo(id);
             this.name = info.getValue(CHARACTERS.NAME);

@@ -10,6 +10,7 @@ import io.netty.util.concurrent.ScheduledFuture;
 import lombok.Getter;
 import lombok.Setter;
 import net.maple.packets.ConnectionPackets;
+import net.maple.packets.GuildPackets;
 import net.maple.packets.PartyPackets;
 import net.netty.NettyClient;
 import net.server.ChannelServer;
@@ -90,6 +91,10 @@ public class Client extends NettyClient {
                 Field field = character.getField();
                 if (field != null) {
                     field.leave(character);
+                }
+                if (character.getGuild() != null) {
+                    character.getGuild().getMembers().get(character.getId()).setOnline(false);
+                    character.getGuild().broadcast(GuildPackets.getLoadGuildPacket(character.getGuild()));
                 }
                 notifyPartyLogout();
                 character.getFriendList().notifyMutualFriends();
