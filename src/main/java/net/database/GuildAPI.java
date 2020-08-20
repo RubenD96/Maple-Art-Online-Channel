@@ -46,6 +46,20 @@ public class GuildAPI {
     }
 
     /**
+     * Expel a member based on guild object and characterid
+     *
+     * @param guild The guild to expel from
+     * @param cid   Character id
+     */
+    public static void expel(Guild guild, int cid) {
+        DatabaseCore.getConnection()
+                .deleteFrom(GUILDMEMBERS)
+                .where(GUILDMEMBERS.GID.eq(guild.getId()))
+                .and(GUILDMEMBERS.CID.eq(cid))
+                .execute();
+    }
+
+    /**
      * Loads all guild information from the database and stores it into java objects
      *
      * @param id id of the guild to load
@@ -111,6 +125,14 @@ public class GuildAPI {
                 .set(GUILDS.RANK4, guild.getRanks()[3])
                 .set(GUILDS.RANK5, guild.getRanks()[4])
                 .set(GUILDS.LEADER, guild.getLeader())
+                .execute();
+    }
+
+    public static void updateMemberGrade(int cid, byte grade) {
+        DatabaseCore.getConnection()
+                .update(GUILDMEMBERS)
+                .set(GUILDMEMBERS.GRADE, grade)
+                .where(GUILDMEMBERS.CID.eq(cid))
                 .execute();
     }
 

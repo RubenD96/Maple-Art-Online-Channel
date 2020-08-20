@@ -92,9 +92,10 @@ public class Client extends NettyClient {
                 if (field != null) {
                     field.leave(character);
                 }
-                if (character.getGuild() != null) {
+                if (character.getGuild() != null && (!Server.getInstance().getClients().get(accId).isCashShop() || character.isInCashShop())) {
                     character.getGuild().getMembers().get(character.getId()).setOnline(false);
                     character.getGuild().broadcast(GuildPackets.getLoadGuildPacket(character.getGuild()));
+                    GuildPackets.notifyLoginLogout(character.getGuild(), character, false);
                 }
                 notifyPartyLogout();
                 character.getFriendList().notifyMutualFriends();

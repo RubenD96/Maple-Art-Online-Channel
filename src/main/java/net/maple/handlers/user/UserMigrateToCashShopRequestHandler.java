@@ -5,6 +5,7 @@ import client.Client;
 import net.maple.SendOpcode;
 import net.maple.handlers.PacketHandler;
 import net.maple.packets.CashShopPackets;
+import net.server.Server;
 import util.packet.Packet;
 import util.packet.PacketReader;
 import util.packet.PacketWriter;
@@ -19,6 +20,7 @@ public class UserMigrateToCashShopRequestHandler extends PacketHandler {
             if (!chr.isInCashShop()) {
                 chr.save();
                 chr.setInCashShop(true);
+                Server.getInstance().getClients().get(c.getAccId()).setCashShop(true);
                 CashShopPackets.sendSetCashShop(c);
                 chr.getField().leave(chr);
                 chr.setField(null);

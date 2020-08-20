@@ -1,5 +1,6 @@
 package client.guild;
 
+import client.Character;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -52,9 +53,19 @@ public class Guild {
         });
     }
 
-    public void broadcast(Packet packet) {
+    public synchronized void broadcast(Packet packet) {
+        broadcast(packet, null);
+    }
+
+    public synchronized void broadcast(Packet packet, Character ignored) {
         members.values().stream()
                 .filter(GuildMember::isOnline)
+                .filter(GuildMember::hasCharacter)
+                .filter(member -> member.getCharacter() != ignored)
                 .forEach(member -> member.getCharacter().write(packet.clone()));
+    }
+
+    public synchronized void addMember(Character chr) {
+        members.put(chr.getId(), new GuildMember(chr));
     }
 }

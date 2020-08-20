@@ -68,7 +68,7 @@ public class Character extends AbstractFieldLife {
     Map<Integer, KeyBinding> keyBindings = new HashMap<>();
     final int[] quickSlotKeys = new int[8];
     Integer portableChair = null;
-    private byte portal = -1;
+    byte portal = -1;
     List<FieldControlledObject> controlledObjects = new ArrayList<>();
     Map<ItemInventoryType, ItemInventory> inventories = new HashMap<>();
     FriendList friendList;
@@ -82,6 +82,7 @@ public class Character extends AbstractFieldLife {
     NPCShop npcShop = null;
     ItemStorageInteraction activeStorage = null;
     Guild guild;
+    Set<String> guildInvitesSent = new HashSet<>();
 
     public void init() {
         portal = (byte) spawnpoint;
@@ -361,7 +362,6 @@ public class Character extends AbstractFieldLife {
             guild.getMembers().get(id).setCharacter(this);
             guild.getMembers().get(id).setOnline(true);
             this.guild = guild;
-            guild.broadcast(GuildPackets.getLoadGuildPacket(guild));
         }
     }
 

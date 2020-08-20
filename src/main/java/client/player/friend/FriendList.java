@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import net.database.CharacterAPI;
 import net.database.FriendAPI;
 import net.maple.SendOpcode;
-import net.maple.handlers.misc.FriendRequestHandler;
+import net.maple.handlers.group.FriendRequestHandler;
 import net.server.Server;
 import org.jooq.Record;
 import util.packet.Packet;

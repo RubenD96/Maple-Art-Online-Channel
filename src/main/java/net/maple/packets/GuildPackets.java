@@ -2,9 +2,14 @@ package net.maple.packets;
 
 import client.Character;
 import client.guild.Guild;
+import client.guild.GuildMark;
+import client.guild.GuildMember;
+import database.jooq.tables.Guildmembers;
 import net.maple.SendOpcode;
 import util.packet.Packet;
 import util.packet.PacketWriter;
+
+import java.util.Arrays;
 
 public class GuildPackets {
 
@@ -18,15 +23,19 @@ public class GuildPackets {
         chr.getField().broadcast(pw.createPacket(), chr);
     }
 
-    public static void changeGuildMark(Character chr) {
+    public static void changeGuildMark(Character chr, GuildMark mark) {
         PacketWriter pw = new PacketWriter(8);
 
         pw.writeHeader(SendOpcode.USER_GUILD_MARK_CHANGED);
         pw.writeInt(chr.getId());
-        pw.writeShort(0); // bg
-        pw.write(0); // bg color
-        pw.writeShort(0); // mark
-        pw.write(0); // mark color
+        if (mark != null) {
+            pw.writeShort(mark.getMarkBg());
+            pw.write(mark.getMarkBgColor());
+            pw.writeShort(mark.getMark());
+            pw.write(mark.getMarkColor());
+        } else {
+            pw.write(new byte[6]);
+        }
 
         chr.getField().broadcast(pw.createPacket(), chr);
     }
@@ -50,6 +59,105 @@ public class GuildPackets {
         pw.writeBool(false);
 
         chr.write(pw.createPacket());
+    }
+
+    public static Packet getJoinGuildPacket(Guild guild, Character chr) {
+        PacketWriter pw = new PacketWriter(32);
+
+        pw.writeHeader(SendOpcode.GUILD_RESULT);
+        pw.writeByte(GuildRes.JOIN_GUILD_DONE);
+
+        pw.writeInt(guild.getId());
+        pw.writeInt(chr.getId());
+        guild.getMembers().get(chr.getId()).encode(pw);
+
+        return pw.createPacket();
+    }
+
+    public static void sendInvite(Guild guild, Character invited, Character inviter) {
+        PacketWriter pw = new PacketWriter(24);
+
+        pw.writeHeader(SendOpcode.GUILD_RESULT);
+        pw.writeByte(GuildReq.INVITE_GUILD);
+
+        pw.writeInt(guild.getId());
+        pw.writeMapleString(inviter.getName());
+        pw.writeInt(inviter.getLevel());
+        pw.writeInt(inviter.getJob());
+
+        invited.write(pw.createPacket());
+    }
+
+    public static void message(Character receiver, byte message) {
+        PacketWriter pw = new PacketWriter(3);
+
+        pw.writeHeader(SendOpcode.GUILD_RESULT);
+        pw.writeByte(message);
+
+        receiver.write(pw.createPacket());
+    }
+
+    public static void notifyLoginLogout(Guild guild, Character chr, boolean online) {
+        PacketWriter pw = new PacketWriter(12);
+
+        pw.writeHeader(SendOpcode.GUILD_RESULT);
+        pw.write(GuildRes.NOTIFY_LOGIN_OR_LOGOUT);
+
+        pw.writeInt(guild.getId());
+        pw.writeInt(chr.getId());
+        pw.writeBool(online);
+
+        guild.broadcast(pw.createPacket(), chr);
+    }
+
+    public static void leave(Guild guild, int cid, String name, byte message) {
+        PacketWriter pw = new PacketWriter(16);
+
+        pw.writeHeader(SendOpcode.GUILD_RESULT);
+        pw.write(message);
+
+        pw.writeInt(guild.getId());
+        pw.writeInt(cid);
+        pw.writeMapleString(name);
+
+        guild.broadcast(pw.createPacket());
+    }
+
+    public static void setNotice(Guild guild, String notice) {
+        PacketWriter pw = new PacketWriter(16);
+
+        pw.writeHeader(SendOpcode.GUILD_RESULT);
+        pw.write(GuildRes.SET_NOTICE_DONE);
+
+        pw.writeInt(guild.getId());
+        pw.writeMapleString(notice);
+
+        guild.broadcast(pw.createPacket());
+    }
+
+    public static void setMemberGrade(Guild guild, int cid, byte grade) {
+        PacketWriter pw = new PacketWriter(12);
+
+        pw.writeHeader(SendOpcode.GUILD_RESULT);
+        pw.write(GuildRes.SET_MEMBER_GRADE_DONE);
+
+        pw.writeInt(guild.getId());
+        pw.writeInt(cid);
+        pw.write(grade);
+
+        guild.broadcast(pw.createPacket());
+    }
+
+    public static void setGradeNames(Guild guild) {
+        PacketWriter pw = new PacketWriter(16);
+
+        pw.writeHeader(SendOpcode.GUILD_RESULT);
+        pw.write(GuildRes.SET_GRADE_NAME_DONE);
+
+        pw.writeInt(guild.getId());
+        Arrays.stream(guild.getRanks()).forEach(pw::writeMapleString);
+
+        guild.broadcast(pw.createPacket());
     }
 
     public static final class GuildReq {

@@ -13,6 +13,7 @@ public class MigrateInfo {
     private @NonNull int aid, channel;
     private @NonNull String ip;
     private int cid;
+    private boolean cashShop;
 
     @Override
     public String toString() {
@@ -21,6 +22,7 @@ public class MigrateInfo {
                 ", channel=" + channel +
                 ", ip='" + ip + '\'' +
                 ", cid=" + cid +
+                ", cashShop=" + cashShop +
                 '}';
     }
 }

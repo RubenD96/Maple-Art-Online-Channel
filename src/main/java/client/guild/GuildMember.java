@@ -20,16 +20,24 @@ public class GuildMember {
     private boolean online;
     private Character character;
 
-    public GuildMember(String name, int job, int level, int grade, int commitment, int allianceGrade, boolean online) {
-        this.name = name;
-        this.job = job;
-        this.level = level;
-        this.grade = grade;
-        this.commitment = commitment;
-        this.allianceGrade = allianceGrade;
-        this.online = online;
+    /**
+     * Used for in-game guild invites
+     */
+    public GuildMember(Character chr) {
+        this.name = chr.getName();
+        this.job = chr.getJob().getId();
+        this.level = chr.getLevel();
+        this.grade = 5;
+        this.commitment = 0;
+        this.allianceGrade = 5;
+        this.online = true;
+        this.character = chr;
     }
 
+    /**
+     * Used for DB load
+     * @param rec SQL info
+     */
     public GuildMember(Record rec) {
         int id = rec.getValue(GUILDMEMBERS.CID);
 
@@ -61,5 +69,13 @@ public class GuildMember {
         pw.writeInt(online ? 1 : 0); // 29
         pw.writeInt(commitment); // 33
         pw.writeInt(allianceGrade); // 37
+    }
+
+    /**
+     * For use of method reference
+     * @return True if character is set, false if not
+     */
+    public boolean hasCharacter() {
+        return character != null;
     }
 }

@@ -2,6 +2,7 @@ package net.maple;
 
 import net.maple.handlers.DoNothingHandler;
 import net.maple.handlers.PacketHandler;
+import net.maple.handlers.group.*;
 import net.maple.handlers.misc.*;
 import net.maple.handlers.mob.MobApplyCtrlHandler;
 import net.maple.handlers.mob.MobMoveHandler;
@@ -67,6 +68,8 @@ public final class PacketProcessor {
         handlers.put(RecvOpcode.GROUP_MESSAGE, new GroupMessageHandler());
         handlers.put(RecvOpcode.PARTY_REQUEST, new PartyRequestHandler());
         handlers.put(RecvOpcode.PARTY_RESULT, new PartyResultHandler());
+        handlers.put(RecvOpcode.GUILD_REQUEST, new GuildRequestHandler());
+        handlers.put(RecvOpcode.GUILD_RESULT, new GuildResultHandler());
         handlers.put(RecvOpcode.ADMIN, new AdminVerificationHandler());
         handlers.put(RecvOpcode.FRIEND_REQUEST, new FriendRequestHandler());
         handlers.put(RecvOpcode.USER_MIGRATE_TO_ITC_REQUEST, new UserMigrateToITCRequestHandler());
@@ -89,5 +92,6 @@ public final class PacketProcessor {
         handlers.put(RecvOpcode.UPDATE_SCREEN_SETTING, doNothing);
         handlers.put(RecvOpcode.REQUIRE_FIELD_OBSTACLE_STATUS, doNothing);
         handlers.put(RecvOpcode.CANCEL_INVITE_PARTY_MATCH, doNothing);
+        handlers.put(RecvOpcode.PASSIVE_SKILL_INFO_UPDATE, doNothing);
     }
 }

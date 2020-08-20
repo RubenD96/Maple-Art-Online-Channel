@@ -27,6 +27,11 @@ public class MigrateInHandler extends PacketHandler {
             Record accInfo = AccountAPI.getAccountInfoTemporary(cid);
 
             MigrateInfo mi = Server.getInstance().getClients().get(accInfo.getValue(ACCOUNTS.ID));
+            if (mi == null) {
+                c.close(this, "Channel reset");
+                return;
+            }
+
             if (mi.getIp().equals(c.getIP())) {
                 //Server.getInstance().getClients().remove(accInfo.getValue(ACCOUNTS.ID));
                 c.login(accInfo, mi);
@@ -45,6 +50,7 @@ public class MigrateInHandler extends PacketHandler {
                     chr.addTown(100);
                 }
 
+                chr.loadGuild();
                 Field field = c.getWorldChannel().getFieldManager().getField(chr.getFieldId());
                 if (field == null) {
                     System.err.println("Invalid field id upon migrate " + chr.getFieldId());
@@ -56,10 +62,16 @@ public class MigrateInHandler extends PacketHandler {
                 FriendAPI.loadPending(chr);
                 chr.getFriendList().sendPendingRequest();
                 chr.loadParty();
-                chr.loadGuild();
+                if (chr.getGuild() != null) {
+                    c.write(GuildPackets.getLoadGuildPacket(chr.getGuild()));
+                    if (!mi.isCashShop()) {
+                        GuildPackets.notifyLoginLogout(chr.getGuild(), chr, true);
+                    }
+                }
 
                 c.write(initFuncKey(chr));
                 c.write(initQuickslot(chr));
+                mi.setCashShop(false);
             } else {
                 c.close(this, "IP mismatch");
             }
