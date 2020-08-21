@@ -1,4 +1,4 @@
-package client.guild;
+package world.guild;
 
 import client.Character;
 import lombok.Getter;

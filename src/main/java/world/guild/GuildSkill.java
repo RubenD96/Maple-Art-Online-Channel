@@ -1,4 +1,4 @@
-package client.guild;
+package world.guild;
 
 import lombok.RequiredArgsConstructor;
 import util.packet.PacketWriter;

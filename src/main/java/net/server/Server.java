@@ -1,7 +1,7 @@
 package net.server;
 
 import client.Character;
-import client.guild.Guild;
+import world.guild.Guild;
 import client.party.Party;
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 import constants.ServerConstants;
@@ -12,6 +12,7 @@ import net.database.CharacterAPI;
 import net.database.DatabaseCore;
 import net.database.ShopAPI;
 import util.crypto.MapleAESOFB;
+import world.ranking.RankingKeeper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -65,6 +66,7 @@ public class Server {
 
         // the first script engine takes a few sec to load, all subsequent engines are hella fast
         GraalJSScriptEngine.create();
+        RankingKeeper.getInstance().updateAllRankings();
 
         // benchmark();
     }

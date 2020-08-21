@@ -1,7 +1,7 @@
 package net.maple.packets;
 
 import client.Character;
-import client.guild.Guild;
+import world.guild.Guild;
 import field.object.FieldObject;
 import field.object.drop.AbstractFieldDrop;
 import field.object.drop.EnterType;

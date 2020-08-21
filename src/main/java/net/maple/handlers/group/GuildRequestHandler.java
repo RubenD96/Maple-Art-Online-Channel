@@ -2,8 +2,8 @@ package net.maple.handlers.group;
 
 import client.Character;
 import client.Client;
-import client.guild.Guild;
-import client.guild.GuildMember;
+import world.guild.Guild;
+import world.guild.GuildMember;
 import client.messages.broadcast.types.AlertMessage;
 import client.messages.broadcast.types.EventMessage;
 import net.database.GuildAPI;

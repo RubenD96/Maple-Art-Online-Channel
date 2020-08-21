@@ -1,9 +1,9 @@
 package net.database;
 
 import client.Character;
-import client.guild.Guild;
-import client.guild.GuildMark;
-import client.guild.GuildMember;
+import world.guild.Guild;
+import world.guild.GuildMark;
+import world.guild.GuildMember;
 import net.server.Server;
 import org.jooq.DSLContext;
 import org.jooq.Record;

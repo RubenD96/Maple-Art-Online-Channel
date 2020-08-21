@@ -1,8 +1,8 @@
 package client;
 
-import client.guild.Guild;
-import client.guild.GuildMark;
-import client.guild.GuildMember;
+import world.guild.Guild;
+import world.guild.GuildMark;
+import world.guild.GuildMember;
 import client.interaction.shop.NPCShop;
 import client.interaction.storage.ItemStorageInteraction;
 import client.inventory.ItemInventory;
@@ -34,7 +34,6 @@ import lombok.Setter;
 import net.database.*;
 import net.maple.packets.CharacterPackets;
 import net.maple.packets.FieldPackets;
-import net.maple.packets.GuildPackets;
 import net.maple.packets.PartyPackets;
 import net.server.ChannelServer;
 import net.server.Server;

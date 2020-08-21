@@ -1,10 +1,9 @@
 package net.maple.packets;
 
 import client.Character;
-import client.guild.Guild;
-import client.guild.GuildMark;
-import client.guild.GuildMember;
-import database.jooq.tables.Guildmembers;
+import world.guild.Guild;
+import world.guild.GuildMark;
+import world.guild.GuildMember;
 import net.maple.SendOpcode;
 import util.packet.Packet;
 import util.packet.PacketWriter;
