@@ -9,7 +9,10 @@ import lombok.Setter;
 import managers.MobManager;
 import net.database.DropAPI;
 import net.maple.packets.ConversationPackets;
+import net.server.Server;
 import scripting.AbstractPlayerInteraction;
+import world.ranking.PlayerRanking;
+import world.ranking.RankingKeeper;
 
 import java.util.AbstractMap;
 import java.util.LinkedHashMap;
@@ -295,5 +298,9 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         Map<Integer, Integer> readableItemMap = new LinkedHashMap<>();
         items.values().forEach(pair -> readableItemMap.put((int) ((AbstractMap) pair).get("0"), (int) ((AbstractMap) pair).get("1")));
         System.out.println(readableItemMap);
+    }
+
+    public RankingKeeper getRankings() {
+        return RankingKeeper.getInstance();
     }
 }

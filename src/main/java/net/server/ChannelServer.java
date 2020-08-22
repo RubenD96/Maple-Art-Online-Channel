@@ -19,6 +19,7 @@ import managers.FieldManager;
 import net.netty.PacketDecoder;
 import net.netty.PacketEncoder;
 import net.netty.ServerHandler;
+import timers.DelayRepeatTimer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,8 +44,9 @@ public class ChannelServer extends Thread {
         COMMAND_LIST.add(new ArrayList<>());
         refreshCommandList();
         characters = new HashMap<>();
-        new MobSpawner().start();
-        new ItemClearer().start();
+
+        new DelayRepeatTimer(5000, getMobRespawn());
+        new DelayRepeatTimer(10000, getItemClear());
     }
 
     public synchronized Character getCharacter(String name) {
@@ -63,38 +65,16 @@ public class ChannelServer extends Thread {
         characters.remove(chr.getId());
     }
 
-    public class MobSpawner extends Thread {
-
-        @Override
-        public void run() {
-            try {
-                Thread.sleep(5000);
-                fieldManager.getFields().values().forEach(field -> {
-                    if (!field.getObjects(FieldObjectType.CHARACTER).isEmpty()) {
-                        field.respawn();
-                    }
-                });
-            } catch (InterruptedException ie) {
-                ie.printStackTrace();
-            } finally {
-                run();
+    private Runnable getMobRespawn() {
+        return () -> fieldManager.getFields().values().forEach(field -> {
+            if (!field.getObjects(FieldObjectType.CHARACTER).isEmpty()) {
+                field.respawn();
             }
-        }
+        });
     }
 
-    public class ItemClearer extends Thread {
-
-        @Override
-        public void run() {
-            try {
-                Thread.sleep(10000);
-                fieldManager.getFields().values().forEach(Field::removeExpiredDrops);
-            } catch (InterruptedException ie) {
-                ie.printStackTrace();
-            } finally {
-                run();
-            }
-        }
+    private Runnable getItemClear() {
+        return () -> fieldManager.getFields().values().forEach(Field::removeExpiredDrops);
     }
 
     @Override

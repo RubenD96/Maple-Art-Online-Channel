@@ -1,7 +1,6 @@
 package net.server;
 
 import client.Character;
-import world.guild.Guild;
 import client.party.Party;
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine;
 import constants.ServerConstants;
@@ -11,7 +10,9 @@ import managers.*;
 import net.database.CharacterAPI;
 import net.database.DatabaseCore;
 import net.database.ShopAPI;
+import timers.RepeatDelayTimer;
 import util.crypto.MapleAESOFB;
+import world.guild.Guild;
 import world.ranking.RankingKeeper;
 
 import java.io.File;
@@ -34,6 +35,16 @@ public class Server {
             instance = new Server();
         }
         return instance;
+    }
+
+    private Server() {
+        MapleAESOFB.initialize(ServerConstants.VERSION);
+        new DatabaseCore();
+        run();
+
+        // the first script engine takes a few sec to load, all subsequent engines are hella fast
+        GraalJSScriptEngine.create();
+        new RepeatDelayTimer(1800000, () -> RankingKeeper.getInstance().updateAllRankings());
     }
 
     public Character getCharacter(int id) {
@@ -60,15 +71,7 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        MapleAESOFB.initialize(ServerConstants.VERSION);
-        new DatabaseCore();
-        getInstance().run();
-
-        // the first script engine takes a few sec to load, all subsequent engines are hella fast
-        GraalJSScriptEngine.create();
-        RankingKeeper.getInstance().updateAllRankings();
-
-        // benchmark();
+        getInstance();
     }
 
     private static void benchmark() {
