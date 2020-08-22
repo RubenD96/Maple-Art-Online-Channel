@@ -11,7 +11,7 @@ public class FixedRepetitionDelayTimer extends BaseTimer {
         super(time, runnable);
         if (n < 2) {
             this.n = 0; // run() will be called, but it won't execute the Runnable
-            System.err.println("[FixedRepetitionDelayTimer] N("+n+") should be 2 or higher, use DelayTimer instead.");
+            System.err.println("[FixedRepetitionDelayTimer] N(" + n + ") should be 2 or higher, use DelayTimer instead.");
             return;
         }
         this.n = n;
@@ -28,7 +28,9 @@ public class FixedRepetitionDelayTimer extends BaseTimer {
         } catch (InterruptedException ie) {
             ie.printStackTrace();
         } finally {
-            run();
+            if (n != 0) {
+                run();
+            }
         }
     }
 }
