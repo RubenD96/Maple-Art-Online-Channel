@@ -1,6 +1,8 @@
 package world.ranking;
 
+import field.object.life.FieldMobTemplate;
 import lombok.Getter;
+import managers.MobManager;
 import net.database.RankingAPI;
 
 import java.util.*;
@@ -18,6 +20,7 @@ public class RankingKeeper {
     private List<PlayerRanking> hardcore = new ArrayList<>();
     private List<PlayerRanking> killCount = new ArrayList<>();
     private final Map<Integer, List<PlayerRanking>> mobKills = new LinkedHashMap<>();
+    private final Map<Integer, List<PlayerRanking>> bossKills = new LinkedHashMap<>();
     // todo playtime
     // todo mastery
     // todo bosses
@@ -25,14 +28,16 @@ public class RankingKeeper {
 
     // selection lists
     private final Set<Integer> mobs = new HashSet<>();
+    private final Set<Integer> bosses = new HashSet<>();
 
     private RankingKeeper() {
     }
 
     /**
      * For script use
+     *
      * @param players List of players to check in
-     * @param name Name to check for
+     * @param name    Name to check for
      * @return PlayerRanking object including the rank, or null if it doesn't exist
      */
     public AbstractMap.SimpleEntry<Integer, PlayerRanking> getRankByName(List<PlayerRanking> players, String name) {
@@ -69,6 +74,7 @@ public class RankingKeeper {
             updateHardcoreRanking();
             updateKillCountRanking();
             updateMobKillsRanking();
+            updateBossKillsRanking();
             updating = false;
             System.out.println("[RankingKeeper] All rankings have been updated!");
         }
@@ -95,15 +101,33 @@ public class RankingKeeper {
 
     private void updateMobKillsRanking() {
         List<PlayerRanking> players = new ArrayList<>(characterData.values());
-        players.forEach(player -> mobs.addAll(player.getMobKills().keySet()));
-        mobs.forEach(this::updateMobKillsRanking);
+        players.forEach(player -> mobs.addAll(player.getMobKills()
+                .keySet().stream()
+                .filter(mob -> {
+                    FieldMobTemplate template = MobManager.getMob(mob);
+                    if (template == null) return false;
+                    return !template.isBoss();
+                }).collect(Collectors.toList())));
+        mobs.forEach(mob -> updateMobKillsRanking(mobKills, mob));
     }
 
-    private void updateMobKillsRanking(int id) {
+    private void updateBossKillsRanking() {
+        List<PlayerRanking> players = new ArrayList<>(characterData.values());
+        players.forEach(player -> bosses.addAll(player.getMobKills()
+                .keySet().stream()
+                .filter(mob -> {
+                    FieldMobTemplate template = MobManager.getMob(mob);
+                    if (template == null) return false;
+                    return template.isBoss();
+                }).collect(Collectors.toList())));
+        bosses.forEach(mob -> updateMobKillsRanking(bossKills, mob));
+    }
+
+    private void updateMobKillsRanking(Map<Integer, List<PlayerRanking>> list, int id) {
         List<PlayerRanking> players = characterData.values().stream()
                 .filter(playerRanking -> playerRanking.getMobKills().get(id) != null)
                 .sorted((p1, p2) -> p2.getMobKills().get(id).compareTo(p1.getMobKills().get(id)))
                 .collect(Collectors.toList());
-        mobKills.put(id, players); // override old data
+        list.put(id, players); // override old data
     }
 }

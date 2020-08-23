@@ -21,6 +21,7 @@ public class FieldMobTemplate {
 
     private short level;
     private int exp, maxHP, maxMP;
+    private boolean boss;
 
     @Override
     public String toString() {
@@ -32,6 +33,7 @@ public class FieldMobTemplate {
                 ", exp=" + exp +
                 ", maxHP=" + maxHP +
                 ", maxMP=" + maxMP +
+                ", boss=" + boss +
                 '}';
     }
 }

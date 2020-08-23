@@ -14,10 +14,13 @@ import client.messages.broadcast.types.AlertMessage;
 import client.messages.broadcast.types.NoticeWithoutPrefixMessage;
 import client.messages.quest.PerformQuestRecordMessage;
 import client.player.quest.Quest;
+import field.object.life.FieldMob;
+import field.object.life.FieldMobTemplate;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import managers.ItemManager;
+import managers.MobManager;
 import net.maple.packets.CharacterPackets;
 import net.maple.packets.GuildPackets;
 import org.graalvm.collections.Pair;
@@ -194,5 +197,9 @@ public abstract class AbstractPlayerInteraction {
     public void loadGuild() {
         if (getPlayer().getGuild() == null) return;
         c.write(GuildPackets.getLoadGuildPacket(getPlayer().getGuild()));
+    }
+
+    public FieldMobTemplate getMobTemplate(int id) {
+        return MobManager.getMob(id);
     }
 }

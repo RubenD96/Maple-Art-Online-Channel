@@ -28,7 +28,7 @@ public class FixedRepetitionDelayTimer extends BaseTimer {
         } catch (InterruptedException ie) {
             ie.printStackTrace();
         } finally {
-            if (n != 0) {
+            if (n <= 0) {
                 run();
             }
         }

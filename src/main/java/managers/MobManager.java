@@ -32,6 +32,7 @@ public class MobManager extends AbstractManager {
             mob.setExp(r.readInteger());
             mob.setMaxHP(r.readInteger());
             mob.setMaxMP(r.readInteger());
+            mob.setBoss(r.readBool());
             return true;
         }
         return false;

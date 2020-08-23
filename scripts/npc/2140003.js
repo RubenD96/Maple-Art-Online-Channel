@@ -15,9 +15,9 @@ const line = "-----------------------";
 const options = [
     "Regular",
     "Hardcore",
-    //"Boss",
     "Kill count",
     "Mob kills",
+    "Boss kills",
     //"Total playtime rankings",
     //"Mastery rankings"
 ];
@@ -47,6 +47,7 @@ function converse(m, s) {
             str += `\r\n#L200#Show myself#l`;
             cm.sendSimple(str);
         } else if (status === 2) {
+            sel = -1;
             option = options[s];
             switch (option) {
                 case "Regular":
@@ -61,12 +62,18 @@ function converse(m, s) {
                 case "Mob kills":
                     showList(rankings.getMobs(), "Mobs");
                     break;
+                case "Boss kills":
+                    showList(rankings.getBosses(), "Bosses");
+                    break;
             }
         } else if (status === 3) {
             sel = s;
             switch (option) {
                 case "Mob kills":
                     showRankings(rankings.getMobKills().get(s));
+                    break;
+                case "Boss kills":
+                    showRankings(rankings.getBossKills().get(s));
                     break;
             }
         }
@@ -97,7 +104,8 @@ function showRankings(players) {
             str += `\r\n\t${getValueType(player)}`;
         }
     }
-    cm.sendOk(`${cm.letters(option)}\r\n\r\nThe rankings are as follows:\r\n${str}`);
+    const title = sel === -1 ? cm.letters(option) : cm.letters(cm.getMobTemplate(sel).getName());
+    cm.sendOk(`${title}\r\n\r\nThe rankings are as follows:\r\n${str}`);
     status = 0;
 }
 
@@ -109,15 +117,23 @@ function getValueType(player) {
         case "Kill count":
             return `#r${player.getKillCount()}#k total kills`;
         case "Mob kills":
+        case "Boss kills":
             const kills = player.getMobKills().get(sel);
-            return `#r${kills}#b #o${sel}#` + (kills === 1 ? "" : "s") + ` #kkilled`;
+            return `#e#r${kills}#k kill` + (kills === 1 ? "" : "s" + `#n`);
     }
 }
 
 function showList(list, title) {
     let str = `#b`;
     for (const item of list) {
-        str += `\r\n#L${item}##o${item}##l`;
+        if (title !== "Bosses" || cm.getMobTemplate(item).isBoss()) {
+            str += `\r\n#L${item}##o${item}##l`;
+        }
+    }
+    if (str.length === 2) {
+        cm.sendOk("Nobody seems to have done anything to be relevant in the rankings yet.");
+        cm.dispose();
+        return;
     }
     cm.sendSimple(`${cm.letters(title)}\r\n\r\nWhich mob would you like to see the kill rankings for?\r\n${str}`);
 }
