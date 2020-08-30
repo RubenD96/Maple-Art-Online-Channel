@@ -18,6 +18,7 @@ import managers.ItemManager;
 import net.database.DropAPI;
 import net.maple.SendOpcode;
 import net.maple.packets.CharacterPackets;
+import timers.DelayRepeatTimer;
 import util.packet.Packet;
 import util.packet.PacketWriter;
 
@@ -74,14 +75,14 @@ public class FieldMob extends AbstractFieldControlledLife {
 
         field.queueRespawn(template.getId(), time, System.currentTimeMillis() + (time * 1000));
 
-        if (template.getDrops() == null) {
-            template.setDrops(DropAPI.getMobDrops(template.getId()));
-        }
-
         drop(chr);
     }
 
     public void drop(Character owner) {
+        if (template.getDrops() == null) {
+            template.setDrops(DropAPI.getMobDrops(template.getId()));
+        }
+
         List<AbstractFieldDrop> drops = new ArrayList<>();
         template.getDrops().forEach(drop -> {
             if (drop.getQuest() != 0) {

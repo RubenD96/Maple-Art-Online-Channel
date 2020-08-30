@@ -14,6 +14,9 @@ import client.messages.broadcast.types.AlertMessage;
 import client.messages.broadcast.types.NoticeWithoutPrefixMessage;
 import client.messages.quest.PerformQuestRecordMessage;
 import client.player.quest.Quest;
+import field.Field;
+import field.object.FieldObject;
+import field.object.FieldObjectType;
 import field.object.life.FieldMob;
 import field.object.life.FieldMobTemplate;
 import lombok.Getter;
@@ -201,5 +204,15 @@ public abstract class AbstractPlayerInteraction {
 
     public FieldMobTemplate getMobTemplate(int id) {
         return MobManager.getMob(id);
+    }
+
+    public List<FieldMob> getMobsOnField() {
+        Field field = c.getCharacter().getField();
+        if (field != null) {
+            List<FieldMob> mobs = new ArrayList<>();
+            field.getObjects(FieldObjectType.MOB).forEach(obj -> mobs.add((FieldMob) obj));
+            return mobs;
+        }
+        return new ArrayList<>();
     }
 }
