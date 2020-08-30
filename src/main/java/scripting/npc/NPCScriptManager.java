@@ -19,7 +19,7 @@ public class NPCScriptManager extends AbstractScriptManager {
     }
 
     public boolean converse(Client c, int npc) {
-        return converse(c, npc, null, 1, 0);
+        return converse(c, npc, null, 1, -1);
     }
 
     public void converse(Client c, int mode, int selection) {

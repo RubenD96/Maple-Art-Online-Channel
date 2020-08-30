@@ -29,15 +29,15 @@ public class AccountAPI {
                 .where(CHARACTERS.ACCOUNTID.eq(aid))
                 .fetch();
 
-        final int[] highest = {1}; // lmao
-        res.forEach(rec -> {
+        int highest = 1; // lmao
+        for (Record rec : res) {
             int level = rec.getValue(CHARACTERS.LEVEL);
-            if (highest[0] < level) {
-                highest[0] = level;
+            if (highest < level) {
+                highest = level;
             }
-        });
+        }
 
-        return highest[0];
+        return highest;
     }
 
     public static int getCharacterCount(int aid) {

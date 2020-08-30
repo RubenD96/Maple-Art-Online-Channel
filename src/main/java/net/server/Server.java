@@ -7,6 +7,7 @@ import constants.ServerConstants;
 import lombok.Getter;
 import lombok.Setter;
 import managers.*;
+import net.database.BeautyAPI;
 import net.database.CharacterAPI;
 import net.database.DatabaseCore;
 import net.database.ShopAPI;
@@ -45,6 +46,7 @@ public class Server {
         // the first script engine takes a few sec to load, all subsequent engines are hella fast
         GraalJSScriptEngine.create();
         new RepeatDelayTimer(1800000, () -> RankingKeeper.getInstance().updateAllRankings());
+        BeautyAPI.loadHairs();
     }
 
     public Character getCharacter(int id) {

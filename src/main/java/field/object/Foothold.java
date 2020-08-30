@@ -8,7 +8,7 @@ public class Foothold {
 
     private int id, next, prev, x1, x2, y1, y2;
 
-    public void generate(PacketReader r) {
+    public void decode(PacketReader r) {
         id = r.readInteger();
         x1 = r.readShort();
         x2 = r.readShort();

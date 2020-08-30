@@ -1,24 +1,22 @@
 package scripting.npc;
 
 import client.Client;
+import client.player.Beauty;
 import field.object.drop.DropEntry;
 import field.object.life.FieldMobTemplate;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import managers.BeautyManager;
 import managers.MobManager;
+import net.database.BeautyAPI;
 import net.database.DropAPI;
 import net.maple.packets.ConversationPackets;
-import net.server.Server;
 import scripting.AbstractPlayerInteraction;
-import world.ranking.PlayerRanking;
 import world.ranking.RankingKeeper;
 
-import java.util.AbstractMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 @SuppressWarnings("unused")
@@ -302,5 +300,29 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public RankingKeeper getRankings() {
         return RankingKeeper.getInstance();
+    }
+
+    public List<Beauty> getAllHairs() {
+        return new ArrayList<>(BeautyManager.getHairs().values());
+    }
+
+    public List<Beauty> getEnabledHairs(int gender) {
+        return BeautyManager.getHairs().values().stream()
+                .filter(Beauty::isEnabled)
+                .filter(hair -> hair.getGender() == gender)
+                .collect(Collectors.toList());
+    }
+
+    public List<Beauty> getDisabledHairs(int gender) {
+        return BeautyManager.getHairs().values().stream()
+                .filter(hair -> !hair.isEnabled())
+                .filter(hair -> hair.getGender() == gender)
+                .collect(Collectors.toList());
+    }
+
+    public void updateHair(int id) {
+        Beauty b = BeautyManager.getHairs().get(id);
+        b.setEnabled(!b.isEnabled());
+        BeautyAPI.updateHair(id);
     }
 }

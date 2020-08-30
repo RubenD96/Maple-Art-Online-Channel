@@ -52,7 +52,7 @@ public class FieldManager extends AbstractManager {
                 short size = r.readShort();
                 for (int i = 0; i < size; i++) {
                     Foothold fh = new Foothold();
-                    fh.generate(r);
+                    fh.decode(r);
                     field.getFootholds().put(fh.getId(), fh);
                 }
             }
