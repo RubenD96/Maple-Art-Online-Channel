@@ -18,7 +18,7 @@ public class UserShopRequestHandler extends PacketHandler {
         NPCShop shop = chr.getNpcShop();
         if (shop == null) return;
 
-        ShopRequest request = ShopRequest.values()[reader.readByte()];
+        byte request = reader.readByte();
         if (request == ShopRequest.CLOSE) {
             shop.close(c);
             return;
@@ -27,8 +27,8 @@ public class UserShopRequestHandler extends PacketHandler {
         PacketWriter pw = new PacketWriter(16);
         pw.writeHeader(SendOpcode.SHOP_RESULT);
         switch (request) {
-            case BUY:
-            case SELL:
+            case ShopRequest.BUY:
+            case ShopRequest.SELL:
                 short pos = reader.readShort();
                 int itemId = reader.readInteger();
                 short count = reader.readShort();
@@ -38,7 +38,7 @@ public class UserShopRequestHandler extends PacketHandler {
                         shop.sell(chr, pos, itemId, count))
                         .getValue());
                 break;
-            case RECHARGE:
+            case ShopRequest.RECHARGE:
                 // todo
                 break;
         }
@@ -46,13 +46,10 @@ public class UserShopRequestHandler extends PacketHandler {
         c.write(pw.createPacket());
     }
 
-    @RequiredArgsConstructor
-    private enum ShopRequest {
-        BUY(0x00),
-        SELL(0x01),
-        RECHARGE(0x02),
-        CLOSE(0x03);
-
-        private final @Getter int value;
+    private static final class ShopRequest {
+        public static final byte BUY = 0x00;
+        public static final byte SELL = 0x01;
+        public static final byte RECHARGE = 0x02;
+        public static final byte CLOSE = 0x03;
     }
 }
