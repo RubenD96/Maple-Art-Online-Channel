@@ -116,10 +116,6 @@ class ChannelServer(val channelId: Int, val port: Int, val IP: String) : Thread(
     }
 
     override fun toString(): String {
-        return ("ChannelServer{" +
-                "channelId=" + channelId +
-                ", port=" + port +
-                ", IP='" + IP + '\'' +
-                '}')
+        return "ChannelServer(channelId=$channelId, port=$port, IP='$IP')"
     }
 }

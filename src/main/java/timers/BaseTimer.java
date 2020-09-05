@@ -1,5 +1,6 @@
 package timers;
 
+@Deprecated
 public abstract class BaseTimer implements Runnable {
 
     protected final int time;

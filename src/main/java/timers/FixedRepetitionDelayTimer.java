@@ -3,6 +3,7 @@ package timers;
 /**
  * Immediately executes a Runnable, repeats it n amount of times with a delay of x-time milliseconds.
  */
+@Deprecated
 public class FixedRepetitionDelayTimer extends BaseTimer {
 
     private int n;

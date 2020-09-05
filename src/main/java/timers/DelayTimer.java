@@ -3,6 +3,7 @@ package timers;
 /**
  * Timer class that executes a runnable once after n-time milliseconds
  */
+@Deprecated
 public class DelayTimer extends BaseTimer {
 
     public DelayTimer(int time, Runnable runnable) {
