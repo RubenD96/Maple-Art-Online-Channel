@@ -15,7 +15,7 @@ import java.util.Map;
 @Getter
 public class FieldManager extends AbstractManager {
 
-    private final Map<Integer, Field> fields = new HashMap<>();
+    public final Map<Integer, Field> fields = new HashMap<>();
 
     public synchronized Field getField(int id) {
         Field field = fields.get(id);

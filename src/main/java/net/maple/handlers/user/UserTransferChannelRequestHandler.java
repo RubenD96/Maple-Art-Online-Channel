@@ -20,7 +20,7 @@ public class UserTransferChannelRequestHandler extends PacketHandler {
         // todo field limit check
 
         try {
-            ChannelServer channel = Server.getInstance().getChannels().get(channelId);
+            ChannelServer channel = Server.Companion.getInstance().getChannels().get(channelId);
             if (channel != null) {
                 if (!c.getWorldChannel().equals(channel)) {
                     c.acquireMigrateState();

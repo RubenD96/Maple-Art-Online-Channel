@@ -10,8 +10,8 @@ public abstract class AbstractModifyInventoryOperation {
 
     protected abstract ModifyInventoryOperationType getType();
 
-    private ItemInventoryType inventory;
-    private short slot;
+    private final ItemInventoryType inventory;
+    private final short slot;
 
     public AbstractModifyInventoryOperation(ItemInventoryType inventory, short slot) {
         this.inventory = inventory;

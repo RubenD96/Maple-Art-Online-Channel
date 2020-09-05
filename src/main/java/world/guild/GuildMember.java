@@ -41,7 +41,7 @@ public class GuildMember {
     public GuildMember(Record rec) {
         int id = rec.getValue(GUILDMEMBERS.CID);
 
-        Character chr = Server.getInstance().getCharacter(id);
+        Character chr = Server.Companion.getInstance().getCharacter(id);
         if (chr != null) {
             this.name = chr.getName();
             this.job = chr.getJob().getId();

@@ -18,7 +18,7 @@ public class Friend {
     private @NonNull @Setter boolean online;
 
     public boolean isOnline() {
-        Character friend = Server.getInstance().getCharacter(characterId);
+        Character friend = Server.Companion.getInstance().getCharacter(characterId);
         return friend != null && !friend.getClient().isDisconnecting();
     }
 

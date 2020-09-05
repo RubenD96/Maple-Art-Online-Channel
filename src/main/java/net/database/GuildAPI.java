@@ -66,7 +66,7 @@ public class GuildAPI {
      * @return Guild, null if not found
      */
     public synchronized static Guild load(int id) {
-        if (Server.getInstance().getGuilds().get(id) != null) return Server.getInstance().getGuilds().get(id);
+        if (Server.Companion.getInstance().getGuilds().get(id) != null) return Server.Companion.getInstance().getGuilds().get(id);
         DSLContext con = DatabaseCore.getConnection();
         Record rec = con.select().from(GUILDS).where(GUILDS.ID.eq(id)).fetchOne();
 
@@ -91,7 +91,7 @@ public class GuildAPI {
                 guild.setMark(new GuildMark(mark));
             }
 
-            Server.getInstance().getGuilds().put(id, guild);
+            Server.Companion.getInstance().getGuilds().put(id, guild);
             return guild;
         }
         return null;

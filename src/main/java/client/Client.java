@@ -52,7 +52,7 @@ public class Client extends NettyClient {
         admin = data.getValue(ACCOUNTS.ADMIN) == 1;
         pic = data.getValue(ACCOUNTS.PIC);
 
-        worldChannel = Server.getInstance().getChannels().get(mi.getChannel());
+        worldChannel = Server.Companion.getInstance().getChannels().get(mi.getChannel());
         worldChannel.getLoginConnector().messageLogin("1:" + accId);
 
         loggedIn = true;
@@ -92,7 +92,7 @@ public class Client extends NettyClient {
                 if (field != null) {
                     field.leave(character);
                 }
-                if (character.getGuild() != null && (!Server.getInstance().getClients().get(accId).isCashShop() || character.isInCashShop())) {
+                if (character.getGuild() != null && (!Server.Companion.getInstance().getClients().get(accId).getCashShop() || character.isInCashShop())) {
                     character.getGuild().getMembers().get(character.getId()).setOnline(false);
                     character.getGuild().broadcast(GuildPackets.getLoadGuildPacket(character.getGuild()));
                     GuildPackets.notifyLoginLogout(character.getGuild(), character, false);
@@ -114,7 +114,7 @@ public class Client extends NettyClient {
     }
 
     public void migrate() {
-        Server.getInstance().getClients().get(accId).setChannel(worldChannel.getChannelId());
+        Server.Companion.getInstance().getClients().get(accId).setChannel(worldChannel.getChannelId());
         write(ConnectionPackets.getChangeChannelPacket(worldChannel));
     }
 
@@ -132,7 +132,7 @@ public class Client extends NettyClient {
                     party.setLeaderId(newLeader.getCid());
                     for (PartyMember pmember : party.getMembers()) {
                         if (pmember.isOnline()) {
-                            Character pm = Server.getInstance().getCharacter(pmember.getCid());
+                            Character pm = Server.Companion.getInstance().getCharacter(pmember.getCid());
                             pm.write(PartyPackets.getTransferLeaderMessagePacket(newLeader.getCid(), true));
                             pm.write(PartyPackets.updateParty(party, pmember.getChannel()));
                         }
@@ -140,7 +140,7 @@ public class Client extends NettyClient {
                 } else {
                     for (PartyMember pmember : party.getMembers()) {
                         if (pmember.isOnline()) {
-                            Character pm = Server.getInstance().getCharacter(pmember.getCid());
+                            Character pm = Server.Companion.getInstance().getCharacter(pmember.getCid());
                             pm.write(PartyPackets.updateParty(party, pmember.getChannel()));
                         }
                     }

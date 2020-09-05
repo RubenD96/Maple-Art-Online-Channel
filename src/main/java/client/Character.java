@@ -52,7 +52,7 @@ public class Character extends AbstractFieldLife {
      * Start constructor fields
      */
     @NonNull final Client client;
-    @NonNull String name;
+    @NonNull public String name;
     @NonNull int id, gmLevel, level, hair, face;
     @NonNull int gender, skinColor;
     @NonNull Job job;
@@ -327,7 +327,7 @@ public class Character extends AbstractFieldLife {
         if (party != null) {
             party.getMembers().forEach(m -> {
                 if (m.isOnline() && m.getChannel() == getChannel().getChannelId() && m.getField() == fieldId && m.getCid() != id) {
-                    Character chr = Server.getInstance().getCharacter(m.getCid());
+                    Character chr = Server.Companion.getInstance().getCharacter(m.getCid());
                     if (receive) {
                         write(PartyPackets.getUpdatePartyHealthPacket(chr));
                     }
@@ -338,7 +338,7 @@ public class Character extends AbstractFieldLife {
     }
 
     public void loadParty() {
-        Party party = Server.getInstance().getParties().get(CharacterAPI.getOldPartyId(id));
+        Party party = Server.Companion.getInstance().getParties().get(CharacterAPI.getOldPartyId(id));
         if (party != null) {
             PartyMember member = party.getMember(id);
             if (member != null) {

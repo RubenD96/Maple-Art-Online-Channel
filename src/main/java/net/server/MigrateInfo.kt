@@ -1,3 +1,16 @@
+package net.server
+
+class MigrateInfo(val aid: Int, var channel: Int, val ip: String) {
+
+    val cid: Int = 0
+    var cashShop = false
+
+    override fun toString(): String {
+        return "MigrateInfo(aid=$aid, channel=$channel, ip='$ip', cid=$cid, cashShop=$cashShop)"
+    }
+}
+
+/*
 package net.server;
 
 import lombok.Getter;
@@ -26,3 +39,5 @@ public class MigrateInfo {
                 '}';
     }
 }
+
+ */

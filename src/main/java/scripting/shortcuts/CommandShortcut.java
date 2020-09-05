@@ -81,7 +81,7 @@ public class CommandShortcut extends AbstractPlayerInteraction {
     }
 
     public void reloadShops() {
-        Server.getInstance().setShops(ShopAPI.getShops());
+        Server.Companion.getInstance().setShops(ShopAPI.getShops());
         NPCShopManager.getInstance().reload();
     }
 

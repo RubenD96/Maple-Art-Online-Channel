@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 @Getter
 public class RankingKeeper {
 
-    private @Getter final static RankingKeeper instance = new RankingKeeper();
+    public final static RankingKeeper instance = new RankingKeeper();
     private boolean updating = false;
 
     // rankings

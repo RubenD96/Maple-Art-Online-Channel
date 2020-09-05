@@ -24,7 +24,7 @@ public class UserSelectNpcHandler extends PacketHandler {
             System.out.println("[UserSelectNpcHandler] " + npc.getName() + " (" + npc.getNpcId() + ")");
             boolean hasNpcScript = NPCScriptManager.getInstance().converse(c, npc.getNpcId());
             if (!hasNpcScript) {
-                if (Server.getInstance().getShops().contains(npc.getNpcId())) {
+                if (Server.Companion.getInstance().getShops().contains(npc.getNpcId())) {
                     NPCShopManager.getInstance().getShop(npc.getNpcId()).open(chr);
                 } else {
                     c.write(ConversationPackets.getOkMessagePacket(npc.getNpcId(), 0,

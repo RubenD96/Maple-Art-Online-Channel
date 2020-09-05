@@ -26,7 +26,7 @@ public class MigrateInHandler extends PacketHandler {
             int cid = reader.readInteger();
             Record accInfo = AccountAPI.getAccountInfoTemporary(cid);
 
-            MigrateInfo mi = Server.getInstance().getClients().get(accInfo.getValue(ACCOUNTS.ID));
+            MigrateInfo mi = Server.Companion.getInstance().getClients().get(accInfo.getValue(ACCOUNTS.ID));
             if (mi == null) {
                 c.close(this, "Channel reset");
                 return;
@@ -64,7 +64,7 @@ public class MigrateInHandler extends PacketHandler {
                 chr.loadParty();
                 if (chr.getGuild() != null) {
                     c.write(GuildPackets.getLoadGuildPacket(chr.getGuild()));
-                    if (!mi.isCashShop()) {
+                    if (!mi.getCashShop()) {
                         GuildPackets.notifyLoginLogout(chr.getGuild(), chr, true);
                     }
                 }

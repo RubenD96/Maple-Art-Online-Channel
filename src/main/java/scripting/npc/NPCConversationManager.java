@@ -299,7 +299,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     }
 
     public RankingKeeper getRankings() {
-        return RankingKeeper.getInstance();
+        return RankingKeeper.instance;
     }
 
     public List<Beauty> getAllHairs() {

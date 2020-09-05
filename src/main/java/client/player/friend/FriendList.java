@@ -45,7 +45,7 @@ public class FriendList {
 
     public void sendMessage(Packet packet) {
         friends.keySet().forEach(friendId -> {
-            Character friend = Server.getInstance().getCharacter(friendId);
+            Character friend = Server.Companion.getInstance().getCharacter(friendId);
             if (friend != null && friend.getFriendList().getFriends().get(owner.getId()) != null) {
                 friend.write(packet);
             }
@@ -60,7 +60,7 @@ public class FriendList {
 
         pw.write(friends.size());
         for (Friend f : friends.values()) {
-            boolean visible = f.isOnline() && Server.getInstance().getCharacter(f.getCharacterId()).getFriendList().getFriends().containsKey(owner.getId());
+            boolean visible = f.isOnline() && Server.Companion.getInstance().getCharacter(f.getCharacterId()).getFriendList().getFriends().containsKey(owner.getId());
             encodeGWFriend(pw, f.getGroup(), f.getCharacterId(), f.getName(), visible ? 0 : 2, f.getChannel());
         }
 
@@ -152,7 +152,7 @@ public class FriendList {
      * @return invite packet
      */
     public Packet getSendFriendRequestPacket(int cid) {
-        Character friend = Server.getInstance().getCharacter(cid);
+        Character friend = Server.Companion.getInstance().getCharacter(cid);
         if (friend != null) {
             return friend.getFriendList().getSendFriendRequestPacket("Group Unknown");
         } else {
@@ -171,7 +171,7 @@ public class FriendList {
         if (!owner.getClient().isCc()) {
             final int channel = owner.getClient().isDisconnecting() ? -1 : owner.getChannel().getChannelId();
             friends.keySet().forEach(f -> {
-                Character friend = Server.getInstance().getCharacter(f);
+                Character friend = Server.Companion.getInstance().getCharacter(f);
                 if (friend != null) {
                     if (friend.getFriendList().friends.containsKey(owner.getId())) {
                         friend.getFriendList().friends.get(owner.getId()).setChannel(channel);

@@ -21,7 +21,7 @@ public class FriendAPI {
             int fid = record.getValue(FRIENDS.FID);
             friendList.addFriend(fid, CharacterAPI.getOfflineName(fid), record.getValue(FRIENDS.GROUP));
 
-            Character chr = Server.getInstance().getCharacter(fid);
+            Character chr = Server.Companion.getInstance().getCharacter(fid);
             if (chr != null) {
                 friendList.getFriends().get(fid).setChannel(chr.getChannel().getChannelId());
             }
