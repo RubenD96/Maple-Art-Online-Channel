@@ -17,7 +17,7 @@ import java.util.Arrays;
 
 public class ServerHandler extends ChannelInboundHandlerAdapter {
 
-    PacketProcessor processor = PacketProcessor.getInstance();
+    PacketProcessor processor = PacketProcessor.Companion.getInstance();
     int[] ignoreOps = {
             RecvOpcode.PONG.getValue(),
             RecvOpcode.UPDATE_SCREEN_SETTING.getValue(),
