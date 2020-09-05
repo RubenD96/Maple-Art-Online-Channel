@@ -4,12 +4,12 @@ import client.Character
 import client.party.Party
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine
 import constants.ServerConstants
+import kotlinx.coroutines.*
 import managers.*
 import net.database.BeautyAPI
 import net.database.CharacterAPI
 import net.database.DatabaseCore
 import net.database.ShopAPI
-import timers.RepeatDelayTimer
 import util.crypto.MapleAESOFB
 import world.guild.Guild
 import world.ranking.RankingKeeper
@@ -42,8 +42,18 @@ class Server private constructor() {
 
         // the first script engine takes a few sec to load, all subsequent engines are hella fast
         GraalJSScriptEngine.create()
-        RepeatDelayTimer(1800000) { RankingKeeper.instance.updateAllRankings() }
+        GlobalScope.launch {
+            withContext(NonCancellable) {
+                async { rankingRoutine() }
+            }
+        }
         BeautyAPI.loadHairs()
+    }
+
+    private suspend fun rankingRoutine() {
+        delay(1800000L)
+        RankingKeeper.instance.updateAllRankings()
+        rankingRoutine()
     }
 
     fun getCharacter(id: Int): Character? {
