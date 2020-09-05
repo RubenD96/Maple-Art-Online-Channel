@@ -1,6 +1,6 @@
-package net.maple;
+package net.maple
 
-public enum RecvOpcode {
+enum class RecvOpcode(private val value: Int) {
 
     MIGRATE_IN(0x14),
     PONG(0x19),
@@ -53,13 +53,7 @@ public enum RecvOpcode {
     CASH_SHOP_QUERY_CASH_REQUEST(0x112),
     CASH_SHOP_CASH_ITEM_REQUEST(0x113);
 
-    private final int code;
-
-    RecvOpcode(int code) {
-        this.code = code;
-    }
-
-    public int getValue() {
-        return code;
+    fun getValue(): Int {
+        return value
     }
 }

@@ -32,7 +32,7 @@ import java.util.Arrays;
  */
 public final class PacketWriter extends Writer {
 
-    private static int[] ignoreOps = {
+    private final static int[] ignoreOps = {
             SendOpcode.PING.getValue(),
             SendOpcode.USER_MOVE.getValue(),
             SendOpcode.NPC_CHANGE_CONTROLLER.getValue(),
@@ -73,7 +73,7 @@ public final class PacketWriter extends Writer {
     public final Writer writeHeader(short i) {
         String hex = Integer.toHexString(i);
         if (ServerConstants.LOG && Arrays.stream(ignoreOps).noneMatch(p -> p == i))
-            System.out.println("[SEND] packet " + i + " (" + (hex.length() == 1 ? "0x0" : "0x") + hex.toUpperCase() + ") - " + SendOpcode.getEnumByString(i));
+            System.out.println("[SEND] packet " + i + " (" + (hex.length() == 1 ? "0x0" : "0x") + hex.toUpperCase() + ") - " + SendOpcode.Companion.getStringByCode(i));
         return writeShort(i);
     }
 

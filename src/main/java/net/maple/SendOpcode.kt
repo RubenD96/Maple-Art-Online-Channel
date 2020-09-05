@@ -1,8 +1,8 @@
-package net.maple;
+package net.maple
 
-import util.packet.IntegerValue;
+import util.packet.IntegerValue
 
-public enum SendOpcode implements IntegerValue {
+enum class SendOpcode(private var value: Int) : IntegerValue {
 
     MIGRATE_COMMAND(0x10),
     PING(0x11),
@@ -61,27 +61,21 @@ public enum SendOpcode implements IntegerValue {
     CASH_SHOP_QUERY_CASH_RESULT(0x17F),
     CASH_SHOP_CASH_ITEM_RESULT(0x180),
     FUNC_KEY_MAPPED_INIT(0x18E);
-    private int value;
 
-    SendOpcode(int value) {
-        this.value = value;
+    override fun getValue(): Int {
+        return value
     }
 
-    @Override
-    public int getValue() {
-        return value;
+    override fun setValue(value: Int) {
+        this.value = value
     }
 
-    @Override
-    public void setValue(int value) {
-        this.value = value;
-    }
-
-    public static String getEnumByString(int code) {
-        for (SendOpcode op : SendOpcode.values()) {
-            if (op.value == code)
-                return op.name();
+    companion object {
+        fun getStringByCode(code: Int): String {
+            for (op in values()) {
+                if (op.value == code) return op.name
+            }
+            return "UNKNOWN_OPCODE"
         }
-        return null;
     }
 }
