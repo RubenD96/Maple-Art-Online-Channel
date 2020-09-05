@@ -4,7 +4,6 @@ import field.Field;
 import field.object.Foothold;
 import field.object.life.*;
 import field.object.portal.FieldPortal;
-import lombok.Getter;
 import managers.flag.FieldFlag;
 import util.packet.PacketReader;
 
@@ -12,10 +11,13 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
-@Getter
 public class FieldManager extends AbstractManager {
 
-    public final Map<Integer, Field> fields = new HashMap<>();
+    private final Map<Integer, Field> fields = new HashMap<>();
+
+    public Map<Integer, Field> getFields() {
+        return fields;
+    }
 
     public synchronized Field getField(int id) {
         Field field = fields.get(id);

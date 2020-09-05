@@ -1,12 +1,14 @@
 package client.messages;
 
-import lombok.RequiredArgsConstructor;
 import util.packet.PacketWriter;
 
-@RequiredArgsConstructor
 public class IncMesoMessage extends AbstractMessage {
 
     private final int meso;
+
+    public IncMesoMessage(int meso) {
+        this.meso = meso;
+    }
 
     @Override
     public MessageType getType() {

@@ -1,10 +1,5 @@
 package net.maple.handlers.user.attack;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public enum AttackType {
 
     MELEE(0x00),
@@ -12,5 +7,13 @@ public enum AttackType {
     MAGIC(0x02),
     BODY(0x03);
 
-    @Getter @NonNull private final int type;
+    private final int type;
+
+    AttackType(int type) {
+        this.type = type;
+    }
+
+    public int getType() {
+        return type;
+    }
 }

@@ -2,12 +2,15 @@ package client.inventory.operations;
 
 import client.inventory.ItemInventoryType;
 import client.inventory.ModifyInventoryOperationType;
-import lombok.Getter;
 import util.packet.PacketWriter;
 
 public class MoveInventoryOperation extends AbstractModifyInventoryOperation {
 
-    @Getter private short toSlot;
+    final private short toSlot;
+
+    public short getToSlot() {
+        return toSlot;
+    }
 
     public MoveInventoryOperation(ItemInventoryType inventory, short slot, short toSlot) {
         super(inventory, slot);

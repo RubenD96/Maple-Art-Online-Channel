@@ -1,7 +1,6 @@
 package scripting.npc;
 
 import client.Client;
-import lombok.Getter;
 import scripting.AbstractScriptManager;
 
 import javax.script.Invocable;
@@ -10,12 +9,20 @@ import java.util.Map;
 
 public class NPCScriptManager extends AbstractScriptManager {
 
-    private final @Getter Map<Client, NPCConversationManager> cms = new HashMap<>();
+    private final Map<Client, NPCConversationManager> cms = new HashMap<>();
     private final Map<Client, Invocable> scripts = new HashMap<>();
-    private static final @Getter NPCScriptManager instance = new NPCScriptManager();
+    private static final NPCScriptManager instance = new NPCScriptManager();
 
     private NPCScriptManager() {
 
+    }
+
+    public Map<Client, NPCConversationManager> getCms() {
+        return cms;
+    }
+
+    public static NPCScriptManager getInstance() {
+        return instance;
     }
 
     public boolean converse(Client c, int npc) {

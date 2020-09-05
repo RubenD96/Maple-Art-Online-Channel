@@ -1,10 +1,5 @@
 package cashshop.types;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public enum CashItemResult {
 
     CANCEL_NAME_CHANGE_FAIL(0x34),
@@ -136,5 +131,13 @@ public enum CashItemResult {
     GASH_ITEM_GACHAPON_FAILED(0xC0),
     CASH_ITEM_GACHAPON_DONE(0xC1);
 
-    @NonNull @Getter final int value;
+    private final int value;
+
+    CashItemResult(int value) {
+        this.value = value;
+    }
+
+    public int getValue() {
+        return value;
+    }
 }

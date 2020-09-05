@@ -6,10 +6,6 @@ import client.messages.quest.PerformQuestRecordMessage;
 import client.player.quest.requirement.EndingRequirement;
 import client.player.quest.requirement.Requirement;
 import client.player.quest.requirement.StartingRequirement;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import managers.QuestTemplateManager;
 import net.database.QuestAPI;
 import net.maple.SendOpcode;
@@ -21,15 +17,46 @@ import util.packet.PacketWriter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-@Getter
-@RequiredArgsConstructor
 public class Quest {
 
-    private final @NonNull int id;
-    private @Setter QuestState state;
-    private final @NonNull Character character;
+    private final int id;
+    private QuestState state;
+    private final Character character;
     private final Map<Integer, String> mobs = new LinkedHashMap<>();
-    private @Setter int dbId;
+    private int dbId;
+
+    public Quest(int id, Character character) {
+        this.id = id;
+        this.character = character;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public QuestState getState() {
+        return state;
+    }
+
+    public void setState(QuestState state) {
+        this.state = state;
+    }
+
+    public Character getCharacter() {
+        return character;
+    }
+
+    public Map<Integer, String> getMobs() {
+        return mobs;
+    }
+
+    public int getDbId() {
+        return dbId;
+    }
+
+    public void setDbId(int dbId) {
+        this.dbId = dbId;
+    }
 
     public void initializeMobs() {
         QuestTemplate template = QuestTemplateManager.getQuest(id);
@@ -166,11 +193,11 @@ public class Quest {
         character.write(CharacterPackets.message(message));
 
         if (state == QuestState.NONE) {
-            QuestAPI.remove(this);
+            QuestAPI.INSTANCE.remove(this);
         } else if (state == QuestState.PERFORM) {
-            QuestAPI.register(this);
+            QuestAPI.INSTANCE.register(this);
         } else if (state == QuestState.COMPLETE) {
-            QuestAPI.update(this);
+            QuestAPI.INSTANCE.update(this);
         }
     }
 

@@ -2,18 +2,24 @@ package client.effects.user;
 
 import client.effects.AbstractEffect;
 import client.effects.EffectType;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import util.packet.PacketWriter;
 
 import java.util.function.Consumer;
 
-@RequiredArgsConstructor
 public class SkillUseEffect extends AbstractEffect {
 
     private final int skillId;
     private final byte skillLevel;
-    private @Setter Consumer<PacketWriter> additional = null;
+    private Consumer<PacketWriter> additional = null;
+
+    public SkillUseEffect(int skillId, byte skillLevel) {
+        this.skillId = skillId;
+        this.skillLevel = skillLevel;
+    }
+
+    public void setAdditional(Consumer<PacketWriter> additional) {
+        this.additional = additional;
+    }
 
     @Override
     public EffectType getType() {

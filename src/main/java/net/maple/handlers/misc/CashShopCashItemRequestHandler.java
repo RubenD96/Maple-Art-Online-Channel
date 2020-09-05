@@ -9,7 +9,6 @@ import client.inventory.ItemInventory;
 import client.inventory.ItemInventoryType;
 import client.inventory.ModifyInventoriesContext;
 import client.inventory.item.templates.ItemTemplate;
-import client.inventory.slots.ItemSlotBundle;
 import client.inventory.slots.ItemSlotLocker;
 import managers.CommodityManager;
 import managers.ItemManager;
@@ -102,7 +101,7 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
 
         c.getLocker().add(slot);
         c.write(getOnBuyPacket(slot, c));
-        ItemAPI.addLockerItem(c, slot);
+        ItemAPI.INSTANCE.addLockerItem(c, slot);
 
         c.setCash(c.getCash() - price);
         CashShopPackets.sendCashData(c);
@@ -161,7 +160,7 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
                 return false;
             }
         } else {
-            if (ItemAPI.getLockerSize(aid) >= 999) {
+            if (ItemAPI.INSTANCE.getLockerSize(aid) >= 999) {
                 failRequest(c, 10);
                 return false;
             }
@@ -173,7 +172,7 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
     private static int getOfflineAccountId(Client c, Character chr, int cid) {
         int aid;
         if (chr == null) {
-            aid = AccountAPI.getAccountInfoTemporary(cid).getValue(ACCOUNTS.ID);
+            aid = AccountAPI.INSTANCE.getAccountInfoTemporary(cid).getValue(ACCOUNTS.ID);
             if (aid == c.getAccId()) {
                 failRequest(c, 6);
                 return -1;
@@ -191,7 +190,7 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
         String giftTo = reader.readMapleString();
         String text = reader.readMapleString();
 
-        int cid = CharacterAPI.getOfflineId(giftTo);
+        int cid = CharacterAPI.INSTANCE.getOfflineId(giftTo);
         if (!giftChecks(c, spw, text, cid)) return;
 
         Character chr = Server.Companion.getInstance().getCharacter(cid);
@@ -212,13 +211,13 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
         slot.setCommodityId(sn);
 
         if (chr == null) { // offline
-            ItemAPI.addLockerItem(cid, aid, slot);
+            ItemAPI.INSTANCE.addLockerItem(cid, aid, slot);
         } else {
             chr.getClient().getLocker().add(slot);
             if (chr.isInCashShop()) { // todo test
                 CashShopPackets.sendLockerData(chr.getClient());
             }
-            ItemAPI.addLockerItem(chr.getClient(), slot);
+            ItemAPI.INSTANCE.addLockerItem(chr.getClient(), slot);
         }
 
         c.write(getOnGiftDonePacket(giftTo, commodity));
@@ -292,7 +291,7 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
                 .findFirst().get().getKey();*/
 
         c.write(getOnMoveLtoSDonePacket(slot, c, pos));
-        ItemAPI.moveLockerToStorage(slot, pos);
+        ItemAPI.INSTANCE.moveLockerToStorage(slot, pos);
     }
 
     private static Packet getOnMoveLtoSDonePacket(ItemSlotLocker slot, Client c, short pos) {
@@ -348,7 +347,7 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
         String giveTo = reader.readMapleString();
         String text = reader.readMapleString();
 
-        int cid = CharacterAPI.getOfflineId(giveTo);
+        int cid = CharacterAPI.INSTANCE.getOfflineId(giveTo);
         if (!giftChecks(c, spw, text, cid)) return;
 
         Character chr = Server.Companion.getInstance().getCharacter(cid);

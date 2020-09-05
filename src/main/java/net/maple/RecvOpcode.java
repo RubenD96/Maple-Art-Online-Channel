@@ -1,8 +1,5 @@
 package net.maple;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public enum RecvOpcode {
 
     MIGRATE_IN(0x14),
@@ -57,6 +54,10 @@ public enum RecvOpcode {
     CASH_SHOP_CASH_ITEM_REQUEST(0x113);
 
     private final int code;
+
+    RecvOpcode(int code) {
+        this.code = code;
+    }
 
     public int getValue() {
         return code;

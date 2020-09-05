@@ -1,7 +1,5 @@
 package field.movement.fragment;
 
-import lombok.Getter;
-import lombok.Setter;
 import util.packet.PacketReader;
 import util.packet.PacketWriter;
 
@@ -9,7 +7,7 @@ import java.awt.*;
 
 public class JumpMoveFragment extends ActionMoveFragment {
 
-    @Getter @Setter Point vposition;
+    Point vposition;
 
     public JumpMoveFragment(byte movePathAttribute, PacketReader packetReader) {
         super(movePathAttribute, packetReader);

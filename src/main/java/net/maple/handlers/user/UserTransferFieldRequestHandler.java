@@ -4,7 +4,6 @@ import client.Character;
 import client.Client;
 import client.messages.broadcast.types.AlertMessage;
 import field.object.portal.FieldPortal;
-import field.object.portal.Portal;
 import net.maple.handlers.PacketHandler;
 import net.maple.packets.CharacterPackets;
 import util.packet.PacketReader;

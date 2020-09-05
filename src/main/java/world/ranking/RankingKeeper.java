@@ -1,14 +1,12 @@
 package world.ranking;
 
 import field.object.life.FieldMobTemplate;
-import lombok.Getter;
 import managers.MobManager;
 import net.database.RankingAPI;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Getter
 public class RankingKeeper {
 
     public final static RankingKeeper instance = new RankingKeeper();
@@ -31,6 +29,42 @@ public class RankingKeeper {
     private final Set<Integer> bosses = new HashSet<>();
 
     private RankingKeeper() {
+    }
+
+    public static RankingKeeper getInstance() {
+        return instance;
+    }
+
+    public boolean isUpdating() {
+        return updating;
+    }
+
+    public Map<String, PlayerRanking> getCharacterData() {
+        return characterData;
+    }
+
+    public List<PlayerRanking> getRegular() {
+        return regular;
+    }
+
+    public List<PlayerRanking> getHardcore() {
+        return hardcore;
+    }
+
+    public List<PlayerRanking> getKillCount() {
+        return killCount;
+    }
+
+    public Map<Integer, List<PlayerRanking>> getMobKills() {
+        return mobKills;
+    }
+
+    public Map<Integer, List<PlayerRanking>> getBossKills() {
+        return bossKills;
+    }
+
+    public Set<Integer> getBosses() {
+        return bosses;
     }
 
     /**
@@ -69,7 +103,7 @@ public class RankingKeeper {
         @Override
         public void run() {
             updating = true;
-            characterData = RankingAPI.getNonGMCharacters();
+            characterData = RankingAPI.INSTANCE.getNonGMCharacters();
             updateRegularRanking();
             updateHardcoreRanking();
             updateKillCountRanking();

@@ -4,9 +4,6 @@ import client.Character;
 import client.Client;
 import client.player.friend.Friend;
 import client.player.friend.FriendList;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import net.database.CharacterAPI;
 import net.database.FriendAPI;
 import net.maple.handlers.PacketHandler;
@@ -32,12 +29,12 @@ public class FriendRequestHandler extends PacketHandler {
                 return;
             }
 
-            Friend friend = friendList.getFriends().get(CharacterAPI.getOfflineId(name));
+            Friend friend = friendList.getFriends().get(CharacterAPI.INSTANCE.getOfflineId(name));
             if (friend == null) {
                 friendList.sendFriendRequest(name, group);
             } else {
                 friend.setGroup(group);
-                FriendAPI.updateGroup(c.getCharacter().getId(), friend.getCharacterId(), group);
+                FriendAPI.INSTANCE.updateGroup(c.getCharacter().getId(), friend.getCharacterId(), group);
                 friendList.updateFriendList();
             }
         } else if (operation == FriendOperation.FRIEND_REQ_ACCEPT_FRIEND.getValue()) {
@@ -45,19 +42,19 @@ public class FriendRequestHandler extends PacketHandler {
             Character toAdd = Server.Companion.getInstance().getCharacter(cid);
             if (toAdd != null) {
                 friendList.addFriend(toAdd, "Group Unknown", true);
-                FriendAPI.addFriend(c.getCharacter().getId(), toAdd.getId(), "Group Unknown", false);
-                FriendAPI.removePendingStatus(toAdd.getId(), c.getCharacter().getId());
+                FriendAPI.INSTANCE.addFriend(c.getCharacter().getId(), toAdd.getId(), "Group Unknown", false);
+                FriendAPI.INSTANCE.removePendingStatus(toAdd.getId(), c.getCharacter().getId());
                 Friend f = toAdd.getFriendList().getFriends().get(c.getCharacter().getId());
                 if (f != null) {
                     f.setChannel(c.getCharacter().getChannel().getChannelId());
                 }
                 toAdd.getFriendList().updateFriendList();
             } else { // player is offline already
-                String name = CharacterAPI.getOfflineName(cid);
+                String name = CharacterAPI.INSTANCE.getOfflineName(cid);
                 if (!name.equals("")) {
-                    friendList.addFriend(cid, CharacterAPI.getOfflineName(cid), "Group Unknown");
-                    FriendAPI.addFriend(c.getCharacter().getId(), cid, "Group Unknown", false);
-                    FriendAPI.removePendingStatus(cid, c.getCharacter().getId());
+                    friendList.addFriend(cid, CharacterAPI.INSTANCE.getOfflineName(cid), "Group Unknown");
+                    FriendAPI.INSTANCE.addFriend(c.getCharacter().getId(), cid, "Group Unknown", false);
+                    FriendAPI.INSTANCE.removePendingStatus(cid, c.getCharacter().getId());
                 } else {
                     friendList.sendFriendMessage(FriendRequestHandler.FriendOperation.FRIEND_RES_SET_FRIEND_UNKNOWN_USER);
                 }
@@ -68,7 +65,7 @@ public class FriendRequestHandler extends PacketHandler {
             int cid = reader.read();
             if (friendList.getFriends().containsKey(cid)) {
                 friendList.removeFriend(cid);
-                FriendAPI.removeFriend(c.getCharacter().getId(), cid);
+                FriendAPI.INSTANCE.removeFriend(c.getCharacter().getId(), cid);
                 Character toRemove = Server.Companion.getInstance().getCharacter(cid);
                 if (toRemove != null) {
                     toRemove.getFriendList().updateFriendList();
@@ -80,7 +77,6 @@ public class FriendRequestHandler extends PacketHandler {
         }
     }
 
-    @RequiredArgsConstructor
     public enum FriendOperation {
 
         FRIEND_REQ_LOAD_FRIEND(0x0),
@@ -108,6 +104,14 @@ public class FriendRequestHandler extends PacketHandler {
         FRIEND_RES_INC_MAX_COUNT_UNKNOWN(0x16),
         FRIEND_RES_PLEASE_WAIT(0x17);
 
-        @Getter @NonNull private final int value;
+        private final int value;
+
+        FriendOperation(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
     }
 }

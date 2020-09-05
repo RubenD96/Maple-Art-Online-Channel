@@ -1,12 +1,15 @@
 package client.inventory.item.templates;
 
 import client.inventory.slots.ItemSlotPet;
-import lombok.Getter;
 import util.packet.PacketReader;
 
 public class PetItemTemplate extends ItemTemplate {
 
-    @Getter private int life;
+    private final int life;
+
+    public int getLife() {
+        return life;
+    }
 
     public PetItemTemplate(int id, PacketReader r) {
         super(id, r);

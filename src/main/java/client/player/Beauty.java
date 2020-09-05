@@ -1,16 +1,31 @@
 package client.player;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-
-@Getter
-@RequiredArgsConstructor
 public class Beauty {
 
     private final int id, gender;
-    private @Setter @NonNull boolean enabled;
+    private boolean enabled;
+
+    public Beauty(int id, int gender, boolean enabled) {
+        this.id = id;
+        this.gender = gender;
+        this.enabled = enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getGender() {
+        return gender;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
 
     @Override
     public String toString() {

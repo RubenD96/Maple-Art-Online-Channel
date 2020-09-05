@@ -1,17 +1,74 @@
 package client.party;
 
 import client.Character;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
 public class PartyMember {
 
     private final int cid;
-    private @Setter String name = "";
-    private @Setter int level, channel = -2, job, field;
-    private @Setter boolean online;
-    private @Setter Character character;
+    private String name = "";
+    private int level, channel = -2, job, field;
+    private boolean online;
+    private Character character;
+
+    public int getCid() {
+        return cid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public int getChannel() {
+        return channel;
+    }
+
+    public void setChannel(int channel) {
+        this.channel = channel;
+    }
+
+    public int getJob() {
+        return job;
+    }
+
+    public void setJob(int job) {
+        this.job = job;
+    }
+
+    public int getField() {
+        return field;
+    }
+
+    public void setField(int field) {
+        this.field = field;
+    }
+
+    public boolean isOnline() {
+        return online;
+    }
+
+    public void setOnline(boolean online) {
+        this.online = online;
+    }
+
+    public Character getCharacter() {
+        return character;
+    }
+
+    public void setCharacter(Character character) {
+        this.character = character;
+    }
 
     public PartyMember(Character chr) {
         this.cid = chr.getId();

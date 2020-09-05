@@ -4,9 +4,6 @@ import client.Client;
 import client.player.Beauty;
 import field.object.drop.DropEntry;
 import field.object.life.FieldMobTemplate;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
 import managers.BeautyManager;
 import managers.MobManager;
 import net.database.BeautyAPI;
@@ -18,16 +15,27 @@ import world.ranking.RankingKeeper;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Getter
 @SuppressWarnings("unused")
 public class NPCConversationManager extends AbstractPlayerInteraction {
 
-    protected @NonNull final int npcId;
-    private @Setter String text = "";
+    protected final int npcId;
+    private String text = "";
 
-    public NPCConversationManager(@NonNull Client c, int npcId) {
+    public NPCConversationManager(Client c, int npcId) {
         super(c);
         this.npcId = npcId;
+    }
+
+    public int getNpcId() {
+        return npcId;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     public void sendOk(String text) {
@@ -247,7 +255,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         FieldMobTemplate template = MobManager.getMob(id);
         if (template != null) {
             if (template.getDrops() == null) {
-                template.setDrops(DropAPI.getMobDrops(template.getId()));
+                template.setDrops(DropAPI.INSTANCE.getMobDrops(template.getId()));
             }
             return template.getDrops();
         }
@@ -263,19 +271,19 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     }
 
     public void addMobDrop(int mid, int iid, int min, int max, int questid, double chance) {
-        DropAPI.addMobDrop(mid, iid, min, max, questid, chance);
+        DropAPI.INSTANCE.addMobDrop(mid, iid, min, max, questid, chance);
     }
 
     public void editDropChance(int mid, int iid, double chance) {
-        DropAPI.updateDropChance(mid, iid, chance);
+        DropAPI.INSTANCE.updateDropChance(mid, iid, chance);
     }
 
     public void removeDrop(int mid, int iid) {
-        DropAPI.removeDrop(mid, iid);
+        DropAPI.INSTANCE.removeDrop(mid, iid);
     }
 
     public void editMinMaxChance(int mid, int iid, int min, int max, double chance) {
-        DropAPI.updateMinMaxChance(mid, iid, min, max, chance);
+        DropAPI.INSTANCE.updateMinMaxChance(mid, iid, min, max, chance);
     }
 
     public void openStorage() {
@@ -323,6 +331,6 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     public void updateHair(int id) {
         Beauty b = BeautyManager.getHairs().get(id);
         b.setEnabled(!b.isEnabled());
-        BeautyAPI.updateHair(id);
+        BeautyAPI.INSTANCE.updateHair(id);
     }
 }

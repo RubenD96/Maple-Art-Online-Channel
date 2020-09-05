@@ -3,16 +3,20 @@ package field.object.portal;
 import client.Character;
 import client.messages.broadcast.types.AlertMessage;
 import field.Field;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import net.maple.packets.CharacterPackets;
 import scripting.portal.PortalScriptManager;
 
-@Getter
-@RequiredArgsConstructor
 public class FieldPortal extends AbstractFieldPortal implements Portal {
 
     private final Field field;
+
+    public FieldPortal(Field field) {
+        this.field = field;
+    }
+
+    public Field getField() {
+        return field;
+    }
 
     @Override
     public void enter(Character chr) {

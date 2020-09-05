@@ -1,11 +1,23 @@
 package client;
 
-import lombok.Data;
-import lombok.NonNull;
-
-@Data
 public class Pet {
 
-    private @NonNull int id;
+    private final int id;
     private int item;
+
+    public Pet(int id) {
+        this.id = id;
+    }
+
+    public int getItem() {
+        return item;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setItem(int item) {
+        this.item = item;
+    }
 }

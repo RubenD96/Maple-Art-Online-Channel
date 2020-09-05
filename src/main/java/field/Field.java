@@ -12,9 +12,6 @@ import field.object.drop.EnterType;
 import field.object.life.*;
 import field.object.portal.FieldPortal;
 import field.object.portal.PortalType;
-import lombok.Data;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import managers.MobManager;
 import net.maple.packets.FieldPackets;
 import net.maple.packets.PartyPackets;
@@ -27,11 +24,10 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-@Data
 public class Field {
 
-    @NonNull private final int id;
-    private static AtomicInteger runningObjectId = new AtomicInteger(1000000000);
+    private final int id;
+    private static final AtomicInteger runningObjectId = new AtomicInteger(1000000000);
     private int returnMap, forcedReturnMap, fieldLimit;
     private String name, script;
     private Rectangle mapArea;
@@ -40,6 +36,66 @@ public class Field {
     private final Map<FieldObjectType, Set<FieldObject>> objects = new LinkedHashMap<>();
     private final List<FieldMobSpawnPoint> mobSpawnPoints = new ArrayList<>();
     private final List<Respawn> toRespawn = new ArrayList<>();
+
+    public Field(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setReturnMap(int returnMap) {
+        this.returnMap = returnMap;
+    }
+
+    public int getForcedReturnMap() {
+        return forcedReturnMap;
+    }
+
+    public void setForcedReturnMap(int forcedReturnMap) {
+        this.forcedReturnMap = forcedReturnMap;
+    }
+
+    public void setFieldLimit(int fieldLimit) {
+        this.fieldLimit = fieldLimit;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getScript() {
+        return script;
+    }
+
+    public void setScript(String script) {
+        this.script = script;
+    }
+
+    public Rectangle getMapArea() {
+        return mapArea;
+    }
+
+    public void setMapArea(Rectangle mapArea) {
+        this.mapArea = mapArea;
+    }
+
+    public Map<Byte, FieldPortal> getPortals() {
+        return portals;
+    }
+
+    public Map<Integer, Foothold> getFootholds() {
+        return footholds;
+    }
+
+    public List<FieldMobSpawnPoint> getMobSpawnPoints() {
+        return mobSpawnPoints;
+    }
 
     public void init() {
         for (FieldObjectType type : FieldObjectType.values()) {
@@ -331,10 +387,15 @@ public class Field {
         toRespawn.add(new Respawn(mob, cooldown, time));
     }
 
-    @RequiredArgsConstructor
     private static class Respawn {
         private final int mob;
         private final int cooldown;
         private final long time;
+
+        public Respawn(int mob, int cooldown, long time) {
+            this.mob = mob;
+            this.cooldown = cooldown;
+            this.time = time;
+        }
     }
 }

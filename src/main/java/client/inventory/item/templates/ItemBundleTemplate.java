@@ -1,14 +1,28 @@
 package client.inventory.item.templates;
 
 import client.inventory.slots.ItemSlotBundle;
-import lombok.Getter;
 import util.packet.PacketReader;
 
-@Getter
 public class ItemBundleTemplate extends ItemTemplate {
 
     private double unitPrice;
     private short maxPerSlot;
+
+    public double getUnitPrice() {
+        return unitPrice;
+    }
+
+    public short getMaxPerSlot() {
+        return maxPerSlot;
+    }
+
+    public void setUnitPrice(double unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public void setMaxPerSlot(short maxPerSlot) {
+        this.maxPerSlot = maxPerSlot;
+    }
 
     public ItemBundleTemplate(int id, PacketReader r) {
         super(id, r);

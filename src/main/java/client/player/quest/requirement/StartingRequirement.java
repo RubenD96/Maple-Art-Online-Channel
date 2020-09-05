@@ -1,18 +1,36 @@
 package client.player.quest.requirement;
 
 import client.player.quest.QuestRequirementType;
-import lombok.Getter;
 import util.packet.PacketReader;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
 public class StartingRequirement extends Requirement {
 
     private final List<Short> jobs = new ArrayList<>();
     private int maxLevel;
     private long endDate;
+
+    public void setMaxLevel(int maxLevel) {
+        this.maxLevel = maxLevel;
+    }
+
+    public void setEndDate(long endDate) {
+        this.endDate = endDate;
+    }
+
+    public List<Short> getJobs() {
+        return jobs;
+    }
+
+    public int getMaxLevel() {
+        return maxLevel;
+    }
+
+    public long getEndDate() {
+        return endDate;
+    }
 
     @Override
     public void decode(int flags, PacketReader reader) {

@@ -1,19 +1,40 @@
 package client.player.quest.requirement;
 
 import client.player.quest.QuestRequirementType;
-import lombok.Getter;
-import lombok.Setter;
 import util.packet.PacketReader;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Getter
 public abstract class Requirement {
 
-    @Setter int minLevel, npc;
-    Map<Integer, Short> items = new HashMap<>();
-    Map<Integer, Byte> quests = new HashMap<>();
+    private int minLevel, npc;
+    private final Map<Integer, Short> items = new HashMap<>();
+    private final Map<Integer, Byte> quests = new HashMap<>();
+
+    public int getMinLevel() {
+        return minLevel;
+    }
+
+    public int getNpc() {
+        return npc;
+    }
+
+    public Map<Integer, Short> getItems() {
+        return items;
+    }
+
+    public Map<Integer, Byte> getQuests() {
+        return quests;
+    }
+
+    public void setMinLevel(int minLevel) {
+        this.minLevel = minLevel;
+    }
+
+    public void setNpc(int npc) {
+        this.npc = npc;
+    }
 
     public void decode(int flags, PacketReader reader) {
         if (containsFlag(flags, QuestRequirementType.MIN_LEVEL)) minLevel = reader.readShort();

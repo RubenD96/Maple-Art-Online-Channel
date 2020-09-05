@@ -10,8 +10,6 @@ import client.inventory.item.templates.ItemTemplate;
 import client.inventory.slots.ItemSlot;
 import client.inventory.slots.ItemSlotBundle;
 import constants.ItemConstants;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import managers.ItemManager;
 import net.database.ShopAPI;
 import net.maple.SendOpcode;
@@ -25,16 +23,23 @@ import java.util.Map;
 
 import static database.jooq.Tables.SHOPITEMS;
 
-@Getter
 public class NPCShop implements Interactable {
 
     private final int id;
     private final Map<Integer, NPCShopItem> items = new LinkedHashMap<>();
 
+    public int getId() {
+        return id;
+    }
+
+    public Map<Integer, NPCShopItem> getItems() {
+        return items;
+    }
+
     public NPCShop(int id) {
         this.id = id;
 
-        Result<Record> data = ShopAPI.getShopsItems(id);
+        Result<Record> data = ShopAPI.INSTANCE.getShopsItems(id);
         data.forEach(record -> {
             NPCShopItem item = new NPCShopItem(record.getValue(SHOPITEMS.ITEM));
             item.setPrice(record.getValue(SHOPITEMS.PRICE));
@@ -160,7 +165,6 @@ public class NPCShop implements Interactable {
         return ShopResult.SELL_SUCCESS;
     }
 
-    @RequiredArgsConstructor
     public enum ShopResult {
         BUY_SUCCESS(0x00),
         BUY_NO_STOCK(0x01),
@@ -183,6 +187,14 @@ public class NPCShop implements Interactable {
         BUY_LIMIT(0x12),
         SERVER_MSG(0x13);
 
-        private final @Getter int value;
+        private final int value;
+
+        ShopResult(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
     }
 }

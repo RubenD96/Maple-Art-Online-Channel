@@ -1,10 +1,5 @@
 package scripting.npc;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public enum ConversationType {
 
     SAY(0x00),
@@ -16,5 +11,13 @@ public enum ConversationType {
     ASK_BOX_TEXT(0x0E),
     ASK_SLIDE_MENU(0x0F);
 
-    @Getter @NonNull private final int value;
+    private final int value;
+
+    ConversationType(int value) {
+        this.value = value;
+    }
+
+    public int getValue() {
+        return value;
+    }
 }

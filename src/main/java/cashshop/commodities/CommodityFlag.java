@@ -1,9 +1,5 @@
 package cashshop.commodities;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public enum CommodityFlag {
 
     SN(0x01),
@@ -26,5 +22,13 @@ public enum CommodityFlag {
     PB_POINT(0x20000),
     PB_GIFT(0x40000);
 
-    private final @Getter int value;
+    private final int value;
+
+    CommodityFlag(int value) {
+        this.value = value;
+    }
+
+    public int getValue() {
+        return value;
+    }
 }

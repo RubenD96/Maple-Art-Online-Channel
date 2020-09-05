@@ -1,20 +1,30 @@
 package field.object.life;
 
 import field.object.FieldObjectType;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import net.maple.SendOpcode;
 import util.packet.Packet;
 import util.packet.PacketWriter;
 
-@RequiredArgsConstructor
-@Getter
 public class FieldNPC extends AbstractFieldControlledLife {
 
-    @NonNull final private int npcId;
-    @Setter protected boolean move;
+    final private int npcId;
+    protected boolean move;
+
+    public FieldNPC(int npcId) {
+        this.npcId = npcId;
+    }
+
+    public int getNpcId() {
+        return npcId;
+    }
+
+    public boolean isMove() {
+        return move;
+    }
+
+    public void setMove(boolean move) {
+        this.move = move;
+    }
 
     public FieldNPC(FieldNPC npc) {
         this.npcId = npc.npcId;

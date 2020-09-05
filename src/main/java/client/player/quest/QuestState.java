@@ -1,10 +1,5 @@
 package client.player.quest;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public enum QuestState {
 
     NONE(0x00),
@@ -13,5 +8,13 @@ public enum QuestState {
     PARTY_QUEST(0x03),
     NO(0x04);
 
-    @NonNull @Getter int value;
+    private final int value;
+
+    QuestState(int value) {
+        this.value = value;
+    }
+
+    public int getValue() {
+        return value;
+    }
 }

@@ -2,13 +2,15 @@ package client.effects.user;
 
 import client.effects.AbstractEffect;
 import client.effects.EffectType;
-import lombok.RequiredArgsConstructor;
 import util.packet.PacketWriter;
 
-@RequiredArgsConstructor
 public class ReservedEffect extends AbstractEffect {
 
     private final String path;
+
+    public ReservedEffect(String path) {
+        this.path = path;
+    }
 
     @Override
     public EffectType getType() {

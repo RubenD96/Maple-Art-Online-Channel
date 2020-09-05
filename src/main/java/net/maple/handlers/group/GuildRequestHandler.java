@@ -2,8 +2,6 @@ package net.maple.handlers.group;
 
 import client.Character;
 import client.Client;
-import world.guild.Guild;
-import world.guild.GuildMember;
 import client.messages.broadcast.types.AlertMessage;
 import client.messages.broadcast.types.EventMessage;
 import net.database.GuildAPI;
@@ -15,6 +13,8 @@ import net.maple.packets.GuildPackets.GuildRes;
 import net.server.Server;
 import util.HexTool;
 import util.packet.PacketReader;
+import world.guild.Guild;
+import world.guild.GuildMember;
 
 public class GuildRequestHandler extends PacketHandler {
 
@@ -62,7 +62,7 @@ public class GuildRequestHandler extends PacketHandler {
                 GuildPackets.changeGuildName(chr, guild.getName()); // visual character update (remote)
                 GuildPackets.changeGuildMark(chr, guild.getMark()); // visual character update (remote)
                 chr.write(GuildPackets.getLoadGuildPacket(guild)); // guild tab update for new member
-                GuildAPI.addMember(guild, chr, false);
+                GuildAPI.INSTANCE.addMember(guild, chr, false);
                 break;
             }
             case GuildReq.WITHDRAW_GUILD: // what a mess...
@@ -104,7 +104,7 @@ public class GuildRequestHandler extends PacketHandler {
                 }
 
                 GuildPackets.leave(guild, cid, name, req == GuildReq.KICK_GUILD ? GuildRes.KICK_GUILD_DONE : GuildRes.WITHDRAW_GUILD_DONE);
-                GuildAPI.expel(guild, cid);
+                GuildAPI.INSTANCE.expel(guild, cid);
                 break;
             }
             case GuildReq.SET_NOTICE: {
@@ -117,7 +117,7 @@ public class GuildRequestHandler extends PacketHandler {
 
                 guild.setNotice(notice);
                 GuildPackets.setNotice(guild, notice);
-                GuildAPI.updateInfo(guild);
+                GuildAPI.INSTANCE.updateInfo(guild);
                 break;
             }
             case GuildReq.SET_MEMBER_GRADE: {
@@ -135,7 +135,7 @@ public class GuildRequestHandler extends PacketHandler {
                 if (grade <= myGrade) return;
 
                 GuildPackets.setMemberGrade(guild, cid, grade);
-                GuildAPI.updateMemberGrade(cid, grade);
+                GuildAPI.INSTANCE.updateMemberGrade(cid, grade);
                 break;
             }
             case GuildReq.SET_GRADE_NAME:
@@ -151,7 +151,7 @@ public class GuildRequestHandler extends PacketHandler {
                 }
 
                 GuildPackets.setGradeNames(guild);
-                GuildAPI.updateInfo(guild);
+                GuildAPI.INSTANCE.updateInfo(guild);
                 break;
         }
     }

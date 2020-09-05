@@ -3,16 +3,14 @@ package field.object.drop;
 import client.Character;
 import client.inventory.slots.ItemSlot;
 import client.messages.ItemDropPickUpMessage;
-import client.messages.MesoDropPickUpMessage;
 import field.object.FieldObject;
-import lombok.NonNull;
 import net.maple.packets.CharacterPackets;
 
 public class ItemDrop extends AbstractFieldDrop {
 
     private final ItemSlot item;
 
-    public ItemDrop(@NonNull int owner, @NonNull FieldObject source, ItemSlot item, int questId) {
+    public ItemDrop(int owner, FieldObject source, ItemSlot item, int questId) {
         super(owner, source, questId);
         this.item = item;
     }

@@ -2,16 +2,12 @@ package scripting.shortcuts;
 
 import client.Character;
 import client.Client;
-import client.inventory.ItemVariationType;
 import client.inventory.item.templates.ItemTemplate;
 import client.inventory.slots.ItemSlot;
 import client.inventory.slots.ItemSlotBundle;
-import field.object.drop.EnterType;
 import field.object.drop.ItemDrop;
 import field.object.life.FieldMob;
 import field.object.life.FieldNPC;
-import lombok.Getter;
-import lombok.Setter;
 import managers.ItemManager;
 import managers.MobManager;
 import managers.NPCManager;
@@ -25,9 +21,16 @@ import static net.maple.handlers.user.UserChatHandler.refreshCommandList;
 
 public class CommandShortcut extends AbstractPlayerInteraction {
 
-    @Getter Client c;
-    @Getter Character chr;
-    @Getter @Setter String[] args;
+    private final Character chr;
+    private final String[] args;
+
+    public Character getChr() {
+        return chr;
+    }
+
+    public String[] getArgs() {
+        return args;
+    }
 
     public CommandShortcut(Client c, String[] _args) {
         super(c);
@@ -81,7 +84,7 @@ public class CommandShortcut extends AbstractPlayerInteraction {
     }
 
     public void reloadShops() {
-        Server.Companion.getInstance().setShops(ShopAPI.getShops());
+        Server.Companion.getInstance().setShops(ShopAPI.INSTANCE.getShops());
         NPCShopManager.getInstance().reload();
     }
 

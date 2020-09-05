@@ -4,7 +4,6 @@ import client.Character;
 import client.Client;
 import net.maple.handlers.PacketHandler;
 import net.maple.packets.CharacterPackets;
-import util.HexTool;
 import util.packet.PacketReader;
 
 public class UserHitHandler extends PacketHandler {

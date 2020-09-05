@@ -2,13 +2,15 @@ package client.effects.field;
 
 import client.effects.AbstractFieldEffect;
 import client.effects.FieldEffectType;
-import lombok.RequiredArgsConstructor;
 import util.packet.PacketWriter;
 
-@RequiredArgsConstructor
 public class ScreenFieldEffect extends AbstractFieldEffect {
 
     private final String path;
+
+    public ScreenFieldEffect(String path) {
+        this.path = path;
+    }
 
     @Override
     public FieldEffectType getType() {

@@ -1,10 +1,5 @@
 package client.effects;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public enum FieldEffectType {
 
     SUMMON(0x00),
@@ -16,5 +11,13 @@ public enum FieldEffectType {
     CHANGE_BGM(0x06),
     REWORD_BULLET(0x07);
 
-    @NonNull @Getter final int value;
+    private final int value;
+
+    FieldEffectType(int value) {
+        this.value = value;
+    }
+
+    public int getValue() {
+        return value;
+    }
 }

@@ -12,8 +12,6 @@ import field.object.FieldObjectType;
 import field.object.drop.AbstractFieldDrop;
 import field.object.drop.ItemDrop;
 import field.object.drop.MesoDrop;
-import lombok.Getter;
-import lombok.Setter;
 import managers.ItemManager;
 import net.database.DropAPI;
 import net.maple.SendOpcode;
@@ -25,14 +23,57 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
 public class FieldMob extends AbstractFieldControlledLife {
 
     private final FieldMobTemplate template;
-    @Setter private int hp, mp;
-    @Setter private short home;
-    @Setter private int time;
-    @Setter private int controllerDistance;
+    private int hp, mp;
+    private short home;
+    private int time;
+    private int controllerDistance;
+
+    public FieldMobTemplate getTemplate() {
+        return template;
+    }
+
+    public int getHp() {
+        return hp;
+    }
+
+    public int getMp() {
+        return mp;
+    }
+
+    public short getHome() {
+        return home;
+    }
+
+    public int getTime() {
+        return time;
+    }
+
+    public void setHp(int hp) {
+        this.hp = hp;
+    }
+
+    public void setMp(int mp) {
+        this.mp = mp;
+    }
+
+    public void setHome(short home) {
+        this.home = home;
+    }
+
+    public void setTime(int time) {
+        this.time = time;
+    }
+
+    public void setControllerDistance(int controllerDistance) {
+        this.controllerDistance = controllerDistance;
+    }
+
+    public int getControllerDistance() {
+        return controllerDistance;
+    }
 
     public FieldMob(FieldMobTemplate template, boolean left) {
         this.template = template;
@@ -79,7 +120,7 @@ public class FieldMob extends AbstractFieldControlledLife {
 
     public void drop(Character owner) {
         if (template.getDrops() == null) {
-            template.setDrops(DropAPI.getMobDrops(template.getId()));
+            template.setDrops(DropAPI.INSTANCE.getMobDrops(template.getId()));
         }
 
         List<AbstractFieldDrop> drops = new ArrayList<>();

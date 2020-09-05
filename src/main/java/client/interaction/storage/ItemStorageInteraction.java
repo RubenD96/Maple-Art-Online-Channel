@@ -3,7 +3,6 @@ package client.interaction.storage;
 import client.Character;
 import client.Client;
 import client.interaction.Interactable;
-import client.interaction.shop.NPCShop;
 import client.inventory.ItemInventory;
 import client.inventory.ItemInventoryType;
 import client.inventory.ModifyInventoryContext;
@@ -11,8 +10,6 @@ import client.inventory.slots.ItemSlot;
 import client.inventory.slots.ItemSlotBundle;
 import client.player.DbChar;
 import constants.ItemConstants;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import net.maple.SendOpcode;
 import net.maple.packets.CharacterPackets;
 import net.maple.packets.ItemPackets;
@@ -126,8 +123,10 @@ public class ItemStorageInteraction implements Interactable {
     }
 
     public StorageResult transferMeso(Character chr, int amount) {
-        if (amount < 0 && chr.getMeso() < amount || Integer.MAX_VALUE - chr.getMeso() < amount) return StorageResult.PUT_NO_MONEY;
-        if (amount > 0 && storage.getMeso() < amount || Integer.MAX_VALUE - storage.getMeso() < amount) return StorageResult.GET_NO_MONEY;
+        if (amount < 0 && chr.getMeso() < amount || Integer.MAX_VALUE - chr.getMeso() < amount)
+            return StorageResult.PUT_NO_MONEY;
+        if (amount > 0 && storage.getMeso() < amount || Integer.MAX_VALUE - storage.getMeso() < amount)
+            return StorageResult.GET_NO_MONEY;
 
         storage.setMeso(storage.getMeso() + -amount);
         chr.gainMeso(amount);
@@ -135,7 +134,6 @@ public class ItemStorageInteraction implements Interactable {
         return StorageResult.MONEY_SUCCESS;
     }
 
-    @RequiredArgsConstructor
     public enum StorageResult {
         GET_SUCCESS(0x9),
         GET_UNKNOWN(0xA),
@@ -154,6 +152,14 @@ public class ItemStorageInteraction implements Interactable {
         TRADE_BLOCKED(0x17),
         SERVER_MSG(0x18);
 
-        private final @Getter int value;
+        private final int value;
+
+        StorageResult(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
     }
 }

@@ -1,13 +1,12 @@
 package field.movement.fragment;
 
 import field.object.life.FieldLife;
-import lombok.Getter;
 import util.packet.PacketReader;
 import util.packet.PacketWriter;
 
 public abstract class AbstractMovementFragment implements MoveFragment {
 
-    @Getter final protected byte movePathAttribute;
+    final protected byte movePathAttribute;
 
     public AbstractMovementFragment(byte movePathAttribute, PacketReader packetReader) {
         this.movePathAttribute = movePathAttribute;

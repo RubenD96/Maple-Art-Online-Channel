@@ -1,17 +1,43 @@
 package field.object.life;
 
 import client.Character;
-import lombok.Getter;
-import lombok.Setter;
 import util.packet.Packet;
 
 public abstract class AbstractFieldControlledLife extends AbstractFieldLife implements FieldControlledObject {
 
     private Character controller;
-    @Setter protected int rx0, rx1, cy;
-    @Setter @Getter protected String name;
-    @Setter protected boolean hide;
-    @Setter protected boolean f;
+    protected int rx0, rx1, cy;
+    protected String name;
+    protected boolean hide;
+    protected boolean f;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setRx0(int rx0) {
+        this.rx0 = rx0;
+    }
+
+    public void setRx1(int rx1) {
+        this.rx1 = rx1;
+    }
+
+    public void setCy(int cy) {
+        this.cy = cy;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setHide(boolean hide) {
+        this.hide = hide;
+    }
+
+    public void setF(boolean f) {
+        this.f = f;
+    }
 
     @Override
     public Character getController() {

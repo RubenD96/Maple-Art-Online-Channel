@@ -1,26 +1,49 @@
 package field.object.drop;
 
 import client.Character;
-import client.inventory.item.templates.ItemTemplate;
 import field.object.AbstractFieldObject;
 import field.object.FieldObject;
 import field.object.FieldObjectType;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import net.maple.packets.FieldPackets;
 import util.packet.Packet;
 
-@Getter
-@RequiredArgsConstructor
 public abstract class AbstractFieldDrop extends AbstractFieldObject {
 
-    @NonNull final int owner;
-    @NonNull final FieldObject source;
-    @NonNull final int questId;
+    final int owner;
+    final FieldObject source;
+    final int questId;
     byte leaveType = 0x00;
-    @Setter long expire;
+    long expire;
+
+    public AbstractFieldDrop(int owner, FieldObject source, int questId) {
+        this.owner = owner;
+        this.source = source;
+        this.questId = questId;
+    }
+
+    public int getOwner() {
+        return owner;
+    }
+
+    public FieldObject getSource() {
+        return source;
+    }
+
+    public int getQuestId() {
+        return questId;
+    }
+
+    public byte getLeaveType() {
+        return leaveType;
+    }
+
+    public long getExpire() {
+        return expire;
+    }
+
+    public void setExpire(long expire) {
+        this.expire = expire;
+    }
 
     public abstract boolean isMeso();
 

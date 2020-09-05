@@ -1,10 +1,5 @@
 package client.messages;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public enum MessageType {
 
     DROP_PICK_UP_MESSAGE(0x00),
@@ -23,5 +18,13 @@ public enum MessageType {
     ITEM_EXPIRE_REPLACE_MESSAGE(0x0D),
     SKILL_EXPIRE_MESSAGE(0x0E);
 
-    @Getter @NonNull private final int value;
+    private final int value;
+
+    MessageType(int value) {
+        this.value = value;
+    }
+
+    public int getValue() {
+        return value;
+    }
 }

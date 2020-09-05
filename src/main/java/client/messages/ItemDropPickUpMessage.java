@@ -1,13 +1,18 @@
 package client.messages;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import util.packet.PacketWriter;
 
-@RequiredArgsConstructor
 public class ItemDropPickUpMessage extends AbstractMessage {
 
-    private final @Getter int itemId;
+    private final int itemId;
+
+    public ItemDropPickUpMessage(int itemId) {
+        this.itemId = itemId;
+    }
+
+    public int getItemId() {
+        return itemId;
+    }
 
     @Override
     public MessageType getType() {

@@ -7,8 +7,6 @@ import client.party.PartyMember;
 import field.Field;
 import io.netty.channel.Channel;
 import io.netty.util.concurrent.ScheduledFuture;
-import lombok.Getter;
-import lombok.Setter;
 import net.maple.packets.ConnectionPackets;
 import net.maple.packets.GuildPackets;
 import net.maple.packets.PartyPackets;
@@ -26,21 +24,157 @@ import static database.jooq.Tables.ACCOUNTS;
 
 public class Client extends NettyClient {
 
-    private @Getter @Setter boolean admin;
-    private @Getter int accId;
-    private @Getter @Setter String accountName;
-    private @Setter long lastPong, clientStart, lastNpcClick;
-    private @Getter boolean disconnecting = false, loggedIn = false, cc = false;
-    private @Getter @Setter ChannelServer worldChannel;
-    private @Getter String pic;
-    private @Getter @Setter Character character;
-    private @Getter @Setter Set<String> macs, hwids, ips;
-    private @Getter @Setter boolean banned;
-    private final @Getter Map<String, ScriptEngine> engines = new HashMap<>();
-    private @Getter @Setter Integer cash;
+    private boolean admin;
+    private int accId;
+    private String accountName;
+    private long lastPong, clientStart, lastNpcClick;
+    private boolean disconnecting = false, loggedIn = false, cc = false;
+    private ChannelServer worldChannel;
+    private String pic;
+    private Character character;
+    private Set<String> macs, hwids, ips;
+    private boolean banned;
+    private final Map<String, ScriptEngine> engines = new HashMap<>();
+    private Integer cash;
     private ScheduledFuture<?> ping;
-    private final @Getter List<ItemSlotLocker> locker = new ArrayList<>();
-    private @Getter @Setter ItemStorage storage;
+    private final List<ItemSlotLocker> locker = new ArrayList<>();
+    private ItemStorage storage;
+
+    public void setLastPong(long lastPong) {
+        this.lastPong = lastPong;
+    }
+
+    public void setClientStart(long clientStart) {
+        this.clientStart = clientStart;
+    }
+
+    public void setLastNpcClick(long lastNpcClick) {
+        this.lastNpcClick = lastNpcClick;
+    }
+
+    public String getPic() {
+        return pic;
+    }
+
+    public int getAccId() {
+        return accId;
+    }
+
+    public boolean isDisconnecting() {
+        return disconnecting;
+    }
+
+    public Map<String, ScriptEngine> getEngines() {
+        return engines;
+    }
+
+    public List<ItemSlotLocker> getLocker() {
+        return locker;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
+
+    public String getAccountName() {
+        return accountName;
+    }
+
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
+    }
+
+    public ChannelServer getWorldChannel() {
+        return worldChannel;
+    }
+
+    public void setWorldChannel(ChannelServer worldChannel) {
+        this.worldChannel = worldChannel;
+    }
+
+    public Character getCharacter() {
+        return character;
+    }
+
+    public void setCharacter(Character character) {
+        this.character = character;
+    }
+
+    public Set<String> getMacs() {
+        return macs;
+    }
+
+    public void setMacs(Set<String> macs) {
+        this.macs = macs;
+    }
+
+    public Set<String> getHwids() {
+        return hwids;
+    }
+
+    public void setHwids(Set<String> hwids) {
+        this.hwids = hwids;
+    }
+
+    public Set<String> getIps() {
+        return ips;
+    }
+
+    public void setIps(Set<String> ips) {
+        this.ips = ips;
+    }
+
+    public boolean isBanned() {
+        return banned;
+    }
+
+    public void setBanned(boolean banned) {
+        this.banned = banned;
+    }
+
+    public Integer getCash() {
+        return cash;
+    }
+
+    public void setCash(Integer cash) {
+        this.cash = cash;
+    }
+
+    public ItemStorage getStorage() {
+        return storage;
+    }
+
+    public void setStorage(ItemStorage storage) {
+        this.storage = storage;
+    }
+
+    public long getLastPong() {
+        return lastPong;
+    }
+
+    public long getClientStart() {
+        return clientStart;
+    }
+
+    public long getLastNpcClick() {
+        return lastNpcClick;
+    }
+
+    public boolean isLoggedIn() {
+        return loggedIn;
+    }
+
+    public boolean isCc() {
+        return cc;
+    }
+
+    public ScheduledFuture<?> getPing() {
+        return ping;
+    }
 
     public Client(Channel c, byte[] siv, byte[] riv) {
         super(c, siv, riv);

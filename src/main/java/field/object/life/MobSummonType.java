@@ -1,7 +1,5 @@
 package field.object.life;
 
-import lombok.Getter;
-
 public enum MobSummonType {
 
     NORMAL(-0x01),
@@ -11,9 +9,13 @@ public enum MobSummonType {
     DELAY(-0x05),
     EFFECT(-0x00);
 
-    @Getter private final int type;
+    private final int type;
 
     MobSummonType(int type) {
         this.type = type;
+    }
+
+    public int getType() {
+        return type;
     }
 }

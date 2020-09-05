@@ -1,21 +1,51 @@
 package client.player.friend;
 
 import client.Character;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import net.server.Server;
 
-@Getter
-@RequiredArgsConstructor
 public class Friend {
 
-    private @NonNull int characterId;
-    private @NonNull @Setter int channel;
-    private @NonNull String name;
-    private @NonNull @Setter String group;
-    private @NonNull @Setter boolean online;
+    private final int characterId;
+    private int channel;
+    private final String name;
+    private String group;
+    private boolean online;
+
+    public Friend(int characterId, int channel, String name, String group, boolean online) {
+        this.characterId = characterId;
+        this.channel = channel;
+        this.name = name;
+        this.group = group;
+        this.online = online;
+    }
+
+    public int getCharacterId() {
+        return characterId;
+    }
+
+    public int getChannel() {
+        return channel;
+    }
+
+    public void setChannel(int channel) {
+        this.channel = channel;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    public void setOnline(boolean online) {
+        this.online = online;
+    }
 
     public boolean isOnline() {
         Character friend = Server.Companion.getInstance().getCharacter(characterId);

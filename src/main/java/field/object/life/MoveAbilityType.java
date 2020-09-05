@@ -1,7 +1,5 @@
 package field.object.life;
 
-import lombok.Getter;
-
 public enum MoveAbilityType {
 
     STOP((byte) 0x00),
@@ -9,9 +7,13 @@ public enum MoveAbilityType {
     JUMP((byte) 0x02),
     FLY((byte) 0x03);
 
-    @Getter private final byte type;
+    private final byte type;
 
     MoveAbilityType(byte type) {
         this.type = type;
+    }
+
+    public byte getType() {
+        return type;
     }
 }

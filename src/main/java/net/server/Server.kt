@@ -27,10 +27,10 @@ class Server private constructor() {
 
     init {
         MapleAESOFB.initialize(ServerConstants.VERSION)
-        DatabaseCore()
+        DatabaseCore.connection
 
         CharacterAPI.resetParties()
-        shops = ShopAPI.getShops()
+        shops = ShopAPI.shops
         for (i in 0 until ServerConstants.CHANNELS) {
             val channel = ChannelServer(i, 7575 + i, ServerConstants.IP)
             channel.start()

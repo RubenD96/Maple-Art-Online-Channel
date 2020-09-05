@@ -1,9 +1,6 @@
 package client.player.friend;
 
 import client.Character;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import net.database.CharacterAPI;
 import net.database.FriendAPI;
 import net.maple.SendOpcode;
@@ -20,12 +17,23 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import static database.jooq.Tables.CHARACTERS;
 
-@RequiredArgsConstructor
 public class FriendList {
 
-    private @NonNull final Character owner;
-    private final @Getter Map<Integer, Friend> friends = new LinkedHashMap<>();
-    private final @Getter Queue<Integer> pending = new LinkedBlockingQueue<>();
+    private final Character owner;
+    private final Map<Integer, Friend> friends = new LinkedHashMap<>();
+    private final Queue<Integer> pending = new LinkedBlockingQueue<>();
+
+    public FriendList(Character owner) {
+        this.owner = owner;
+    }
+
+    public Map<Integer, Friend> getFriends() {
+        return friends;
+    }
+
+    public Queue<Integer> getPending() {
+        return pending;
+    }
 
     public void addFriend(Character friend, String group, boolean online) {
         addFriend(friend.getId(), friend.getChannel().getChannelId(), friend.getName(), group, online);
@@ -96,7 +104,7 @@ public class FriendList {
         Character friend = owner.getChannel().getCharacter(name);
         if (friend != null) {
             addFriend(friend, group, false);
-            FriendAPI.addFriend(owner.getId(), friend.getId(), group, true);
+            FriendAPI.INSTANCE.addFriend(owner.getId(), friend.getId(), group, true);
             updateFriendList();
             FriendList friendFriendList = friend.getFriendList(); // lul
             if (!friendFriendList.getFriends().containsKey(owner.getId())) {
@@ -109,13 +117,13 @@ public class FriendList {
                 friend.getFriendList().updateFriendList();
             }
         } else {
-            int id = CharacterAPI.getOfflineId(name);
+            int id = CharacterAPI.INSTANCE.getOfflineId(name);
             if (id == -1) {
                 sendFriendMessage(FriendRequestHandler.FriendOperation.FRIEND_RES_SET_FRIEND_UNKNOWN_USER);
                 return;
             }
             addFriend(id, name, group);
-            FriendAPI.addFriend(owner.getId(), id, group, true);
+            FriendAPI.INSTANCE.addFriend(owner.getId(), id, group, true);
             updateFriendList();
         }
     }
@@ -156,7 +164,7 @@ public class FriendList {
         if (friend != null) {
             return friend.getFriendList().getSendFriendRequestPacket("Group Unknown");
         } else {
-            Record rec = CharacterAPI.getOfflineCharacter(cid);
+            Record rec = CharacterAPI.INSTANCE.getOfflineCharacter(cid);
             return getSendFriendRequestPacket(
                     "Group Unknown", cid,
                     rec.getValue(CHARACTERS.NAME),

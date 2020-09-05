@@ -6,5 +6,6 @@ import client.Client;
 public interface Interactable {
 
     void open(Character chr);
+
     void close(Client c);
 }

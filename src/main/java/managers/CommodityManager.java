@@ -2,13 +2,11 @@ package managers;
 
 import cashshop.commodities.Commodity;
 import cashshop.commodities.CommodityFlag;
-import lombok.Getter;
 import util.packet.PacketReader;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Getter
 public class CommodityManager extends AbstractManager {
 
     private static final Map<Integer, Commodity> commodities = new HashMap<>();

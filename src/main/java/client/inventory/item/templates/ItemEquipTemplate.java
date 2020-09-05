@@ -4,11 +4,9 @@ import client.inventory.ItemVariation;
 import client.inventory.ItemVariationType;
 import client.inventory.item.flags.EquipFlag;
 import client.inventory.slots.ItemSlotEquip;
-import lombok.Getter;
 import util.Rand32;
 import util.packet.PacketReader;
 
-@Getter
 public class ItemEquipTemplate extends ItemTemplate {
 
     private int equipFlags;
@@ -21,6 +19,138 @@ public class ItemEquipTemplate extends ItemTemplate {
     private byte appliableKarmaType;
     private int setItemId;
     private int durability = -1;
+
+    public int getEquipFlags() {
+        return equipFlags;
+    }
+
+    public short getReqSTR() {
+        return ReqSTR;
+    }
+
+    public short getReqDEX() {
+        return ReqDEX;
+    }
+
+    public short getReqINT() {
+        return ReqINT;
+    }
+
+    public short getReqLUK() {
+        return ReqLUK;
+    }
+
+    public short getReqFAME() {
+        return ReqFAME;
+    }
+
+    public short getReqJob() {
+        return ReqJob;
+    }
+
+    public byte getReqLevel() {
+        return ReqLevel;
+    }
+
+    public byte getTUC() {
+        return TUC;
+    }
+
+    public short getIncSTR() {
+        return IncSTR;
+    }
+
+    public short getIncDEX() {
+        return IncDEX;
+    }
+
+    public short getIncINT() {
+        return IncINT;
+    }
+
+    public short getIncLUK() {
+        return IncLUK;
+    }
+
+    public int getIncMaxHP() {
+        return IncMaxHP;
+    }
+
+    public int getIncMaxMP() {
+        return IncMaxMP;
+    }
+
+    public int getIncMaxHPr() {
+        return IncMaxHPr;
+    }
+
+    public int getIncMaxMPr() {
+        return IncMaxMPr;
+    }
+
+    public short getIncPAD() {
+        return IncPAD;
+    }
+
+    public short getIncMAD() {
+        return IncMAD;
+    }
+
+    public short getIncPDD() {
+        return IncPDD;
+    }
+
+    public short getIncMDD() {
+        return IncMDD;
+    }
+
+    public short getIncACC() {
+        return IncACC;
+    }
+
+    public short getIncEVA() {
+        return IncEVA;
+    }
+
+    public short getIncCraft() {
+        return IncCraft;
+    }
+
+    public short getIncSpeed() {
+        return IncSpeed;
+    }
+
+    public short getIncJump() {
+        return IncJump;
+    }
+
+    public boolean isOnlyEquip() {
+        return onlyEquip;
+    }
+
+    public boolean isTradeBlockEquip() {
+        return tradeBlockEquip;
+    }
+
+    public boolean isNotExtend() {
+        return notExtend;
+    }
+
+    public boolean isSharableOnce() {
+        return sharableOnce;
+    }
+
+    public byte getAppliableKarmaType() {
+        return appliableKarmaType;
+    }
+
+    public int getSetItemId() {
+        return setItemId;
+    }
+
+    public int getDurability() {
+        return durability;
+    }
 
     public ItemEquipTemplate(int id, PacketReader r) {
         super(id, r);

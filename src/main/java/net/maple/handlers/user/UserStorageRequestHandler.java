@@ -5,8 +5,6 @@ import client.Client;
 import client.interaction.storage.ItemStorageInteraction;
 import client.inventory.ItemInventoryType;
 import client.player.DbChar;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import net.maple.SendOpcode;
 import net.maple.handlers.PacketHandler;
 import util.packet.PacketReader;
@@ -59,7 +57,6 @@ public class UserStorageRequestHandler extends PacketHandler {
         c.write(pw.createPacket());
     }
 
-    @RequiredArgsConstructor
     private enum StorageRequest {
         LOAD(0x0),
         SAVE(0x1),
@@ -71,6 +68,14 @@ public class UserStorageRequestHandler extends PacketHandler {
         MONEY(0x7),
         CLOSE_DIALOG(0x8);
 
-        private final @Getter int value;
+        private final int value;
+
+        StorageRequest(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
     }
 }

@@ -1,11 +1,7 @@
 package client.player.quest;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import util.packet.IntegerValue;
 
-@RequiredArgsConstructor
 public enum QuestRequirementType implements IntegerValue {
 
     JOB(0x01),
@@ -17,7 +13,16 @@ public enum QuestRequirementType implements IntegerValue {
     NPC(0x40),
     END_DATE(0x80);
 
-    private @NonNull @Getter int value;
+    private final int value;
+
+    QuestRequirementType(int value) {
+        this.value = value;
+    }
+
+    @Override
+    public int getValue() {
+        return value;
+    }
 
     @Override
     public void setValue(int value) {

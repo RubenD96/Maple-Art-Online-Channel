@@ -1,10 +1,5 @@
 package client.party;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public enum PartyOperationType {
 
     PARTYREQ_LOADPARTY(0x00),
@@ -101,5 +96,13 @@ public enum PartyOperationType {
     ADVERREQ_APPLY(0x55),
     ADVERREQ_RESULTAPPLY(0x56);
 
-    @Getter @NonNull private final int value;
+    private final int value;
+
+    PartyOperationType(int value) {
+        this.value = value;
+    }
+
+    public int getValue() {
+        return value;
+    }
 }

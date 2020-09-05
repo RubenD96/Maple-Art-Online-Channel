@@ -1,9 +1,5 @@
 package client.player;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public enum DbChar {
 
     CHARACTER(0x1),
@@ -38,7 +34,15 @@ public enum DbChar {
     ALL(-1),
     ITEM_SLOT(0x7C);
 
-    private final @Getter int value;
+    private final int value;
+
+    DbChar(int value) {
+        this.value = value;
+    }
+
+    public int getValue() {
+        return value;
+    }
 
     public boolean containsFlag(DbChar flag) {
         return (value & flag.value) == flag.value;

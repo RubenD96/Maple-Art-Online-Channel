@@ -3,16 +3,12 @@ package net.maple.handlers.user.attack;
 import client.Character;
 import field.object.FieldObjectType;
 import field.object.life.FieldMob;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import util.packet.PacketReader;
 
 import java.awt.*;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
-@Getter
-@RequiredArgsConstructor
 public class DamageInfo {
 
     private final AttackType type;
@@ -25,6 +21,63 @@ public class DamageInfo {
     private Point hitPosition, prevPosition;
 
     private int[] damage;
+
+    public DamageInfo(AttackType type, Character chr) {
+        this.type = type;
+        this.chr = chr;
+    }
+
+    public AttackType getType() {
+        return type;
+    }
+
+    public Character getChr() {
+        return chr;
+    }
+
+    public int getMobId() {
+        return mobId;
+    }
+
+    public int getForeAction() {
+        return foreAction;
+    }
+
+    public int getCalcDamageStatIndex() {
+        return calcDamageStatIndex;
+    }
+
+    public byte getHitAction() {
+        return hitAction;
+    }
+
+    public byte getFrameIdx() {
+        return frameIdx;
+    }
+
+    public boolean isLeft() {
+        return left;
+    }
+
+    public boolean isDoomed() {
+        return doomed;
+    }
+
+    public short getDelay() {
+        return delay;
+    }
+
+    public Point getHitPosition() {
+        return hitPosition;
+    }
+
+    public Point getPrevPosition() {
+        return prevPosition;
+    }
+
+    public int[] getDamage() {
+        return damage;
+    }
 
     public void decode(PacketReader r, int damagePerMob) {
         mobId = r.readInteger();

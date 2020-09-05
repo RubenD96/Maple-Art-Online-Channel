@@ -2,8 +2,6 @@ package net.maple.handlers.user.attack;
 
 import client.Character;
 import client.Client;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import net.maple.SendOpcode;
 import net.maple.handlers.PacketHandler;
 import util.packet.Packet;
@@ -12,10 +10,13 @@ import util.packet.PacketWriter;
 
 import java.util.Arrays;
 
-@RequiredArgsConstructor
 public class UserAttackHandler extends PacketHandler {
 
-    @NonNull private final AttackType type;
+    private final AttackType type;
+
+    public UserAttackHandler(AttackType type) {
+        this.type = type;
+    }
 
     @Override
     public void handlePacket(PacketReader reader, Client c) {

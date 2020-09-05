@@ -1,17 +1,9 @@
 package field.object.life;
 
 import field.object.drop.DropEntry;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Setter
-@RequiredArgsConstructor
 public class FieldMobTemplate {
 
     private final int id;
@@ -22,6 +14,78 @@ public class FieldMobTemplate {
     private short level;
     private int exp, maxHP, maxMP;
     private boolean boss;
+
+    public FieldMobTemplate(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public MoveAbilityType getMoveType() {
+        return moveType;
+    }
+
+    public void setMoveType(MoveAbilityType moveType) {
+        this.moveType = moveType;
+    }
+
+    public List<DropEntry> getDrops() {
+        return drops;
+    }
+
+    public void setDrops(List<DropEntry> drops) {
+        this.drops = drops;
+    }
+
+    public short getLevel() {
+        return level;
+    }
+
+    public void setLevel(short level) {
+        this.level = level;
+    }
+
+    public int getExp() {
+        return exp;
+    }
+
+    public void setExp(int exp) {
+        this.exp = exp;
+    }
+
+    public int getMaxHP() {
+        return maxHP;
+    }
+
+    public void setMaxHP(int maxHP) {
+        this.maxHP = maxHP;
+    }
+
+    public int getMaxMP() {
+        return maxMP;
+    }
+
+    public void setMaxMP(int maxMP) {
+        this.maxMP = maxMP;
+    }
+
+    public boolean isBoss() {
+        return boss;
+    }
+
+    public void setBoss(boolean boss) {
+        this.boss = boss;
+    }
 
     @Override
     public String toString() {

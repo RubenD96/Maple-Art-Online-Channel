@@ -1,9 +1,6 @@
 package client.party;
 
 import client.Character;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
 import net.maple.packets.PartyPackets;
 import util.packet.Packet;
 import util.packet.PacketWriter;
@@ -12,13 +9,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-@Getter
 public class Party {
 
     private static int availableId = 1;
-    private final @NonNull int id;
-    private @Setter int leaderId;
+    private final int id;
+    private int leaderId;
     private final List<PartyMember> members = new ArrayList<>();
+
+    public void setLeaderId(int leaderId) {
+        this.leaderId = leaderId;
+    }
+
+    public static int getAvailableId() {
+        return availableId;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getLeaderId() {
+        return leaderId;
+    }
+
+    public List<PartyMember> getMembers() {
+        return members;
+    }
 
     public Party(Character leader) {
         this.id = availableId++;

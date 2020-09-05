@@ -1,15 +1,11 @@
 package net.maple.handlers.user.attack;
 
 import client.Character;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import util.packet.PacketReader;
 
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
-@RequiredArgsConstructor
-@Getter
 public class AttackInfo {
 
     private final AttackType type;
@@ -21,6 +17,68 @@ public class AttackInfo {
     private boolean left;
 
     private DamageInfo[] damageInfo;
+
+    public AttackInfo(AttackType type, Character chr, PacketReader r) {
+        this.type = type;
+        this.chr = chr;
+        this.r = r;
+    }
+
+    public AttackType getType() {
+        return type;
+    }
+
+    public Character getChr() {
+        return chr;
+    }
+
+    public PacketReader getR() {
+        return r;
+    }
+
+    public int getDamagePerMob() {
+        return damagePerMob;
+    }
+
+    public int getMobCount() {
+        return mobCount;
+    }
+
+    public int getSkillId() {
+        return skillId;
+    }
+
+    public int getKeyDown() {
+        return keyDown;
+    }
+
+    public int getAction() {
+        return action;
+    }
+
+    public int getAttackTime() {
+        return attackTime;
+    }
+
+    public byte getOption() {
+        return option;
+    }
+
+    public byte getAttackActionType() {
+        return attackActionType;
+    }
+
+    public byte getAttackSpeed() {
+        return attackSpeed;
+    }
+
+    public boolean isLeft() {
+        return left;
+    }
+
+    public DamageInfo[] getDamageInfo() {
+        return damageInfo;
+    }
 
     public void decode() {
         r.readByte();

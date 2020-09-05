@@ -3,9 +3,6 @@ package net.maple.handlers.user;
 import client.Character;
 import client.Client;
 import field.object.FieldObjectType;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import net.maple.SendOpcode;
 import net.maple.handlers.PacketHandler;
 import util.packet.Packet;
@@ -14,7 +11,6 @@ import util.packet.PacketWriter;
 
 public class UserGivePopularityRequestHandler extends PacketHandler {
 
-    @RequiredArgsConstructor
     private enum GivePopularityRes {
         SUCCESS(0x00),
         INVALID_CHARACTER_ID(0x01),
@@ -24,7 +20,15 @@ public class UserGivePopularityRequestHandler extends PacketHandler {
         NOTIFY(0x05),
         UNKNOWN_ERROR(0xFFFFFFFF);
 
-        @Getter @NonNull private final int value;
+        private final int value;
+
+        GivePopularityRes(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
     }
 
     @Override

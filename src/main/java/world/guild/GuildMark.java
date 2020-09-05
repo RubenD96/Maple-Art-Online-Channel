@@ -1,17 +1,31 @@
 package world.guild;
 
-import lombok.Getter;
 import org.jooq.Record;
 import util.packet.PacketReader;
 import util.packet.PacketWriter;
 
 import static database.jooq.Tables.GUILDMARK;
 
-@Getter
 public class GuildMark {
 
     private final short markBg, mark;
     private final byte markBgColor, markColor;
+
+    public short getMarkBg() {
+        return markBg;
+    }
+
+    public short getMark() {
+        return mark;
+    }
+
+    public byte getMarkBgColor() {
+        return markBgColor;
+    }
+
+    public byte getMarkColor() {
+        return markColor;
+    }
 
     public GuildMark(PacketReader reader) {
         markBg = reader.readShort();

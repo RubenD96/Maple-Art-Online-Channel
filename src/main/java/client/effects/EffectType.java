@@ -1,10 +1,5 @@
 package client.effects;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public enum EffectType {
 
     LEVEL_UP(0x00),
@@ -41,5 +36,13 @@ public enum EffectType {
     REPEAT_EFFECT_REMOVE(0x1F),
     EVOL_RING(0x20);
 
-    @NonNull @Getter final int value;
+    private final int value;
+
+    EffectType(int value) {
+        this.value = value;
+    }
+
+    public int getValue() {
+        return value;
+    }
 }

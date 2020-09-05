@@ -1,6 +1,5 @@
 package client.inventory.item.templates;
 
-import lombok.Getter;
 import util.packet.PacketReader;
 
 import java.util.ArrayList;
@@ -8,7 +7,11 @@ import java.util.List;
 
 public class MobSummonItemTemplate extends ItemBundleTemplate {
 
-    @Getter List<MobSummonItemEntry> mobs = new ArrayList<>();
+    private final List<MobSummonItemEntry> mobs = new ArrayList<>();
+
+    public List<MobSummonItemEntry> getMobs() {
+        return mobs;
+    }
 
     public MobSummonItemTemplate(int id, PacketReader r) {
         super(id, r);
@@ -18,10 +21,17 @@ public class MobSummonItemTemplate extends ItemBundleTemplate {
         }
     }
 
-    @Getter
-    public class MobSummonItemEntry {
+    public static class MobSummonItemEntry {
 
-        private int templateId, prob;
+        private final int templateId, prob;
+
+        public int getTemplateId() {
+            return templateId;
+        }
+
+        public int getProb() {
+            return prob;
+        }
 
         public MobSummonItemEntry(PacketReader r) {
             this.templateId = r.readInteger();

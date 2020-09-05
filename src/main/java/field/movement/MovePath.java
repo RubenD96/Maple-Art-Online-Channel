@@ -2,8 +2,6 @@ package field.movement;
 
 import field.movement.fragment.*;
 import field.object.life.FieldLife;
-import lombok.Getter;
-import lombok.Setter;
 import util.packet.PacketReader;
 import util.packet.PacketWriter;
 
@@ -20,8 +18,8 @@ public class MovePath implements MoveFragment {
         decode(packet);
     }
 
-    @Getter @Setter Point position;
-    @Getter @Setter Point vposition;
+    Point position;
+    Point vposition;
 
     @Override
     public void apply(FieldLife life) {

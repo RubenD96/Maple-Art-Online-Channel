@@ -1,10 +1,5 @@
 package client.messages.broadcast;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public enum BroadcastMessageType {
 
     NOTICE(0x00),
@@ -29,5 +24,13 @@ public enum BroadcastMessageType {
     HEART_SPEAKER(0x13),
     SKULL_SPEAKER(0x14);
 
-    @NonNull @Getter final int value;
+    private final int value;
+
+    BroadcastMessageType(int value) {
+        this.value = value;
+    }
+
+    public int getValue() {
+        return value;
+    }
 }

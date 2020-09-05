@@ -2,14 +2,17 @@ package client.effects.field;
 
 import client.effects.AbstractFieldEffect;
 import client.effects.FieldEffectType;
-import lombok.RequiredArgsConstructor;
 import util.packet.PacketWriter;
 
-@RequiredArgsConstructor
 public class TrembleFieldEffect extends AbstractFieldEffect {
 
     private final boolean heavy;
     private final int delay;
+
+    public TrembleFieldEffect(boolean heavy, int delay) {
+        this.heavy = heavy;
+        this.delay = delay;
+    }
 
     @Override
     public FieldEffectType getType() {

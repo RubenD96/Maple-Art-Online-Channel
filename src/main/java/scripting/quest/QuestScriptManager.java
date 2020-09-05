@@ -1,7 +1,6 @@
 package scripting.quest;
 
 import client.Client;
-import lombok.Getter;
 import scripting.AbstractScriptManager;
 
 import javax.script.Invocable;
@@ -10,11 +9,19 @@ import java.util.Map;
 
 public class QuestScriptManager extends AbstractScriptManager {
 
-    private final @Getter Map<Client, QuestConversationManager> qms = new HashMap<>();
+    private final Map<Client, QuestConversationManager> qms = new HashMap<>();
     private final Map<Client, Invocable> scripts = new HashMap<>();
-    private static final @Getter QuestScriptManager instance = new QuestScriptManager();
+    private static final QuestScriptManager instance = new QuestScriptManager();
 
     private QuestScriptManager() {
+    }
+
+    public Map<Client, QuestConversationManager> getQms() {
+        return qms;
+    }
+
+    public static QuestScriptManager getInstance() {
+        return instance;
     }
 
     public void converse(Client c, int npc, int questId, boolean start) {

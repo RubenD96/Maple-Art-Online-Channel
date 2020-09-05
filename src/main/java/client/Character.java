@@ -1,8 +1,5 @@
 package client;
 
-import world.guild.Guild;
-import world.guild.GuildMark;
-import world.guild.GuildMember;
 import client.interaction.shop.NPCShop;
 import client.interaction.storage.ItemStorageInteraction;
 import client.inventory.ItemInventory;
@@ -27,10 +24,6 @@ import field.Field;
 import field.object.FieldObjectType;
 import field.object.life.AbstractFieldLife;
 import field.object.life.FieldControlledObject;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import net.database.*;
 import net.maple.packets.CharacterPackets;
 import net.maple.packets.FieldPackets;
@@ -39,27 +32,340 @@ import net.server.ChannelServer;
 import net.server.Server;
 import scripting.npc.NPCScriptManager;
 import util.packet.Packet;
+import world.guild.Guild;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@Getter
-@Setter
-@RequiredArgsConstructor
 public class Character extends AbstractFieldLife {
 
     /**
      * Start constructor fields
      */
-    @NonNull final Client client;
-    @NonNull public String name;
-    @NonNull int id, gmLevel, level, hair, face;
-    @NonNull int gender, skinColor;
-    @NonNull Job job;
-    @NonNull int ap, sp, fame, fieldId, spawnpoint;
-    @NonNull int strength, dexterity, intelligence, luck;
-    @NonNull int health, maxHealth, mana, maxMana, exp;
-    @NonNull int meso;
+    final Client client;
+    public String name;
+    int id, gmLevel, level, hair, face;
+    int gender, skinColor;
+    Job job;
+    int ap, sp, fame, fieldId, spawnpoint;
+    int strength, dexterity, intelligence, luck;
+    int health, maxHealth, mana, maxMana, exp;
+    int meso;
+
+    public Character(Client client, String name, int id, int gmLevel, int level, int hair, int face, int gender, int skinColor, Job job, int ap, int sp, int fame, int fieldId, int spawnpoint, int strength, int dexterity, int intelligence, int luck, int health, int maxHealth, int mana, int maxMana, int exp, int meso) {
+        this.client = client;
+        this.name = name;
+        this.id = id;
+        this.gmLevel = gmLevel;
+        this.level = level;
+        this.hair = hair;
+        this.face = face;
+        this.gender = gender;
+        this.skinColor = skinColor;
+        this.job = job;
+        this.ap = ap;
+        this.sp = sp;
+        this.fame = fame;
+        this.fieldId = fieldId;
+        this.spawnpoint = spawnpoint;
+        this.strength = strength;
+        this.dexterity = dexterity;
+        this.intelligence = intelligence;
+        this.luck = luck;
+        this.health = health;
+        this.maxHealth = maxHealth;
+        this.mana = mana;
+        this.maxMana = maxMana;
+        this.exp = exp;
+        this.meso = meso;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getGmLevel() {
+        return gmLevel;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public int getHair() {
+        return hair;
+    }
+
+    public void setHair(int hair) {
+        this.hair = hair;
+    }
+
+    public int getFace() {
+        return face;
+    }
+
+    public int getGender() {
+        return gender;
+    }
+
+    public void setGender(int gender) {
+        this.gender = gender;
+    }
+
+    public int getSkinColor() {
+        return skinColor;
+    }
+
+    public Job getJob() {
+        return job;
+    }
+
+    public void setJob(Job job) {
+        this.job = job;
+    }
+
+    public int getAp() {
+        return ap;
+    }
+
+    public void setAp(int ap) {
+        this.ap = ap;
+    }
+
+    public int getSp() {
+        return sp;
+    }
+
+    public void setSp(int sp) {
+        this.sp = sp;
+    }
+
+    public int getFame() {
+        return fame;
+    }
+
+    public void setFame(int fame) {
+        this.fame = fame;
+    }
+
+    public int getFieldId() {
+        return fieldId;
+    }
+
+    public void setFieldId(int fieldId) {
+        this.fieldId = fieldId;
+    }
+
+    public int getSpawnpoint() {
+        return spawnpoint;
+    }
+
+    public int getStrength() {
+        return strength;
+    }
+
+    public void setStrength(int strength) {
+        this.strength = strength;
+    }
+
+    public int getDexterity() {
+        return dexterity;
+    }
+
+    public void setDexterity(int dexterity) {
+        this.dexterity = dexterity;
+    }
+
+    public int getIntelligence() {
+        return intelligence;
+    }
+
+    public void setIntelligence(int intelligence) {
+        this.intelligence = intelligence;
+    }
+
+    public int getLuck() {
+        return luck;
+    }
+
+    public void setLuck(int luck) {
+        this.luck = luck;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
+    public int getMana() {
+        return mana;
+    }
+
+    public int getMaxMana() {
+        return maxMana;
+    }
+
+    public int getExp() {
+        return exp;
+    }
+
+    public void setExp(int exp) {
+        this.exp = exp;
+    }
+
+    public int getMeso() {
+        return meso;
+    }
+
+    public void setMeso(int meso) {
+        this.meso = meso;
+    }
+
+    public Pet[] getPets() {
+        return pets;
+    }
+
+    public Map<Integer, KeyBinding> getKeyBindings() {
+        return keyBindings;
+    }
+
+    public int[] getQuickSlotKeys() {
+        return quickSlotKeys;
+    }
+
+    public Integer getPortableChair() {
+        return portableChair;
+    }
+
+    public void setPortableChair(Integer portableChair) {
+        this.portableChair = portableChair;
+    }
+
+    public byte getPortal() {
+        return portal;
+    }
+
+    public void setPortal(byte portal) {
+        this.portal = portal;
+    }
+
+    public List<FieldControlledObject> getControlledObjects() {
+        return controlledObjects;
+    }
+
+    public Map<ItemInventoryType, ItemInventory> getInventories() {
+        return inventories;
+    }
+
+    public void setInventories(Map<ItemInventoryType, ItemInventory> inventories) {
+        this.inventories = inventories;
+    }
+
+    public FriendList getFriendList() {
+        return friendList;
+    }
+
+    public int getTrueMaxHealth() {
+        return trueMaxHealth;
+    }
+
+    public int getPhilId() {
+        return philId;
+    }
+
+    public void setPhilId(int philId) {
+        this.philId = philId;
+    }
+
+    public Party getParty() {
+        return party;
+    }
+
+    public void setParty(Party party) {
+        this.party = party;
+    }
+
+    public boolean isInCashShop() {
+        return inCashShop;
+    }
+
+    public void setInCashShop(boolean inCashShop) {
+        this.inCashShop = inCashShop;
+    }
+
+    public Map<Integer, Quest> getQuests() {
+        return quests;
+    }
+
+    public void setQuests(Map<Integer, Quest> quests) {
+        this.quests = quests;
+    }
+
+    public Set<Integer> getTowns() {
+        return towns;
+    }
+
+    public Set<Integer> getRegisteredQuestMobs() {
+        return registeredQuestMobs;
+    }
+
+    public int[] getWishlist() {
+        return wishlist;
+    }
+
+    public void setWishlist(int[] wishlist) {
+        this.wishlist = wishlist;
+    }
+
+    public NPCShop getNpcShop() {
+        return npcShop;
+    }
+
+    public void setNpcShop(NPCShop npcShop) {
+        this.npcShop = npcShop;
+    }
+
+    public ItemStorageInteraction getActiveStorage() {
+        return activeStorage;
+    }
+
+    public void setActiveStorage(ItemStorageInteraction activeStorage) {
+        this.activeStorage = activeStorage;
+    }
+
+    public Guild getGuild() {
+        return guild;
+    }
+
+    public void setGuild(Guild guild) {
+        this.guild = guild;
+    }
+
+    public Set<String> getGuildInvitesSent() {
+        return guildInvitesSent;
+    }
+
     /**
      * End constructor fields
      */
@@ -86,7 +392,7 @@ public class Character extends AbstractFieldLife {
     public void init() {
         portal = (byte) spawnpoint;
         resetQuickSlot();
-        keyBindings = CharacterAPI.getKeyBindings(id);
+        keyBindings = CharacterAPI.INSTANCE.getKeyBindings(id);
         inventories.put(ItemInventoryType.EQUIP, new ItemInventory((short) 24));
         inventories.put(ItemInventoryType.CONSUME, new ItemInventory((short) 24));
         inventories.put(ItemInventoryType.INSTALL, new ItemInventory((short) 24));
@@ -102,11 +408,11 @@ public class Character extends AbstractFieldLife {
     }
 
     public void save() {
-        CharacterAPI.saveCharacterStats(this);
-        CharacterAPI.updateKeyBindings(this);
-        ItemAPI.saveInventories(this);
-        QuestAPI.saveInfo(this);
-        WishlistAPI.save(this);
+        CharacterAPI.INSTANCE.saveCharacterStats(this);
+        CharacterAPI.INSTANCE.updateKeyBindings(this);
+        ItemAPI.INSTANCE.saveInventories(this);
+        QuestAPI.INSTANCE.saveInfo(this);
+        WishlistAPI.INSTANCE.save(this);
     }
 
     public boolean isGM() {
@@ -140,7 +446,7 @@ public class Character extends AbstractFieldLife {
     }
 
     public void addTown(int id) {
-        TownsAPI.add(this, id);
+        TownsAPI.INSTANCE.add(this, id);
         towns.add(id);
     }
 
@@ -338,7 +644,7 @@ public class Character extends AbstractFieldLife {
     }
 
     public void loadParty() {
-        Party party = Server.Companion.getInstance().getParties().get(CharacterAPI.getOldPartyId(id));
+        Party party = Server.Companion.getInstance().getParties().get(CharacterAPI.INSTANCE.getOldPartyId(id));
         if (party != null) {
             PartyMember member = party.getMember(id);
             if (member != null) {
@@ -350,9 +656,9 @@ public class Character extends AbstractFieldLife {
     }
 
     public void loadGuild() {
-        int gid = GuildAPI.getGuildId(this);
+        int gid = GuildAPI.INSTANCE.getGuildId(this);
         if (gid != -1) {
-            Guild guild = GuildAPI.load(gid);
+            Guild guild = GuildAPI.INSTANCE.load(gid);
             if (guild == null) {
                 client.close(this, "Guild is null after database retrieval gid: " + gid);
                 return;

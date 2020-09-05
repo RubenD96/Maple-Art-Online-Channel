@@ -24,7 +24,7 @@ public class MigrateInHandler extends PacketHandler {
         c.acquireMigrateState();
         try {
             int cid = reader.readInteger();
-            Record accInfo = AccountAPI.getAccountInfoTemporary(cid);
+            Record accInfo = AccountAPI.INSTANCE.getAccountInfoTemporary(cid);
 
             MigrateInfo mi = Server.Companion.getInstance().getClients().get(accInfo.getValue(ACCOUNTS.ID));
             if (mi == null) {
@@ -36,16 +36,16 @@ public class MigrateInHandler extends PacketHandler {
                 //Server.getInstance().getClients().remove(accInfo.getValue(ACCOUNTS.ID));
                 c.login(accInfo, mi);
 
-                Character chr = CharacterAPI.getNewCharacter(c, cid);
+                Character chr = CharacterAPI.INSTANCE.getNewCharacter(c, cid);
                 c.getWorldChannel().addCharacter(chr);
                 c.setCharacter(chr);
 
-                ItemAPI.loadInventories(chr);
+                ItemAPI.INSTANCE.loadInventories(chr);
                 chr.validateStats();
-                QuestAPI.loadAll(chr);
+                QuestAPI.INSTANCE.loadAll(chr);
 
-                WishlistAPI.load(chr);
-                TownsAPI.load(chr); // before entering field, in case of FirstVisit mapscript
+                WishlistAPI.INSTANCE.load(chr);
+                TownsAPI.INSTANCE.load(chr); // before entering field, in case of FirstVisit mapscript
                 if (chr.getTowns().isEmpty()) {
                     chr.addTown(100);
                 }
@@ -58,8 +58,8 @@ public class MigrateInHandler extends PacketHandler {
                 }
                 field.enter(chr);
 
-                FriendAPI.loadFriends(chr);
-                FriendAPI.loadPending(chr);
+                FriendAPI.INSTANCE.loadFriends(chr);
+                FriendAPI.INSTANCE.loadPending(chr);
                 chr.getFriendList().sendPendingRequest();
                 chr.loadParty();
                 if (chr.getGuild() != null) {

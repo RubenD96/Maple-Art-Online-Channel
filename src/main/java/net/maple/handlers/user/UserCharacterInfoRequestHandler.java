@@ -11,7 +11,6 @@ import util.packet.Packet;
 import util.packet.PacketReader;
 import util.packet.PacketWriter;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;

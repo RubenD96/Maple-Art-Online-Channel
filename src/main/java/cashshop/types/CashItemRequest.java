@@ -1,9 +1,5 @@
 package cashshop.types;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public enum CashItemRequest {
 
     WEB_SHOP_ORDER_GET_LIST(0x0),
@@ -73,5 +69,13 @@ public enum CashItemRequest {
     CHECK_FREE_CASH_ITEM_TABLE(0x4E),
     SET_FREE_CASH_ITEM_TABLE(0x51);
 
-    private @Getter final int value;
+    private final int value;
+
+    CashItemRequest(int value) {
+        this.value = value;
+    }
+
+    public int getValue() {
+        return value;
+    }
 }

@@ -3,15 +3,65 @@ package client.inventory.item.templates;
 import client.inventory.ItemVariationType;
 import client.inventory.item.flags.ItemFlag;
 import client.inventory.slots.ItemSlot;
-import lombok.Getter;
 import util.packet.PacketReader;
 
-@Getter
 public class ItemTemplate {
 
     protected int flags;
     private int id, sellPrice;
     private boolean timeLimited, quest, partyQuest, only, tradeBlock, notSale, bigSize, expireOnLogout, accountSharable, cash;
+
+    public int getFlags() {
+        return flags;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getSellPrice() {
+        return sellPrice;
+    }
+
+    public boolean isTimeLimited() {
+        return timeLimited;
+    }
+
+    public boolean isQuest() {
+        return quest;
+    }
+
+    public boolean isPartyQuest() {
+        return partyQuest;
+    }
+
+    public boolean isOnly() {
+        return only;
+    }
+
+    public boolean isTradeBlock() {
+        return tradeBlock;
+    }
+
+    public boolean isNotSale() {
+        return notSale;
+    }
+
+    public boolean isBigSize() {
+        return bigSize;
+    }
+
+    public boolean isExpireOnLogout() {
+        return expireOnLogout;
+    }
+
+    public boolean isAccountSharable() {
+        return accountSharable;
+    }
+
+    public boolean isCash() {
+        return cash;
+    }
 
     public ItemTemplate(int id, PacketReader r) {
         flags = r.readInteger();

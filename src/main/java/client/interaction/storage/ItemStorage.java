@@ -1,12 +1,18 @@
 package client.interaction.storage;
 
 import client.inventory.ItemInventory;
-import lombok.Getter;
-import lombok.Setter;
 
 public class ItemStorage extends ItemInventory {
 
-    private @Getter @Setter int meso;
+    private int meso;
+
+    public int getMeso() {
+        return meso;
+    }
+
+    public void setMeso(int meso) {
+        this.meso = meso;
+    }
 
     public ItemStorage(short slotMax, int meso) {
         super(slotMax);

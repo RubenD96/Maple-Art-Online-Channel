@@ -1,10 +1,5 @@
 package client.player.quest;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public enum QuestRequest {
 
     LOST_ITEM(0x00),
@@ -14,5 +9,13 @@ public enum QuestRequest {
     OPENING_SCRIPT(0x04),
     COMPLETE_SCRIPT(0x05);
 
-    @NonNull @Getter int value;
+    private final int value;
+
+    QuestRequest(int value) {
+        this.value = value;
+    }
+
+    public int getValue() {
+        return value;
+    }
 }

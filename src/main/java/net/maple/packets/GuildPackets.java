@@ -1,12 +1,11 @@
 package net.maple.packets;
 
 import client.Character;
-import world.guild.Guild;
-import world.guild.GuildMark;
-import world.guild.GuildMember;
 import net.maple.SendOpcode;
 import util.packet.Packet;
 import util.packet.PacketWriter;
+import world.guild.Guild;
+import world.guild.GuildMark;
 
 import java.util.Arrays;
 

@@ -1,17 +1,83 @@
 package client.inventory.item.templates;
 
 import client.inventory.item.flags.StatFlag;
-import lombok.Getter;
 import util.packet.PacketReader;
 
-@Getter
 public class StatChangeItemTemplate extends ItemBundleTemplate {
 
-    private int consumeFlags;
+    private final int consumeFlags;
     private int HP, MP, HPR, MPR;
     private boolean noCancelMouse;
     private short PAD, PDD, MAD, MDD, ACC, EVA, craft, speed, jump, morph;
     private int time;
+
+    public int getConsumeFlags() {
+        return consumeFlags;
+    }
+
+    public int getHP() {
+        return HP;
+    }
+
+    public int getMP() {
+        return MP;
+    }
+
+    public int getHPR() {
+        return HPR;
+    }
+
+    public int getMPR() {
+        return MPR;
+    }
+
+    public boolean isNoCancelMouse() {
+        return noCancelMouse;
+    }
+
+    public short getPAD() {
+        return PAD;
+    }
+
+    public short getPDD() {
+        return PDD;
+    }
+
+    public short getMAD() {
+        return MAD;
+    }
+
+    public short getMDD() {
+        return MDD;
+    }
+
+    public short getACC() {
+        return ACC;
+    }
+
+    public short getEVA() {
+        return EVA;
+    }
+
+    public short getCraft() {
+        return craft;
+    }
+
+    public short getSpeed() {
+        return speed;
+    }
+
+    public short getJump() {
+        return jump;
+    }
+
+    public short getMorph() {
+        return morph;
+    }
+
+    public int getTime() {
+        return time;
+    }
 
     public StatChangeItemTemplate(int id, PacketReader r) {
         super(id, r);

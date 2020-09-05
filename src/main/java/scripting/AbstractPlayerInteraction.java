@@ -5,23 +5,17 @@ import client.Client;
 import client.effects.field.TrembleFieldEffect;
 import client.effects.user.QuestEffect;
 import client.interaction.storage.ItemStorageInteraction;
-import client.inventory.ItemVariationType;
 import client.inventory.item.templates.ItemEquipTemplate;
 import client.inventory.item.templates.ItemTemplate;
 import client.inventory.slots.ItemSlotEquip;
 import client.messages.IncEXPMessage;
 import client.messages.broadcast.types.AlertMessage;
 import client.messages.broadcast.types.NoticeWithoutPrefixMessage;
-import client.messages.quest.PerformQuestRecordMessage;
 import client.player.quest.Quest;
 import field.Field;
-import field.object.FieldObject;
 import field.object.FieldObjectType;
 import field.object.life.FieldMob;
 import field.object.life.FieldMobTemplate;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import managers.ItemManager;
 import managers.MobManager;
 import net.maple.packets.CharacterPackets;
@@ -36,12 +30,18 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
-@RequiredArgsConstructor
-@Getter
 @SuppressWarnings("unused")
 public abstract class AbstractPlayerInteraction {
 
-    protected @NonNull final Client c;
+    protected final Client c;
+
+    public AbstractPlayerInteraction(Client c) {
+        this.c = c;
+    }
+
+    public Client getC() {
+        return c;
+    }
 
     public Character getPlayer() {
         return c.getCharacter();

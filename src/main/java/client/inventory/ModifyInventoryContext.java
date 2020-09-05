@@ -5,7 +5,6 @@ import client.inventory.operations.*;
 import client.inventory.slots.ItemSlot;
 import client.inventory.slots.ItemSlotBundle;
 import constants.ItemConstants;
-import lombok.Getter;
 import managers.ItemManager;
 import util.packet.PacketWriter;
 
@@ -21,7 +20,11 @@ public class ModifyInventoryContext implements ModifyInventoryContextInterface {
     private final ItemInventoryType type;
     private final ItemInventory inventory;
 
-    @Getter private final Queue<AbstractModifyInventoryOperation> operations;
+    private final Queue<AbstractModifyInventoryOperation> operations;
+
+    public Queue<AbstractModifyInventoryOperation> getOperations() {
+        return operations;
+    }
 
     public ModifyInventoryContext(ItemInventoryType type, ItemInventory inventory) {
         this.type = type;

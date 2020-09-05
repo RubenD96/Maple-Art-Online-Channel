@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class ItemManager extends AbstractManager {
 
-    private static Map<Integer, ItemTemplate> items = new HashMap<>();
+    private static final Map<Integer, ItemTemplate> items = new HashMap<>();
 
     public static synchronized ItemTemplate getItem(int id) {
         if (id < 999999) {

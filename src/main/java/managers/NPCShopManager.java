@@ -1,7 +1,6 @@
 package managers;
 
 import client.interaction.shop.NPCShop;
-import lombok.Getter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +8,11 @@ import java.util.Map;
 public class NPCShopManager {
 
     private final Map<Integer, NPCShop> shops;
-    private static @Getter final NPCShopManager instance = new NPCShopManager();
+    private static final NPCShopManager instance = new NPCShopManager();
+
+    public static NPCShopManager getInstance() {
+        return instance;
+    }
 
     private NPCShopManager() {
         shops = new HashMap<>();

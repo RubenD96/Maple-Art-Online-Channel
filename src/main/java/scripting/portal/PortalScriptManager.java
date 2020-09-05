@@ -3,7 +3,6 @@ package scripting.portal;
 import client.Client;
 import client.messages.broadcast.types.AlertMessage;
 import field.object.portal.FieldPortal;
-import lombok.Getter;
 import net.maple.packets.CharacterPackets;
 import scripting.AbstractScriptManager;
 
@@ -11,9 +10,13 @@ import javax.script.Invocable;
 
 public class PortalScriptManager extends AbstractScriptManager {
 
-    private static final @Getter PortalScriptManager instance = new PortalScriptManager();
+    private static final PortalScriptManager instance = new PortalScriptManager();
 
     private PortalScriptManager() {
+    }
+
+    public static PortalScriptManager getInstance() {
+        return instance;
     }
 
     public void execute(Client c, FieldPortal portal, String script) {

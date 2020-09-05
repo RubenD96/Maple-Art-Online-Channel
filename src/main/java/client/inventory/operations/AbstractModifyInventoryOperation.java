@@ -2,16 +2,22 @@ package client.inventory.operations;
 
 import client.inventory.ItemInventoryType;
 import client.inventory.ModifyInventoryOperationType;
-import lombok.Getter;
 import util.packet.PacketWriter;
 
-@Getter
 public abstract class AbstractModifyInventoryOperation {
 
     protected abstract ModifyInventoryOperationType getType();
 
     private final ItemInventoryType inventory;
     private final short slot;
+
+    public ItemInventoryType getInventory() {
+        return inventory;
+    }
+
+    public short getSlot() {
+        return slot;
+    }
 
     public AbstractModifyInventoryOperation(ItemInventoryType inventory, short slot) {
         this.inventory = inventory;

@@ -1,15 +1,13 @@
 package field.movement.fragment;
 
 import field.object.life.FieldLife;
-import lombok.Getter;
-import lombok.Setter;
 import util.packet.PacketReader;
 import util.packet.PacketWriter;
 
 public class ActionMoveFragment extends AbstractMovementFragment {
 
-    @Getter @Setter byte moveAction;
-    @Getter @Setter short elapse;
+    byte moveAction;
+    short elapse;
 
     public ActionMoveFragment(byte movePathAttribute, PacketReader packetReader) {
         super(movePathAttribute, packetReader);

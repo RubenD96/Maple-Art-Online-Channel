@@ -2,8 +2,6 @@ package field.movement.fragment;
 
 import field.movement.MovePathAttribute;
 import field.object.life.FieldLife;
-import lombok.Getter;
-import lombok.Setter;
 import util.packet.PacketReader;
 import util.packet.PacketWriter;
 
@@ -11,11 +9,11 @@ import java.awt.*;
 
 public class NormalMoveFragment extends ActionMoveFragment {
 
-    @Getter @Setter Point position;
-    @Getter @Setter Point vposition;
-    @Getter @Setter Point offset;
-    @Getter @Setter short foothold;
-    @Getter @Setter short fallStartFoothold;
+    Point position;
+    Point vposition;
+    Point offset;
+    short foothold;
+    short fallStartFoothold;
 
     public NormalMoveFragment(byte movePathAttribute, PacketReader packetReader) {
         super(movePathAttribute, packetReader);

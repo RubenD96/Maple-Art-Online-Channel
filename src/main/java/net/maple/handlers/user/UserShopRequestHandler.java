@@ -3,8 +3,6 @@ package net.maple.handlers.user;
 import client.Character;
 import client.Client;
 import client.interaction.shop.NPCShop;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import net.maple.SendOpcode;
 import net.maple.handlers.PacketHandler;
 import util.packet.PacketReader;

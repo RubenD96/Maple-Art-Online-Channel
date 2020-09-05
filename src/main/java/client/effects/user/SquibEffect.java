@@ -2,13 +2,15 @@ package client.effects.user;
 
 import client.effects.AbstractEffect;
 import client.effects.EffectType;
-import lombok.RequiredArgsConstructor;
 import util.packet.PacketWriter;
 
-@RequiredArgsConstructor
 public class SquibEffect extends AbstractEffect {
 
     private final String path;
+
+    public SquibEffect(String path) {
+        this.path = path;
+    }
 
     @Override
     public EffectType getType() {

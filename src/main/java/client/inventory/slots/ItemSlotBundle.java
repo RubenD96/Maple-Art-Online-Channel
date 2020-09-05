@@ -1,16 +1,43 @@
 package client.inventory.slots;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.Objects;
 
-@Getter
-@Setter
 public class ItemSlotBundle extends ItemSlot {
 
     private short number, maxNumber, attribute;
     private String title = "";
+
+    public short getNumber() {
+        return number;
+    }
+
+    public void setNumber(short number) {
+        this.number = number;
+    }
+
+    public short getMaxNumber() {
+        return maxNumber;
+    }
+
+    public void setMaxNumber(short maxNumber) {
+        this.maxNumber = maxNumber;
+    }
+
+    public short getAttribute() {
+        return attribute;
+    }
+
+    public void setAttribute(short attribute) {
+        this.attribute = attribute;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     @Override
     public boolean equals(Object o) {

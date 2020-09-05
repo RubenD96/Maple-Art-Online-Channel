@@ -1,8 +1,5 @@
 package util;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.Random;
 
 /**
@@ -11,14 +8,38 @@ import java.util.Random;
  * @author Kaioru
  */
 public class Rand32 {
-    @Getter @Setter private long Seed1;
-    @Getter @Setter private long Seed2;
-    @Getter @Setter private long Seed3;
+    private long Seed1;
+    private long Seed2;
+    private long Seed3;
     private long _prevSeed1;
     private long _prevSeed2;
     private long _prevSeed3;
 
     private final Object _lock = new Object();
+
+    public long getSeed1() {
+        return Seed1;
+    }
+
+    public void setSeed1(long seed1) {
+        Seed1 = seed1;
+    }
+
+    public long getSeed2() {
+        return Seed2;
+    }
+
+    public void setSeed2(long seed2) {
+        Seed2 = seed2;
+    }
+
+    public long getSeed3() {
+        return Seed3;
+    }
+
+    public void setSeed3(long seed3) {
+        Seed3 = seed3;
+    }
 
     public Rand32(long seed1, long seed2, long seed3) {
         Seed1 = seed1;

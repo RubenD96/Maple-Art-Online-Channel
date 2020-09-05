@@ -19,7 +19,7 @@ public class CashShopPackets {
         CharacterPackets.encodeData(c.getCharacter(), pw);
 
         pw.writeBool(true); // m_bCashShopAuthorized
-        pw.writeMapleString(AccountAPI.getAccountInfo(c.getAccId()).getValue(Accounts.ACCOUNTS.NAME)); // m_sNexonClubID
+        pw.writeMapleString(AccountAPI.INSTANCE.getAccountInfo(c.getAccId()).getValue(Accounts.ACCOUNTS.NAME)); // m_sNexonClubID
 
         pw.writeInt(0); // notSales
         pw.writeShort(0); // modified commodities
@@ -36,7 +36,7 @@ public class CashShopPackets {
         pw.writeShort(0); // DecodeZeroGoods
 
         pw.writeBool(false); // m_bEventOn
-        pw.writeInt(AccountAPI.getHighestLevelOnAccount(c.getAccId())); // highest character on account
+        pw.writeInt(AccountAPI.INSTANCE.getHighestLevelOnAccount(c.getAccId())); // highest character on account
 
         c.write(pw.createPacket());
 
@@ -57,7 +57,7 @@ public class CashShopPackets {
         pw.writeShort(4); // storage max size
         pw.writeShort(6); // total character slots
         pw.writeShort(0); // ?
-        pw.writeShort(AccountAPI.getCharacterCount(c.getAccId())); // character slots used
+        pw.writeShort(AccountAPI.INSTANCE.getCharacterCount(c.getAccId())); // character slots used
 
         c.write(pw.createPacket());
     }
@@ -67,7 +67,7 @@ public class CashShopPackets {
 
         pw.writeHeader(SendOpcode.CASH_SHOP_QUERY_CASH_RESULT);
 
-        if (c.getCash() == null) AccountAPI.loadNXCash(c);
+        if (c.getCash() == null) AccountAPI.INSTANCE.loadNXCash(c);
 
         pw.writeInt(0); // nexon cash
         pw.writeInt(0); // maple points

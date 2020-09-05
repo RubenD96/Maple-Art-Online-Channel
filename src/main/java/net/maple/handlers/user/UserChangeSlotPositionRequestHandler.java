@@ -6,7 +6,6 @@ import client.inventory.ItemInventoryType;
 import client.inventory.slots.ItemSlot;
 import client.inventory.slots.ItemSlotBundle;
 import constants.ItemConstants;
-import field.object.drop.EnterType;
 import field.object.drop.ItemDrop;
 import net.database.ItemAPI;
 import net.maple.handlers.PacketHandler;
@@ -38,7 +37,7 @@ public class UserChangeSlotPositionRequestHandler extends PacketHandler {
 
                             item = i.getInventoryContext(type).take(from, number);
                             item.setUuid(uuid);
-                            ItemAPI.deleteItemByUUID(uuid); // clear db entry
+                            ItemAPI.INSTANCE.deleteItemByUUID(uuid); // clear db entry
                         } else {
                             i.getInventoryContext(type).remove(item);
                         }

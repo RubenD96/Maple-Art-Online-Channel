@@ -2,14 +2,17 @@ package scripting.map;
 
 import client.Client;
 import field.Field;
-import lombok.Getter;
 import scripting.AbstractScriptManager;
 
 import javax.script.Invocable;
 
 public class FieldScriptManager extends AbstractScriptManager {
 
-    private static final @Getter FieldScriptManager instance = new FieldScriptManager();
+    private static final FieldScriptManager instance = new FieldScriptManager();
+
+    public static FieldScriptManager getInstance() {
+        return instance;
+    }
 
     private FieldScriptManager() {
     }

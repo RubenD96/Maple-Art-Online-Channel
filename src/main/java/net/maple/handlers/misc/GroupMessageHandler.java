@@ -2,7 +2,6 @@ package net.maple.handlers.misc;
 
 import client.Character;
 import client.Client;
-import lombok.RequiredArgsConstructor;
 import net.maple.SendOpcode;
 import net.maple.handlers.PacketHandler;
 import util.packet.Packet;
@@ -11,7 +10,6 @@ import util.packet.PacketWriter;
 
 public class GroupMessageHandler extends PacketHandler {
 
-    @RequiredArgsConstructor
     private static final class ChatGroupType {
         public static final byte FRIEND = 0x00;
         public static final byte PARTY = 0x01;

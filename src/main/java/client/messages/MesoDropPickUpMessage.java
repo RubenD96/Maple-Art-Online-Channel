@@ -1,16 +1,36 @@
 package client.messages;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import util.packet.PacketWriter;
 
-@RequiredArgsConstructor
 public class MesoDropPickUpMessage extends AbstractMessage {
 
-    private @Getter @Setter boolean failed;
-    private final @Getter int meso;
-    private @Getter @Setter short premiumIPMesoBonus; // wtf
+    private boolean failed;
+    private final int meso;
+    private short premiumIPMesoBonus; // wtf
+
+    public MesoDropPickUpMessage(int meso) {
+        this.meso = meso;
+    }
+
+    public boolean isFailed() {
+        return failed;
+    }
+
+    public void setFailed(boolean failed) {
+        this.failed = failed;
+    }
+
+    public int getMeso() {
+        return meso;
+    }
+
+    public short getPremiumIPMesoBonus() {
+        return premiumIPMesoBonus;
+    }
+
+    public void setPremiumIPMesoBonus(short premiumIPMesoBonus) {
+        this.premiumIPMesoBonus = premiumIPMesoBonus;
+    }
 
     @Override
     public MessageType getType() {

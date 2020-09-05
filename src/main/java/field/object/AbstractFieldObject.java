@@ -1,8 +1,6 @@
 package field.object;
 
 import field.Field;
-import lombok.Getter;
-import lombok.Setter;
 import util.packet.Packet;
 
 import java.awt.*;
@@ -10,8 +8,18 @@ import java.awt.*;
 public abstract class AbstractFieldObject implements FieldObject {
 
     protected Point position = new Point();
-    protected @Getter @Setter Field field;
+    protected Field field;
     protected int id;
+
+    @Override
+    public Field getField() {
+        return field;
+    }
+
+    @Override
+    public void setField(Field field) {
+        this.field = field;
+    }
 
     @Override
     public abstract FieldObjectType getFieldObjectType();

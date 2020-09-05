@@ -3,17 +3,19 @@ package field.object.drop;
 import client.Character;
 import client.messages.MesoDropPickUpMessage;
 import field.object.FieldObject;
-import lombok.Getter;
-import lombok.NonNull;
 import net.maple.packets.CharacterPackets;
 
 public class MesoDrop extends AbstractFieldDrop {
 
-    @Getter final int meso;
+    final int meso;
 
-    public MesoDrop(@NonNull int owner, @NonNull FieldObject source, int meso, int questId) {
+    public MesoDrop(int owner, FieldObject source, int meso, int questId) {
         super(owner, source, questId);
         this.meso = meso;
+    }
+
+    public int getMeso() {
+        return meso;
     }
 
     @Override

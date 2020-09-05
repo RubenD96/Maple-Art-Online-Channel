@@ -1,14 +1,12 @@
 package field.movement.fragment;
 
 import field.object.life.FieldLife;
-import lombok.Getter;
-import lombok.Setter;
 import util.packet.PacketReader;
 import util.packet.PacketWriter;
 
 public class StatChangeMoveFragment extends AbstractMovementFragment {
 
-    @Getter @Setter boolean stat;
+    boolean stat;
 
     public StatChangeMoveFragment(byte movePathAttribute, PacketReader packetReader) {
         super(movePathAttribute, packetReader);

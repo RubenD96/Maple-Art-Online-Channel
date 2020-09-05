@@ -2,7 +2,6 @@ package net.maple.handlers.user;
 
 import client.Character;
 import client.Client;
-import field.object.drop.EnterType;
 import field.object.drop.MesoDrop;
 import net.maple.handlers.PacketHandler;
 import util.packet.PacketReader;

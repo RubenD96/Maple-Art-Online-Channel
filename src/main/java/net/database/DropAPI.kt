@@ -1,3 +1,96 @@
+package net.database
+
+import database.jooq.Tables
+import field.`object`.drop.DropEntry
+import field.`object`.life.FieldMobTemplate
+import managers.MobManager
+import net.database.DatabaseCore.connection
+import org.jooq.Record
+import java.util.*
+import java.util.function.Consumer
+
+object DropAPI {
+
+    fun getMobDrops(mob: Int): List<DropEntry> {
+        val drops = ArrayList<DropEntry>()
+        val res = connection
+                .select().from(Tables.MOBDROPS)
+                .where(Tables.MOBDROPS.MID.eq(mob))
+                .fetch()
+        res.forEach(Consumer { rec: Record ->
+            drops.add(DropEntry(
+                    rec.get(Tables.MOBDROPS.IID),
+                    rec.get(Tables.MOBDROPS.MIN),
+                    rec.get(Tables.MOBDROPS.MAX),
+                    rec.get(Tables.MOBDROPS.QUESTID),
+                    rec.get(Tables.MOBDROPS.CHANCE)
+            ))
+        })
+        return drops
+    }
+
+    fun addMobDrop(mid: Int, iid: Int, min: Int, max: Int, questId: Int, chance: Double) {
+        val template: FieldMobTemplate? = MobManager.getMob(mid)
+        if (template != null) {
+            connection
+                    .insertInto(Tables.MOBDROPS,
+                            Tables.MOBDROPS.MID,
+                            Tables.MOBDROPS.IID,
+                            Tables.MOBDROPS.MIN,
+                            Tables.MOBDROPS.MAX,
+                            Tables.MOBDROPS.QUESTID,
+                            Tables.MOBDROPS.CHANCE)
+                    .values(mid,
+                            iid,
+                            min,
+                            max,
+                            questId,
+                            chance
+                    ).execute()
+            template.drops.add(DropEntry(iid, min, max, questId, chance))
+        }
+    }
+
+    fun updateDropChance(mid: Int, iid: Int, chance: Double) {
+        val template: FieldMobTemplate? = MobManager.getMob(mid)
+        template?.drops?.stream()?.filter { drop: DropEntry -> drop.id == iid }?.forEach { drop: DropEntry -> drop.chance = chance }
+        connection
+                .update(Tables.MOBDROPS)
+                .set(Tables.MOBDROPS.CHANCE, chance)
+                .where(Tables.MOBDROPS.MID.eq(mid))
+                .and(Tables.MOBDROPS.IID.eq(iid))
+                .execute()
+    }
+
+    fun updateMinMaxChance(mid: Int, iid: Int, min: Int, max: Int, chance: Double) {
+        val template: FieldMobTemplate? = MobManager.getMob(mid)
+        template?.drops?.stream()?.filter { drop: DropEntry -> drop.id == iid }?.forEach { drop: DropEntry ->
+            drop.min = min
+            drop.max = max
+            drop.chance = chance
+        }
+        connection
+                .update(Tables.MOBDROPS)
+                .set(Tables.MOBDROPS.MIN, min)
+                .set(Tables.MOBDROPS.MAX, max)
+                .set(Tables.MOBDROPS.CHANCE, chance)
+                .where(Tables.MOBDROPS.MID.eq(mid))
+                .and(Tables.MOBDROPS.IID.eq(iid))
+                .execute()
+    }
+
+    fun removeDrop(mid: Int, iid: Int) {
+        val template: FieldMobTemplate? = MobManager.getMob(mid)
+        template?.drops?.stream()?.filter { drop: DropEntry -> drop.id == iid }?.findFirst()?.ifPresent { entry: DropEntry? -> template.drops.remove(entry) }
+        connection
+                .deleteFrom(Tables.MOBDROPS)
+                .where(Tables.MOBDROPS.MID.eq(mid))
+                .and(Tables.MOBDROPS.IID.eq(iid))
+                .execute()
+    }
+}
+
+/*
 package net.database;
 
 import field.object.drop.DropEntry;
@@ -101,3 +194,5 @@ public class DropAPI {
                 .execute();
     }
 }
+
+ */

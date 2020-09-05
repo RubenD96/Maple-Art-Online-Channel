@@ -1,16 +1,27 @@
 package client.player.key;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-
-@Getter
-@RequiredArgsConstructor
 public class KeyBinding {
-    @NonNull byte type;
-    @NonNull int action;
+    private final byte type;
+    private final int action;
 
-    @Getter static final KeyBinding[] defaultBindings = new KeyBinding[90];
+    public KeyBinding(byte type, int action) {
+        this.type = type;
+        this.action = action;
+    }
+
+    private static final KeyBinding[] defaultBindings = new KeyBinding[90];
+
+    public byte getType() {
+        return type;
+    }
+
+    public int getAction() {
+        return action;
+    }
+
+    public static KeyBinding[] getDefaultBindings() {
+        return defaultBindings;
+    }
 
     static {
         defaultBindings[2] = new KeyBinding(KeyType.MENU, KeyAction.CHAT_ALL);
