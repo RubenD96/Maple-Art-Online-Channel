@@ -1,7 +1,6 @@
-package client.effects;
+package client.effects
 
-public enum EffectType {
-
+enum class EffectType(val value: Int) {
     LEVEL_UP(0x00),
     SKILL_USE(0x01),
     SKILL_AFFECTED(0x02),
@@ -35,14 +34,4 @@ public enum EffectType {
     DELIVERY_QUEST_ITEM_USE(0x1E),
     REPEAT_EFFECT_REMOVE(0x1F),
     EVOL_RING(0x20);
-
-    private final int value;
-
-    EffectType(int value) {
-        this.value = value;
-    }
-
-    public int getValue() {
-        return value;
-    }
 }

@@ -1,7 +1,6 @@
-package cashshop.types;
+package cashshop.types
 
-public enum CashItemResult {
-
+enum class CashItemResult(val value: Int) {
     CANCEL_NAME_CHANGE_FAIL(0x34),
     CHARACTER_SALE_SUCCESS(0x38),
     CHARACTER_SALE_FAIL(0x39),
@@ -130,14 +129,4 @@ public enum CashItemResult {
     GIVE_FAILED(0xBF),
     GASH_ITEM_GACHAPON_FAILED(0xC0),
     CASH_ITEM_GACHAPON_DONE(0xC1);
-
-    private final int value;
-
-    CashItemResult(int value) {
-        this.value = value;
-    }
-
-    public int getValue() {
-        return value;
-    }
 }
