@@ -1,7 +1,6 @@
-package cashshop.types;
+package cashshop.types
 
-public enum CashItemRequest {
-
+enum class CashItemRequest(val value: Int) {
     WEB_SHOP_ORDER_GET_LIST(0x0),
     LOAD_LOCKER(0x1),
     LOAD_WISH(0x2),
@@ -68,14 +67,4 @@ public enum CashItemRequest {
     CHANGE_MAPLE_POINT(0x4D),
     CHECK_FREE_CASH_ITEM_TABLE(0x4E),
     SET_FREE_CASH_ITEM_TABLE(0x51);
-
-    private final int value;
-
-    CashItemRequest(int value) {
-        this.value = value;
-    }
-
-    public int getValue() {
-        return value;
-    }
 }

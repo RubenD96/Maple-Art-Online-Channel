@@ -42,7 +42,7 @@ public class PartyPackets {
         pw.writeBool(true);
         pw.writeBool(expel); // false = leave / true = expel
         pw.writeMapleString(name); // CharacterName
-        party.encodePartyData(pw, memChannel);
+        party.encode(pw, memChannel);
 
         return pw.createPacket();
     }
@@ -94,7 +94,7 @@ public class PartyPackets {
 
         pw.writeInt(party.getId());
         pw.writeMapleString(name);
-        party.encodePartyData(pw, memChannel);
+        party.encode(pw, memChannel);
 
         return pw.createPacket();
     }
@@ -114,7 +114,7 @@ public class PartyPackets {
         PacketWriter pw = getBasePacket(PartyOperationType.PARTYRES_LOADPARTY_DONE);
 
         pw.writeInt(party.getId());
-        party.encodePartyData(pw, memChannel);
+        party.encode(pw, memChannel);
 
         return pw.createPacket();
     }
