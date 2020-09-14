@@ -13,11 +13,10 @@ import managers.MobManager;
 import managers.NPCManager;
 import managers.NPCShopManager;
 import net.database.ShopAPI;
+import net.maple.handlers.user.UserChatHandler;
 import net.maple.packets.CharacterPackets;
 import net.server.Server;
 import scripting.AbstractPlayerInteraction;
-
-import static net.maple.handlers.user.UserChatHandler.refreshCommandList;
 
 public class CommandShortcut extends AbstractPlayerInteraction {
 
@@ -45,7 +44,7 @@ public class CommandShortcut extends AbstractPlayerInteraction {
     public void reloadScripts(String script) {
         switch (script.toUpperCase()) {
             case "COMMANDS":
-                refreshCommandList();
+                UserChatHandler.Companion.refreshCommandList();
                 break;
             default:
                 break;

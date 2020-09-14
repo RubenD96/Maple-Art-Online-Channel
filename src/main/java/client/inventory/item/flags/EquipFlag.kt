@@ -1,8 +1,8 @@
-package client.inventory.item.flags;
+package client.inventory.item.flags
 
-import util.packet.IntegerValue;
+import util.packet.IntegerValue
 
-public enum EquipFlag implements IntegerValue {
+enum class EquipFlag(private val flag: Int) : IntegerValue {
 
     TUC(0x01),
     INC_STR(0x02),
@@ -30,19 +30,11 @@ public enum EquipFlag implements IntegerValue {
     SET_ITEM_ID(0x800000),
     DURABILITY(0x1000000);
 
-    private final int flag;
-
-    EquipFlag(int flag) {
-        this.flag = flag;
+    override fun getValue(): Int {
+        return flag
     }
 
-    @Override
-    public int getValue() {
-        return flag;
-    }
-
-    @Override
-    public void setValue(int value) {
+    override fun setValue(value: Int) {
         //...
     }
 }

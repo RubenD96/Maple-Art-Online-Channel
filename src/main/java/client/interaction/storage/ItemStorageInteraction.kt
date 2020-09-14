@@ -39,6 +39,7 @@ class ItemStorageInteraction(val npcId: Int, val storage: ItemStorage) : Interac
         c.character.activeStorage = null
     }
 
+    @JvmOverloads
     fun encodeItems(pw: PacketWriter, flags: DbChar = DbChar.ALL) {
         pw.write(storage.slotMax.toInt())
         pw.writeLong(flags.value.toLong())

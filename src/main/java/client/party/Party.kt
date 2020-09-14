@@ -135,7 +135,7 @@ class Party(leader: Character) {
         pw.writeInt(bossId) // unsigned int dwPartyBossCharacterID
     }
 
-    private fun encodePortal(pw: PacketWriter) {
+    fun encodePortal(pw: PacketWriter) {
         pw.writeInt(999999999) // dwTownID
         pw.writeInt(999999999) // dwFieldID
         pw.writeInt(0) // nSkillID

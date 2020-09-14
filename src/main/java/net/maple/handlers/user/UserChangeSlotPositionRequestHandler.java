@@ -30,7 +30,7 @@ public class UserChangeSlotPositionRequestHandler extends PacketHandler {
                         ItemSlot item = chr.getInventories().get(type).getItems().get(from);
                         byte[] uuid = item.getUuid();
 
-                        if (!ItemConstants.isTreatSingly(item.getTemplateId())) {
+                        if (!ItemConstants.INSTANCE.isTreatSingly(item.getTemplateId())) {
                             if (!(item instanceof ItemSlotBundle)) return;
                             ItemSlotBundle bundle = (ItemSlotBundle) item;
                             if (bundle.getNumber() < number) return;

@@ -42,6 +42,7 @@ class Server private constructor() {
 
         // the first script engine takes a few sec to load, all subsequent engines are hella fast
         GraalJSScriptEngine.create()
+
         GlobalScope.launch {
             withContext(NonCancellable) {
                 async { rankingRoutine() }

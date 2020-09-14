@@ -82,7 +82,7 @@ public class ItemPackets {
         pw.writeMapleString(item.getTitle());
         pw.writeShort(item.getAttribute());
 
-        if (ItemConstants.isRechargeableItem(item.getTemplateId())) {
+        if (ItemConstants.INSTANCE.isRechargeableItem(item.getTemplateId())) {
             pw.writeLong(0);
         }
     }

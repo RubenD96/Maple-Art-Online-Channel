@@ -123,7 +123,7 @@ public class ModifyInventoryContext implements ModifyInventoryContextInterface {
     public void remove(short slot, short quantity) {
         if (inventory.getItems().get(slot) instanceof ItemSlotBundle) {
             ItemSlotBundle bundle = (ItemSlotBundle) inventory.getItems().get(slot);
-            if (!ItemConstants.isRechargeableItem(bundle.getTemplateId())) {
+            if (!ItemConstants.INSTANCE.isRechargeableItem(bundle.getTemplateId())) {
                 if (quantity > 0) {
                     bundle.setNumber((short) (bundle.getNumber() - quantity));
                     bundle.setNumber((short) Math.max((short) 0, bundle.getNumber()));
@@ -164,7 +164,7 @@ public class ModifyInventoryContext implements ModifyInventoryContextInterface {
                     if (removed.get() >= quantity) return;
                     if (item instanceof ItemSlotBundle) {
                         ItemSlotBundle bundle = (ItemSlotBundle) item;
-                        if (!ItemConstants.isRechargeableItem(bundle.getTemplateId())) {
+                        if (!ItemConstants.INSTANCE.isRechargeableItem(bundle.getTemplateId())) {
                             int difference = quantity - removed.get();
                             if (bundle.getNumber() > difference) {
                                 removed.addAndGet(difference);
@@ -188,7 +188,7 @@ public class ModifyInventoryContext implements ModifyInventoryContextInterface {
 
         if (item instanceof ItemSlotBundle) {
             ItemSlotBundle bundle = (ItemSlotBundle) item;
-            if (!ItemConstants.isRechargeableItem(bundle.getTemplateId()) &&
+            if (!ItemConstants.INSTANCE.isRechargeableItem(bundle.getTemplateId()) &&
                     inventory.getItems().containsKey(to) &&
                     inventory.getItems().get(to) instanceof ItemSlotBundle) {
                 ItemSlotBundle existing = (ItemSlotBundle) inventory.getItems().get(to);
