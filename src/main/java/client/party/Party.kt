@@ -5,7 +5,6 @@ import net.maple.packets.PartyPackets
 import util.packet.Packet
 import util.packet.PacketWriter
 import java.util.*
-import java.util.function.Consumer
 import kotlin.collections.ArrayList
 
 class Party(leader: Character) {
@@ -14,6 +13,18 @@ class Party(leader: Character) {
     var leaderId: Int
     private val members: MutableList<PartyMember> = ArrayList()
     val leader: PartyMember? get() = getMember(leaderId)
+
+    companion object {
+        var availableId = 1
+            private set
+    }
+
+    init {
+        id = availableId++
+        leaderId = leader.id
+        addMember(leader)
+        println("created party with partyid $id")
+    }
 
     // todo remove?
     fun getMembers(): List<PartyMember> {
@@ -43,7 +54,7 @@ class Party(leader: Character) {
         synchronized(members) {
             for (member in members) {
                 if (member.isOnline && from != member.cid) {
-                    member.character.write(packet.clone())
+                    member.character?.write(packet.clone())
                 }
             }
         }
@@ -53,8 +64,8 @@ class Party(leader: Character) {
         synchronized(members) {
             for (member in getMembers()) {
                 if (member.isOnline) {
-                    member.character.write(PartyPackets.updateParty(this, member.channel).clone()) // todo don't think clone is needed here
-                    member.character.updatePartyHP(true)
+                    member.character?.write(PartyPackets.updateParty(this, member.channel).clone()) // todo don't think clone is needed here
+                    member.character?.updatePartyHP(true)
                 }
             }
         }
@@ -105,6 +116,15 @@ class Party(leader: Character) {
         return member
     }
 
+    fun createParty() {
+        val pw = PartyPackets.getBasePacket(PartyOperationType.PARTYRES_CREATENEWPARTY_DONE)
+
+        pw.writeInt(id) // nPartyID
+        encodePortal(pw)
+
+        leader?.character?.write(pw.createPacket())
+    }
+
     fun encode(pw: PacketWriter, memChannel: Int) {
         val members: MutableList<PartyMember> = ArrayList(members)
         while (members.size < 6) {
@@ -135,24 +155,12 @@ class Party(leader: Character) {
         pw.writeInt(bossId) // unsigned int dwPartyBossCharacterID
     }
 
-    fun encodePortal(pw: PacketWriter) {
+    private fun encodePortal(pw: PacketWriter) {
         pw.writeInt(999999999) // dwTownID
         pw.writeInt(999999999) // dwFieldID
         pw.writeInt(0) // nSkillID
         pw.writeInt(0) // tagPOINT m_ptFieldPortal; x
         pw.writeInt(0) // tagPOINT m_ptFieldPortal; y
-    }
-
-    companion object {
-        var availableId = 1
-            private set
-    }
-
-    init {
-        id = availableId++
-        leaderId = leader.id
-        addMember(leader)
-        println("created party with partyid $id")
     }
 }
 /*

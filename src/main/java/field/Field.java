@@ -162,7 +162,7 @@ public class Field {
                 chr.getParty().getMembers().forEach(member -> {
                     if (member.isOnline() && member.getChannel() == chr.getChannel().getChannelId()) {
                         Character mem = chr.getChannel().getCharacter(member.getCid());
-                        mem.write(PartyPackets.updateParty(chr.getParty(), member.getChannel()));
+                        mem.write(PartyPackets.INSTANCE.updateParty(chr.getParty(), member.getChannel()));
                         if (member.getField() == id) {
                             mem.updatePartyHP(true);
                         }

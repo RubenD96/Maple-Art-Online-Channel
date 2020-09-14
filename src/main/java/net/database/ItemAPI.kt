@@ -35,8 +35,8 @@ object ItemAPI {
         val uuids = deleteOldItems(chr)
 
         // inventories
-        IntStream.range(0, 5).forEach { i: Int ->
-            val type = ItemInventoryType.values()[i]
+        IntStream.range(0, 5).forEach {
+            val type = ItemInventoryType.values()[it]
             val inv = chr.inventories[type]!!.items
             inv.forEach { (slot: Short, item: ItemSlot) -> updateItem(chr, item, uuids, slot, type, 1) }
         }
@@ -67,8 +67,7 @@ object ItemAPI {
      */
     private fun updateStorageStats(c: Client) {
         val storage = c.storage
-        connection
-                .update(Tables.STORAGES)
+        connection.update(Tables.STORAGES)
                 .set(Tables.STORAGES.SIZE, storage.slotMax)
                 .set(Tables.STORAGES.MESO, storage.meso)
                 .where(Tables.STORAGES.AID.eq(c.accId))

@@ -126,7 +126,7 @@ public class PartyRequestHandler extends PacketHandler {
         Party party = new Party(chr);
         chr.setParty(party);
         Server.Companion.getInstance().getParties().put(party.getId(), party);
-        chr.write(PartyPackets.getCreatePartyPacket(party));
+        party.createParty();
         return party;
     }
 }

@@ -11,6 +11,7 @@ import world.guild.GuildMember
 import java.util.function.Consumer
 
 object GuildAPI {
+
     /**
      * Creates the guild and returns the new guild id
      *
@@ -19,8 +20,7 @@ object GuildAPI {
      * @return Guild id
      */
     fun create(guild: Guild, leader: Character): Int {
-        val id = connection
-                .insertInto(Tables.GUILDS, Tables.GUILDS.NAME, Tables.GUILDS.LEADER)
+        val id = connection.insertInto(Tables.GUILDS, Tables.GUILDS.NAME, Tables.GUILDS.LEADER)
                 .values(guild.name, leader.id)
                 .returningResult(Tables.GUILDS.ID)
                 .fetchOne().value1()
@@ -36,8 +36,7 @@ object GuildAPI {
      * @param leader Whether this member is the leader (true for guild creation)
      */
     fun addMember(guild: Guild, member: Character, leader: Boolean) {
-        connection
-                .insertInto(Tables.GUILDMEMBERS, Tables.GUILDMEMBERS.GID, Tables.GUILDMEMBERS.CID, Tables.GUILDMEMBERS.GRADE)
+        connection.insertInto(Tables.GUILDMEMBERS, Tables.GUILDMEMBERS.GID, Tables.GUILDMEMBERS.CID, Tables.GUILDMEMBERS.GRADE)
                 .values(guild.id, member.id, (if (leader) 1 else 5).toByte())
                 .execute()
     }
@@ -49,8 +48,7 @@ object GuildAPI {
      * @param cid   Character id
      */
     fun expel(guild: Guild, cid: Int) {
-        connection
-                .deleteFrom(Tables.GUILDMEMBERS)
+        connection.deleteFrom(Tables.GUILDMEMBERS)
                 .where(Tables.GUILDMEMBERS.GID.eq(guild.id))
                 .and(Tables.GUILDMEMBERS.CID.eq(cid))
                 .execute()
@@ -65,6 +63,7 @@ object GuildAPI {
     @Synchronized
     fun load(id: Int): Guild? {
         if (Server.instance.guilds.containsKey(id)) return Server.instance.guilds[id]
+
         val rec = connection.select().from(Tables.GUILDS).where(Tables.GUILDS.ID.eq(id)).fetchOne()
         if (rec != null) {
             val guild = Guild(id)
@@ -96,8 +95,7 @@ object GuildAPI {
      * @param guild The guild to remove
      */
     fun disband(guild: Guild) {
-        connection
-                .deleteFrom(Tables.GUILDS)
+        connection.deleteFrom(Tables.GUILDS)
                 .where(Tables.GUILDS.ID.eq(guild.id))
                 .execute()
     }
@@ -108,8 +106,7 @@ object GuildAPI {
      * @param guild Guild to update
      */
     fun updateInfo(guild: Guild) {
-        connection
-                .update(Tables.GUILDS)
+        connection.update(Tables.GUILDS)
                 .set(Tables.GUILDS.NOTICE, guild.notice)
                 .set(Tables.GUILDS.RANK1, guild.ranks[0])
                 .set(Tables.GUILDS.RANK2, guild.ranks[1])
@@ -121,8 +118,7 @@ object GuildAPI {
     }
 
     fun updateMemberGrade(cid: Int, grade: Byte) {
-        connection
-                .update(Tables.GUILDMEMBERS)
+        connection.update(Tables.GUILDMEMBERS)
                 .set(Tables.GUILDMEMBERS.GRADE, grade)
                 .where(Tables.GUILDMEMBERS.CID.eq(cid))
                 .execute()
@@ -133,8 +129,7 @@ object GuildAPI {
      * @return Guild id, -1 if no guild was found
      */
     fun getGuildId(chr: Character): Int {
-        val rec = connection
-                .select(Tables.GUILDMEMBERS.GID).from(Tables.GUILDMEMBERS)
+        val rec = connection.select(Tables.GUILDMEMBERS.GID).from(Tables.GUILDMEMBERS)
                 .where(Tables.GUILDMEMBERS.CID.eq(chr.id))
                 .fetchOne()
         return if (rec == null) -1 else rec.value1()

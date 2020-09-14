@@ -27,7 +27,7 @@ class ChannelServer(val channelId: Int, val port: Int, val IP: String) : Thread(
 
     var fieldManager: FieldManager = FieldManager()
     var characters: MutableMap<Int, Character> = HashMap()
-    var loginConnector: LoginConnector? = null
+    lateinit var loginConnector: LoginConnector
 
     fun init() {
         ServerConstants.COMMAND_LIST.add(ArrayList())

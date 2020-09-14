@@ -8,9 +8,9 @@ import org.jooq.Record
 import java.util.function.Consumer
 
 object BeautyAPI {
+
     fun loadHairs() {
-        connection
-                .select().from(Tables.HAIRS)
+        connection.select().from(Tables.HAIRS)
                 .fetch()
                 .forEach(Consumer { hair: Record ->
                     val id = hair.getValue(Tables.HAIRS.ID)
@@ -19,8 +19,7 @@ object BeautyAPI {
     }
 
     fun updateHair(id: Int) {
-        connection
-                .update(Tables.HAIRS)
+        connection.update(Tables.HAIRS)
                 .set(Tables.HAIRS.ENABLED, (if (BeautyManager.getHairs()[id]!!.isEnabled) 1 else 0).toByte())
                 .where(Tables.HAIRS.ID.eq(id))
                 .execute()

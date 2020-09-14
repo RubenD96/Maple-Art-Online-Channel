@@ -39,10 +39,10 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
         client.write(ConnectionPackets.sendHello(ivSend, ivRecv, false));
 
-        channel.attr(Client.CLIENT_KEY).set(client);
-        channel.attr(Client.CRYPTO_KEY).set(new MapleAESOFB());
+        channel.attr(Client.Companion.getCLIENT_KEY()).set(client);
+        channel.attr(Client.Companion.getCRYPTO_KEY()).set(new MapleAESOFB());
 
-        System.out.printf("Opened session with %s%n", client.getIP());
+        System.out.printf("Opened session with %s%n", client.getIp());
 
         client.startPing();
     }
@@ -52,7 +52,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
         Packet packet = (Packet) msg;
         Channel channel = chc.channel();
 
-        Client client = (Client) channel.attr(Client.CLIENT_KEY).get();
+        Client client = (Client) channel.attr(Client.Companion.getCLIENT_KEY()).get();
         PacketReader packetReader = client.getReader().next(packet);
 
         short opCode = packetReader.readShort();
@@ -87,22 +87,22 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
     public void channelInactive(ChannelHandlerContext chc) {
         Channel ch = chc.channel();
 
-        Client c = (Client) ch.attr(Client.CLIENT_KEY).get();
+        Client c = (Client) ch.attr(Client.Companion.getCLIENT_KEY()).get();
 
-        c.disconnect();
+        c.disconnect(); // todo npe on character? (lateinit, dc before init)
         //c.softDisconnect(c.isLoggedIn()); // handle this is we don't soft disconnect through handler
 
         c.cancelPingTask();
 
         // remove after debug stage
-        System.out.printf("[Debug] Closed session with %s.%n", c.getIP());
+        System.out.printf("[Debug] Closed session with %s.%n", c.getIp());
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext chc, Throwable cause) {
         // Close the connection when an exception is raised.
         Channel ch = chc.channel();
-        Client c = (Client) ch.attr(Client.CLIENT_KEY).get();
+        Client c = (Client) ch.attr(Client.Companion.getCLIENT_KEY()).get();
         //c.disconnect();
         //System.out.println(cause);
         cause.printStackTrace();

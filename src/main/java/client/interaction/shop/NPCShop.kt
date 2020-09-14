@@ -3,7 +3,6 @@ package client.interaction.shop
 import client.Character
 import client.Client
 import client.interaction.Interactable
-import client.inventory.ItemInventory
 import client.inventory.ItemInventoryType
 import client.inventory.ModifyInventoriesContext
 import client.inventory.item.templates.ItemBundleTemplate
@@ -14,9 +13,8 @@ import managers.ItemManager
 import net.database.ShopAPI.getShopsItems
 import net.maple.SendOpcode
 import net.maple.packets.CharacterPackets
-import org.jooq.Record
 import util.packet.PacketWriter
-import java.util.function.Consumer
+import kotlin.math.max
 
 class NPCShop(val id: Int) : Interactable {
 
@@ -67,8 +65,8 @@ class NPCShop(val id: Int) : Interactable {
 
         var count = quantity
         if (shopItem.quantity > 1) count = 1
-        count = Math.max(count.toInt(), shopItem.maxPerSlot.toInt()).toShort()
-        count = Math.max(count.toInt(), 1).toShort()
+        count = max(count.toInt(), shopItem.maxPerSlot.toInt()).toShort()
+        count = max(count.toInt(), 1).toShort()
 
         if (shopItem.price > 0 && chr.meso < shopItem.price * count) return ShopResult.BUY_NO_MONEY
         if (shopItem.tokenId > 0 && chr.getItemQuantity(shopItem.tokenId) < shopItem.tokenPrice * count) return ShopResult.BUY_NO_TOKEN
@@ -76,11 +74,10 @@ class NPCShop(val id: Int) : Interactable {
 
         val slot = item.toItemSlot()
         if (slot is ItemSlotBundle) {
-            val bundle = slot
             if (ItemConstants.isRechargeableItem(slot.getTemplateId())) {
-                bundle.number = bundle.maxNumber
+                slot.number = slot.maxNumber
             } else {
-                bundle.number = (count * shopItem.quantity).toShort()
+                slot.number = (count * shopItem.quantity).toShort()
             }
         }
 
@@ -149,17 +146,17 @@ class NPCShop(val id: Int) : Interactable {
     init {
         val data = getShopsItems(id)
         data.forEach {
-            val item = NPCShopItem(it.getValue<Int>(SHOPITEMS.ITEM))
-            item.price = it.getValue<Int>(SHOPITEMS.PRICE)
-            item.tokenId = it.getValue<Int>(SHOPITEMS.TOKEN_ID)
-            item.tokenPrice = it.getValue<Int>(SHOPITEMS.TOKEN_PRICE)
-            item.itemPeriod = it.getValue<Int>(SHOPITEMS.PERIOD)
-            item.levelLimited = it.getValue<Int>(SHOPITEMS.LEVEL_LIMIT)
-            item.stock = it.getValue<Int>(SHOPITEMS.STOCK)
-            item.unitPrice = it.getValue<Double>(SHOPITEMS.UNIT_PRICE)
-            item.maxPerSlot = it.getValue<Short>(SHOPITEMS.MAX_SLOT)
-            item.quantity = it.getValue<Short>(SHOPITEMS.QUANTITY)
-            item.discountRate = it.getValue<Byte>(SHOPITEMS.DISCOUNT)
+            val item = NPCShopItem(it.getValue(SHOPITEMS.ITEM))
+            item.price = it.getValue(SHOPITEMS.PRICE)
+            item.tokenId = it.getValue(SHOPITEMS.TOKEN_ID)
+            item.tokenPrice = it.getValue(SHOPITEMS.TOKEN_PRICE)
+            item.itemPeriod = it.getValue(SHOPITEMS.PERIOD)
+            item.levelLimited = it.getValue(SHOPITEMS.LEVEL_LIMIT)
+            item.stock = it.getValue(SHOPITEMS.STOCK)
+            item.unitPrice = it.getValue(SHOPITEMS.UNIT_PRICE)
+            item.maxPerSlot = it.getValue(SHOPITEMS.MAX_SLOT)
+            item.quantity = it.getValue(SHOPITEMS.QUANTITY)
+            item.discountRate = it.getValue(SHOPITEMS.DISCOUNT)
             items[item.id] = item
         }
     }

@@ -539,7 +539,7 @@ public class Character extends AbstractFieldLife {
     }
 
     public void setJob(int jobId) {
-        Job job = Job.getById(jobId);
+        Job job = Job.Companion.getById(jobId);
         if (job != null) {
             this.job = job;
             updateSingleStat(StatType.JOB);
@@ -635,9 +635,9 @@ public class Character extends AbstractFieldLife {
                 if (m.isOnline() && m.getChannel() == getChannel().getChannelId() && m.getField() == fieldId && m.getCid() != id) {
                     Character chr = Server.Companion.getInstance().getCharacter(m.getCid());
                     if (receive) {
-                        write(PartyPackets.getUpdatePartyHealthPacket(chr));
+                        write(PartyPackets.INSTANCE.getUpdatePartyHealthPacket(chr));
                     }
-                    chr.write(PartyPackets.getUpdatePartyHealthPacket(this));
+                    chr.write(PartyPackets.INSTANCE.getUpdatePartyHealthPacket(this));
                 }
             });
         }

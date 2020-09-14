@@ -67,7 +67,7 @@ public class CashShopPackets {
 
         pw.writeHeader(SendOpcode.CASH_SHOP_QUERY_CASH_RESULT);
 
-        if (c.getCash() == null) AccountAPI.INSTANCE.loadNXCash(c);
+        if (c.getCash() == -1) AccountAPI.INSTANCE.loadNXCash(c);
 
         pw.writeInt(0); // nexon cash
         pw.writeInt(0); // maple points
