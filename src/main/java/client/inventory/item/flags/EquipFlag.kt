@@ -2,7 +2,7 @@ package client.inventory.item.flags
 
 import util.packet.IntegerValue
 
-enum class EquipFlag(private val flag: Int) : IntegerValue {
+enum class EquipFlag(override val value: Int) : IntegerValue {
 
     TUC(0x01),
     INC_STR(0x02),
@@ -29,12 +29,4 @@ enum class EquipFlag(private val flag: Int) : IntegerValue {
     APPLIABLE_KARMA_TYPE(0x400000),
     SET_ITEM_ID(0x800000),
     DURABILITY(0x1000000);
-
-    override fun getValue(): Int {
-        return flag
-    }
-
-    override fun setValue(value: Int) {
-        //...
-    }
 }

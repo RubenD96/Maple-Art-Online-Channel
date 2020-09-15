@@ -21,7 +21,7 @@ public class GuildRequestHandler extends PacketHandler {
     @Override
     public void handlePacket(PacketReader reader, Client c) {
         Character chr = c.getCharacter();
-        System.out.println("[GuildRequestHandler] " + HexTool.toHex(reader.getData()));
+        System.out.println("[GuildRequestHandler] " + HexTool.INSTANCE.toHex(reader.getData()));
 
         byte req = reader.readByte();
         switch (req) {

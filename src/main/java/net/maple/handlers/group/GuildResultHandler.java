@@ -14,7 +14,7 @@ public class GuildResultHandler extends PacketHandler {
     @Override
     public void handlePacket(PacketReader reader, Client c) {
         Character chr = c.getCharacter();
-        System.out.println("[GuildResultHandler] " + HexTool.toHex(reader.getData()));
+        System.out.println("[GuildResultHandler] " + HexTool.INSTANCE.toHex(reader.getData()));
         byte res = reader.readByte();
 
         switch (res) {

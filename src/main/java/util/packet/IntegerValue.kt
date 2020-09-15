@@ -15,7 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package util.packet;
+package util.packet
 
 /**
  * Artifact from Invictus. Used as a means of storing an integer-typed value
@@ -23,20 +23,14 @@ package util.packet;
  * get-set access pattern.
  *
  * @author Brent
+ * @author Chronos (Kotlin conversion)
  */
-public interface IntegerValue {
-
-    /**
-     * Gets the value associated with this integer value.
-     *
-     * @return the value.
-     */
-    int getValue();
+interface IntegerValue {
 
     /**
      * Sets the value associated with this integer value.
      *
      * @param value the value.
      */
-    void setValue(int value);
+    val value: Int
 }

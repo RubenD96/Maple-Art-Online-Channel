@@ -14,7 +14,7 @@ public class PartyResultHandler extends PacketHandler {
 
     @Override
     public void handlePacket(PacketReader reader, Client c) {
-        System.out.println("[" + getClass().getName().replace("net.maple.handlers.misc.", "") + "] " + HexTool.toHex(reader.getData()));
+        System.out.println("[" + getClass().getName().replace("net.maple.handlers.misc.", "") + "] " + HexTool.INSTANCE.toHex(reader.getData()));
         byte operation = reader.readByte();
         int pid = reader.readInteger();
         Party party = Server.Companion.getInstance().getParties().get(pid);
@@ -37,7 +37,7 @@ public class PartyResultHandler extends PacketHandler {
         } else if (operation == PartyOperationType.PARTYRES_INVITEPARTY_SENT.getValue()) {
             // nothing?
         } else {
-            System.out.println("[PartyResultHandler] NEW OP: " + HexTool.toHex(operation));
+            System.out.println("[PartyResultHandler] NEW OP: " + HexTool.INSTANCE.toHex(operation));
         }
     }
 }

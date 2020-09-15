@@ -2,7 +2,7 @@ package client.inventory.item.flags
 
 import util.packet.IntegerValue
 
-enum class ItemFlag(private val flag: Int) : IntegerValue {
+enum class ItemFlag(override val value: Int) : IntegerValue {
 
     PRICE(0x01),
     TIME_LIMITED(0x02),
@@ -15,12 +15,4 @@ enum class ItemFlag(private val flag: Int) : IntegerValue {
     EXPIRE_ON_LOGOUT(0X100),
     ACCOUNT_SHARE(0x200),
     CASH(0x400);
-
-    override fun getValue(): Int {
-        return flag
-    }
-
-    override fun setValue(value: Int) {
-        //...
-    }
 }

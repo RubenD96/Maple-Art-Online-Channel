@@ -7,6 +7,7 @@ import java.util.Random;
  *
  * @author Kaioru
  */
+@Deprecated
 public class Rand32 {
     private long Seed1;
     private long Seed2;

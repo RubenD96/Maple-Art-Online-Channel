@@ -111,8 +111,7 @@ object CharacterAPI {
             if (fp != null) sp = fp.id
             fid = chr.field.forcedReturnMap
         }
-        connection
-                .update(Tables.CHARACTERS)
+        connection.update(Tables.CHARACTERS)
                 .set(Tables.CHARACTERS.LEVEL, chr.level)
                 .set(Tables.CHARACTERS.FACE, chr.face)
                 .set(Tables.CHARACTERS.HAIR, chr.hair)
@@ -147,8 +146,7 @@ object CharacterAPI {
      */
     fun getKeyBindings(cid: Int): Map<Int, KeyBinding> {
         val keyBindings: MutableMap<Int, KeyBinding> = HashMap()
-        val res = connection
-                .select().from(Tables.KEYBINDINGS)
+        val res = connection.select().from(Tables.KEYBINDINGS)
                 .where(Tables.KEYBINDINGS.CID.eq(cid))
                 .fetch()
         for (rec in res) {

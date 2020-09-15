@@ -7,6 +7,7 @@ import java.util.Date;
 /**
  * @author Kaz Voeten
  */
+@Deprecated
 public class FileTime {
 
     public int ftHighTime, ftLowTime;

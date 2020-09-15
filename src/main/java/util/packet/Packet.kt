@@ -15,9 +15,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package util.packet;
+package util.packet
 
-import util.HexTool;
+import util.HexTool.toHex
 
 /**
  * Represents a packet to be sent over a TCP socket for MapleStory.
@@ -25,51 +25,26 @@ import util.HexTool;
  * functionality because it is a MapleStory packet.
  *
  * @author Brent
+ * @author Chronos (Kotlin conversion)
  */
-public class Packet implements Cloneable {
+class Packet(val data: ByteArray) : Cloneable {
 
-    private byte[] data;
-
-    public Packet() {
-    }
-
-    public Packet(byte[] nD) {
-        data = nD;
-    }
-
-    public int getLength() {
-        if (data != null) {
-            return data.length;
+    val length: Int get() = data.size
+    val header: Int
+        get() {
+            return if (data.size < 2) {
+                0xFFFF
+            } else (data[0] + (data[1].toInt() shl 8))
         }
-        return 0;
+
+    override fun toString(): String {
+        return toHex(data)
     }
 
-    public int getHeader() {
-        if (data.length < 2) {
-            return 0xFFFF;
-        }
-        return (data[0] + (data[1] << 8));
-    }
-
-    public void setData(byte[] nD) {
-        data = nD;
-    }
-
-    public byte[] getData() {
-        return data;
-    }
-
-    @Override
-    public String toString() {
-        if (data == null) return "";
-        return HexTool.toHex(data);
-    }
-
-    @Override
-    public Packet clone() {
-        int len = getLength();
-        byte[] data = new byte[len];
-        System.arraycopy(this.data, 0, data, 0, len);
-        return new Packet(data);
+    public override fun clone(): Packet {
+        val len = length
+        val data = ByteArray(len)
+        System.arraycopy(this.data, 0, data, 0, len)
+        return Packet(data)
     }
 }

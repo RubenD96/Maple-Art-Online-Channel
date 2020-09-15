@@ -7,6 +7,7 @@ import util.Rand32;
  *
  * @author Kaioru
  */
+@Deprecated
 public class ItemVariation {
 
     private final Rand32 rand;

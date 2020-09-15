@@ -14,7 +14,7 @@ public class UserScriptMessageAnswerHandler extends PacketHandler {
 
     @Override
     public void handlePacket(PacketReader reader, Client c) {
-        System.out.println("[UserScriptMessageAnswerHandler] " + HexTool.toHex(reader.getData()));
+        System.out.println("[UserScriptMessageAnswerHandler] " + HexTool.INSTANCE.toHex(reader.getData()));
         byte type = reader.readByte();
         byte action = reader.readByte(); // 1 = continue, 255 = end chat
 

@@ -2,7 +2,7 @@ package client.inventory.item.flags
 
 import util.packet.IntegerValue
 
-enum class StatFlag(private val flag: Int) : IntegerValue {
+enum class StatFlag(override val value: Int) : IntegerValue {
 
     HP(0x01),
     MP(0x02),
@@ -20,12 +20,4 @@ enum class StatFlag(private val flag: Int) : IntegerValue {
     JUMP(0x2000),
     MORPH(0x4000),
     TIME(0x8000);
-
-    override fun getValue(): Int {
-        return flag
-    }
-
-    override fun setValue(value: Int) {
-        //...
-    }
 }

@@ -12,7 +12,7 @@ public class UserQuestRequestHandler extends PacketHandler {
 
     @Override
     public void handlePacket(PacketReader reader, Client c) {
-        System.out.println("[UserQuestRequestHandler] " + HexTool.toHex(reader.getData()));
+        System.out.println("[UserQuestRequestHandler] " + HexTool.INSTANCE.toHex(reader.getData()));
 
         byte action = reader.readByte();
         short questId = reader.readShort();

@@ -2,19 +2,13 @@ package client.player
 
 import util.packet.IntegerValue
 
-enum class Job(val id: Int) : IntegerValue {
+enum class Job(override val value: Int) : IntegerValue {
 
     BEGINNER(0),
     WARRIOR(100),
     MAGE(200);
 
-    override fun getValue(): Int {
-        return id
-    }
-
-    override fun setValue(value: Int) {
-        // ...
-    }
+    val id = value
 
     companion object {
         fun getById(id: Int): Job? {

@@ -15,7 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package util;
+package util
 
 /**
  * Artifact from Invictus. Documentation is not going to be added since
@@ -23,40 +23,40 @@ package util;
  *
  * @author OdinMS (original code)
  * @author Brent (modified code)
+ * @author Chronos (kotlin conversion)
  */
-public final class HexTool {
+object HexTool {
 
-    private static final char[] HEX = {
+    private val HEX = charArrayOf(
             '0', '1', '2', '3',
             '4', '5', '6', '7',
             '8', '9', 'A', 'B',
             'C', 'D', 'E', 'F'
-    };
+    )
 
-    private HexTool() {
+    fun toHex(b: Byte): String {
+        return HEX[b.toInt() shl 8 shr 12 and 0x0F].toString() +
+                HEX[b.toInt() shl 8 shr 8 and 0x0F]
     }
 
-    public static String toHex(byte b) {
-        return String.valueOf(HEX[((b << 8) >> 12) & 0x0F]) +
-                HEX[((b << 8) >> 8) & 0x0F];
-    }
-
-    public static String toHex(byte[] arr) {
-        StringBuilder ret = new StringBuilder();
-        for (byte b : arr) {
-            ret.append(toHex(b));
-            ret.append(' ');
+    fun toHex(arr: ByteArray): String {
+        val ret = StringBuilder()
+        for (b in arr) {
+            ret.append(toHex(b))
+            ret.append(' ')
         }
-        return ret.substring(0, ret.length() - 1);
+        return ret.substring(0, ret.length - 1)
     }
 
-    public static byte[] toBytes(String s) {
-        int len = s.length();
-        byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-                    + Character.digit(s.charAt(i + 1), 16));
+    fun toBytes(s: String): ByteArray {
+        val len = s.length
+        val data = ByteArray(len / 2)
+        var i = 0
+        while (i < len) {
+            data[i / 2] = ((Character.digit(s[i], 16) shl 4)
+                    + Character.digit(s[i + 1], 16)).toByte()
+            i += 2
         }
-        return data;
+        return data
     }
 }

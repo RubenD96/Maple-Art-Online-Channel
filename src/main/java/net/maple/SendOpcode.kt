@@ -2,7 +2,7 @@ package net.maple
 
 import util.packet.IntegerValue
 
-enum class SendOpcode(private var value: Int) : IntegerValue {
+enum class SendOpcode(override val value: Int) : IntegerValue {
 
     MIGRATE_COMMAND(0x10),
     PING(0x11),
@@ -61,14 +61,6 @@ enum class SendOpcode(private var value: Int) : IntegerValue {
     CASH_SHOP_QUERY_CASH_RESULT(0x17F),
     CASH_SHOP_CASH_ITEM_RESULT(0x180),
     FUNC_KEY_MAPPED_INIT(0x18E);
-
-    override fun getValue(): Int {
-        return value
-    }
-
-    override fun setValue(value: Int) {
-        this.value = value
-    }
 
     companion object {
         fun getStringByCode(code: Int): String {

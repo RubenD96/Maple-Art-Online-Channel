@@ -52,7 +52,7 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
         } else if (type == CashItemRequest.PURCHASE_RECORD.getValue()) {
             // ignore...
         } else {
-            System.err.println("[CashShopCashItemRequestHandler] Unhandled cash item operation 0x" + HexTool.toHex(type) + " (" + type + ")\n " + HexTool.toHex(reader.getData()));
+            System.err.println("[CashShopCashItemRequestHandler] Unhandled cash item operation 0x" + HexTool.INSTANCE.toHex(type) + " (" + type + ")\n " + HexTool.INSTANCE.toHex(reader.getData()));
         }
     }
 

@@ -14,20 +14,21 @@ object RankingAPI {
                     .onKey()
                     .where(Tables.CHARACTERS.GM_LEVEL.eq(0))
                     .fetch()
-            res.forEach { rec: Record ->
-                val name = rec.getValue(Tables.CHARACTERS.NAME)
+            res.forEach {
+                val name = it.getValue(Tables.CHARACTERS.NAME)
                 var ranking = rankings[name]
                 if (ranking == null) {
                     ranking = PlayerRanking(
-                            rec.getValue(Tables.CHARACTERS.LEVEL),
-                            rec.getValue(Tables.CHARACTERS.JOB),
-                            rec.getValue(Tables.CHARACTERS.KILL_COUNT),
+                            it.getValue(Tables.CHARACTERS.LEVEL),
+                            it.getValue(Tables.CHARACTERS.JOB),
+                            it.getValue(Tables.CHARACTERS.KILL_COUNT),
                             name,
-                            rec.getValue(Tables.CHARACTERS.HARDCORE) == 1.toByte(),
-                            rec.getValue(Tables.CHARACTERS.MAP) == 666)
+                            it.getValue(Tables.CHARACTERS.HARDCORE) == 1.toByte(),
+                            it.getValue(Tables.CHARACTERS.MAP) == 666)
                     rankings[name] = ranking
                 }
-                if (rec.getValue(Tables.MOBKILLS.MID) != null) ranking.mobKills[rec.getValue(Tables.MOBKILLS.MID)] = rec.getValue(Tables.MOBKILLS.COUNT)
+                if (it.getValue(Tables.MOBKILLS.MID) != null)
+                    ranking.mobKills[it.getValue(Tables.MOBKILLS.MID)] = it.getValue(Tables.MOBKILLS.COUNT)
             }
             return rankings
         }

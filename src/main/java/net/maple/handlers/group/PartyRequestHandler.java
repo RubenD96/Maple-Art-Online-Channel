@@ -21,7 +21,7 @@ public class PartyRequestHandler extends PacketHandler {
     public void handlePacket(PacketReader reader, Client c) {
         Character chr = c.getCharacter();
         Party party = chr.getParty();
-        System.out.println("[" + getClass().getName().replace("net.maple.handlers.misc.", "") + "] " + HexTool.toHex(reader.getData()));
+        System.out.println("[" + getClass().getName().replace("net.maple.handlers.misc.", "") + "] " + HexTool.INSTANCE.toHex(reader.getData()));
         byte operation = reader.readByte();
         if (operation == PartyOperationType.PARTYREQ_CREATENEWPARTY.getValue()) {
             if (party == null) {

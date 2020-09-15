@@ -13,6 +13,7 @@ import net.maple.packets.CharacterPackets
 import scripting.quest.QuestScriptManager
 import util.packet.Packet
 import util.packet.PacketWriter
+import java.lang.IllegalArgumentException
 
 class Quest(val id: Int, val character: Character) {
 
@@ -152,6 +153,7 @@ class Quest(val id: Int, val character: Character) {
             QuestState.COMPLETE -> {
                 update(this)
             }
+            else -> throw IllegalArgumentException("Unsupported quest state update")
         }
     }
 

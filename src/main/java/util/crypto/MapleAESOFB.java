@@ -8,7 +8,7 @@ public class MapleAESOFB {
      *
      * @see MapleAESOFB#crypt(byte[], byte[]) used in this method.
      */
-    private AES cipher;
+    private final AES cipher;
     private final static byte[] key = new byte[]{
             0x13, 0x00, 0x00, 0x00, 0x08,
             0x00, 0x00, 0x00, 0x06, 0x00,

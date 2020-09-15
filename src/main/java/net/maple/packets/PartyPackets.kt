@@ -27,7 +27,7 @@ object PartyPackets {
         return pw
     }
 
-    fun getLeavePartyPacket(party: Party, cid: Int, expel: Boolean, name: String?, memChannel: Int): Packet {
+    fun getLeavePartyPacket(party: Party, cid: Int, expel: Boolean, name: String, memChannel: Int): Packet {
         val pw = getBaseLeavePacket(party.id, cid)
 
         pw.writeBool(true)

@@ -15,7 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package util.packet;
+package util.packet
 
 /**
  * Artifact from Invictus. Unlike PacketWriter, this is able to be used for
@@ -24,59 +24,47 @@ package util.packet;
  * for each new received packet.
  *
  * @author Brent
+ * @author Chronos (Kotlin conversion)
  */
-public final class PacketReader extends Reader {
+class PacketReader : Reader() {
 
-    private int offset;
-    private byte[] data;
+    override var offset: Int = 0
+        private set
+    lateinit var data: ByteArray
+        private set
 
-    public PacketReader() {
-        offset = -1;
-        data = null;
+    fun next(d: ByteArray): PacketReader {
+        offset = 0
+        data = d
+        return this
     }
 
-    public PacketReader next(byte[] d) {
-        offset = 0;
-        data = d;
-        return this;
+    fun next(p: Packet): PacketReader {
+        return next(p.data)
     }
 
-    public PacketReader next(Packet p) {
-        return next(p.getData());
-    }
-
-    @Override
-    public int read() {
-        try {
-            return 0xFF & data[offset++];
-        } catch (Exception e) {
-            return -1;
+    override fun read(): Int {
+        return try {
+            0xFF and data[offset++].toInt()
+        } catch (e: Exception) {
+            -1
         }
     }
 
-    @Override
-    public PacketReader skip(int num) {
-        offset += num;
-        return this;
+    override fun skip(num: Int): PacketReader {
+        offset += num
+        return this
     }
 
-    @Override
-    public int available() {
-        return data.length - offset;
+    override fun available(): Int {
+        return data.size - offset
     }
 
-    @Override
-    public int getOffset() {
-        return offset;
+    override fun close() {
+        offset = -1
     }
 
-    public byte[] getData() {
-        return data;
-    }
-
-    @Override
-    public void close() {
-        offset = -1;
-        data = null;
+    init {
+        offset = -1
     }
 }

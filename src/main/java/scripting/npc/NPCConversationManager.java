@@ -307,7 +307,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     }
 
     public RankingKeeper getRankings() {
-        return RankingKeeper.instance;
+        return RankingKeeper.Companion.getInstance();
     }
 
     public List<Beauty> getAllHairs() {

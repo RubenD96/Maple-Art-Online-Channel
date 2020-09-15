@@ -9,6 +9,6 @@ public class ClientDumpLogHandler extends PacketHandler {
 
     @Override
     public void handlePacket(PacketReader reader, Client c) {
-        System.out.println("[ClientDumpLogHandler] " + HexTool.toHex(reader.getData()));
+        System.out.println("[ClientDumpLogHandler] " + HexTool.INSTANCE.toHex(reader.getData()));
     }
 }

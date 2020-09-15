@@ -5,6 +5,7 @@ package client.inventory;
  *
  * @author Kaioru
  */
+@Deprecated
 public enum ItemVariationType {
 
     NONE(0x00),

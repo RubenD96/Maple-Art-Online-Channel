@@ -37,12 +37,16 @@ class Client(c: Channel, siv: ByteArray, riv: ByteArray) : NettyClient(c, siv, r
     lateinit var worldChannel: ChannelServer
     lateinit var pic: String
         private set
-    lateinit var character: Character
+    lateinit var player: Character
+        get() {
+         return c.field
+     }
+
     /*var macs: Set<String>? = null
     var hwids: Set<String>? = null
     var ips: Set<String>? = null*/
     var isBanned = false
-    val engines: Map<String, ScriptEngine> = HashMap()
+    val engines: MutableMap<String, ScriptEngine> = HashMap()
     var cash: Int = -1
     lateinit var ping: ScheduledFuture<*>
         private set

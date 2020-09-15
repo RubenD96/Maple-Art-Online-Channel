@@ -1,6 +1,5 @@
 package net.netty
 
-import client.interaction.shop.NPCShop
 import io.netty.channel.Channel
 import io.netty.util.AttributeKey
 import util.crypto.MapleAESOFB
@@ -50,7 +49,7 @@ open class NettyClient(val ch: Channel, var sendIV: ByteArray, var recvIV: ByteA
     }
 
     companion object {
-        val CRYPTO_KEY = AttributeKey.valueOf<MapleAESOFB>("A")
-        val CLIENT_KEY = AttributeKey.valueOf<NettyClient>("C")
+        val CRYPTO_KEY: AttributeKey<MapleAESOFB> = AttributeKey.valueOf("A")
+        val CLIENT_KEY: AttributeKey<NettyClient> = AttributeKey.valueOf("C")
     }
 }
