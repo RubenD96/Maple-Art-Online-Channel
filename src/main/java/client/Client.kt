@@ -46,7 +46,7 @@ class Client(c: Channel, siv: ByteArray, riv: ByteArray) : NettyClient(c, siv, r
     var cash: Int = -1
     lateinit var ping: ScheduledFuture<*>
         private set
-    val locker: List<ItemSlotLocker> = ArrayList()
+    val locker: MutableList<ItemSlotLocker> = ArrayList()
     lateinit var storage: ItemStorage
 
     fun login(data: Record, mi: MigrateInfo) {

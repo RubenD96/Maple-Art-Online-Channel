@@ -13,8 +13,8 @@ public class PacketDecoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext chc, ByteBuf in, List<Object> out) {
-        NettyClient c = chc.channel().attr(NettyClient.CLIENT_KEY).get();
-        MapleAESOFB mCr = chc.channel().attr(NettyClient.CRYPTO_KEY).get();
+        NettyClient c = chc.channel().attr(NettyClient.Companion.getCLIENT_KEY()).get();
+        MapleAESOFB mCr = chc.channel().attr(NettyClient.Companion.getCRYPTO_KEY()).get();
 
         if (c != null) {
             byte[] iv = c.getRecvIV();

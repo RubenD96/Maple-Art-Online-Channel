@@ -32,7 +32,7 @@ public class MigrateInHandler extends PacketHandler {
                 return;
             }
 
-            if (mi.getIp().equals(c.getIP())) {
+            if (mi.getIp().equals(c.getIp())) {
                 //Server.getInstance().getClients().remove(accInfo.getValue(ACCOUNTS.ID));
                 c.login(accInfo, mi);
 
@@ -99,7 +99,7 @@ public class MigrateInHandler extends PacketHandler {
                 type = keyBinding.getType();
                 action = keyBinding.getAction();
             } else { // get default
-                KeyBinding def = KeyBinding.getDefaultBindings()[i];
+                KeyBinding def = KeyBinding.Companion.getDefaultBindings()[i];
                 if (def != null) {
                     type = def.getType();
                     action = def.getAction();
