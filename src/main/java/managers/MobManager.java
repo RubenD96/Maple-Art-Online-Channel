@@ -1,6 +1,6 @@
 package managers;
 
-import field.object.life.FieldMobTemplate;
+import field.obj.life.FieldMobTemplate;
 import util.packet.PacketReader;
 
 import java.util.HashMap;

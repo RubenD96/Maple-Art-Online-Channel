@@ -51,7 +51,7 @@ public class GuildRequestHandler extends PacketHandler {
             case GuildReq.JOIN_GUILD: { // accepting request
                 int gid = reader.readInteger();
                 int cid = reader.readInteger();
-                Guild guild = Server.Companion.getInstance().getGuilds().get(gid);
+                Guild guild = Server.INSTANCE.getGuilds().get(gid);
                 if (guild == null) return;
                 if (chr.getId() != cid) return;
 

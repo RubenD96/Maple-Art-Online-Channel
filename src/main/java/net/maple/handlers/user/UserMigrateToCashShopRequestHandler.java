@@ -20,7 +20,7 @@ public class UserMigrateToCashShopRequestHandler extends PacketHandler {
             if (!chr.isInCashShop()) {
                 chr.save();
                 chr.setInCashShop(true);
-                Server.Companion.getInstance().getClients().get(c.getAccId()).setCashShop(true);
+                Server.INSTANCE.getClients().get(c.getAccId()).setCashShop(true);
                 CashShopPackets.sendSetCashShop(c);
                 chr.getField().leave(chr);
                 chr.setField(null);

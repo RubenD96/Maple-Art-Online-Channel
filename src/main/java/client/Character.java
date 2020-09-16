@@ -21,9 +21,9 @@ import client.player.key.KeyBinding;
 import client.player.quest.Quest;
 import constants.UserConstants;
 import field.Field;
-import field.object.FieldObjectType;
-import field.object.life.AbstractFieldLife;
-import field.object.life.FieldControlledObject;
+import field.obj.FieldObjectType;
+import field.obj.life.AbstractFieldLife;
+import field.obj.life.FieldControlledObject;
 import net.database.*;
 import net.maple.packets.CharacterPackets;
 import net.maple.packets.FieldPackets;
@@ -633,7 +633,7 @@ public class Character extends AbstractFieldLife {
         if (party != null) {
             party.getMembers().forEach(m -> {
                 if (m.isOnline() && m.getChannel() == getChannel().getChannelId() && m.getField() == fieldId && m.getCid() != id) {
-                    Character chr = Server.Companion.getInstance().getCharacter(m.getCid());
+                    Character chr = Server.INSTANCE.getCharacter(m.getCid());
                     if (receive) {
                         write(PartyPackets.INSTANCE.getUpdatePartyHealthPacket(chr));
                     }
@@ -644,7 +644,7 @@ public class Character extends AbstractFieldLife {
     }
 
     public void loadParty() {
-        Party party = Server.Companion.getInstance().getParties().get(CharacterAPI.INSTANCE.getOldPartyId(id));
+        Party party = Server.INSTANCE.getParties().get(CharacterAPI.INSTANCE.getOldPartyId(id));
         if (party != null) {
             PartyMember member = party.getMember(id);
             if (member != null) {
@@ -736,7 +736,7 @@ public class Character extends AbstractFieldLife {
     }
 
     public void enableActions() {
-        NPCScriptManager.getInstance().dispose(client);
+        NPCScriptManager.INSTANCE.dispose(client);
         CharacterPackets.statUpdate(this, new ArrayList<>(), true);
     }
 

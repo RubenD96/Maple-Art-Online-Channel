@@ -40,7 +40,7 @@ class GuildMember {
     constructor(rec: Record) {
         val id = rec.getValue(Tables.GUILDMEMBERS.CID)
 
-        val chr = Server.instance.getCharacter(id)
+        val chr = Server.getCharacter(id)
         if (chr != null) {
             name = chr.getName()
             job = chr.job.id

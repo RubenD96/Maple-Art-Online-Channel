@@ -21,14 +21,14 @@ public class UserQuestRequestHandler extends PacketHandler {
         short ptUserPosY = reader.readShort();
 
         if (action == QuestRequest.OPENING_SCRIPT.getValue()) {
-            QuestScriptManager.getInstance().converse(c, npcId, questId, true);
+            QuestScriptManager.INSTANCE.converse(c, npcId, questId, true);
         } else if (action == QuestRequest.COMPLETE_SCRIPT.getValue()) {
             Quest quest = c.getCharacter().getQuests().get((int) questId);
             if (quest == null || !quest.canFinish()) {
                 c.close(this, "Invalid quest finish requirements (" + questId + ")");
                 return;
             }
-            QuestScriptManager.getInstance().converse(c, npcId, questId, false);
+            QuestScriptManager.INSTANCE.converse(c, npcId, questId, false);
         } else if (action == QuestRequest.RESIGN_QUEST.getValue()) {
             c.getCharacter().forfeitQuest(questId);
         } else {

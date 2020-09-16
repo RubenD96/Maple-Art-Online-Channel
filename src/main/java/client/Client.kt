@@ -12,7 +12,7 @@ import net.maple.packets.PartyPackets.updateParty
 import net.netty.NettyClient
 import net.server.ChannelServer
 import net.server.MigrateInfo
-import net.server.Server.Companion.instance
+import net.server.Server
 import org.jooq.Record
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -37,10 +37,7 @@ class Client(c: Channel, siv: ByteArray, riv: ByteArray) : NettyClient(c, siv, r
     lateinit var worldChannel: ChannelServer
     lateinit var pic: String
         private set
-    lateinit var player: Character
-        get() {
-         return c.field
-     }
+    lateinit var character: Character
 
     /*var macs: Set<String>? = null
     var hwids: Set<String>? = null
@@ -58,7 +55,7 @@ class Client(c: Channel, siv: ByteArray, riv: ByteArray) : NettyClient(c, siv, r
         isBanned = data.getValue(Tables.ACCOUNTS.BANNED) == 1.toByte()
         isAdmin = data.getValue(Tables.ACCOUNTS.ADMIN) == 1.toByte()
         pic = data.getValue(Tables.ACCOUNTS.PIC)
-        worldChannel = instance.channels[mi.channel]
+        worldChannel = Server.channels[mi.channel]
         worldChannel.loginConnector.messageLogin("1:$accId")
         isLoggedIn = true
     }
@@ -92,7 +89,7 @@ class Client(c: Channel, siv: ByteArray, riv: ByteArray) : NettyClient(c, siv, r
             isLoggedIn = false
             val field = character.field
             field.leave(character)
-            if (character.getGuild() != null && (!instance.clients[accId]!!.cashShop || character.isInCashShop)) {
+            if (character.getGuild() != null && (!Server.clients[accId]!!.cashShop || character.isInCashShop)) {
                 character.getGuild().members[character.id]!!.isOnline = false
                 character.getGuild().broadcast(GuildPackets.getLoadGuildPacket(character.getGuild()))
                 GuildPackets.notifyLoginLogout(character.getGuild(), character, false)
@@ -113,7 +110,7 @@ class Client(c: Channel, siv: ByteArray, riv: ByteArray) : NettyClient(c, siv, r
     }
 
     fun migrate() {
-        instance.clients[accId]!!.channel = worldChannel.channelId
+        Server.clients[accId]!!.channel = worldChannel.channelId
         write(ConnectionPackets.getChangeChannelPacket(worldChannel))
     }
 
@@ -131,7 +128,7 @@ class Client(c: Channel, siv: ByteArray, riv: ByteArray) : NettyClient(c, siv, r
                     party.leaderId = newLeader!!.cid
                     for (pmember in party.getMembers()) {
                         if (pmember.isOnline) {
-                            val pm = instance.getCharacter(pmember.cid)
+                            val pm = Server.getCharacter(pmember.cid)
                             pm!!.write(getTransferLeaderMessagePacket(newLeader.cid, true))
                             pm.write(updateParty(party, pmember.channel))
                         }
@@ -139,7 +136,7 @@ class Client(c: Channel, siv: ByteArray, riv: ByteArray) : NettyClient(c, siv, r
                 } else {
                     for (pmember in party.getMembers()) {
                         if (pmember.isOnline) {
-                            val pm = instance.getCharacter(pmember.cid)
+                            val pm = Server.getCharacter(pmember.cid)
                             pm!!.write(updateParty(party, pmember.channel))
                         }
                     }

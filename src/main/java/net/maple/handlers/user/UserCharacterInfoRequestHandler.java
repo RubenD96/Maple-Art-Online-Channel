@@ -4,7 +4,7 @@ import client.Character;
 import client.Client;
 import client.inventory.ItemInventoryType;
 import client.inventory.slots.ItemSlot;
-import field.object.FieldObjectType;
+import field.obj.FieldObjectType;
 import net.maple.SendOpcode;
 import net.maple.handlers.PacketHandler;
 import util.packet.Packet;

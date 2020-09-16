@@ -18,9 +18,9 @@ public class UserScriptMessageAnswerHandler extends PacketHandler {
         byte type = reader.readByte();
         byte action = reader.readByte(); // 1 = continue, 255 = end chat
 
-        NPCConversationManager cm = NPCScriptManager.getInstance().getCms().get(c);
+        NPCConversationManager cm = NPCScriptManager.INSTANCE.getCms().get(c);
         if (cm == null) {
-            cm = QuestScriptManager.getInstance().getQms().get(c);
+            cm = QuestScriptManager.INSTANCE.getQms().get(c);
         }
         if (cm != null) {
             int selection = -1;
@@ -31,9 +31,9 @@ public class UserScriptMessageAnswerHandler extends PacketHandler {
                 cm.setText(reader.readMapleString());
             }
             if (cm instanceof QuestConversationManager) {
-                QuestScriptManager.getInstance().converse(c, action, selection);
+                QuestScriptManager.INSTANCE.converse(c, action, selection);
             } else {
-                NPCScriptManager.getInstance().converse(c, action, selection);
+                NPCScriptManager.INSTANCE.converse(c, action, selection);
             }
         }
     }

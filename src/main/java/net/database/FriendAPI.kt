@@ -16,7 +16,7 @@ object FriendAPI {
         for (record in friends) {
             val fid = record.getValue(Tables.FRIENDS.FID)
             friendList.addFriend(fid, CharacterAPI.getOfflineName(fid), record.getValue(Tables.FRIENDS.GROUP))
-            val chr = Server.instance.getCharacter(fid)
+            val chr = Server.getCharacter(fid)
             if (chr != null) {
                 friendList.friends[fid]?.channel = chr.channel.channelId
             }

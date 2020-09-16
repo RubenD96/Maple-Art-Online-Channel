@@ -1,9 +1,9 @@
 package net.maple.packets;
 
 import client.Character;
-import field.object.FieldObject;
-import field.object.drop.AbstractFieldDrop;
-import field.object.drop.EnterType;
+import field.obj.FieldObject;
+import field.obj.drop.AbstractFieldDrop;
+import field.obj.drop.EnterType;
 import net.maple.SendOpcode;
 import util.packet.Packet;
 import util.packet.PacketWriter;

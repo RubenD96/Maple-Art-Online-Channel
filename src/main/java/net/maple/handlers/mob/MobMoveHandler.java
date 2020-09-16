@@ -2,9 +2,9 @@ package net.maple.handlers.mob;
 
 import client.Client;
 import field.Field;
-import field.object.life.FieldControlledObject;
-import field.object.life.FieldMob;
-import field.object.life.FieldNPC;
+import field.obj.life.FieldControlledObject;
+import field.obj.life.FieldMob;
+import field.obj.life.FieldNPC;
 import net.maple.SendOpcode;
 import net.maple.handlers.PacketHandler;
 import util.packet.Packet;

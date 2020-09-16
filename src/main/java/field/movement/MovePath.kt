@@ -1,6 +1,6 @@
 package field.movement
 
-import field.`object`.life.FieldLife
+import field.obj.life.FieldLife
 import field.movement.fragment.*
 import util.packet.PacketReader
 import util.packet.PacketWriter

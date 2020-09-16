@@ -1,7 +1,7 @@
 package net.maple.handlers.user;
 
 import client.Client;
-import field.object.portal.FieldPortal;
+import field.obj.portal.FieldPortal;
 import net.maple.handlers.PacketHandler;
 import util.packet.PacketReader;
 

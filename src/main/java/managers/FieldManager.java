@@ -1,9 +1,9 @@
 package managers;
 
 import field.Field;
-import field.object.Foothold;
-import field.object.life.*;
-import field.object.portal.FieldPortal;
+import field.obj.Foothold;
+import field.obj.life.*;
+import field.obj.portal.FieldPortal;
 import managers.flag.FieldFlag;
 import util.packet.PacketReader;
 

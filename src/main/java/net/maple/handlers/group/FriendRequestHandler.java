@@ -39,7 +39,7 @@ public class FriendRequestHandler extends PacketHandler {
             }
         } else if (operation == FriendOperation.FRIEND_REQ_ACCEPT_FRIEND.getValue()) {
             int cid = reader.read();
-            Character toAdd = Server.Companion.getInstance().getCharacter(cid);
+            Character toAdd = Server.INSTANCE.getCharacter(cid);
             if (toAdd != null) {
                 friendList.addFriend(toAdd, "Group Unknown", true);
                 FriendAPI.INSTANCE.addFriend(c.getCharacter().getId(), toAdd.getId(), "Group Unknown", false);
@@ -66,7 +66,7 @@ public class FriendRequestHandler extends PacketHandler {
             if (friendList.getFriends().containsKey(cid)) {
                 friendList.removeFriend(cid);
                 FriendAPI.INSTANCE.removeFriend(c.getCharacter().getId(), cid);
-                Character toRemove = Server.Companion.getInstance().getCharacter(cid);
+                Character toRemove = Server.INSTANCE.getCharacter(cid);
                 if (toRemove != null) {
                     toRemove.getFriendList().updateFriendList();
                 }

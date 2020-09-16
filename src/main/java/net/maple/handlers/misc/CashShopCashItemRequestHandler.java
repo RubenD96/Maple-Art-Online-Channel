@@ -193,7 +193,7 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
         int cid = CharacterAPI.INSTANCE.getOfflineId(giftTo);
         if (!giftChecks(c, spw, text, cid)) return;
 
-        Character chr = Server.Companion.getInstance().getCharacter(cid);
+        Character chr = Server.INSTANCE.getCharacter(cid);
 
         int aid = getOfflineAccountId(c, chr, cid);
         if (aid == -1) return;
@@ -350,7 +350,7 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
         int cid = CharacterAPI.INSTANCE.getOfflineId(giveTo);
         if (!giftChecks(c, spw, text, cid)) return;
 
-        Character chr = Server.Companion.getInstance().getCharacter(cid);
+        Character chr = Server.INSTANCE.getCharacter(cid);
         int aid = getOfflineAccountId(c, chr, cid);
         if (aid == -1) return;
 

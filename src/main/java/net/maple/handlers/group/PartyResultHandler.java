@@ -17,7 +17,7 @@ public class PartyResultHandler extends PacketHandler {
         System.out.println("[" + getClass().getName().replace("net.maple.handlers.misc.", "") + "] " + HexTool.INSTANCE.toHex(reader.getData()));
         byte operation = reader.readByte();
         int pid = reader.readInteger();
-        Party party = Server.Companion.getInstance().getParties().get(pid);
+        Party party = Server.INSTANCE.getParties().get(pid);
 
         if (party == null) {
             return;

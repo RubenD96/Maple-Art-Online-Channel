@@ -2,8 +2,8 @@ package net.maple.handlers.misc;
 
 import client.Character;
 import client.Client;
-import field.object.FieldObjectType;
-import field.object.drop.AbstractFieldDrop;
+import field.obj.FieldObjectType;
+import field.obj.drop.AbstractFieldDrop;
 import net.maple.handlers.PacketHandler;
 import util.packet.PacketReader;
 

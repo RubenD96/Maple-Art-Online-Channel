@@ -14,7 +14,7 @@ import net.maple.handlers.user.attack.AttackType
 import net.maple.handlers.user.attack.UserAttackHandler
 import java.util.*
 
-class PacketProcessor private constructor() {
+object PacketProcessor {
 
     private val handlers: MutableMap<RecvOpcode, PacketHandler> = EnumMap(RecvOpcode::class.java)
 
@@ -22,11 +22,6 @@ class PacketProcessor private constructor() {
         return handlers[Arrays.stream(
                 RecvOpcode.values()).filter { op: RecvOpcode -> op.getValue() == packetId.toInt() }
                 .findFirst().orElse(null)]
-    }
-
-    companion object {
-        @get:Synchronized
-        val instance = PacketProcessor()
     }
 
     init {
@@ -75,6 +70,7 @@ class PacketProcessor private constructor() {
         handlers[RecvOpcode.USER_SHOOT_ATTACK] = UserAttackHandler(AttackType.SHOOT)
         handlers[RecvOpcode.USER_MAGIC_ATTACK] = UserAttackHandler(AttackType.MAGIC)
         handlers[RecvOpcode.USER_BODY_ATTACK] = UserAttackHandler(AttackType.BODY)
+
         val doNothing: PacketHandler = DoNothingHandler()
         handlers[RecvOpcode.UPDATE_GM_BOARD] = doNothing
         handlers[RecvOpcode.UPDATE_SCREEN_SETTING] = doNothing

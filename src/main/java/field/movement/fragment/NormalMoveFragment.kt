@@ -1,6 +1,6 @@
 package field.movement.fragment
 
-import field.`object`.life.FieldLife
+import field.obj.life.FieldLife
 import field.movement.MovePathAttribute
 import util.packet.PacketReader
 import util.packet.PacketWriter

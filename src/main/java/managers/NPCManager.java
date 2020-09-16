@@ -1,6 +1,6 @@
 package managers;
 
-import field.object.life.FieldNPC;
+import field.obj.life.FieldNPC;
 import util.packet.PacketReader;
 
 import java.util.HashMap;

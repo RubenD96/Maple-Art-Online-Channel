@@ -1,8 +1,8 @@
 package net.maple.handlers.user.attack;
 
 import client.Character;
-import field.object.FieldObjectType;
-import field.object.life.FieldMob;
+import field.obj.FieldObjectType;
+import field.obj.life.FieldMob;
 import util.packet.PacketReader;
 
 import java.awt.*;

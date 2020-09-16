@@ -62,30 +62,28 @@ object GuildAPI {
      */
     @Synchronized
     fun load(id: Int): Guild? {
-        if (Server.instance.guilds.containsKey(id)) return Server.instance.guilds[id]
+        if (Server.guilds.containsKey(id)) return Server.guilds[id]
 
-        val rec = connection.select().from(Tables.GUILDS).where(Tables.GUILDS.ID.eq(id)).fetchOne()
-        if (rec != null) {
-            val guild = Guild(id)
-            guild.name = rec.getValue(Tables.GUILDS.NAME)
-            guild.notice = rec.getValue(Tables.GUILDS.NOTICE)
-            guild.maxSize = rec.getValue(Tables.GUILDS.SIZE)
-            guild.ranks[0] = rec.getValue(Tables.GUILDS.RANK1)
-            guild.ranks[1] = rec.getValue(Tables.GUILDS.RANK2)
-            guild.ranks[2] = rec.getValue(Tables.GUILDS.RANK3)
-            guild.ranks[3] = rec.getValue(Tables.GUILDS.RANK4)
-            guild.ranks[4] = rec.getValue(Tables.GUILDS.RANK5)
-            guild.leader = rec.getValue(Tables.GUILDS.LEADER)
-            val res = connection.select().from(Tables.GUILDMEMBERS).where(Tables.GUILDMEMBERS.GID.eq(id)).fetch()
-            res.forEach(Consumer { member: Record -> guild.members[member.getValue(Tables.GUILDMEMBERS.CID)] = GuildMember(member) })
-            val mark = connection.select().from(Tables.GUILDMARK).where(Tables.GUILDMARK.GID.eq(id)).fetchOne()
-            if (mark != null) {
-                guild.mark = GuildMark(mark)
-            }
-            Server.instance.guilds[id] = guild
-            return guild
+        val rec = connection.select().from(Tables.GUILDS).where(Tables.GUILDS.ID.eq(id)).fetchOne() ?: return null
+
+        val guild = Guild(id)
+        guild.name = rec.getValue(Tables.GUILDS.NAME)
+        guild.notice = rec.getValue(Tables.GUILDS.NOTICE)
+        guild.maxSize = rec.getValue(Tables.GUILDS.SIZE)
+        guild.ranks[0] = rec.getValue(Tables.GUILDS.RANK1)
+        guild.ranks[1] = rec.getValue(Tables.GUILDS.RANK2)
+        guild.ranks[2] = rec.getValue(Tables.GUILDS.RANK3)
+        guild.ranks[3] = rec.getValue(Tables.GUILDS.RANK4)
+        guild.ranks[4] = rec.getValue(Tables.GUILDS.RANK5)
+        guild.leader = rec.getValue(Tables.GUILDS.LEADER)
+        val res = connection.select().from(Tables.GUILDMEMBERS).where(Tables.GUILDMEMBERS.GID.eq(id)).fetch()
+        res.forEach(Consumer { member: Record -> guild.members[member.getValue(Tables.GUILDMEMBERS.CID)] = GuildMember(member) })
+        val mark = connection.select().from(Tables.GUILDMARK).where(Tables.GUILDMARK.GID.eq(id)).fetchOne()
+        if (mark != null) {
+            guild.mark = GuildMark(mark)
         }
-        return null
+        Server.guilds[id] = guild
+        return guild
     }
 
     /**

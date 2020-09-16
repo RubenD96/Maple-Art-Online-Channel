@@ -3,7 +3,7 @@ package net.server
 import client.Character
 import constants.ServerConstants
 import field.Field
-import field.`object`.FieldObjectType
+import field.obj.FieldObjectType
 import io.netty.bootstrap.ServerBootstrap
 import io.netty.channel.ChannelFuture
 import io.netty.channel.ChannelInitializer

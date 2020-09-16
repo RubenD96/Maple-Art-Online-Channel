@@ -6,7 +6,7 @@ import client.inventory.ItemInventoryType;
 import client.inventory.slots.ItemSlot;
 import client.inventory.slots.ItemSlotBundle;
 import constants.ItemConstants;
-import field.object.drop.ItemDrop;
+import field.obj.drop.ItemDrop;
 import net.database.ItemAPI;
 import net.maple.handlers.PacketHandler;
 import net.maple.packets.CharacterPackets;

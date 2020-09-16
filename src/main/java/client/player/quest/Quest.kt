@@ -10,6 +10,7 @@ import net.database.QuestAPI.remove
 import net.database.QuestAPI.update
 import net.maple.SendOpcode
 import net.maple.packets.CharacterPackets
+import scripting.quest.QuestConversationManager
 import scripting.quest.QuestScriptManager
 import util.packet.Packet
 import util.packet.PacketWriter
@@ -38,7 +39,8 @@ class Quest(val id: Int, val character: Character) {
             return false
         }
 
-        if (reqs.npc != 0 && QuestScriptManager.getInstance().qms[character.client]?.npcId != reqs.npc) {
+        val qcm = QuestScriptManager.qms[character.client] ?: return false
+        if (reqs.npc != 0 && qcm.npcId != reqs.npc) {
             return false
         }
 

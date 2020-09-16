@@ -35,14 +35,14 @@ public class PartyRequestHandler extends PacketHandler {
                 List<PartyMember> online = party.getOnlineMembers();
                 if (party.getMembers().size() == 1 || (online.size() == 1 && chr.getId() == party.getLeaderId())) { // alone, so disband
                     c.write(PartyPackets.INSTANCE.getDisbandPartyPacket(pid, chr.getId()));
-                    Server.Companion.getInstance().getParties().remove(pid);
+                    Server.INSTANCE.getParties().remove(pid);
                 } else { // leaving
                     if (online.size() > 1 && chr.getId() == party.getLeaderId()) {
                         PartyMember newLeader = party.getRandomOnline(chr.getId());
                         party.setLeaderId(newLeader.getCid());
                         for (PartyMember pmember : party.getMembers()) {
                             if (pmember.isOnline() && pmember.getCid() != chr.getId()) {
-                                Character pm = Server.Companion.getInstance().getCharacter(pmember.getCid());
+                                Character pm = Server.INSTANCE.getCharacter(pmember.getCid());
                                 pm.write(PartyPackets.INSTANCE.getTransferLeaderMessagePacket(newLeader.getCid(), false));
                             }
                         }
@@ -51,7 +51,7 @@ public class PartyRequestHandler extends PacketHandler {
                     party.expel(chr.getId());
                     for (PartyMember pmember : party.getMembers()) {
                         if (pmember.isOnline()) {
-                            Character pm = Server.Companion.getInstance().getCharacter(pmember.getCid());
+                            Character pm = Server.INSTANCE.getCharacter(pmember.getCid());
                             pm.write(PartyPackets.INSTANCE.getLeavePartyPacket(party, chr.getId(), false, chr.getName(), pmember.getChannel()));
                         }
                     }
@@ -83,14 +83,14 @@ public class PartyRequestHandler extends PacketHandler {
                 if (party.getLeaderId() == chr.getId()) {
                     PartyMember toKick = party.expel(reader.readInteger());
                     if (toKick != null) {
-                        Character target = Server.Companion.getInstance().getCharacter(toKick.getCid());
+                        Character target = Server.INSTANCE.getCharacter(toKick.getCid());
                         if (target != null) {
                             target.setParty(null);
                             target.write(PartyPackets.INSTANCE.getLeavePartyPacket(party, target.getId(), true, target.getName(), toKick.getChannel()));
                         }
                         for (PartyMember pmember : party.getMembers()) {
                             if (pmember.isOnline()) {
-                                Character pm = Server.Companion.getInstance().getCharacter(pmember.getCid());
+                                Character pm = Server.INSTANCE.getCharacter(pmember.getCid());
                                 pm.write(PartyPackets.INSTANCE.getLeavePartyPacket(party, toKick.getCid(), true, toKick.getName(), pmember.getChannel()));
                             }
                         }
@@ -110,7 +110,7 @@ public class PartyRequestHandler extends PacketHandler {
                         party.setLeaderId(newLeader);
                         for (PartyMember pmember : party.getMembers()) {
                             if (pmember.isOnline()) {
-                                Character pm = Server.Companion.getInstance().getCharacter(pmember.getCid());
+                                Character pm = Server.INSTANCE.getCharacter(pmember.getCid());
                                 pm.write(PartyPackets.INSTANCE.getTransferLeaderMessagePacket(newLeader, false));
                             }
                         }
@@ -125,7 +125,7 @@ public class PartyRequestHandler extends PacketHandler {
     public Party createParty(Character chr) {
         Party party = new Party(chr);
         chr.setParty(party);
-        Server.Companion.getInstance().getParties().put(party.getId(), party);
+        Server.INSTANCE.getParties().put(party.getId(), party);
         party.createParty();
         return party;
     }

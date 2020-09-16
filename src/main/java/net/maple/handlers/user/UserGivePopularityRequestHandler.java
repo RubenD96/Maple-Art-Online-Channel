@@ -2,7 +2,7 @@ package net.maple.handlers.user;
 
 import client.Character;
 import client.Client;
-import field.object.FieldObjectType;
+import field.obj.FieldObjectType;
 import net.maple.SendOpcode;
 import net.maple.handlers.PacketHandler;
 import util.packet.Packet;

@@ -2,8 +2,8 @@ package net.maple.handlers.user;
 
 import client.Character;
 import client.Client;
-import field.object.FieldObjectType;
-import field.object.life.FieldNPC;
+import field.obj.FieldObjectType;
+import field.obj.life.FieldNPC;
 import managers.NPCShopManager;
 import net.maple.handlers.PacketHandler;
 import net.maple.packets.ConversationPackets;
@@ -22,9 +22,9 @@ public class UserSelectNpcHandler extends PacketHandler {
                 .stream().filter(o -> o.getId() == npcObjectId).findFirst().orElse(null);
         if (npc != null) {
             System.out.println("[UserSelectNpcHandler] " + npc.getName() + " (" + npc.getNpcId() + ")");
-            boolean hasNpcScript = NPCScriptManager.getInstance().converse(c, npc.getNpcId());
+            boolean hasNpcScript = NPCScriptManager.INSTANCE.converse(c, npc.getNpcId());
             if (!hasNpcScript) {
-                if (Server.Companion.getInstance().getShops().contains(npc.getNpcId())) {
+                if (Server.INSTANCE.getShops().contains(npc.getNpcId())) {
                     NPCShopManager.getInstance().getShop(npc.getNpcId()).open(chr);
                 } else {
                     c.write(ConversationPackets.getOkMessagePacket(npc.getNpcId(), 0,

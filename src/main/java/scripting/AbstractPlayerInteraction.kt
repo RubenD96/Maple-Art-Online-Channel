@@ -5,17 +5,15 @@ import client.Client
 import client.effects.field.TrembleFieldEffect
 import client.effects.user.QuestEffect
 import client.interaction.storage.ItemStorageInteraction
-import client.inventory.ModifyInventoriesContext
 import client.inventory.item.templates.ItemEquipTemplate
 import client.inventory.slots.ItemSlotEquip
 import client.messages.IncEXPMessage
 import client.messages.broadcast.types.AlertMessage
 import client.messages.broadcast.types.NoticeWithoutPrefixMessage
 import client.player.quest.Quest
-import field.`object`.FieldObject
-import field.`object`.FieldObjectType
-import field.`object`.life.FieldMob
-import field.`object`.life.FieldMobTemplate
+import field.obj.FieldObjectType
+import field.obj.life.FieldMob
+import field.obj.life.FieldMobTemplate
 import managers.ItemManager
 import managers.MobManager
 import net.maple.packets.CharacterPackets
@@ -24,19 +22,18 @@ import org.graalvm.collections.Pair
 import scripting.npc.NPCScriptManager
 import java.util.*
 import java.util.concurrent.TimeUnit
-import java.util.function.Consumer
 import java.util.function.Function
 
 abstract class AbstractPlayerInteraction(val c: Client) {
 
-    val player: Character get() = c.player
+    val player: Character get() = c.character
 
     fun gainItem(id: Int, quantity: Int) {
         gainItemInternal(id, quantity)
         c.write(CharacterPackets.localEffect(QuestEffect(id, quantity)))
     }
 
-    fun massGainItem(items: Array<IntArray>?) {
+    fun massGainItem(items: Array<IntArray>) {
         val entries: MutableList<Pair<Int, Int>> = ArrayList()
         Arrays.stream(items).forEach { item: IntArray ->
             gainItemInternal(item[0], item[1])
@@ -60,7 +57,7 @@ abstract class AbstractPlayerInteraction(val c: Client) {
         }
     }
 
-    open fun gainMeso(meso: Int) {
+    fun gainMeso(meso: Int) {
         player.gainMeso(meso, true)
     }
 
@@ -76,7 +73,7 @@ abstract class AbstractPlayerInteraction(val c: Client) {
         player.write(CharacterPackets.message(msg))
     }
 
-    fun warp(id: Int, portal: String?) {
+    fun warp(id: Int, portal: String) {
         player.changeField(id, portal)
     }
 
@@ -86,8 +83,8 @@ abstract class AbstractPlayerInteraction(val c: Client) {
 
     val mapId: Int get() = player.fieldId
 
-    fun sendBlue(message: String?) {
-        player.write(CharacterPackets.message(NoticeWithoutPrefixMessage(message!!)))
+    fun sendBlue(message: String) {
+        player.write(CharacterPackets.message(NoticeWithoutPrefixMessage(message)))
     }
 
     fun setQuestProgress(qid: Int, mob: Int, progress: String) {
@@ -100,7 +97,7 @@ abstract class AbstractPlayerInteraction(val c: Client) {
     }
 
     fun openNpc(id: Int) {
-        if (!NPCScriptManager.getInstance().converse(c, id)) {
+        if (!NPCScriptManager.converse(c, id)) {
             sendBlue("Npc does not have a script")
         }
     }
@@ -148,9 +145,9 @@ abstract class AbstractPlayerInteraction(val c: Client) {
         c.ch.eventLoop().schedule({
             if (dispose) {
                 c.lastNpcClick = 0
-                NPCScriptManager.getInstance().dispose(c)
+                NPCScriptManager.dispose(c)
             }
-            NPCScriptManager.getInstance().converse(c, npc)
+            NPCScriptManager.converse(c, npc)
         }, time.toLong(), TimeUnit.MILLISECONDS)
     }
 
@@ -158,8 +155,8 @@ abstract class AbstractPlayerInteraction(val c: Client) {
         c.ch.eventLoop().schedule<Void?>({ func.apply(this) }, after.toLong(), TimeUnit.MILLISECONDS)
     }
 
-    fun alert(msg: String?) {
-        c.write(CharacterPackets.message(AlertMessage(msg!!)))
+    fun alert(msg: String) {
+        c.write(CharacterPackets.message(AlertMessage(msg)))
     }
 
     fun openStorage(npcId: Int) {
@@ -181,7 +178,7 @@ abstract class AbstractPlayerInteraction(val c: Client) {
 
     val mobsOnField: List<Any>
         get() {
-            val field = c.player.field
+            val field = c.character.field
             if (field != null) {
                 val mobs: MutableList<FieldMob> = ArrayList<FieldMob>()
                 field.getObjects(FieldObjectType.MOB).forEach { mobs.add(it as FieldMob) }

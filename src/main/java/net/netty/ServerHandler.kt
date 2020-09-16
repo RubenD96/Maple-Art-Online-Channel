@@ -4,7 +4,7 @@ import client.Client
 import constants.ServerConstants
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelInboundHandlerAdapter
-import net.maple.PacketProcessor.Companion.instance
+import net.maple.PacketProcessor
 import net.maple.RecvOpcode
 import net.maple.packets.ConnectionPackets
 import net.netty.NettyClient.Companion.CLIENT_KEY
@@ -15,7 +15,7 @@ import java.util.*
 
 class ServerHandler : ChannelInboundHandlerAdapter() {
 
-    var processor = instance
+    var processor = PacketProcessor
     var ignoreOps = intArrayOf(
             RecvOpcode.PONG.getValue(),
             RecvOpcode.UPDATE_SCREEN_SETTING.getValue(),

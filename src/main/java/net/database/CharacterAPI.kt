@@ -5,7 +5,7 @@ import client.Client
 import client.player.Job
 import client.player.key.KeyBinding
 import database.jooq.Tables
-import field.`object`.portal.FieldPortal
+import field.obj.portal.FieldPortal
 import net.database.DatabaseCore.connection
 import org.jooq.Record
 

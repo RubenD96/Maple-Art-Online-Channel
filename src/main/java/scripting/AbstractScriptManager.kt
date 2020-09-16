@@ -18,7 +18,6 @@ abstract class AbstractScriptManager {
         println(mutablePath)
 
         mutablePath = "scripts/$mutablePath"
-        engine = null
         engine = c.engines[mutablePath]
         if (engine == null) {
             val scriptFile = File(mutablePath)

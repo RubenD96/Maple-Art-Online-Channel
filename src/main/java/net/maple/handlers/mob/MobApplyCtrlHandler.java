@@ -3,8 +3,8 @@ package net.maple.handlers.mob;
 import client.Character;
 import client.Client;
 import field.Field;
-import field.object.FieldObjectType;
-import field.object.life.FieldMob;
+import field.obj.FieldObjectType;
+import field.obj.life.FieldMob;
 import net.maple.handlers.PacketHandler;
 import util.packet.PacketReader;
 

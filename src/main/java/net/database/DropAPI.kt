@@ -1,8 +1,8 @@
 package net.database
 
 import database.jooq.Tables
-import field.`object`.drop.DropEntry
-import field.`object`.life.FieldMobTemplate
+import field.obj.drop.DropEntry
+import field.obj.life.FieldMobTemplate
 import managers.MobManager
 import net.database.DatabaseCore.connection
 import java.util.*

@@ -10,7 +10,7 @@ import kotlin.collections.HashSet
 import kotlin.collections.LinkedHashMap
 import kotlin.collections.set
 
-class RankingKeeper private constructor() {
+object RankingKeeper {
 
     var isUpdating = false
 
@@ -136,9 +136,5 @@ class RankingKeeper private constructor() {
                 .sorted { p1, p2 -> p1.mobKills[id]?.let { p2.mobKills[id]?.compareTo(it) }!! } // todo work on this or test
                 .collect(Collectors.toList())
         list[id] = players // override old data
-    }
-
-    companion object {
-        val instance = RankingKeeper()
     }
 }

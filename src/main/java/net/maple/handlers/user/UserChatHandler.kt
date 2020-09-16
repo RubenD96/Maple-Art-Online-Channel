@@ -9,7 +9,7 @@ import constants.ServerConstants.COMMAND_LIST
 import net.maple.SendOpcode
 import net.maple.handlers.PacketHandler
 import net.maple.packets.CharacterPackets
-import scripting.shortcuts.CommandShortcut
+import scripting.command.CommandShortcut
 import util.packet.Packet
 import util.packet.PacketReader
 import util.packet.PacketWriter
