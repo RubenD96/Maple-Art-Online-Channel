@@ -23,7 +23,7 @@ class Quest(val id: Int, val character: Character) {
     var dbId = 0
 
     fun initializeMobs() {
-        val template = QuestTemplateManager.getQuest(id)
+        val template = QuestTemplateManager.getQuest(id) ?: return
         val reqs = template.endingRequirements
 
         if (reqs.mobs.isNotEmpty()) {
@@ -74,7 +74,7 @@ class Quest(val id: Int, val character: Character) {
     }
 
     fun canStart(): Boolean {
-        val template = QuestTemplateManager.getQuest(id)
+        val template = QuestTemplateManager.getQuest(id) ?: return false
         val reqs = template.startingRequirements
 
         if (!reqCheck(reqs)) {
@@ -94,7 +94,7 @@ class Quest(val id: Int, val character: Character) {
     }
 
     fun canFinish(): Boolean {
-        val template = QuestTemplateManager.getQuest(id)
+        val template = QuestTemplateManager.getQuest(id) ?: return false
         val reqs = template.endingRequirements
 
         if (!reqCheck(reqs)) {
@@ -119,7 +119,8 @@ class Quest(val id: Int, val character: Character) {
     fun progress(mob: Int, increase: Int = 1) {
         val mobCount = mobs[mob] ?: return
         val count = mobCount.toInt() + increase
-        val countReq = QuestTemplateManager.getQuest(id).endingRequirements.mobs[mob] ?: return
+        val template = QuestTemplateManager.getQuest(id) ?: return
+        val countReq = template.endingRequirements.mobs[mob] ?: return
         if (count > countReq) return
 
         val newCount = StringBuilder(count.toString())

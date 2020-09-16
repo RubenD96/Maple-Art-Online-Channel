@@ -25,7 +25,7 @@ public class UserSelectNpcHandler extends PacketHandler {
             boolean hasNpcScript = NPCScriptManager.INSTANCE.converse(c, npc.getNpcId());
             if (!hasNpcScript) {
                 if (Server.INSTANCE.getShops().contains(npc.getNpcId())) {
-                    NPCShopManager.getInstance().getShop(npc.getNpcId()).open(chr);
+                    NPCShopManager.INSTANCE.getShop(npc.getNpcId()).open(chr);
                 } else {
                     c.write(ConversationPackets.getOkMessagePacket(npc.getNpcId(), 0,
                             "This npc does not appear to have a script\r\n" +

@@ -14,13 +14,13 @@ object BeautyAPI {
                 .fetch()
                 .forEach(Consumer { hair: Record ->
                     val id = hair.getValue(Tables.HAIRS.ID)
-                    BeautyManager.getHairs()[id] = Beauty(id, hair.getValue(Tables.HAIRS.GENDER).toInt(), hair.getValue(Tables.HAIRS.ENABLED) == 1.toByte())
+                    BeautyManager.hairs[id] = Beauty(id, hair.getValue(Tables.HAIRS.GENDER).toInt(), hair.getValue(Tables.HAIRS.ENABLED) == 1.toByte())
                 })
     }
 
     fun updateHair(id: Int) {
         connection.update(Tables.HAIRS)
-                .set(Tables.HAIRS.ENABLED, (if (BeautyManager.getHairs()[id]!!.isEnabled) 1 else 0).toByte())
+                .set(Tables.HAIRS.ENABLED, (if (BeautyManager.hairs[id]!!.isEnabled) 1 else 0).toByte())
                 .where(Tables.HAIRS.ID.eq(id))
                 .execute()
     }

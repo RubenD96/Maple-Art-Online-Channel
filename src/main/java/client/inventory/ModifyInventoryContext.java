@@ -49,7 +49,7 @@ public class ModifyInventoryContext implements ModifyInventoryContextInterface {
 
             while (bundle.getNumber() > bundle.getMaxNumber()) {
                 bundle.setNumber((short) (bundle.getNumber() - bundle.getMaxNumber()));
-                add(Objects.requireNonNull(ItemManager.getItem(item.getTemplateId())), bundle.getMaxNumber());
+                add(Objects.requireNonNull(ItemManager.INSTANCE.getItem(item.getTemplateId())), bundle.getMaxNumber());
             }
 
             ItemSlotBundle mergeable = (ItemSlotBundle) inventory.getItems().values().stream()

@@ -35,26 +35,14 @@ class Field(val id: Int) {
     lateinit var script: String
     lateinit var mapArea: Rectangle
 
-    private val portals: Map<Byte, FieldPortal> = HashMap()
-    private val footholds: Map<Int, Foothold> = HashMap()
+    val portals: MutableMap<Byte, FieldPortal> = HashMap()
+    val footholds: MutableMap<Int, Foothold> = HashMap()
     private val objects: MutableMap<FieldObjectType, MutableSet<FieldObject>> = EnumMap(FieldObjectType::class.java)
-    private val mobSpawnPoints: List<FieldMobSpawnPoint> = ArrayList<FieldMobSpawnPoint>()
+    val mobSpawnPoints: MutableList<FieldMobSpawnPoint> = ArrayList<FieldMobSpawnPoint>()
     private val toRespawn: MutableList<Respawn> = ArrayList()
 
     companion object {
         private val runningObjectId = AtomicInteger(1000000000)
-    }
-
-    fun getPortals(): Map<Byte, FieldPortal> {
-        return portals
-    }
-
-    fun getFootholds(): Map<Int, Foothold> {
-        return footholds
-    }
-
-    fun getMobSpawnPoints(): List<FieldMobSpawnPoint> {
-        return mobSpawnPoints
     }
 
     fun init() {
@@ -176,7 +164,7 @@ class Field(val id: Int) {
             toRespawn.forEach {
                 if (time > it.time) {
                     val newSpawn: FieldMobSpawnPoint = getRandomViableMobSpawnPoint(it.mob)
-                    val template: FieldMobTemplate = MobManager.getMob(it.mob)
+                    val template: FieldMobTemplate = MobManager.getMob(it.mob) ?: return@forEach // should never happen...
                     val mob = FieldMob(template, false)
                     mob.hp = mob.template.maxHP
                     mob.mp = mob.template.maxMP

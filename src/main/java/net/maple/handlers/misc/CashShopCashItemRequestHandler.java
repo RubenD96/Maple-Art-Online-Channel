@@ -66,7 +66,7 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
         int commoditySN = reader.readInteger();
         System.out.println("[BUY] " + cashType + " - " + commoditySN);
 
-        Commodity commodity = CommodityManager.getCommodity(commoditySN);
+        Commodity commodity = CommodityManager.INSTANCE.getCommodity(commoditySN);
 
         if (commodity == null) {
             System.err.println("[BUY] commodity (" + commoditySN + ") is null" + " - " + c.getCharacter().getName());
@@ -90,7 +90,7 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
             return; // lmao hoarding much?
         }
 
-        ItemTemplate template = ItemManager.getItem(commodity.getItemId());
+        ItemTemplate template = ItemManager.INSTANCE.getItem(commodity.getItemId());
         if (template == null) {
             failRequest(c, 2);
             return;
@@ -198,10 +198,10 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
         int aid = getOfflineAccountId(c, chr, cid);
         if (aid == -1) return;
 
-        Commodity commodity = CommodityManager.getCommodity(sn);
+        Commodity commodity = CommodityManager.INSTANCE.getCommodity(sn);
         if (!commodityBuyChecks(c, commodity, sn, chr, aid)) return;
 
-        ItemTemplate template = ItemManager.getItem(Objects.requireNonNull(commodity).getItemId());
+        ItemTemplate template = ItemManager.INSTANCE.getItem(Objects.requireNonNull(commodity).getItemId());
         if (template == null) {
             failRequest(c, 2);
             return;
@@ -313,7 +313,7 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
                 continue;
             }
 
-            Commodity commodity = CommodityManager.getCommodity(sn);
+            Commodity commodity = CommodityManager.INSTANCE.getCommodity(sn);
 
             if (commodity == null) {
                 System.err.println("[SET_WISH] commodity is null");
@@ -354,7 +354,7 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
         int aid = getOfflineAccountId(c, chr, cid);
         if (aid == -1) return;
 
-        Commodity commodity = CommodityManager.getCommodity(sn);
+        Commodity commodity = CommodityManager.INSTANCE.getCommodity(sn);
         if (!commodityBuyChecks(c, commodity, sn, chr, aid)) return;
 
         System.out.println("spw: " + spw);

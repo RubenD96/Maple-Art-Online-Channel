@@ -31,23 +31,25 @@ class CommandShortcut(c: Client, _args: Array<String>) : AbstractPlayerInteracti
         }
     }
 
-    fun getNpc(id: Int): FieldNPC {
+    fun getNpc(id: Int): FieldNPC? {
         return NPCManager.getNPC(id)
     }
 
-    fun getMob(id: Int): FieldMob {
-        val mob = FieldMob(MobManager.getMob(id), false)
+    fun getMob(id: Int): FieldMob? {
+        val template = getMobTemplate(id) ?: return null
+        val mob = FieldMob(template, false)
         mob.hp = mob.template.maxHP
         mob.mp = mob.template.maxMP
         return mob
     }
 
-    fun getItemTemplate(id: Int): ItemTemplate {
+    fun getItemTemplate(id: Int): ItemTemplate? {
         return ItemManager.getItem(id)
     }
 
     fun dropItem(id: Int, qty: Int) {
-        val it = getItemTemplate(id).toItemSlot()
+        val template = getItemTemplate(id) ?: return
+        val it = template.toItemSlot()
         if (it is ItemSlotBundle) {
             it.number = qty.toShort()
             it.title = chr.getName()
@@ -59,7 +61,7 @@ class CommandShortcut(c: Client, _args: Array<String>) : AbstractPlayerInteracti
 
     fun reloadShops() {
         Server.shops = ShopAPI.shops
-        NPCShopManager.getInstance().reload()
+        NPCShopManager.reload()
     }
 
     fun addItem(id: Int, qty: Int) {

@@ -172,7 +172,7 @@ abstract class AbstractPlayerInteraction(val c: Client) {
         c.write(GuildPackets.getLoadGuildPacket(player.guild))
     }
 
-    fun getMobTemplate(id: Int): FieldMobTemplate {
+    fun getMobTemplate(id: Int): FieldMobTemplate? {
         return MobManager.getMob(id)
     }
 

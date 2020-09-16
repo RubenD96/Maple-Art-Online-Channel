@@ -234,24 +234,24 @@ open class NPCConversationManager(c: Client, val npcId: Int) : AbstractPlayerInt
         println(readableItemMap)
     }
 
-    val allHairs: List<Beauty> get() = ArrayList(BeautyManager.getHairs().values)
+    val allHairs: List<Beauty> get() = ArrayList(BeautyManager.hairs.values)
 
     fun getEnabledHairs(gender: Int): List<Beauty> {
-        return BeautyManager.getHairs().values.stream()
+        return BeautyManager.hairs.values.stream()
                 .filter(Beauty::isEnabled)
                 .filter { it.gender == gender }
                 .collect(Collectors.toList())
     }
 
     fun getDisabledHairs(gender: Int): List<Beauty> {
-        return BeautyManager.getHairs().values.stream()
+        return BeautyManager.hairs.values.stream()
                 .filter { !it.isEnabled }
                 .filter { it.gender == gender }
                 .collect(Collectors.toList())
     }
 
     fun updateHair(id: Int) {
-        val b = BeautyManager.getHairs()[id] ?: return
+        val b = BeautyManager.hairs[id] ?: return
         b.isEnabled = !b.isEnabled
         BeautyAPI.updateHair(id)
     }
