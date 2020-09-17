@@ -1,3 +1,143 @@
+package net.maple.handlers.group
+
+import client.Character
+import client.Client
+import client.messages.broadcast.types.AlertMessage
+import client.party.Party
+import client.party.PartyOperationType
+import net.maple.handlers.PacketHandler
+import net.maple.packets.CharacterPackets
+import net.maple.packets.PartyPackets.getDisbandPartyPacket
+import net.maple.packets.PartyPackets.getLeavePartyPacket
+import net.maple.packets.PartyPackets.getPartyMessage
+import net.maple.packets.PartyPackets.getPartyMessageExtra
+import net.maple.packets.PartyPackets.getSendInvitePacket
+import net.maple.packets.PartyPackets.getTransferLeaderMessagePacket
+import net.server.Server.getCharacter
+import net.server.Server.parties
+import util.HexTool.toHex
+import util.packet.PacketReader
+
+class PartyRequestHandler : PacketHandler() {
+
+    override fun handlePacket(reader: PacketReader, c: Client) {
+        val chr = c.character
+        var party = chr.party
+        println("[" + javaClass.name.replace("net.maple.handlers.misc.", "") + "] " + toHex(reader.data))
+
+        val operation = reader.readByte()
+        if (operation.toInt() == PartyOperationType.PARTYREQ_CREATENEWPARTY.value) {
+            if (party == null) {
+                createParty(chr)
+            } else {
+                c.write(getPartyMessage(PartyOperationType.PARTYRES_CREATENEWPARTY_ALREAYJOINED))
+            }
+        } else if (operation.toInt() == PartyOperationType.PARTYREQ_WITHDRAWPARTY.value) {
+            if (party != null) {
+                val pid = party.id
+                val online = party.onlineMembers
+                if (party.getMembers().size == 1 || online.size == 1 && chr.id == party.leaderId) { // alone, so disband
+                    c.write(getDisbandPartyPacket(pid, chr.id))
+                    parties.remove(pid)
+                } else { // leaving
+                    if (online.size > 1 && chr.id == party.leaderId) {
+                        val newLeader = party.getRandomOnline(chr.id) // todo disband
+                        party.leaderId = newLeader!!.cid
+                        for (pmember in party.getMembers()) {
+                            if (pmember.isOnline && pmember.cid != chr.id) {
+                                val pm = getCharacter(pmember.cid) ?: continue
+                                pm.write(getTransferLeaderMessagePacket(newLeader.cid, false))
+                            }
+                        }
+                    }
+
+                    c.write(getLeavePartyPacket(party, chr.id, false, chr.getName(), chr.channel.channelId))
+                    party.expel(chr.id)
+                    for (pmember in party.getMembers()) {
+                        if (pmember.isOnline) {
+                            val pm = getCharacter(pmember.cid) ?: break
+                            pm.write(getLeavePartyPacket(party, chr.id, false, chr.getName(), pmember.channel))
+                        }
+                    }
+                }
+                chr.party = null
+            } else {
+                c.write(getPartyMessage(PartyOperationType.PARTYRES_WITHDRAWPARTY_NOTJOINED))
+            }
+        } else if (operation.toInt() == PartyOperationType.PARTYREQ_INVITEPARTY.value) {
+            if (party == null) {
+                party = createParty(chr)
+            }
+            if (party.leaderId == chr.id) {
+                val name = reader.readMapleString()
+                val invited = c.worldChannel.getCharacter(name)
+                if (invited != null) {
+                    if (invited.party == null) {
+                        invited.write(getSendInvitePacket(chr.party.id, chr))
+                        c.write(getPartyMessageExtra(PartyOperationType.PARTYRES_INVITEPARTY_SENT, name))
+                    } else {
+                        c.write(getPartyMessage(PartyOperationType.PARTYRES_CREATENEWPARTY_ALREAYJOINED))
+                    }
+                } else {
+                    c.write(CharacterPackets.message(AlertMessage("$name is not present in the current channel.")))
+                }
+            }
+        } else if (operation.toInt() == PartyOperationType.PARTYREQ_KICKPARTY.value) {
+            if (party != null) {
+                if (party.leaderId == chr.id) {
+                    val toKick = party.expel(reader.readInteger())
+                    if (toKick != null) {
+                        val target = getCharacter(toKick.cid)
+                        if (target != null) {
+                            target.party = null
+                            target.write(getLeavePartyPacket(party, target.id, true, target.getName(), toKick.channel))
+                        }
+                        for (pmember in party.getMembers()) {
+                            if (pmember.isOnline) {
+                                val pm = getCharacter(pmember.cid) ?: continue
+                                pm.write(getLeavePartyPacket(party, toKick.cid, true, toKick.name, pmember.channel))
+                            }
+                        }
+                    } else {
+                        c.write(getPartyMessage(PartyOperationType.PARTYRES_KICKPARTY_UNKNOWN))
+                    }
+                }
+            } else {
+                c.write(getPartyMessage(PartyOperationType.PARTYRES_WITHDRAWPARTY_NOTJOINED))
+            }
+        } else if (operation.toInt() == PartyOperationType.PARTYREQ_CHANGEPARTYBOSS.value) {
+            if (party != null) {
+                val newLeader = reader.readInteger()
+
+                if (party.leaderId == chr.id) {
+                    val member = party.getMember(newLeader) ?: return
+
+                    if (member.isOnline) {
+                        party.leaderId = newLeader
+                        for (pmember in party.getMembers()) {
+                            if (pmember.isOnline) {
+                                val pm = getCharacter(pmember.cid) ?: continue
+                                pm.write(getTransferLeaderMessagePacket(newLeader, false))
+                            }
+                        }
+                    }
+                }
+            } else {
+                c.write(getPartyMessage(PartyOperationType.PARTYRES_WITHDRAWPARTY_NOTJOINED))
+            }
+        }
+    }
+
+    fun createParty(chr: Character): Party {
+        val party = Party(chr)
+        chr.party = party
+        parties[party.id] = party
+        party.createParty()
+        return party
+    }
+}
+
+/*
 package net.maple.handlers.group;
 
 import client.Character;
@@ -130,3 +270,4 @@ public class PartyRequestHandler extends PacketHandler {
         return party;
     }
 }
+ */

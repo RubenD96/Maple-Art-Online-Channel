@@ -62,4 +62,8 @@ class Guild(val id: Int) {
             members[chr.id] = GuildMember(chr)
         }
     }
+
+    fun getMemberSecure(id: Int): GuildMember {
+        return members[id] ?: throw NullPointerException("getMemberSecure called on id that doesn't exist")
+    }
 }

@@ -1,3 +1,158 @@
+package net.maple.handlers.group
+
+import client.Client
+import client.messages.broadcast.types.AlertMessage
+import client.messages.broadcast.types.EventMessage
+import net.database.GuildAPI.addMember
+import net.database.GuildAPI.expel
+import net.database.GuildAPI.updateInfo
+import net.database.GuildAPI.updateMemberGrade
+import net.maple.handlers.PacketHandler
+import net.maple.packets.CharacterPackets
+import net.maple.packets.GuildPackets
+import net.maple.packets.GuildPackets.GuildReq
+import net.maple.packets.GuildPackets.GuildRes
+import net.server.Server.guilds
+import util.HexTool.toHex
+import util.packet.PacketReader
+
+class GuildRequestHandler : PacketHandler() {
+
+    override fun handlePacket(reader: PacketReader, c: Client) {
+        val chr = c.character
+        println("[GuildRequestHandler] " + toHex(reader.data))
+
+        when (val req = reader.readByte()) {
+            GuildReq.INVITE_GUILD -> {
+                val guild = chr.guild ?: return
+                if (guild.getMemberSecure(chr.id).grade > 2) return
+
+                if (guild.maxSize == guild.members.size) {
+                    GuildPackets.message(chr, GuildRes.JOIN_GUILD_ALREADY_FULL)
+                    return
+                }
+
+                val name = reader.readMapleString()
+                val invited = c.worldChannel.getCharacter(name)
+
+                if (invited != null) {
+                    if (invited.guild == null) {
+                        chr.guildInvitesSent.add(name)
+                        GuildPackets.sendInvite(guild, invited, chr)
+                        c.write(CharacterPackets.message(AlertMessage("Invited $name to the guild.")))
+                    } else {
+                        GuildPackets.message(chr, GuildRes.JOIN_GUILD_ALREADY_JOINED)
+                    }
+                } else {
+                    GuildPackets.message(chr, GuildRes.JOIN_GUILD_UNKNOWN_USER)
+                }
+            }
+            GuildReq.JOIN_GUILD -> {
+                // accepting request
+                val gid = reader.readInteger()
+                val cid = reader.readInteger()
+                val guild = guilds[gid] ?: return
+                if (chr.id != cid) return
+
+                guild.addMember(chr)
+                chr.guild = guild
+
+                guild.broadcast(GuildPackets.getJoinGuildPacket(guild, chr), chr) // guild tab update for members
+                GuildPackets.changeGuildName(chr, guild.name) // visual character update (remote)
+                GuildPackets.changeGuildMark(chr, guild.mark) // visual character update (remote)
+                chr.write(GuildPackets.getLoadGuildPacket(guild)) // guild tab update for new member
+                addMember(guild, chr, false)
+            }
+            GuildReq.WITHDRAW_GUILD,
+            GuildReq.KICK_GUILD,
+            -> {
+                val guild = chr.guild ?: return
+                val myGrade = guild.getMemberSecure(chr.id).grade
+
+                if (req == GuildReq.KICK_GUILD) {
+                    if (myGrade > 2) return
+                } else {
+                    if (myGrade == 1) return
+                }
+
+                val cid = reader.readInteger()
+                if (req == GuildReq.KICK_GUILD) {
+                    if (cid == chr.id) return
+                } else {
+                    if (cid != chr.id) return
+                }
+
+                val name = reader.readMapleString()
+                val member = guild.members[cid] ?: return
+
+                if (req == GuildReq.KICK_GUILD) if (member.grade <= myGrade) return  // jr's can't kick jr's... or the master
+
+                if (member.isOnline && member.hasCharacter()) {
+                    GuildPackets.expel(member.character)
+
+                    if (member.character != null) { // todo field check
+                        GuildPackets.changeGuildName(member.character, "")
+                    }
+                    if (req == GuildReq.KICK_GUILD) {
+                        member.character?.write(CharacterPackets.message(EventMessage("You've been expelled from the guild.")))
+                    } else {
+                        member.character?.write(CharacterPackets.message(EventMessage("You've left the guild.")))
+                    }
+                    member.character?.guild = null
+                    guild.members.remove(cid)
+                }
+                GuildPackets.leave(guild, cid, name, if (req == GuildReq.KICK_GUILD) GuildRes.KICK_GUILD_DONE else GuildRes.WITHDRAW_GUILD_DONE)
+                expel(guild, cid)
+            }
+            GuildReq.SET_NOTICE -> {
+                val guild = chr.guild ?: return
+                if (guild.getMemberSecure(chr.id).grade > 2) return
+
+                val notice = reader.readMapleString()
+                if (notice.length > 100) return
+
+                guild.notice = notice
+                GuildPackets.setNotice(guild, notice)
+                updateInfo(guild)
+            }
+            GuildReq.SET_MEMBER_GRADE -> {
+                val guild = chr.guild ?: return
+
+                val myGrade = guild.getMemberSecure(chr.id).grade
+                if (myGrade > 2) return
+
+                val cid = reader.readInteger()
+                if (cid == chr.id) return
+
+                val member = guild.members[cid] ?: return
+                if (member.grade <= myGrade) return  // jr's can't change grade of jr's... or the master
+
+                val grade = reader.readByte()
+                if (grade <= myGrade) return
+
+                GuildPackets.setMemberGrade(guild, cid, grade)
+                updateMemberGrade(cid, grade)
+            }
+            GuildReq.SET_GRADE_NAME -> {
+                val guild = chr.guild ?: return
+
+                val myGrade = guild.getMemberSecure(chr.id).grade
+                if (myGrade != 1) return
+
+                for (i in 0..4) {
+                    val name = reader.readMapleString()
+                    if (name.length < 4 || name.length > 10) return
+                    guild.ranks[i] = name
+                }
+
+                GuildPackets.setGradeNames(guild)
+                updateInfo(guild)
+            }
+        }
+    }
+}
+
+/*
 package net.maple.handlers.group;
 
 import client.Character;
@@ -156,3 +311,4 @@ public class GuildRequestHandler extends PacketHandler {
         }
     }
 }
+ */
