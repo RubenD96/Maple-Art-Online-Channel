@@ -55,7 +55,7 @@ class PartyRequestHandler : PacketHandler() {
                     party.expel(chr.id)
                     for (pmember in party.getMembers()) {
                         if (pmember.isOnline) {
-                            val pm = getCharacter(pmember.cid) ?: break
+                            val pm = getCharacter(pmember.cid) ?: continue
                             pm.write(getLeavePartyPacket(party, chr.id, false, chr.getName(), pmember.channel))
                         }
                     }

@@ -1,0 +1,68 @@
+package net.maple.handlers.user.attack
+
+import client.Character
+import client.Client
+import net.maple.SendOpcode
+import net.maple.handlers.PacketHandler
+import util.packet.Packet
+import util.packet.PacketReader
+import util.packet.PacketWriter
+import java.util.*
+
+class UserAttackHandler(private val type: AttackType) : PacketHandler() {
+
+    override fun handlePacket(reader: PacketReader, c: Client) {
+        val chr = c.character
+        val info = AttackInfo(type, chr, reader)
+        info.decode()
+
+        chr.field.broadcast(showAttack(chr, info), chr)
+        info.apply()
+    }
+
+    fun showAttack(chr: Character, info: AttackInfo): Packet {
+        val pw = PacketWriter(32)
+
+        pw.writeHeader((SendOpcode.USER_MELEE_ATTACK.value + type.type).toShort())
+        pw.writeInt(chr.id)
+        pw.write(info.damagePerMob or 16 * info.mobCount)
+        pw.write(chr.level)
+
+        if (info.skillId > 0) {
+            pw.write(0) // todo
+            pw.writeInt(info.skillId)
+        } else {
+            pw.write(0)
+        }
+
+        pw.write(0x20)
+        pw.writeShort(info.action and 0x7FFF or (if (info.isLeft) 1 else 0) shl 15)
+
+        if (info.action <= 0x110) {
+            pw.write(0)
+            pw.write(0)
+            pw.writeInt(2070000)
+            Arrays.stream(info.damageInfo).forEach {
+                if (it == null) return@forEach
+
+                pw.writeInt(it.mobId)
+
+                if (it.mobId <= 0) return@forEach
+
+                pw.write(it.hitAction.toInt())
+                Arrays.stream(it.damage).forEach { damage: Int ->
+                    pw.writeBool(false)
+                    pw.writeInt(damage)
+                }
+            }
+        }
+
+        if (type == AttackType.SHOOT) {
+            pw.writeShort(0)
+            pw.writeShort(0)
+        }
+
+        // pw.writeInt(0); // keydown
+        return pw.createPacket()
+    }
+}

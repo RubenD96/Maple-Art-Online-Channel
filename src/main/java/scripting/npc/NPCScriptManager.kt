@@ -6,12 +6,8 @@ import javax.script.Invocable
 
 object NPCScriptManager : AbstractScriptManager() {
 
-    private val cms: MutableMap<Client, NPCConversationManager> = HashMap()
+    val cms: MutableMap<Client, NPCConversationManager> = HashMap()
     private val scripts: MutableMap<Client, Invocable> = HashMap()
-
-    fun getCms(): Map<Client, NPCConversationManager> {
-        return cms
-    }
 
     fun converse(c: Client, mode: Int, selection: Int) {
         val cm = cms[c] ?: return

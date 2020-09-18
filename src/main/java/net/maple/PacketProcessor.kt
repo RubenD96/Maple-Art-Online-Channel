@@ -20,7 +20,7 @@ object PacketProcessor {
 
     fun getHandler(packetId: Short): PacketHandler? {
         return handlers[Arrays.stream(
-                RecvOpcode.values()).filter { op: RecvOpcode -> op.getValue() == packetId.toInt() }
+                RecvOpcode.values()).filter { it.getValue() == packetId.toInt() }
                 .findFirst().orElse(null)]
     }
 

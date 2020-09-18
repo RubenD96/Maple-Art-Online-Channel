@@ -9,7 +9,6 @@ import field.obj.drop.ItemDrop
 import field.obj.life.FieldMob
 import field.obj.life.FieldNPC
 import managers.ItemManager
-import managers.MobManager
 import managers.NPCManager
 import managers.NPCShopManager
 import net.database.ShopAPI
