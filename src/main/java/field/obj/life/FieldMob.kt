@@ -104,7 +104,10 @@ class FieldMob(val template: FieldMobTemplate, left: Boolean) : AbstractFieldCon
             it.expire = System.currentTimeMillis() + 300000
         }
 
-        drops.forEach { field.enter(it) }
+        drops.forEach {
+            it.field = field
+            field.enter(it)
+        }
     }
 
     private fun showHpBar(indicator: Float): Packet {
@@ -131,16 +134,21 @@ class FieldMob(val template: FieldMobTemplate, left: Boolean) : AbstractFieldCon
     private fun encode(pw: PacketWriter, type: MobSummonType) {
         pw.write(1)
         pw.writeInt(template.id)
+
+        // temp stats
         pw.writeLong(0)
         pw.writeLong(0)
+
         pw.writePosition(position)
         pw.write(moveAction.toInt())
         pw.writeShort(foothold)
         pw.writeShort(home)
         pw.write(type.type)
+
         if (type == MobSummonType.REVIVED || type.type >= 0) {
             pw.writeInt(0) // summon option
         }
+
         pw.write(0)
         pw.writeInt(0)
         pw.writeInt(0)
@@ -149,8 +157,8 @@ class FieldMob(val template: FieldMobTemplate, left: Boolean) : AbstractFieldCon
     override val fieldObjectType = FieldObjectType.MOB
 
     fun getEnterFieldPacket(type: MobSummonType): Packet {
-
         val pw = PacketWriter(32)
+
         pw.writeHeader(SendOpcode.MOB_ENTER_FIELD)
         pw.writeInt(id)
         encode(pw, type)

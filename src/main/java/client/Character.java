@@ -290,6 +290,10 @@ public class Character extends AbstractFieldLife {
         return trueMaxHealth;
     }
 
+    public int getTrueMaxMana() {
+        return trueMaxMana;
+    }
+
     public int getPhilId() {
         return philId;
     }

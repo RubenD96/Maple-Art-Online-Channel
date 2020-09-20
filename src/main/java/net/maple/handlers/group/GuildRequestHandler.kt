@@ -93,6 +93,7 @@ class GuildRequestHandler : PacketHandler() {
                     if (member.character != null) { // todo field check
                         GuildPackets.changeGuildName(member.character, "")
                     }
+
                     if (req == GuildReq.KICK_GUILD) {
                         member.character?.write(CharacterPackets.message(EventMessage("You've been expelled from the guild.")))
                     } else {

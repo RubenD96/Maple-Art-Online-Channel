@@ -12,6 +12,7 @@ execute = () => {
             npc.setF((args.length > 1 ? args[1] : 1) === 1);
             npc.setCy(chr.getPosition().y);
             npc.setHide(false);
+            npc.setField(cs.getMap());
             cs.getChr().getField().enter(npc);
         }
     }

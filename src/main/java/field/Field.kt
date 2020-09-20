@@ -74,8 +74,8 @@ class Field(val id: Int) {
     fun enter(obj: FieldObject) {
         if (obj.field != this) {
             obj.field.leave(obj, obj.leaveFieldPacket)
+            obj.field = this
         }
-        obj.field = this
         addObject(obj)
         if (obj is Character) {
             val portal: FieldPortal = portals[obj.portal] ?: firstSpawnpoint
@@ -176,6 +176,7 @@ class Field(val id: Int) {
                     mob.foothold = newSpawn.fh
                     mob.cy = newSpawn.cy
                     mob.hide = false
+                    mob.field = this
                     enter(mob)
                     spawned.add(it)
                 }

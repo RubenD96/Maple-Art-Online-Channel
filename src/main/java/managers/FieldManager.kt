@@ -117,6 +117,7 @@ class FieldManager : AbstractManager() {
                 obj.f = f == 0
                 obj.cy = cy
                 obj.hide = hide == 1
+                obj.field = field
                 field.enter(obj)
             }
         }

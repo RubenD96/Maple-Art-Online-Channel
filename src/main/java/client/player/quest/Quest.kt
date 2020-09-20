@@ -310,7 +310,6 @@ public class Quest {
             return false;
         }
 
-        // todo date check
         return true;
     }
 

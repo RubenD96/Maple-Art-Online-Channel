@@ -11,6 +11,7 @@ import client.messages.IncEXPMessage
 import client.messages.broadcast.types.AlertMessage
 import client.messages.broadcast.types.NoticeWithoutPrefixMessage
 import client.player.quest.Quest
+import field.Field
 import field.obj.FieldObjectType
 import field.obj.life.FieldMob
 import field.obj.life.FieldMobTemplate
@@ -20,6 +21,7 @@ import net.maple.packets.CharacterPackets
 import net.maple.packets.GuildPackets
 import org.graalvm.collections.Pair
 import scripting.npc.NPCScriptManager
+import world.ranking.RankingKeeper
 import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.function.Function
@@ -176,6 +178,10 @@ abstract class AbstractPlayerInteraction(val c: Client) {
         return MobManager.getMob(id)
     }
 
+    fun getMap(): Field {
+        return player.field
+    }
+
     val mobsOnField: List<Any>
         get() {
             val field = c.character.field
@@ -187,4 +193,7 @@ abstract class AbstractPlayerInteraction(val c: Client) {
             return ArrayList()
         }
 
+    fun getRankings(): RankingKeeper {
+        return RankingKeeper
+    }
 }

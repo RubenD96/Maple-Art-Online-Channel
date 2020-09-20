@@ -2,14 +2,14 @@ package net.database
 
 import client.Client
 import database.jooq.Tables
+import database.jooq.Tables.ACCOUNTS
 import net.database.DatabaseCore.connection
 import org.jooq.Record
 
 object AccountAPI {
     fun getAccountInfo(aid: Int): Record {
-        return connection
-                .select().from(Tables.ACCOUNTS)
-                .where(Tables.ACCOUNTS.ID.eq(aid))
+        return connection.select().from(ACCOUNTS)
+                .where(ACCOUNTS.ID.eq(aid))
                 .fetchOne()
     }
 
@@ -36,17 +36,16 @@ object AccountAPI {
     }
 
     fun getCharacterCount(aid: Int): Int {
-        return connection
-                .fetchCount(connection
-                        .select().from(Tables.CHARACTERS)
-                        .where(Tables.CHARACTERS.ACCOUNTID.eq(aid))
-                )
+        return connection.fetchCount(connection
+                .select().from(Tables.CHARACTERS)
+                .where(Tables.CHARACTERS.ACCOUNTID.eq(aid))
+        )
     }
 
     fun loadNXCash(client: Client) {
         client.cash = connection
-                .select(Tables.ACCOUNTS.CASH).from(Tables.ACCOUNTS)
-                .where(Tables.ACCOUNTS.ID.eq(client.accId))
-                .fetchOne().getValue(Tables.ACCOUNTS.CASH)
+                .select(ACCOUNTS.CASH).from(ACCOUNTS)
+                .where(ACCOUNTS.ID.eq(client.accId))
+                .fetchOne().getValue(ACCOUNTS.CASH)
     }
 }

@@ -5,11 +5,13 @@ import client.Client
 import client.player.Job
 import client.player.key.KeyBinding
 import database.jooq.Tables
+import database.jooq.Tables.KEYBINDINGS
 import field.obj.portal.FieldPortal
 import net.database.DatabaseCore.connection
 import org.jooq.Record
 
 object CharacterAPI {
+
     fun getOfflineName(cid: Int): String {
         val rec: Record? = connection
                 .select(Tables.CHARACTERS.NAME).from(Tables.CHARACTERS)
@@ -146,11 +148,11 @@ object CharacterAPI {
      */
     fun getKeyBindings(cid: Int): Map<Int, KeyBinding> {
         val keyBindings: MutableMap<Int, KeyBinding> = HashMap()
-        val res = connection.select().from(Tables.KEYBINDINGS)
-                .where(Tables.KEYBINDINGS.CID.eq(cid))
+        val res = connection.select().from(KEYBINDINGS)
+                .where(KEYBINDINGS.CID.eq(cid))
                 .fetch()
-        for (rec in res) {
-            keyBindings[rec.getValue(Tables.KEYBINDINGS.KEY)] = KeyBinding(rec.getValue(Tables.KEYBINDINGS.TYPE), rec.getValue(Tables.KEYBINDINGS.ACTION))
+        res.forEach {
+            keyBindings[it.getValue(KEYBINDINGS.KEY)] = KeyBinding(it.getValue(KEYBINDINGS.TYPE), it.getValue(KEYBINDINGS.ACTION))
         }
         return keyBindings
     }
@@ -162,15 +164,14 @@ object CharacterAPI {
      */
     fun updateKeyBindings(chr: Character) {
         val keyBindings = chr.keyBindings
-        for ((key, value) in keyBindings) {
-            connection
-                    .insertInto(Tables.KEYBINDINGS, Tables.KEYBINDINGS.CID, Tables.KEYBINDINGS.KEY, Tables.KEYBINDINGS.TYPE, Tables.KEYBINDINGS.ACTION)
-                    .values(chr.id, key, value.type, value.action)
+        keyBindings.forEach {
+            connection.insertInto(KEYBINDINGS, KEYBINDINGS.CID, KEYBINDINGS.KEY, KEYBINDINGS.TYPE, KEYBINDINGS.ACTION)
+                    .values(chr.id, it.key, it.value.type, it.value.action)
                     .onDuplicateKeyUpdate()
-                    .set(Tables.KEYBINDINGS.TYPE, value.type)
-                    .set(Tables.KEYBINDINGS.ACTION, value.action)
-                    .where(Tables.KEYBINDINGS.CID.eq(chr.id))
-                    .and(Tables.KEYBINDINGS.KEY.eq(key))
+                    .set(KEYBINDINGS.TYPE, it.value.type)
+                    .set(KEYBINDINGS.ACTION, it.value.action)
+                    .where(KEYBINDINGS.CID.eq(chr.id))
+                    .and(KEYBINDINGS.KEY.eq(it.key))
                     .execute()
         }
     }
