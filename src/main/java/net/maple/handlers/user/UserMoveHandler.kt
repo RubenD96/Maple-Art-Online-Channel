@@ -9,7 +9,7 @@ import util.packet.Packet
 import util.packet.PacketReader
 import util.packet.PacketWriter
 
-class UserMoveHandler : PacketHandler() {
+class UserMoveHandler : PacketHandler {
 
     override fun handlePacket(reader: PacketReader, c: Client) {
         val chr = c.character

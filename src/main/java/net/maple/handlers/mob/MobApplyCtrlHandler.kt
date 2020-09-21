@@ -6,7 +6,7 @@ import field.obj.life.FieldMob
 import net.maple.handlers.PacketHandler
 import util.packet.PacketReader
 
-class MobApplyCtrlHandler : PacketHandler() {
+class MobApplyCtrlHandler : PacketHandler {
 
     override fun handlePacket(reader: PacketReader, c: Client) {
         val oid = reader.readInteger()

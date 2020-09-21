@@ -20,7 +20,7 @@ import java.nio.file.Paths
 import javax.script.ScriptEngine
 import javax.script.ScriptException
 
-class UserChatHandler : PacketHandler() {
+class UserChatHandler : PacketHandler {
 
     override fun handlePacket(reader: PacketReader, c: Client) {
         val chr = c.character

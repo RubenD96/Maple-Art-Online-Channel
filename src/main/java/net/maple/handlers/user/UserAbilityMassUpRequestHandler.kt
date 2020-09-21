@@ -8,7 +8,7 @@ import java.util.*
 import kotlin.collections.HashMap
 import kotlin.collections.set
 
-class UserAbilityMassUpRequestHandler : PacketHandler() {
+class UserAbilityMassUpRequestHandler : PacketHandler {
 
     override fun handlePacket(reader: PacketReader, c: Client) {
         val chr = c.character

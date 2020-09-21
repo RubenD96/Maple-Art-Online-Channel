@@ -8,7 +8,7 @@ import util.packet.Packet
 import util.packet.PacketReader
 import util.packet.PacketWriter
 
-class UserEmotionHandler : PacketHandler() {
+class UserEmotionHandler : PacketHandler {
 
     override fun handlePacket(reader: PacketReader, c: Client) {
         val chr = c.character

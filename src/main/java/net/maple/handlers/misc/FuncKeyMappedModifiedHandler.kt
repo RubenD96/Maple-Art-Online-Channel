@@ -5,7 +5,7 @@ import client.player.key.KeyBinding
 import net.maple.handlers.PacketHandler
 import util.packet.PacketReader
 
-class FuncKeyMappedModifiedHandler : PacketHandler() {
+class FuncKeyMappedModifiedHandler : PacketHandler {
 
     override fun handlePacket(reader: PacketReader, c: Client) {
         val chr = c.character

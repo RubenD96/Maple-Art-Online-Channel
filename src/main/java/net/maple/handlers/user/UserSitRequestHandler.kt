@@ -8,7 +8,7 @@ import util.packet.Packet
 import util.packet.PacketReader
 import util.packet.PacketWriter
 
-class UserSitRequestHandler : PacketHandler() {
+class UserSitRequestHandler : PacketHandler {
 
     override fun handlePacket(reader: PacketReader, c: Client) {
         val chr = c.character

@@ -9,7 +9,7 @@ import util.packet.PacketReader
 import util.packet.PacketWriter
 import java.util.*
 
-class UserAttackHandler(private val type: AttackType) : PacketHandler() {
+class UserAttackHandler(private val type: AttackType) : PacketHandler {
 
     override fun handlePacket(reader: PacketReader, c: Client) {
         val chr = c.character

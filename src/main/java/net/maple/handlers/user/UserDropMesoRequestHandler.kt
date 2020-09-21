@@ -5,7 +5,7 @@ import field.obj.drop.MesoDrop
 import net.maple.handlers.PacketHandler
 import util.packet.PacketReader
 
-class UserDropMesoRequestHandler : PacketHandler() {
+class UserDropMesoRequestHandler : PacketHandler {
 
     override fun handlePacket(reader: PacketReader, c: Client) {
         val chr = c.character

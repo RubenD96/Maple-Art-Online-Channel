@@ -8,7 +8,7 @@ import net.maple.packets.GuildPackets.GuildRes
 import util.HexTool.toHex
 import util.packet.PacketReader
 
-class GuildResultHandler : PacketHandler() {
+class GuildResultHandler : PacketHandler {
 
     override fun handlePacket(reader: PacketReader, c: Client) {
         val chr = c.character

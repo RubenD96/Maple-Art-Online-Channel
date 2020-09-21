@@ -7,7 +7,7 @@ import scripting.quest.QuestScriptManager.converse
 import util.HexTool.toHex
 import util.packet.PacketReader
 
-class UserQuestRequestHandler : PacketHandler() {
+class UserQuestRequestHandler : PacketHandler {
 
     override fun handlePacket(reader: PacketReader, c: Client) {
         println("[UserQuestRequestHandler] " + toHex(reader.data))

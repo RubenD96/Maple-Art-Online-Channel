@@ -18,7 +18,7 @@ import net.server.Server.parties
 import util.HexTool.toHex
 import util.packet.PacketReader
 
-class PartyRequestHandler : PacketHandler() {
+class PartyRequestHandler : PacketHandler {
 
     override fun handlePacket(reader: PacketReader, c: Client) {
         val chr = c.character

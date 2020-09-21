@@ -9,7 +9,8 @@ import util.packet.Packet
 import util.packet.PacketReader
 import util.packet.PacketWriter
 
-class UserGivePopularityRequestHandler : PacketHandler() {
+class UserGivePopularityRequestHandler : PacketHandler {
+
     private enum class GivePopularityRes(val value: Int) {
         SUCCESS(0x00),
         INVALID_CHARACTER_ID(0x01),

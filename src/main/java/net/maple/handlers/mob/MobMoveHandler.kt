@@ -10,7 +10,7 @@ import util.packet.PacketReader
 import util.packet.PacketWriter
 import java.util.stream.IntStream
 
-class MobMoveHandler : PacketHandler() {
+class MobMoveHandler : PacketHandler {
 
     override fun handlePacket(reader: PacketReader, c: Client) {
         val oid = reader.readInteger()

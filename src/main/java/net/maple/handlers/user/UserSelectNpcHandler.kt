@@ -11,7 +11,7 @@ import net.server.Server.shops
 import scripting.npc.NPCScriptManager.converse
 import util.packet.PacketReader
 
-class UserSelectNpcHandler : PacketHandler() {
+class UserSelectNpcHandler : PacketHandler {
 
     override fun handlePacket(reader: PacketReader, c: Client) {
         val chr = c.character

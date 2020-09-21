@@ -20,6 +20,7 @@ import net.maple.handlers.PacketHandler;
 import net.maple.packets.CashShopPackets;
 import net.maple.packets.ItemPackets;
 import net.server.Server;
+import org.jetbrains.annotations.NotNull;
 import util.HexTool;
 import util.packet.Packet;
 import util.packet.PacketReader;
@@ -29,7 +30,7 @@ import java.util.Objects;
 
 import static database.jooq.Tables.ACCOUNTS;
 
-public class CashShopCashItemRequestHandler extends PacketHandler {
+public class CashShopCashItemRequestHandler implements PacketHandler {
 
     @Override
     public void handlePacket(PacketReader reader, Client c) {
@@ -431,5 +432,10 @@ public class CashShopCashItemRequestHandler extends PacketHandler {
         pw.write(reason);
 
         c.write(pw.createPacket());
+    }
+
+    @Override
+    public boolean validateState(@NotNull Client c) {
+        return true;
     }
 }

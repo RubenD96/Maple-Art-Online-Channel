@@ -7,7 +7,7 @@ import util.packet.Packet
 import util.packet.PacketReader
 import util.packet.PacketWriter
 
-class GroupMessageHandler : PacketHandler() {
+class GroupMessageHandler : PacketHandler {
 
     private object ChatGroupType {
         const val FRIEND: Byte = 0x00

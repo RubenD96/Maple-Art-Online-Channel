@@ -8,7 +8,7 @@ import net.server.Server.parties
 import util.HexTool.toHex
 import util.packet.PacketReader
 
-class PartyResultHandler : PacketHandler() {
+class PartyResultHandler : PacketHandler {
 
     override fun handlePacket(reader: PacketReader, c: Client) {
         println("[" + javaClass.name.replace("net.maple.handlers.misc.", "") + "] " + toHex(reader.data))

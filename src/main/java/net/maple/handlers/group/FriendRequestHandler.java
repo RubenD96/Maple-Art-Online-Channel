@@ -8,9 +8,10 @@ import net.database.CharacterAPI;
 import net.database.FriendAPI;
 import net.maple.handlers.PacketHandler;
 import net.server.Server;
+import org.jetbrains.annotations.NotNull;
 import util.packet.PacketReader;
 
-public class FriendRequestHandler extends PacketHandler {
+public class FriendRequestHandler implements PacketHandler {
 
     @Override
     public void handlePacket(PacketReader reader, Client c) {
@@ -75,6 +76,11 @@ public class FriendRequestHandler extends PacketHandler {
                 c.close(this, "Deleting unknown friend");
             }
         }
+    }
+
+    @Override
+    public boolean validateState(@NotNull Client c) {
+        return true;
     }
 
     public enum FriendOperation {

@@ -12,7 +12,7 @@ import util.packet.PacketWriter
 import java.util.*
 import java.util.stream.Collectors
 
-class UserCharacterInfoRequestHandler : PacketHandler() {
+class UserCharacterInfoRequestHandler : PacketHandler {
 
     override fun handlePacket(reader: PacketReader, c: Client) {
         val chr = c.character

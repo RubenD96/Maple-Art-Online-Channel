@@ -8,7 +8,7 @@ import net.maple.handlers.PacketHandler
 import util.packet.PacketReader
 import util.packet.PacketWriter
 
-class UserStorageRequestHandler : PacketHandler() {
+class UserStorageRequestHandler : PacketHandler {
 
     override fun handlePacket(reader: PacketReader, c: Client) {
         val request = reader.readByte().toInt()

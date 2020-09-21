@@ -6,7 +6,7 @@ import net.maple.handlers.PacketHandler
 import util.packet.PacketReader
 import util.packet.PacketWriter
 
-class UserShopRequestHandler : PacketHandler() {
+class UserShopRequestHandler : PacketHandler {
 
     override fun handlePacket(reader: PacketReader, c: Client) {
         val chr = c.character

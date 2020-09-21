@@ -6,7 +6,7 @@ import field.obj.drop.AbstractFieldDrop
 import net.maple.handlers.PacketHandler
 import util.packet.PacketReader
 
-class DropPickUpRequestHandler : PacketHandler() {
+class DropPickUpRequestHandler : PacketHandler {
 
     override fun handlePacket(reader: PacketReader, c: Client) {
         val chr = c.character

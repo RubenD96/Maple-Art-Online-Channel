@@ -6,7 +6,7 @@ import net.maple.handlers.PacketHandler
 import net.maple.packets.CharacterPackets
 import util.packet.PacketReader
 
-class UserTransferFieldRequestHandler : PacketHandler() {
+class UserTransferFieldRequestHandler : PacketHandler {
 
     override fun handlePacket(reader: PacketReader, c: Client) {
         val chr = c.character

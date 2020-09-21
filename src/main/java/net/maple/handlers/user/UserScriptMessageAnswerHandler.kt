@@ -11,7 +11,7 @@ import scripting.quest.QuestScriptManager.qms
 import util.HexTool.toHex
 import util.packet.PacketReader
 
-class UserScriptMessageAnswerHandler : PacketHandler() {
+class UserScriptMessageAnswerHandler : PacketHandler {
 
     override fun handlePacket(reader: PacketReader, c: Client) {
         println("[UserScriptMessageAnswerHandler] " + toHex(reader.data))
