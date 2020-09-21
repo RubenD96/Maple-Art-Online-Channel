@@ -9,7 +9,7 @@ import net.database.CharacterAPI.getNewCharacter
 import net.database.FriendAPI.loadFriends
 import net.database.FriendAPI.loadPending
 import net.database.ItemAPI.loadInventories
-import net.database.QuestAPI.loadAll
+import net.database.QuestAPI
 import net.database.TownsAPI
 import net.database.WishlistAPI
 import net.maple.SendOpcode
@@ -26,46 +26,55 @@ class MigrateInHandler : PacketHandler() {
         c.acquireMigrateState()
         try {
             val cid = reader.readInteger()
+
             val accInfo = getAccountInfoTemporary(cid)
             val mi = clients[accInfo.getValue(Tables.ACCOUNTS.ID)]
-            if (mi == null) {
-                c.close(this, "Channel reset")
-                return
-            }
+                    ?: return c.close(this, "MI is null (Channel reset?)")
+
             if (mi.ip == c.ip) {
                 //Server.getInstance().getClients().remove(accInfo.getValue(ACCOUNTS.ID));
                 c.login(accInfo, mi)
                 val chr = getNewCharacter(c, cid)
                 c.worldChannel.addCharacter(chr)
                 c.character = chr
+
                 loadInventories(chr)
                 chr.validateStats()
-                loadAll(chr)
+
+                QuestAPI.loadAll(chr)
                 WishlistAPI.load(chr)
                 TownsAPI.load(chr) // before entering field, in case of FirstVisit mapscript
+
                 if (chr.towns.isEmpty()) {
-                    chr.addTown(100)
+                    chr.addTown(100) // FM
                 }
+
                 chr.loadGuild()
+
                 var field = c.worldChannel.fieldManager.getField(chr.fieldId)
                 if (field == null) {
                     System.err.println("Invalid field id upon migrate " + chr.fieldId)
                     field = c.worldChannel.fieldManager.getField(1000)
                 }
-                chr.field = field!!
+                chr.field = field!! // if field is null here, just quit derp
                 field.enter(chr)
+
                 loadFriends(chr)
                 loadPending(chr)
                 chr.friendList.sendPendingRequest()
+
                 chr.loadParty()
+
                 if (chr.guild != null) {
                     c.write(GuildPackets.getLoadGuildPacket(chr.guild))
                     if (!mi.cashShop) {
                         GuildPackets.notifyLoginLogout(chr.guild, chr, true)
                     }
                 }
+
                 c.write(initFuncKey(chr))
                 c.write(initQuickslot(chr))
+
                 mi.cashShop = false
             } else {
                 c.close(this, "IP mismatch")
@@ -109,11 +118,13 @@ class MigrateInHandler : PacketHandler() {
 
         private fun initQuickslot(chr: Character): Packet {
             val pw = PacketWriter(35)
+
             pw.writeHeader(SendOpcode.QUICKSLOT_MAPPED_INIT)
             pw.writeBool(true)
             for (key in chr.quickSlotKeys) {
                 pw.writeInt(key)
             }
+
             return pw.createPacket()
         }
     }

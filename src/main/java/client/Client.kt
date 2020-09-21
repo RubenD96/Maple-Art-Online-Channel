@@ -89,13 +89,13 @@ class Client(c: Channel, siv: ByteArray, riv: ByteArray) : NettyClient(c, siv, r
             isLoggedIn = false
             val field = character.field
             field.leave(character)
-            if (character.getGuild() != null && (!Server.clients[accId]!!.cashShop || character.isInCashShop)) {
-                character.getGuild().members[character.id]!!.isOnline = false
-                character.getGuild().broadcast(GuildPackets.getLoadGuildPacket(character.getGuild()))
-                GuildPackets.notifyLoginLogout(character.getGuild(), character, false)
+            if (character.guild != null && (!Server.clients[accId]!!.cashShop || character.isInCashShop)) {
+                character.guild?.getMemberSecure(character.id)?.isOnline = false
+                character.guild?.broadcast(GuildPackets.getLoadGuildPacket(character.guild))
+                GuildPackets.notifyLoginLogout(character.guild, character, false)
             }
             notifyPartyLogout()
-            character.getFriendList().notifyMutualFriends()
+            character.friendList.notifyMutualFriends()
             worldChannel.removeCharacter(character)
             if (!isCc) character.save()
             isDisconnecting = false
@@ -115,7 +115,7 @@ class Client(c: Channel, siv: ByteArray, riv: ByteArray) : NettyClient(c, siv, r
     }
 
     private fun notifyPartyLogout() {
-        val party = character.getParty()
+        val party = character.party
         if (party != null) {
             val member = party.getMember(character.id)
             member!!.character = null

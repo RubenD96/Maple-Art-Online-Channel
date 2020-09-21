@@ -25,7 +25,7 @@ class UserGivePopularityRequestHandler : PacketHandler() {
         val cid = reader.readInteger()
 
         if (cid == sender.id) {
-            c.close(this, c.character.getName() + " tried to fame themselves")
+            c.close(this, c.character.name + " tried to fame themselves")
             return
         }
 
@@ -70,7 +70,7 @@ class UserGivePopularityRequestHandler : PacketHandler() {
         private fun getSuccessPacket(target: Character, fame: Int): Packet {
             val pw = getSendPopPacket(GivePopularityRes.SUCCESS)
 
-            pw.writeMapleString(target.getName())
+            pw.writeMapleString(target.name)
             pw.write(fame)
             pw.writeInt(target.fame) // nPop
 
@@ -106,7 +106,7 @@ class UserGivePopularityRequestHandler : PacketHandler() {
         private fun getNotifyPacket(sender: Character, fame: Int): Packet {
             val pw = getSendPopPacket(GivePopularityRes.NOTIFY)
 
-            pw.writeMapleString(sender.getName())
+            pw.writeMapleString(sender.name)
             pw.write(fame)
 
             return pw.createPacket()

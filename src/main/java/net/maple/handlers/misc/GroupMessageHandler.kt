@@ -31,20 +31,17 @@ class GroupMessageHandler : PacketHandler() {
 
         when (type) {
             ChatGroupType.FRIEND -> {
-                chr.friendList.sendMessage(multiChat(ChatGroupType.FRIEND, chr.getName(), message))
+                chr.friendList.sendMessage(multiChat(ChatGroupType.FRIEND, chr.name, message))
             }
             ChatGroupType.PARTY -> {
-                if (chr.party != null) {
-                    chr.party.sendMessage(multiChat(ChatGroupType.PARTY, chr.getName(), message), chr.id)
-                }
-                if (chr.guild != null) {
-                    chr.guild.broadcast(multiChat(ChatGroupType.GUILD, chr.getName(), message), chr)
-                }
+                val party = chr.party ?: return
+                party.sendMessage(multiChat(ChatGroupType.PARTY, chr.name, message), chr.id)
             }
-            ChatGroupType.GUILD -> if (chr.guild != null) {
-                chr.guild.broadcast(multiChat(ChatGroupType.GUILD, chr.getName(), message), chr)
+            ChatGroupType.GUILD -> {
+                val guild =chr.guild ?: return
+                guild.broadcast(multiChat(ChatGroupType.GUILD, chr.name, message), chr)
             }
-            else -> println("Unknown GroupMessageHandler type ($type) from ${chr.getName()}")
+            else -> println("Unknown GroupMessageHandler type ($type) from ${chr.name}")
         }
     }
 

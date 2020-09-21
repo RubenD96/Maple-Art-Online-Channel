@@ -20,7 +20,6 @@ import java.awt.Point
 import java.awt.Rectangle
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
-import java.util.function.Consumer
 import java.util.stream.Collectors
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
@@ -45,7 +44,7 @@ class Field(val id: Int) {
         private val runningObjectId = AtomicInteger(1000000000)
     }
 
-    fun init() {
+    init {
         for (type in FieldObjectType.values()) {
             objects[type] = LinkedHashSet()
         }
@@ -58,19 +57,16 @@ class Field(val id: Int) {
                 .forEach { (it as Character).write(packet.clone()) }
     }
 
-    @Synchronized
     fun enter(chr: Character, portalName: String) {
         val portal = getPortalByName(portalName) ?: return
         enter(chr, portal.id.toByte())
     }
 
-    @Synchronized
     fun enter(chr: Character, portal: Byte) {
         chr.portal = portal
         enter(chr)
     }
 
-    @Synchronized
     fun enter(obj: FieldObject) {
         if (obj.field != this) {
             obj.field.leave(obj, obj.leaveFieldPacket)
@@ -85,36 +81,39 @@ class Field(val id: Int) {
             obj.foothold = (if (portal.type != PortalType.START_POINT) getFhByPortal(portal).id else 0).toShort()
             obj.write(FieldPackets.setField(obj))
             broadcast(obj.enterFieldPacket, obj)
-            objects.values.forEach { set ->
-                set.stream()
-                        .filter { it != obj }
-                        .forEach {
-                            when (it) {
-                                is AbstractFieldDrop -> {
-                                    enterItemDrop(it, it.enterFieldPacket)
-                                }
-                                is FieldMob -> {
-                                    obj.write(it.getEnterFieldPacket(MobSummonType.NORMAL))
-                                }
-                                else -> {
-                                    obj.write(it.enterFieldPacket)
+
+            synchronized(objects) {
+                objects.values.forEach { set ->
+                    set.stream()
+                            .filter { it != obj }
+                            .forEach {
+                                when (it) {
+                                    is AbstractFieldDrop -> {
+                                        enterItemDrop(it, it.enterFieldPacket)
+                                    }
+                                    is FieldMob -> {
+                                        obj.write(it.getEnterFieldPacket(MobSummonType.NORMAL))
+                                    }
+                                    else -> {
+                                        obj.write(it.enterFieldPacket)
+                                    }
                                 }
                             }
-                        }
+                }
             }
 
             if (obj.party != null) {
-                val me = obj.party.getMember(obj.id)
+                val me = obj.party?.getMember(obj.id)
                 me!!.field = id
-                obj.party.getMembers().forEach(Consumer { member: PartyMember ->
-                    if (member.isOnline && member.channel == obj.channel.channelId) {
-                        val mem = obj.channel.getCharacter(member.cid)
-                        mem!!.write(updateParty(obj.party, member.channel))
+                obj.party?.getMembers()?.forEach { member: PartyMember ->
+                    if (member.isOnline && member.channel == obj.getChannel().channelId) {
+                        val mem = obj.getChannel().getCharacter(member.cid)
+                        mem!!.write(updateParty(obj.party!!, member.channel))
                         if (member.field == id) {
                             mem.updatePartyHP(true)
                         }
                     }
-                })
+                }
             }
 
             if (script.isNotEmpty()) {
@@ -145,7 +144,6 @@ class Field(val id: Int) {
         }
     }
 
-    @Synchronized
     @JvmOverloads
     fun leave(obj: FieldObject, leaveFieldPacket: Packet? = null) {
         removeObject(obj)
@@ -164,7 +162,8 @@ class Field(val id: Int) {
             toRespawn.forEach {
                 if (time > it.time) {
                     val newSpawn: FieldMobSpawnPoint = getRandomViableMobSpawnPoint(it.mob)
-                    val template: FieldMobTemplate = MobManager.getMob(it.mob) ?: return@forEach // should never happen...
+                    val template: FieldMobTemplate = MobManager.getMob(it.mob)
+                            ?: return@forEach // should never happen...
                     val mob = FieldMob(template, false)
                     mob.hp = mob.template.maxHP
                     mob.mp = mob.template.maxMP
@@ -230,24 +229,32 @@ class Field(val id: Int) {
     }
 
     fun addObject(obj: FieldObject) {
-        objects[obj.fieldObjectType]?.add(obj)
+        synchronized(objects) {
+            objects[obj.fieldObjectType]?.add(obj)
+        }
     }
 
     fun removeObject(obj: FieldObject) {
-        objects[obj.fieldObjectType]?.remove(obj)
-                ?: throw NullPointerException("[Field] Removal of field object failed.\n${toString()}")
+        synchronized(objects) {
+            objects[obj.fieldObjectType]?.remove(obj)
+                    ?: throw NullPointerException("[Field] Removal of field object failed.\n${toString()}")
+        }
     }
 
     fun getObjects(): Map<FieldObjectType, MutableSet<FieldObject>> {
-        return objects
+        synchronized(objects) {
+            return HashMap(objects)
+        }
     }
 
     fun getObjects(vararg t: FieldObjectType): Set<FieldObject> {
-        val objects: MutableSet<FieldObject> = HashSet()
-        for (type in t) {
-            objects.addAll(this.objects[type]!!)
+        synchronized(objects) {
+            val objects: MutableSet<FieldObject> = HashSet()
+            for (type in t) {
+                objects.addAll(this.objects[type]!!)
+            }
+            return objects
         }
-        return objects
     }
 
     /**
@@ -258,12 +265,14 @@ class Field(val id: Int) {
      * @return FieldObject of any type
      */
     fun getObject(i: Int): FieldObject? {
-        for (type in objects.keys) {
-            for (obj in getObjects(type)) {
-                if (obj.id == i) return obj
+        synchronized(objects) {
+            for (type in objects.keys) {
+                for (obj in getObjects(type)) {
+                    if (obj.id == i) return obj
+                }
             }
+            return null
         }
-        return null
     }
 
     fun getObject(t: FieldObjectType, i: Int): FieldObject? {
@@ -287,7 +296,7 @@ class Field(val id: Int) {
     }
 
     private val firstSpawnpoint: FieldPortal
-        get() = portals.values.stream().filter { p: FieldPortal -> p.type == PortalType.START_POINT }.findFirst().get()
+        get() = portals.values.stream().filter { it.type == PortalType.START_POINT }.findFirst().get()
 
     fun getPortalByName(name: String): FieldPortal? {
         return portals.values.stream().filter { it.name == name }.findFirst().orElse(null)

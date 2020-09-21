@@ -18,7 +18,7 @@ object FriendAPI {
             friendList.addFriend(fid, CharacterAPI.getOfflineName(fid), record.getValue(Tables.FRIENDS.GROUP))
             val chr = Server.getCharacter(fid)
             if (chr != null) {
-                friendList.friends[fid]?.channel = chr.channel.channelId
+                friendList.friends[fid]?.channel = chr.getChannel().channelId
             }
             // todo cleanup after friendlist has been turned to kotlin
         }

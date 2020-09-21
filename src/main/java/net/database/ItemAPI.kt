@@ -323,7 +323,7 @@ object ItemAPI {
                     .where(Tables.EQUIPS.ITEMID.eq(rec.getValue(Tables.INVENTORIES.ID)))
                     .fetchOne()
             if (match == null) {
-                System.err.println("[ItemAPI] Broken equip found for " + chr.getName() + " (" + rec.getValue(Tables.INVENTORIES.ITEMID) + ")")
+                System.err.println("[ItemAPI] Broken equip found for ${chr.name} (${rec.getValue(Tables.INVENTORIES.ITEMID)})")
                 deleteItemByUUID(rec.getValue(Tables.INVENTORIES.ID))
             }
         })

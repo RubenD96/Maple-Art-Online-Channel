@@ -15,25 +15,25 @@ class UserAbilityUpRequestHandler : PacketHandler() {
         val type = reader.readInteger()
 
         if (chr.ap > 0) {
-            chr.decAP()
+            chr.ap--
             val statTypes: MutableList<StatType> = ArrayList()
             statTypes.add(StatType.AP)
 
             when (type) {
                 StatType.STR.stat -> {
-                    chr.incStrength()
+                    chr.strength++
                     statTypes.add(StatType.STR)
                 }
                 StatType.DEX.stat -> {
-                    chr.incDexterity()
+                    chr.dexterity++
                     statTypes.add(StatType.DEX)
                 }
                 StatType.INT.stat -> {
-                    chr.incIntelligence()
+                    chr.intelligence++
                     statTypes.add(StatType.INT)
                 }
                 StatType.LUK.stat -> {
-                    chr.incLuck()
+                    chr.luck++
                     statTypes.add(StatType.LUK)
                 }
             }

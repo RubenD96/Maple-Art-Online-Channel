@@ -71,7 +71,7 @@ object PartyPackets {
         val pw = getBasePacket(PartyOperationType.PARTYREQ_INVITEPARTY)
 
         pw.writeInt(pid)
-        pw.writeMapleString(from.getName())
+        pw.writeMapleString(from.name)
         // nexon please, get ur naming in order
         pw.writeInt(from.level) // nSkillID
         pw.writeInt(from.job) // sName

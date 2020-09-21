@@ -54,41 +54,7 @@ object CharacterAPI {
         println("start loading $id")
         val record = connection.select().from(Tables.CHARACTERS).where(Tables.CHARACTERS.ID.eq(id)).fetchOne()
         val name = record.getValue(Tables.CHARACTERS.NAME)
-        val charId = record.getValue(Tables.CHARACTERS.ID)
-        val gmLevel = record.getValue(Tables.CHARACTERS.GM_LEVEL)
-        val level = record.getValue(Tables.CHARACTERS.LEVEL)
-        val face = record.getValue(Tables.CHARACTERS.FACE)
-        val hair = record.getValue(Tables.CHARACTERS.HAIR)
-        val gender = record.getValue(Tables.CHARACTERS.GENDER)
-        val skinColor = record.getValue(Tables.CHARACTERS.SKIN)
-        val job = Job.getById(record.getValue(Tables.CHARACTERS.JOB))
-        val ap = record.getValue(Tables.CHARACTERS.AP)
-        val sp = record.getValue(Tables.CHARACTERS.SP)
-        val fame = record.getValue(Tables.CHARACTERS.FAME)
-        val mapId = record.getValue(Tables.CHARACTERS.MAP)
-        val spawnpoint = record.getValue(Tables.CHARACTERS.SPAWNPOINT)
-        val str = record.getValue(Tables.CHARACTERS.STR)
-        val dex = record.getValue(Tables.CHARACTERS.DEX)
-        val intelligence = record.getValue(Tables.CHARACTERS.INT)
-        val luck = record.getValue(Tables.CHARACTERS.LUK)
-        val hp = record.getValue(Tables.CHARACTERS.HP)
-        val mhp = record.getValue(Tables.CHARACTERS.MAX_HP)
-        val mp = record.getValue(Tables.CHARACTERS.MP)
-        val mmp = record.getValue(Tables.CHARACTERS.MAX_MP)
-        val exp = record.getValue(Tables.CHARACTERS.EXP)
-        val meso = record.getValue(Tables.CHARACTERS.MESO)
-        val character = Character(
-                c,
-                name,
-                charId, gmLevel, level, hair, face,
-                gender, skinColor,
-                job,
-                ap, sp, fame, mapId, spawnpoint,
-                str, dex, intelligence, luck,
-                hp, mhp, mp, mmp, exp,
-                meso
-        )
-        character.init()
+        val character = Character(c, name, record)
         println("finished loading $name")
         return character
     }
@@ -101,7 +67,7 @@ object CharacterAPI {
      * @param chr character to save
      */
     fun saveCharacterStats(chr: Character) {
-        println("start saving " + chr.getName())
+        println("start saving " + chr.name)
         // yikes
         var sp = 0
         val fid: Int
@@ -134,10 +100,10 @@ object CharacterAPI {
                 .set(Tables.CHARACTERS.MAX_MP, chr.maxMana)
                 .set(Tables.CHARACTERS.EXP, chr.exp)
                 .set(Tables.CHARACTERS.MESO, chr.meso)
-                .set(Tables.CHARACTERS.PARTY, if (chr.party == null) 0 else chr.party.id)
+                .set(Tables.CHARACTERS.PARTY, chr.party?.id ?: 0)
                 .where(Tables.CHARACTERS.ID.eq(chr.id))
                 .execute()
-        println("finished saving " + chr.getName())
+        println("finished saving " + chr.name)
     }
 
     /**
@@ -146,7 +112,7 @@ object CharacterAPI {
      * @param cid character id
      * @return map with KeyBindings and Integer key to bind them to
      */
-    fun getKeyBindings(cid: Int): Map<Int, KeyBinding> {
+    fun getKeyBindings(cid: Int): MutableMap<Int, KeyBinding> {
         val keyBindings: MutableMap<Int, KeyBinding> = HashMap()
         val res = connection.select().from(KEYBINDINGS)
                 .where(KEYBINDINGS.CID.eq(cid))

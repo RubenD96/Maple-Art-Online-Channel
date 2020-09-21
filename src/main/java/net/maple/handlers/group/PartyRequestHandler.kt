@@ -51,12 +51,12 @@ class PartyRequestHandler : PacketHandler() {
                         }
                     }
 
-                    c.write(getLeavePartyPacket(party, chr.id, false, chr.getName(), chr.channel.channelId))
+                    c.write(getLeavePartyPacket(party, chr.id, false, chr.name, chr.getChannel().channelId))
                     party.expel(chr.id)
                     for (pmember in party.getMembers()) {
                         if (pmember.isOnline) {
                             val pm = getCharacter(pmember.cid) ?: continue
-                            pm.write(getLeavePartyPacket(party, chr.id, false, chr.getName(), pmember.channel))
+                            pm.write(getLeavePartyPacket(party, chr.id, false, chr.name, pmember.channel))
                         }
                     }
                 }
@@ -73,7 +73,7 @@ class PartyRequestHandler : PacketHandler() {
                 val invited = c.worldChannel.getCharacter(name)
                 if (invited != null) {
                     if (invited.party == null) {
-                        invited.write(getSendInvitePacket(chr.party.id, chr))
+                        invited.write(getSendInvitePacket(party.id, chr))
                         c.write(getPartyMessageExtra(PartyOperationType.PARTYRES_INVITEPARTY_SENT, name))
                     } else {
                         c.write(getPartyMessage(PartyOperationType.PARTYRES_CREATENEWPARTY_ALREAYJOINED))
@@ -90,7 +90,7 @@ class PartyRequestHandler : PacketHandler() {
                         val target = getCharacter(toKick.cid)
                         if (target != null) {
                             target.party = null
-                            target.write(getLeavePartyPacket(party, target.id, true, target.getName(), toKick.channel))
+                            target.write(getLeavePartyPacket(party, target.id, true, target.name, toKick.channel))
                         }
                         for (pmember in party.getMembers()) {
                             if (pmember.isOnline) {

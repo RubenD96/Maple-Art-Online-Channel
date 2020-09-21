@@ -51,7 +51,7 @@ class CommandShortcut(c: Client, _args: Array<String>) : AbstractPlayerInteracti
         val it = template.toItemSlot()
         if (it is ItemSlotBundle) {
             it.number = qty.toShort()
-            it.title = chr.getName()
+            it.title = chr.name
         }
         val drop = ItemDrop(chr.id, chr, it, 0)
         drop.position = chr.position
@@ -73,7 +73,7 @@ class CommandShortcut(c: Client, _args: Array<String>) : AbstractPlayerInteracti
     }
 
     fun reloadMap() {
-        chr.channel.fieldManager.reloadField(chr.fieldId)
+        chr.getChannel().fieldManager.reloadField(chr.fieldId)
     }
 
     fun kickMe() {

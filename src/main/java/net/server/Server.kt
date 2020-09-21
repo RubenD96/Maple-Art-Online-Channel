@@ -29,7 +29,6 @@ object Server {
 
     init {
         MapleAESOFB.initialize(ServerConstants.VERSION)
-        DatabaseCore.connection
 
         CharacterAPI.resetParties()
         shops = ShopAPI.shops

@@ -22,7 +22,7 @@ class GuildMember {
      * Used for in-game guild invites
      */
     constructor(chr: Character) {
-        name = chr.getName()
+        name = chr.name
         job = chr.job.id
         level = chr.level
         grade = 5
@@ -42,7 +42,7 @@ class GuildMember {
 
         val chr = Server.getCharacter(id)
         if (chr != null) {
-            name = chr.getName()
+            name = chr.name
             job = chr.job.id
             level = chr.level
             isOnline = true

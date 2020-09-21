@@ -18,9 +18,9 @@ class PartyMember {
 
     constructor(chr: Character) {
         cid = chr.id
-        name = chr.getName()
+        name = chr.name
         level = chr.level
-        channel = chr.channel.channelId
+        channel = chr.getChannel().channelId
         job = chr.job.value
         field = chr.fieldId
         isOnline = true
@@ -37,7 +37,7 @@ class PartyMember {
     fun loadParty(party: Party) {
         isOnline = true
         field = character!!.fieldId
-        channel = character!!.channel.channelId
+        channel = character!!.getChannel().channelId
 
         party.update()
         character!!.updatePartyHP(true)

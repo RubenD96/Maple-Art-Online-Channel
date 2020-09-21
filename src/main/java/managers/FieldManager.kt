@@ -13,6 +13,7 @@ import java.awt.Point
 class FieldManager : AbstractManager() {
 
     val fields: MutableMap<Int, Field> = HashMap()
+    var secureToB: Field = getField(1000)!!
 
     fun getField(id: Int): Field? {
         synchronized(fields) {
@@ -20,7 +21,6 @@ class FieldManager : AbstractManager() {
 
             if (field == null) {
                 field = Field(id)
-                field.init()
                 if (!loadFieldData(field)) {
                     System.err.println("Field " + field.id + " does not exist!")
                     return null
