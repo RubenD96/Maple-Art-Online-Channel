@@ -19,10 +19,9 @@ class UserMigrateToCashShopRequestHandler : PacketHandler {
             if (!chr.isInCashShop) {
                 chr.save()
                 chr.isInCashShop = true
-                clients[c.accId]!!.cashShop = true
+                clients[c.accId]?.let { it.cashShop = true } ?: return c.close(this, "Non-existent MigrateInfo")
                 CashShopPackets.sendSetCashShop(c)
                 chr.field.leave(chr)
-                //chr.field = null
             } else {
                 c.write(fail())
             }

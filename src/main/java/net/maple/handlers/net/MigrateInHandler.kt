@@ -51,12 +51,9 @@ class MigrateInHandler : PacketHandler {
 
                 chr.loadGuild()
 
-                var field = c.worldChannel.fieldManager.getField(chr.fieldId)
-                if (field == null) {
-                    System.err.println("Invalid field id upon migrate " + chr.fieldId)
-                    field = c.worldChannel.fieldManager.getField(1000)
-                }
-                chr.field = field!! // if field is null here, just quit derp
+                val field = c.worldChannel.fieldManager.getField(chr.fieldId)
+
+                chr.field = field
                 field.enter(chr)
 
                 loadFriends(chr)
@@ -65,10 +62,10 @@ class MigrateInHandler : PacketHandler {
 
                 chr.loadParty()
 
-                if (chr.guild != null) {
-                    c.write(GuildPackets.getLoadGuildPacket(chr.guild))
+                chr.guild?.let {
+                    c.write(GuildPackets.getLoadGuildPacket(it))
                     if (!mi.cashShop) {
-                        GuildPackets.notifyLoginLogout(chr.guild, chr, true)
+                        GuildPackets.notifyLoginLogout(it, chr, true)
                     }
                 }
 
@@ -99,16 +96,17 @@ class MigrateInHandler : PacketHandler {
                 val keyBinding = chr.keyBindings[i]
                 var type: Byte = 0
                 var action = 0
-                if (keyBinding != null) {
-                    type = keyBinding.type
-                    action = keyBinding.action
-                } else { // get default
-                    val def = defaultBindings[i]
-                    if (def != null) {
-                        type = def.type
-                        action = def.action
+
+                keyBinding?.let {
+                    type = it.type
+                    action = it.action
+                } ?: run {
+                    defaultBindings[i]?.let {
+                        type = it.type
+                        action = it.action
                     }
                 }
+
                 pw.write(type.toInt())
                 pw.writeInt(action)
             }

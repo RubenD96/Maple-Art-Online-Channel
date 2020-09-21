@@ -7,11 +7,15 @@ execute = () => {
             let mob = cs.getMob(args[0]);
             if (mob !== null) {
                 let chr = cs.getChr();
+
                 mob.setPosition(chr.getPosition());
-                mob.setFoothold(chr.getFoothold());
-                mob.setF((args.length > 1 ? args[1] : 1) === 1);
-                mob.setCy(chr.getPosition().y);
-                mob.setHide(false);
+                //mob.position = chr.getPosition();
+                mob.foothold = chr.getFoothold();
+                mob.f = (args.length > 1 ? args[1] : 1) === 1;
+                mob.cy = chr.getPosition().y;
+                mob.hide = false;
+                mob.field = chr.getField();
+
                 cs.getChr().getField().enter(mob);
             }
         }

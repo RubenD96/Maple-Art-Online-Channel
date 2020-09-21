@@ -12,10 +12,16 @@ import java.awt.Point
 
 class FieldManager : AbstractManager() {
 
-    val fields: MutableMap<Int, Field> = HashMap()
-    var secureToB: Field = getField(1000)!!
+    // assertion test to check if the fallback map (1000, town of beginnings) exists
+    companion object {
+        init {
+            getData("wz/Map/1000.mao")!!
+        }
+    }
 
-    fun getField(id: Int): Field? {
+    val fields: MutableMap<Int, Field> = HashMap()
+
+    fun getField(id: Int): Field {
         synchronized(fields) {
             var field = fields[id]
 
@@ -23,7 +29,7 @@ class FieldManager : AbstractManager() {
                 field = Field(id)
                 if (!loadFieldData(field)) {
                     System.err.println("Field " + field.id + " does not exist!")
-                    return null
+                    return getField(1000)
                 }
                 fields[id] = field
             }

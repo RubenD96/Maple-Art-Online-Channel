@@ -8,7 +8,6 @@ import kotlinx.coroutines.*
 import managers.*
 import net.database.BeautyAPI
 import net.database.CharacterAPI
-import net.database.DatabaseCore
 import net.database.ShopAPI
 import util.crypto.MapleAESOFB
 import world.guild.Guild
@@ -50,6 +49,7 @@ object Server {
             }
         }
         BeautyAPI.loadHairs()
+        //benchmark()
     }
 
     private suspend fun rankingRoutine() {
@@ -76,36 +76,42 @@ object Server {
             fm.getField(id)
         }
         println(ids.size.toString() + " fields loaded in " + (System.currentTimeMillis() - timeToTake) / 1000.0 + " seconds")
+
         ids = getIds("Mob")
         timeToTake = System.currentTimeMillis()
         for (id in ids) {
             MobManager.getMob(id)
         }
         println(ids.size.toString() + " mobs loaded in " + (System.currentTimeMillis() - timeToTake) / 1000.0 + " seconds")
+
         ids = getIds("Npc")
         timeToTake = System.currentTimeMillis()
         for (id in ids) {
             NPCManager.getNPC(id)
         }
         println(ids.size.toString() + " npcs loaded in " + (System.currentTimeMillis() - timeToTake) / 1000.0 + " seconds")
+
         ids = getIds("Equip")
         timeToTake = System.currentTimeMillis()
         for (id in ids) {
             ItemManager.getItem(id)
         }
         println(ids.size.toString() + " equips loaded in " + (System.currentTimeMillis() - timeToTake) / 1000.0 + " seconds")
+
         ids = getIds("Item")
         timeToTake = System.currentTimeMillis()
         for (id in ids) {
             ItemManager.getItem(id)
         }
         println(ids.size.toString() + " items loaded in " + (System.currentTimeMillis() - timeToTake) / 1000.0 + " seconds")
+
         ids = getIds("Commodity")
         timeToTake = System.currentTimeMillis()
         for (id in ids) {
             CommodityManager.getCommodity(id)
         }
         println(ids.size.toString() + " commodities loaded in " + (System.currentTimeMillis() - timeToTake) / 1000.0 + " seconds")
+
         ids = getIds("Quest")
         timeToTake = System.currentTimeMillis()
         for (id in ids) {

@@ -28,17 +28,7 @@ class FieldPortal(val field: Field) : AbstractFieldPortal(), Portal {
 
     private fun enterInternal(chr: Character) {
         val field = chr.getChannel().fieldManager.getField(targetMap)
-        if (field == null) {
-            error(chr)
-            return
-        }
-
-        val portal: Portal? = field.getPortalByName(targetName)
-
-        if (portal == null) {
-            error(chr)
-            return
-        }
+        val portal: Portal = field.getPortalByName(targetName) ?: return error(chr)
         portal.leave(chr)
     }
 

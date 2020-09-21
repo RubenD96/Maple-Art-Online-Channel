@@ -65,7 +65,7 @@ class Character(val client: Client, var name: String, val record: Record) : Abst
     var skinColor: Int = record.getValue(Tables.CHARACTERS.SKIN)
     var job: Job = Job.getById(record.getValue(Tables.CHARACTERS.JOB)) ?: Job.BEGINNER
         set(value) {
-            field = value // todo test this setter
+            field = value
             updateSingleStat(StatType.JOB)
         }
     var ap: Int = record.getValue(Tables.CHARACTERS.AP)
@@ -163,13 +163,13 @@ class Character(val client: Client, var name: String, val record: Record) : Abst
     }
 
     fun changeField(id: Int, portal: String) {
-        val field: Field = getChannel().fieldManager.getField(id) ?: getChannel().fieldManager.secureToB
+        val field: Field = getChannel().fieldManager.getField(id)
         field.enter(this, portal)
     }
 
     @JvmOverloads
     fun changeField(id: Int, portal: Int = 0) {
-        val field: Field = getChannel().fieldManager.getField(id) ?: getChannel().fieldManager.secureToB
+        val field: Field = getChannel().fieldManager.getField(id)
         field.enter(this, portal.toByte())
     }
 
