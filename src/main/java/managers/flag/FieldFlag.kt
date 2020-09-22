@@ -13,4 +13,6 @@ enum class FieldFlag(override val value: Int) : IntegerValue {
     ON_ENTER(0x80),
     PORTALS(0x100),
     AREAS(0x200),
-    LIFE(0x400);}
+    LIFE(0x400),
+    REACTOR(0x800);
+}

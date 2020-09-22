@@ -15,16 +15,16 @@ import java.util.*
 
 class ServerHandler : ChannelInboundHandlerAdapter() {
 
-    var processor = PacketProcessor
-    var ignoreOps = intArrayOf(
-            RecvOpcode.PONG.getValue(),
-            RecvOpcode.UPDATE_SCREEN_SETTING.getValue(),
-            RecvOpcode.USER_MOVE.getValue(),
-            RecvOpcode.NPC_MOVE.getValue(),
-            RecvOpcode.USER_CHANGE_STAT_REQUEST.getValue(),
-            RecvOpcode.MOB_MOVE.getValue(),
-            RecvOpcode.MOB_APPLY_CTRL.getValue(),
-            RecvOpcode.ADMIN.getValue()
+    private var processor = PacketProcessor
+    private var ignoreOps = intArrayOf(
+            RecvOpcode.PONG.value,
+            RecvOpcode.UPDATE_SCREEN_SETTING.value,
+            RecvOpcode.USER_MOVE.value,
+            RecvOpcode.NPC_MOVE.value,
+            RecvOpcode.USER_CHANGE_STAT_REQUEST.value,
+            RecvOpcode.MOB_MOVE.value,
+            RecvOpcode.MOB_APPLY_CTRL.value,
+            RecvOpcode.ADMIN.value
     )
 
     override fun channelActive(chc: ChannelHandlerContext) {

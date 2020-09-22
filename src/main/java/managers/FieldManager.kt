@@ -7,6 +7,7 @@ import field.obj.life.FieldMob
 import field.obj.life.FieldMobSpawnPoint
 import field.obj.life.FieldNPC
 import field.obj.portal.FieldPortal
+import field.obj.reactor.FieldReactor
 import managers.flag.FieldFlag
 import java.awt.Point
 
@@ -85,7 +86,7 @@ class FieldManager : AbstractManager() {
         if (containsFlag(flags, FieldFlag.LIFE)) {
             val size = r.readShort()
             for (i in 0 until size) {
-                var obj: AbstractFieldControlledLife
+                var life: AbstractFieldControlledLife
                 val id = r.readInteger()
                 var time = r.readInteger()
                 val x = r.readInteger()
@@ -107,26 +108,37 @@ class FieldManager : AbstractManager() {
                     mob.home = fh.toShort()
                     if (time == 0) time = 5
                     mob.time = time
-                    obj = mob
+                    life = mob
 
                     field.mobSpawnPoints.add(FieldMobSpawnPoint(id, Point(x, y), rx0, rx1, cy, time, fh.toShort()))
                 } else { // npc
                     val template = NPCManager.getNPC(id) ?: continue
                     val npc = FieldNPC(template)
-                    obj = npc
+                    life = npc
                 }
 
-                obj.rx0 = rx0
-                obj.rx1 = rx1
-                obj.position = Point(x, y)
-                obj.foothold = fh.toShort()
-                obj.f = f == 0
-                obj.cy = cy
-                obj.hide = hide == 1
-                obj.field = field
-                field.enter(obj)
+                life.rx0 = rx0
+                life.rx1 = rx1
+                life.position = Point(x, y)
+                life.foothold = fh.toShort()
+                life.f = f == 0
+                life.cy = cy
+                life.hide = hide == 1
+                life.field = field
+                field.enter(life)
             }
         }
+
+        if (containsFlag(flags, FieldFlag.REACTOR)) {
+            val size = r.readShort()
+            for (i in 0 until size) {
+                val reactor = FieldReactor(r.readInteger())
+                reactor.decode(r)
+                reactor.field = field
+                field.enter(reactor)
+            }
+        }
+
         //System.out.println("Finished initializing field: " + field.getId());
         return true
     }

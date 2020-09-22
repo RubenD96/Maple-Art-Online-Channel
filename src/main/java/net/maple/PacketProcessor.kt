@@ -20,7 +20,7 @@ object PacketProcessor {
 
     fun getHandler(packetId: Short): PacketHandler? {
         return handlers[Arrays.stream(
-                RecvOpcode.values()).filter { it.getValue() == packetId.toInt() }
+                RecvOpcode.values()).filter { it.value == packetId.toInt() }
                 .findFirst().orElse(null)]
     }
 
@@ -64,6 +64,7 @@ object PacketProcessor {
         handlers[RecvOpcode.MOB_APPLY_CTRL] = MobApplyCtrlHandler()
         handlers[RecvOpcode.NPC_MOVE] = NPCMoveHandler()
         handlers[RecvOpcode.DROP_PICK_UP_REQUEST] = DropPickUpRequestHandler()
+        handlers[RecvOpcode.REACTOR_HIT] = ReactorHitHandler()
         handlers[RecvOpcode.CASH_SHOP_QUERY_CASH_REQUEST] = CashShopQueryCashRequestHandler()
         handlers[RecvOpcode.CASH_SHOP_CASH_ITEM_REQUEST] = CashShopCashItemRequestHandler()
         handlers[RecvOpcode.USER_MELEE_ATTACK] = UserAttackHandler(AttackType.MELEE)

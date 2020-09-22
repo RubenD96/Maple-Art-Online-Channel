@@ -1,6 +1,6 @@
 package net.maple
 
-enum class RecvOpcode(private val value: Int) {
+enum class RecvOpcode(val value: Int) {
 
     MIGRATE_IN(0x14),
     PONG(0x19),
@@ -48,12 +48,10 @@ enum class RecvOpcode(private val value: Int) {
     MOB_APPLY_CTRL(0xE4),
     NPC_MOVE(0xF1),
     DROP_PICK_UP_REQUEST(0xF6),
+    REACTOR_HIT(0xF9),
+    REACTOR_TOUCH(0xFA),
     REQUIRE_FIELD_OBSTACLE_STATUS(0xFB),
     CANCEL_INVITE_PARTY_MATCH(0x10B),
     CASH_SHOP_QUERY_CASH_REQUEST(0x112),
     CASH_SHOP_CASH_ITEM_REQUEST(0x113);
-
-    fun getValue(): Int {
-        return value
-    }
 }

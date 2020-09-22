@@ -9,6 +9,6 @@ abstract class ItemSlot {
     var isNewItem = true
 
     override fun toString(): String {
-        return "ItemSlot{templateId=$templateId, cashItemSN=$cashItemSN, expire=$expire, uuid=${uuid.contentToString()}}"
+        return "ItemSlot{templateId=$templateId, cashItemSN=$cashItemSN, expire=$expire, uuid=${uuid?.contentToString()}}"
     }
 }

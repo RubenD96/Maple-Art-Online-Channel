@@ -42,9 +42,7 @@ class UserAttackHandler(private val type: AttackType) : PacketHandler {
             pw.write(0)
             pw.write(0)
             pw.writeInt(2070000)
-            Arrays.stream(info.damageInfo).forEach {
-                if (it == null) return@forEach
-
+            info.damageInfo.forEach {
                 pw.writeInt(it.mobId)
 
                 if (it.mobId <= 0) return@forEach

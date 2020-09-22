@@ -2,8 +2,6 @@ package net.maple.handlers.user.attack
 
 import client.Character
 import util.packet.PacketReader
-import java.util.*
-import java.util.function.Consumer
 import java.util.stream.IntStream
 
 class AttackInfo(val type: AttackType, val chr: Character, val r: PacketReader) {
@@ -18,7 +16,7 @@ class AttackInfo(val type: AttackType, val chr: Character, val r: PacketReader) 
     var attackActionType: Byte = 0
     var attackSpeed: Byte = 0
     var isLeft = false
-    lateinit var damageInfo: Array<DamageInfo?>
+    var damageInfo: MutableList<DamageInfo> = ArrayList()
 
     fun decode() {
         r.readByte()
@@ -36,7 +34,7 @@ class AttackInfo(val type: AttackType, val chr: Character, val r: PacketReader) 
         r.readByte()
 
         if (type == AttackType.MAGIC) {
-            IntStream.range(0, 6).forEachOrdered { i: Int -> r.readInteger() }
+            IntStream.range(0, 6).forEachOrdered { r.readInteger() }
         }
 
         r.readInteger()
@@ -69,15 +67,14 @@ class AttackInfo(val type: AttackType, val chr: Character, val r: PacketReader) 
             // shadow stars: readint
         }
 
-        damageInfo = arrayOfNulls(mobCount)
         IntStream.range(0, mobCount).forEach {
             val info = DamageInfo(type, chr)
             info.decode(r, damagePerMob)
-            damageInfo[it] = info
+            damageInfo.add(info)
         }
     }
 
     fun apply() {
-        Arrays.stream(damageInfo).forEach { it?.apply() }
+        damageInfo.forEach { it.apply() }
     }
 }

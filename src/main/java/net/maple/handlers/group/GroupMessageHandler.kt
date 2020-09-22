@@ -1,4 +1,4 @@
-package net.maple.handlers.misc
+package net.maple.handlers.group
 
 import client.Client
 import net.maple.SendOpcode
