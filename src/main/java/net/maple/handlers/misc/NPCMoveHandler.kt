@@ -16,12 +16,8 @@ class NPCMoveHandler : PacketHandler {
 
         val field = chr.field
 
-        if (field != null) { // might happen anytime user leaves the field but client still sent the packet when field was already set to null server sided
-            val npc = field.getControlledObject(chr, npcObjectId)
-            if (npc is FieldNPC) {
-                field.broadcast(moveNPC(npc, reader))
-            }
-        }
+        val npc = field.getControlledObject(chr, npcObjectId) as FieldNPC? ?: return
+        field.broadcast(moveNPC(npc, reader))
     }
 
     companion object {

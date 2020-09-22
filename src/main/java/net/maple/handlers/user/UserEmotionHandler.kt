@@ -17,6 +17,7 @@ class UserEmotionHandler : PacketHandler {
         val duration = reader.readInteger()
         val item = reader.readBool()
 
+        // todo check if item is actually in possession
         chr.field.broadcast(sendEmotion(chr, emotion, duration, item), chr)
     }
 

@@ -6,7 +6,10 @@ import database.jooq.Tables
 import io.netty.channel.Channel
 import io.netty.util.concurrent.ScheduledFuture
 import net.maple.packets.ConnectionPackets
+import net.maple.packets.ConnectionPackets.getChangeChannelPacket
 import net.maple.packets.GuildPackets
+import net.maple.packets.GuildPackets.getLoadGuildPacket
+import net.maple.packets.GuildPackets.notifyLoginLogout
 import net.maple.packets.PartyPackets.getTransferLeaderMessagePacket
 import net.maple.packets.PartyPackets.updateParty
 import net.netty.NettyClient
@@ -62,7 +65,7 @@ class Client(c: Channel, siv: ByteArray, riv: ByteArray) : NettyClient(c, siv, r
 
     fun startPing() {
         ping = ch.eventLoop().scheduleAtFixedRate({
-            ch.writeAndFlush(ConnectionPackets.getPing())
+            ch.writeAndFlush(ConnectionPackets.ping)
         }, 5, 5, TimeUnit.SECONDS)
     }
 
@@ -83,17 +86,24 @@ class Client(c: Channel, siv: ByteArray, riv: ByteArray) : NettyClient(c, siv, r
         if (!isDisconnecting) {
             isDisconnecting = true
             worldChannel.loginConnector.messageLogin("2:$accId")
+
             if (ch.isOpen) {
                 close(this, "Disconnect function called")
             }
+
             isLoggedIn = false
             val field = character.field
             field.leave(character)
-            if (character.guild != null && (!Server.clients[accId]!!.cashShop || character.isInCashShop)) {
-                character.guild?.getMemberSecure(character.id)?.isOnline = false
-                character.guild?.broadcast(GuildPackets.getLoadGuildPacket(character.guild))
-                GuildPackets.notifyLoginLogout(character.guild, character, false)
+
+            character.guild?.let {
+                val inCS = Server.clients[accId]?.cashShop ?: false
+                if (!inCS || character.isInCashShop) {
+                    it.getMemberSecure(character.id).isOnline = false
+                    it.broadcast(it.getLoadGuildPacket())
+                    it.notifyLoginLogout(character, false)
+                }
             }
+
             notifyPartyLogout()
             character.friendList.notifyMutualFriends()
             worldChannel.removeCharacter(character)
@@ -111,7 +121,7 @@ class Client(c: Channel, siv: ByteArray, riv: ByteArray) : NettyClient(c, siv, r
 
     fun migrate() {
         Server.clients[accId]!!.channel = worldChannel.channelId
-        write(ConnectionPackets.getChangeChannelPacket(worldChannel))
+        write(worldChannel.getChangeChannelPacket())
     }
 
     private fun notifyPartyLogout() {

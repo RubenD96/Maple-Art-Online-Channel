@@ -36,7 +36,10 @@ import net.database.QuestAPI.saveInfo
 import net.database.TownsAPI.add
 import net.database.WishlistAPI.save
 import net.maple.packets.CharacterPackets
+import net.maple.packets.CharacterPackets.statUpdate
 import net.maple.packets.FieldPackets
+import net.maple.packets.FieldPackets.enterField
+import net.maple.packets.FieldPackets.leaveField
 import net.maple.packets.PartyPackets.getUpdatePartyHealthPacket
 import net.server.ChannelServer
 import net.server.Server.getCharacter
@@ -395,17 +398,17 @@ class Character(val client: Client, var name: String, val record: Record) : Abst
 
     fun enableActions() {
         dispose(client)
-        CharacterPackets.statUpdate(this, ArrayList(), true)
+        statUpdate(ArrayList(), true)
     }
 
     @JvmOverloads
-    fun updateStats(statTypes: List<StatType>, enableActions: Boolean = true) {
-        CharacterPackets.statUpdate(this, statTypes, enableActions)
+    fun updateStats(statTypes: MutableList<StatType>, enableActions: Boolean = true) {
+        statUpdate(statTypes, enableActions)
     }
 
     @JvmOverloads
     fun updateSingleStat(statType: StatType, enableActions: Boolean = true) {
-        updateStats(listOf(statType), enableActions)
+        updateStats(mutableListOf(statType), enableActions)
     }
 
     fun write(msg: Packet?) {
@@ -419,9 +422,9 @@ class Character(val client: Client, var name: String, val record: Record) : Abst
     }
 
     override val enterFieldPacket: Packet
-        get() = FieldPackets.enterField(this)
+        get() = enterField()
     override val leaveFieldPacket: Packet
-        get() = FieldPackets.leaveField(this)
+        get() = leaveField()
 
     override fun toString(): String {
         return "$name:$id"

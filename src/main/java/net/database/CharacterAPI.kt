@@ -2,11 +2,9 @@ package net.database
 
 import client.Character
 import client.Client
-import client.player.Job
 import client.player.key.KeyBinding
 import database.jooq.Tables
 import database.jooq.Tables.KEYBINDINGS
-import field.obj.portal.FieldPortal
 import net.database.DatabaseCore.connection
 import org.jooq.Record
 
@@ -16,9 +14,7 @@ object CharacterAPI {
         val rec: Record? = connection
                 .select(Tables.CHARACTERS.NAME).from(Tables.CHARACTERS)
                 .where(Tables.CHARACTERS.ID.eq(cid)).fetchOne()
-        return if (rec != null) {
-            rec.getValue(Tables.CHARACTERS.NAME)
-        } else ""
+        return rec?.let { rec.getValue(Tables.CHARACTERS.NAME) } ?: ""
     }
 
     fun getOfflineId(name: String?): Int {
@@ -68,17 +64,6 @@ object CharacterAPI {
      */
     fun saveCharacterStats(chr: Character) {
         println("start saving " + chr.name)
-        // yikes
-        var sp = 0
-        val fid: Int
-        if (chr.field == null) {
-            sp = chr.spawnpoint
-            fid = chr.fieldId
-        } else {
-            val fp: FieldPortal? = chr.field.getClosestSpawnpoint(chr.position)
-            if (fp != null) sp = fp.id
-            fid = chr.field.forcedReturnMap
-        }
         connection.update(Tables.CHARACTERS)
                 .set(Tables.CHARACTERS.LEVEL, chr.level)
                 .set(Tables.CHARACTERS.FACE, chr.face)
@@ -88,8 +73,8 @@ object CharacterAPI {
                 .set(Tables.CHARACTERS.AP, chr.ap)
                 .set(Tables.CHARACTERS.SP, chr.sp)
                 .set(Tables.CHARACTERS.FAME, chr.fame)
-                .set(Tables.CHARACTERS.MAP, fid)
-                .set(Tables.CHARACTERS.SPAWNPOINT, sp)
+                .set(Tables.CHARACTERS.MAP, chr.field.forcedReturnMap)
+                .set(Tables.CHARACTERS.SPAWNPOINT, chr.field.getClosestSpawnpoint(chr.position).id)
                 .set(Tables.CHARACTERS.STR, chr.strength)
                 .set(Tables.CHARACTERS.DEX, chr.dexterity)
                 .set(Tables.CHARACTERS.INT, chr.intelligence)

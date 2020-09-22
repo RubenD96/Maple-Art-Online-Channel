@@ -18,7 +18,9 @@ import field.obj.life.FieldMobTemplate
 import managers.ItemManager
 import managers.MobManager
 import net.maple.packets.CharacterPackets
+import net.maple.packets.CharacterPackets.modifyInventory
 import net.maple.packets.GuildPackets
+import net.maple.packets.GuildPackets.getLoadGuildPacket
 import org.graalvm.collections.Pair
 import scripting.npc.NPCScriptManager
 import world.ranking.RankingKeeper
@@ -48,14 +50,10 @@ abstract class AbstractPlayerInteraction(val c: Client) {
         if (quantity > 0) {
             val item = ItemManager.getItem(id)
             if (item != null) {
-                CharacterPackets.modifyInventory(player,
-                        { it.add(item, quantity.toShort()) },
-                        false)
+                player.modifyInventory({ it.add(item, quantity.toShort()) })
             }
         } else {
-            CharacterPackets.modifyInventory(player,
-                    { it.take(id, (-quantity).toShort()) },
-                    false)
+            player.modifyInventory({ it.take(id, (-quantity).toShort()) })
         }
     }
 
@@ -134,7 +132,7 @@ abstract class AbstractPlayerInteraction(val c: Client) {
             equip.maxHP = stats["HP"]?.toShort() ?: template.incMaxHP.toShort()
             equip.maxMP = stats["MP"]?.toShort() ?: template.incMaxMP.toShort()
             equip.ruc = stats["SLOTS"]?.toByte() ?: 7
-            CharacterPackets.modifyInventory(player, { it.add(equip) }, false)
+            player.modifyInventory({ it.add(equip) })
         }
     }
 
@@ -165,13 +163,14 @@ abstract class AbstractPlayerInteraction(val c: Client) {
         ItemStorageInteraction(npcId, c.storage).open(player)
     }
 
-    fun changeGuildName(name: String?) {
+    fun changeGuildName(name: String) {
         GuildPackets.changeGuildName(player, name)
     }
 
     fun loadGuild() {
-        if (player.guild == null) return
-        c.write(GuildPackets.getLoadGuildPacket(player.guild))
+        player.guild?.let {
+            c.write(it.getLoadGuildPacket())
+        }
     }
 
     fun getMobTemplate(id: Int): FieldMobTemplate? {
@@ -184,13 +183,9 @@ abstract class AbstractPlayerInteraction(val c: Client) {
 
     val mobsOnField: List<Any>
         get() {
-            val field = c.character.field
-            if (field != null) {
-                val mobs: MutableList<FieldMob> = ArrayList<FieldMob>()
-                field.getObjects(FieldObjectType.MOB).forEach { mobs.add(it as FieldMob) }
-                return mobs
-            }
-            return ArrayList()
+            val mobs: MutableList<FieldMob> = ArrayList<FieldMob>()
+            c.character.field.getObjects(FieldObjectType.MOB).forEach { mobs.add(it as FieldMob) }
+            return mobs
         }
 
     fun getRankings(): RankingKeeper {

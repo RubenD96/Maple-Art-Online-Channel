@@ -15,6 +15,8 @@ import net.database.WishlistAPI
 import net.maple.SendOpcode
 import net.maple.handlers.PacketHandler
 import net.maple.packets.GuildPackets
+import net.maple.packets.GuildPackets.getLoadGuildPacket
+import net.maple.packets.GuildPackets.notifyLoginLogout
 import net.server.Server.clients
 import util.packet.Packet
 import util.packet.PacketReader
@@ -63,9 +65,9 @@ class MigrateInHandler : PacketHandler {
                 chr.loadParty()
 
                 chr.guild?.let {
-                    c.write(GuildPackets.getLoadGuildPacket(it))
+                    c.write(it.getLoadGuildPacket())
                     if (!mi.cashShop) {
-                        GuildPackets.notifyLoginLogout(it, chr, true)
+                        it.notifyLoginLogout(chr, true)
                     }
                 }
 

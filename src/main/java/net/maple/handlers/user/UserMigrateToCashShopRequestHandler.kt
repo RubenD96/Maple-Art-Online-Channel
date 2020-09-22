@@ -4,6 +4,7 @@ import client.Client
 import net.maple.SendOpcode
 import net.maple.handlers.PacketHandler
 import net.maple.packets.CashShopPackets
+import net.maple.packets.CashShopPackets.sendSetCashShop
 import net.server.Server.clients
 import util.packet.Packet
 import util.packet.PacketReader
@@ -20,7 +21,7 @@ class UserMigrateToCashShopRequestHandler : PacketHandler {
                 chr.save()
                 chr.isInCashShop = true
                 clients[c.accId]?.let { it.cashShop = true } ?: return c.close(this, "Non-existent MigrateInfo")
-                CashShopPackets.sendSetCashShop(c)
+                c.sendSetCashShop()
                 chr.field.leave(chr)
             } else {
                 c.write(fail())

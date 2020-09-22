@@ -1,7 +1,6 @@
 package net.maple.handlers.user
 
 import client.Client
-import field.obj.FieldObject
 import field.obj.FieldObjectType
 import field.obj.life.FieldNPC
 import managers.NPCShopManager.getShop
@@ -18,8 +17,9 @@ class UserSelectNpcHandler : PacketHandler {
         val npcObjectId = reader.readInteger()
 
         val npc: FieldNPC = chr.field.getObjects(FieldObjectType.NPC)
-                .stream().filter { o: FieldObject -> o.id == npcObjectId }
-                .findFirst().orElse(null) as FieldNPC? ?: return
+                .stream().filter { it.id == npcObjectId }
+                .findFirst().orElse(null) as FieldNPC?
+                ?: return c.close(this, "Clicked un an non-existent npc noid: $npcObjectId mapid: ${chr.fieldId}")
 
         println("[UserSelectNpcHandler] ${npc.name} (${npc.npcId})")
         val hasNpcScript = converse(c, npc.npcId)

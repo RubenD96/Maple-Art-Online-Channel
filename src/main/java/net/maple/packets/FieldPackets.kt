@@ -1,0 +1,168 @@
+package net.maple.packets
+
+import client.Character
+import field.obj.FieldObject
+import field.obj.drop.AbstractFieldDrop
+import field.obj.drop.EnterType
+import net.maple.SendOpcode
+import net.maple.packets.CharacterPackets.encodeData
+import net.maple.packets.CharacterPackets.encodeLooks
+import util.packet.Packet
+import util.packet.PacketWriter
+
+object FieldPackets {
+
+    fun Character.setField(): Packet {
+        val isInstantiated = false
+        val pw = PacketWriter(32) // impossible to know exactly
+
+        pw.writeHeader(SendOpcode.SET_FIELD)
+        pw.writeShort(0)
+        pw.writeInt(this.getChannel().channelId)
+        pw.writeInt(0) // world
+
+        pw.writeBool(true)
+        pw.writeBool(!isInstantiated) // instantiated
+        pw.writeShort(0)
+
+        if (!isInstantiated) {
+            pw.writeInt(0)
+            pw.writeInt(0)
+            pw.writeInt(0)
+
+            encodeData(pw)
+
+            pw.writeInt(0)
+            pw.writeInt(0)
+            pw.writeInt(0)
+            pw.writeInt(0)
+        } else {
+            System.err.println("[SetField] uuuh?")
+        }
+
+        pw.writeLong(System.currentTimeMillis() * 10000 + 116444592000000000L)
+        return pw.createPacket()
+    }
+
+    fun Character.enterField(): Packet {
+        val pw = PacketWriter(32)
+
+        pw.writeHeader(SendOpcode.USER_ENTER_FIELD)
+        pw.writeInt(this.id) // obj id
+        pw.write(this.level)
+        pw.writeMapleString(this.name)
+
+        // guild
+        val guild = this.guild
+        pw.writeMapleString(guild?.name ?: "")
+        if (guild != null && guild.mark != null) {
+            guild.mark!!.encode(pw)
+        } else {
+            pw.write(ByteArray(6))
+        }
+
+        // temp stats
+        // masks
+        pw.writeInt(0)
+        pw.writeInt(0)
+        pw.writeInt(0)
+        pw.writeInt(0)
+
+        // nDefenseAtt & nDefenseState
+        pw.write(0)
+        pw.write(0)
+
+        pw.writeShort(this.job)
+
+        encodeLooks(pw, false)
+
+        pw.writeInt(0)
+        pw.writeInt(0)
+        pw.writeInt(0)
+        pw.writeInt(0)
+        pw.writeInt(0) // complete set itemid
+
+        this.portableChair?.let {
+            pw.writeInt(it)
+        } ?: pw.writeInt(0)
+
+        pw.writePosition(this.position)
+        pw.write(this.moveAction.toInt())
+        pw.writeShort(this.foothold)
+        pw.write(0) // ?
+
+        // pets here
+
+        // a whole bunch of ?
+        pw.writeBool(false)
+        pw.writeInt(0)
+        pw.writeInt(0)
+        pw.writeInt(0)
+        pw.write(0)
+        pw.writeBool(false)
+        pw.writeBool(false)
+        pw.writeBool(false)
+        pw.writeBool(false)
+        pw.write(0)
+        pw.write(0)
+        pw.writeInt(0)
+
+        return pw.createPacket()
+    }
+
+    fun Character.leaveField(): Packet {
+        val pw = PacketWriter(6)
+
+        pw.writeHeader(SendOpcode.USER_LEAVE_FIELD)
+        pw.writeInt(this.id)
+
+        return pw.createPacket()
+    }
+
+    fun AbstractFieldDrop.enterField(enterType: Byte): Packet {
+        val pw = PacketWriter(32)
+
+        //byte type = drop.getEnterType();
+        val source = this.source
+
+        pw.writeHeader(SendOpcode.DROP_ENTER_FIELD)
+        pw.write(enterType.toInt())
+        pw.writeInt(this.id)
+        pw.writeBool(this.isMeso)
+        pw.writeInt(this.info)
+        pw.writeInt( /*drop.getOwner()*/0)
+        pw.write( /*type*/0x02) // own type
+        pw.writePosition(this.position)
+        pw.writeInt(if (source is Character) 0 else source.id) // source
+
+        if (enterType != EnterType.FFA) {
+            pw.writePosition(source.position)
+            pw.writeShort(0) // delay
+        }
+
+        if (!this.isMeso) {
+            pw.writeLong( /*drop.getExpire() * 10000 + 116444592000000000L*/0)
+        }
+
+        pw.writeBool(false)
+        pw.writeBool(false)
+
+        return pw.createPacket()
+    }
+
+    fun AbstractFieldDrop.leaveField(source: FieldObject? = null): Packet {
+        val pw = PacketWriter(14)
+
+        pw.writeHeader(SendOpcode.DROP_LEAVE_FIELD)
+        pw.write(this.leaveType.toInt()) // nLeaveType
+        pw.writeInt(this.id)
+
+        if (this.leaveType.toInt() == 0x02 || this.leaveType.toInt() == 0x03 || this.leaveType.toInt() == 0x05) {
+            pw.writeInt(source?.id ?: 0)
+        } else if (this.leaveType.toInt() == 0x04) {
+            pw.writeShort(0)
+        }
+
+        return pw.createPacket()
+    }
+}

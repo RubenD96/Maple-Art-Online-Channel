@@ -36,12 +36,7 @@ class UserGivePopularityRequestHandler : PacketHandler {
         }
 
         val fame = reader.readByte()
-        val receiver = sender.field.getObject(FieldObjectType.CHARACTER, cid) as Character?
-
-        if (receiver == null) { // receiver is not on the same map (anymore)
-            c.write(invalidCharacterIdPacket)
-            return
-        }
+        val receiver = sender.field.getObject(FieldObjectType.CHARACTER, cid) as Character? ?: return c.write(invalidCharacterIdPacket)
 
         if (fame < 0 || fame > 1) {
             c.close(this, "Invalid byte")

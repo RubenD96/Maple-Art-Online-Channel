@@ -19,6 +19,8 @@ class UserDropMesoRequestHandler : PacketHandler {
             drop.position = chr.position
             drop.field = chr.field
             chr.field.enter(drop)
+        } else {
+            c.close(this, "Invalid meso drop amount ($meso)")
         }
     }
 }

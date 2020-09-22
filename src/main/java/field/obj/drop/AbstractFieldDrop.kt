@@ -5,6 +5,8 @@ import field.obj.AbstractFieldObject
 import field.obj.FieldObject
 import field.obj.FieldObjectType
 import net.maple.packets.FieldPackets
+import net.maple.packets.FieldPackets.enterField
+import net.maple.packets.FieldPackets.leaveField
 import util.packet.Packet
 
 abstract class AbstractFieldDrop(val owner: Int, val source: FieldObject, val questId: Int) : AbstractFieldObject() {
@@ -22,12 +24,12 @@ abstract class AbstractFieldDrop(val owner: Int, val source: FieldObject, val qu
     override val enterFieldPacket: Packet get() = getEnterFieldPacket(EnterType.FFA)
 
     fun getEnterFieldPacket(enterType: Byte): Packet {
-        return FieldPackets.enterField(this, enterType)
+        return enterField(enterType)
     }
 
     override val leaveFieldPacket: Packet get() = getLeaveFieldPacket(null)
 
     fun getLeaveFieldPacket(chr: Character?): Packet {
-        return FieldPackets.leaveField(this, chr)
+        return leaveField(chr)
     }
 }

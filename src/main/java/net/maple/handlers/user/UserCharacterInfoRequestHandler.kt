@@ -41,7 +41,7 @@ class UserCharacterInfoRequestHandler : PacketHandler {
             pw.writeBool(false)
             pw.write(0) // taming mob
 
-            val writeableWishlist = Arrays.stream(target.wishlist).filter { i: Int -> i != 0 }.toArray()
+            val writeableWishlist = Arrays.stream(target.wishlist).filter { it != 0 }.toArray()
             pw.write(writeableWishlist.size) // wishlist
             Arrays.stream(writeableWishlist).forEach { pw.writeInt(it) }
 
@@ -50,7 +50,7 @@ class UserCharacterInfoRequestHandler : PacketHandler {
             pw.writeShort(0)
 
             // chairs
-            val chairs = target.inventories[ItemInventoryType.INSTALL]!! // todo
+            val chairs = target.inventories[ItemInventoryType.INSTALL]!!
                     .items
                     .values.stream()
                     .filter { it.templateId / 10000 == 301 }

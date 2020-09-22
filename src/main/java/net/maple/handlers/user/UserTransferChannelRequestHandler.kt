@@ -15,7 +15,7 @@ class UserTransferChannelRequestHandler : PacketHandler {
         val channelId = reader.readByte()
         // todo field limit check
         try {
-            val id = channelId.toInt();
+            val id = channelId.toInt()
             val channel = channels[id]
             if (id < 0 || id >= channels.size) {
                 if (c.worldChannel != channel) {
@@ -28,7 +28,7 @@ class UserTransferChannelRequestHandler : PacketHandler {
                     }
                     return
                 }
-                c.write(fail())
+                //c.write(fail())
                 //c.close(this, "CC to same channel");
             } else {
                 System.err.println("[UserTransferChannelRequestHandler] Channel is null ($chr)")

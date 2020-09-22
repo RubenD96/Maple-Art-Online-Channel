@@ -27,13 +27,13 @@ object PartyPackets {
         return pw
     }
 
-    fun getLeavePartyPacket(party: Party, cid: Int, expel: Boolean, name: String, memChannel: Int): Packet {
-        val pw = getBaseLeavePacket(party.id, cid)
+    fun Party.getLeavePartyPacket(cid: Int, expel: Boolean, name: String, memChannel: Int): Packet {
+        val pw = getBaseLeavePacket(this.id, cid)
 
         pw.writeBool(true)
         pw.writeBool(expel) // false = leave / true = expel
         pw.writeMapleString(name) // CharacterName
-        party.encode(pw, memChannel)
+        this.encode(pw, memChannel)
 
         return pw.createPacket()
     }
@@ -80,12 +80,12 @@ object PartyPackets {
         return pw.createPacket()
     }
 
-    fun getJoinPacket(party: Party, name: String, memChannel: Int): Packet {
+    fun Party.getJoinPacket(name: String, memChannel: Int): Packet {
         val pw = getBasePacket(PartyOperationType.PARTYRES_JOINPARTY_DONE)
 
-        pw.writeInt(party.id)
+        pw.writeInt(this.id)
         pw.writeMapleString(name)
-        party.encode(pw, memChannel)
+        this.encode(pw, memChannel)
 
         return pw.createPacket()
     }

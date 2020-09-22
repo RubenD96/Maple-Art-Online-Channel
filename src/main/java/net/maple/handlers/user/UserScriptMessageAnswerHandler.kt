@@ -19,26 +19,21 @@ class UserScriptMessageAnswerHandler : PacketHandler {
         val type = reader.readByte()
         val action = reader.readByte() // 1 = continue, 255 = end chat
 
-        var cm = cms[c]
-        if (cm == null) {
-            cm = qms[c]
+        val cm = cms[c] ?: qms[c] ?: return
+
+        var selection = -1
+        if (type.toInt() == ConversationType.ASK_MENU.value || type.toInt() == ConversationType.ASK_NUMBER.value) {
+            selection = reader.readInteger()
         }
 
-        if (cm != null) {
-            var selection = -1
-            if (type.toInt() == ConversationType.ASK_MENU.value || type.toInt() == ConversationType.ASK_NUMBER.value) {
-                selection = reader.readInteger()
-            }
+        if ((type.toInt() == ConversationType.ASK_TEXT.value || type.toInt() == ConversationType.ASK_BOX_TEXT.value) && action.toInt() == 1) {
+            cm.text = reader.readMapleString()
+        }
 
-            if ((type.toInt() == ConversationType.ASK_TEXT.value || type.toInt() == ConversationType.ASK_BOX_TEXT.value) && action.toInt() == 1) {
-                cm.text = reader.readMapleString()
-            }
-
-            if (cm is QuestConversationManager) {
-                QuestScriptManager.converse(c, action.toInt(), selection)
-            } else {
-                NPCScriptManager.converse(c, action.toInt(), selection)
-            }
+        if (cm is QuestConversationManager) {
+            QuestScriptManager.converse(c, action.toInt(), selection)
+        } else {
+            NPCScriptManager.converse(c, action.toInt(), selection)
         }
     }
 }

@@ -13,6 +13,7 @@ import managers.ItemManager
 import net.database.ShopAPI.getShopsItems
 import net.maple.SendOpcode
 import net.maple.packets.CharacterPackets
+import net.maple.packets.CharacterPackets.modifyInventory
 import util.packet.PacketWriter
 import kotlin.math.max
 
@@ -74,7 +75,7 @@ class NPCShop(val id: Int) : Interactable {
 
         val slot = item.toItemSlot()
         if (slot is ItemSlotBundle) {
-            if (ItemConstants.isRechargeableItem(slot.getTemplateId())) {
+            if (ItemConstants.isRechargeableItem(slot.templateId)) {
                 slot.number = slot.maxNumber
             } else {
                 slot.number = (count * shopItem.quantity).toShort()
@@ -88,12 +89,10 @@ class NPCShop(val id: Int) : Interactable {
         if (shopItem.price > 0) {
             chr.gainMeso(-(shopItem.price * count))
         } else if (shopItem.tokenId > 0) {
-            CharacterPackets.modifyInventory(chr,
-                    { i: ModifyInventoriesContext -> i.remove(id, (-(shopItem.tokenPrice * count)).toShort()) },
-                    false)
+            chr.modifyInventory({ i: ModifyInventoriesContext -> i.remove(id, (-(shopItem.tokenPrice * count)).toShort()) })
         }
 
-        CharacterPackets.modifyInventory(chr, { it.add(item, count) }, false)
+        chr.modifyInventory({ it.add(item, count) })
         return ShopResult.BUY_SUCCESS
     }
 
@@ -115,7 +114,7 @@ class NPCShop(val id: Int) : Interactable {
 
         if (chr.meso.toLong() + price.toLong() > Int.MAX_VALUE) return ShopResult.SELL_UNKNOWN
 
-        CharacterPackets.modifyInventory(chr, { it.remove(slot, count) }, false)
+        chr.modifyInventory({ it.remove(slot, count) })
         chr.gainMeso(price)
         return ShopResult.SELL_SUCCESS
     }

@@ -14,6 +14,7 @@ import managers.NPCShopManager
 import net.database.ShopAPI
 import net.maple.handlers.user.UserChatHandler
 import net.maple.packets.CharacterPackets
+import net.maple.packets.CharacterPackets.modifyInventory
 import net.server.Server
 import scripting.AbstractPlayerInteraction
 
@@ -66,9 +67,7 @@ class CommandShortcut(c: Client, _args: Array<String>) : AbstractPlayerInteracti
     fun addItem(id: Int, qty: Int) {
         val item = ItemManager.getItem(id)
         if (item != null) {
-            CharacterPackets.modifyInventory(chr,
-                    { i: ModifyInventoriesContext -> i.add(item, qty.toShort()) },
-                    false)
+            chr.modifyInventory({ i: ModifyInventoriesContext -> i.add(item, qty.toShort()) })
         }
     }
 

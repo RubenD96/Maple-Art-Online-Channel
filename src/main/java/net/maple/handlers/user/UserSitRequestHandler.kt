@@ -16,9 +16,7 @@ class UserSitRequestHandler : PacketHandler {
 
         c.write(sit(chr, chairId))
 
-        if (chr.portableChair == null) {
-            chr.field.broadcast(broadcastSit(chr.id), chr)
-        }
+        chr.portableChair ?: chr.field.broadcast(broadcastSit(chr.id), chr)
     }
 
     companion object {

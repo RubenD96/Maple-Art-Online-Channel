@@ -13,16 +13,8 @@ class UserChangeStatRequestHandler : PacketHandler {
         reader.readInteger() // timestamp
         val flag = reader.readInteger()
 
-        var hp = 0
-        var mp = 0
-
-        if (flag and StatType.HP.stat == StatType.HP.stat) {
-            hp = reader.readShort().toInt()
-        }
-
-        if (flag and StatType.MP.stat == StatType.MP.stat) {
-            mp = reader.readShort().toInt()
-        }
+        val hp = if (flag and StatType.HP.stat == StatType.HP.stat) reader.readShort().toInt() else 0
+        val mp = if (flag and StatType.MP.stat == StatType.MP.stat) reader.readShort().toInt() else 0
 
         if (hp > 0 || mp > 0) {
             chr.modifyHPMP(hp, mp)

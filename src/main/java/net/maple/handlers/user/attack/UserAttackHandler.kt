@@ -20,7 +20,7 @@ class UserAttackHandler(private val type: AttackType) : PacketHandler {
         info.apply()
     }
 
-    fun showAttack(chr: Character, info: AttackInfo): Packet {
+    private fun showAttack(chr: Character, info: AttackInfo): Packet {
         val pw = PacketWriter(32)
 
         pw.writeHeader((SendOpcode.USER_MELEE_ATTACK.value + type.type).toShort())

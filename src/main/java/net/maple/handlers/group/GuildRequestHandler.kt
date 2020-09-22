@@ -12,6 +12,13 @@ import net.maple.packets.CharacterPackets
 import net.maple.packets.GuildPackets
 import net.maple.packets.GuildPackets.GuildReq
 import net.maple.packets.GuildPackets.GuildRes
+import net.maple.packets.GuildPackets.getJoinGuildPacket
+import net.maple.packets.GuildPackets.getLoadGuildPacket
+import net.maple.packets.GuildPackets.leave
+import net.maple.packets.GuildPackets.sendInvite
+import net.maple.packets.GuildPackets.setGradeNames
+import net.maple.packets.GuildPackets.setMemberGrade
+import net.maple.packets.GuildPackets.setNotice
 import net.server.Server.guilds
 import util.HexTool.toHex
 import util.packet.PacketReader
@@ -34,17 +41,14 @@ class GuildRequestHandler : PacketHandler {
 
                 val name = reader.readMapleString()
                 val invited = c.worldChannel.getCharacter(name)
+                        ?: return GuildPackets.message(chr, GuildRes.JOIN_GUILD_UNKNOWN_USER)
 
-                if (invited != null) {
-                    if (invited.guild == null) {
-                        chr.guildInvitesSent.add(name)
-                        GuildPackets.sendInvite(guild, invited, chr)
-                        c.write(CharacterPackets.message(AlertMessage("Invited $name to the guild.")))
-                    } else {
-                        GuildPackets.message(chr, GuildRes.JOIN_GUILD_ALREADY_JOINED)
-                    }
-                } else {
-                    GuildPackets.message(chr, GuildRes.JOIN_GUILD_UNKNOWN_USER)
+                invited.guild?.let {
+                    GuildPackets.message(chr, GuildRes.JOIN_GUILD_ALREADY_JOINED)
+                } ?: run {
+                    chr.guildInvitesSent.add(name)
+                    guild.sendInvite(invited, chr)
+                    c.write(CharacterPackets.message(AlertMessage("Invited $name to the guild.")))
                 }
             }
             GuildReq.JOIN_GUILD -> {
@@ -57,10 +61,10 @@ class GuildRequestHandler : PacketHandler {
                 guild.addMember(chr)
                 chr.guild = guild
 
-                guild.broadcast(GuildPackets.getJoinGuildPacket(guild, chr), chr) // guild tab update for members
+                guild.broadcast(guild.getJoinGuildPacket(chr), chr) // guild tab update for members
                 GuildPackets.changeGuildName(chr, guild.name) // visual character update (remote)
                 GuildPackets.changeGuildMark(chr, guild.mark) // visual character update (remote)
-                chr.write(GuildPackets.getLoadGuildPacket(guild)) // guild tab update for new member
+                chr.write(guild.getLoadGuildPacket()) // guild tab update for new member
                 addMember(guild, chr, false)
             }
             GuildReq.WITHDRAW_GUILD,
@@ -88,10 +92,9 @@ class GuildRequestHandler : PacketHandler {
                 if (req == GuildReq.KICK_GUILD) if (member.grade <= myGrade) return  // jr's can't kick jr's... or the master
 
                 if (member.isOnline && member.hasCharacter()) {
-                    GuildPackets.expel(member.character)
-
-                    if (member.character != null) { // todo field check
-                        GuildPackets.changeGuildName(member.character, "")
+                    member.character?.let {
+                        GuildPackets.changeGuildName(it, "")
+                        GuildPackets.expel(it)
                     }
 
                     if (req == GuildReq.KICK_GUILD) {
@@ -102,7 +105,7 @@ class GuildRequestHandler : PacketHandler {
                     member.character?.guild = null
                     guild.members.remove(cid)
                 }
-                GuildPackets.leave(guild, cid, name, if (req == GuildReq.KICK_GUILD) GuildRes.KICK_GUILD_DONE else GuildRes.WITHDRAW_GUILD_DONE)
+                guild.leave(cid, name, if (req == GuildReq.KICK_GUILD) GuildRes.KICK_GUILD_DONE else GuildRes.WITHDRAW_GUILD_DONE)
                 expel(guild, cid)
             }
             GuildReq.SET_NOTICE -> {
@@ -113,7 +116,7 @@ class GuildRequestHandler : PacketHandler {
                 if (notice.length > 100) return
 
                 guild.notice = notice
-                GuildPackets.setNotice(guild, notice)
+                guild.setNotice(notice)
                 updateInfo(guild)
             }
             GuildReq.SET_MEMBER_GRADE -> {
@@ -131,7 +134,7 @@ class GuildRequestHandler : PacketHandler {
                 val grade = reader.readByte()
                 if (grade <= myGrade) return
 
-                GuildPackets.setMemberGrade(guild, cid, grade)
+                guild.setMemberGrade(cid, grade)
                 updateMemberGrade(cid, grade)
             }
             GuildReq.SET_GRADE_NAME -> {
@@ -146,7 +149,7 @@ class GuildRequestHandler : PacketHandler {
                     guild.ranks[i] = name
                 }
 
-                GuildPackets.setGradeNames(guild)
+                guild.setGradeNames()
                 updateInfo(guild)
             }
         }

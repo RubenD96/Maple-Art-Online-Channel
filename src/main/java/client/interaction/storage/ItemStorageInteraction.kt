@@ -11,7 +11,8 @@ import client.player.DbChar
 import constants.ItemConstants
 import net.maple.SendOpcode
 import net.maple.packets.CharacterPackets
-import net.maple.packets.ItemPackets
+import net.maple.packets.CharacterPackets.modifyInventory
+import net.maple.packets.ItemPackets.encode
 import util.packet.PacketWriter
 import java.util.*
 import java.util.stream.Collectors
@@ -61,7 +62,7 @@ class ItemStorageInteraction(val npcId: Int, val storage: ItemStorage) : Interac
                             .collect(Collectors.toList())
 
                     pw.write(items.size)
-                    items.forEach { item: ItemSlot -> ItemPackets.encode(item, pw) }
+                    items.forEach { it.encode(pw) }
                 }
     }
 
@@ -74,7 +75,7 @@ class ItemStorageInteraction(val npcId: Int, val storage: ItemStorage) : Interac
         /*if (chr.getMeso() < 100) return StorageResult.GET_NO_MONEY;
         chr.gainMeso(-100);*/
 
-        CharacterPackets.modifyInventory(chr, { it.add(item) }, false)
+        chr.modifyInventory({ it.add(item) })
         ModifyInventoryContext(storage).remove(item)
 
         return StorageResult.GET_SUCCESS
@@ -89,14 +90,14 @@ class ItemStorageInteraction(val npcId: Int, val storage: ItemStorage) : Interac
         if (chr.meso < 100) return StorageResult.PUT_NO_MONEY
         chr.gainMeso(-100)
 
-        CharacterPackets.modifyInventory(chr, {
+        chr.modifyInventory({
             if (!ItemConstants.isTreatSingly(item.templateId) && item is ItemSlotBundle) {
                 val bundle = item as ItemSlotBundle
                 item = it.take(bundle, if (bundle.number < count) bundle.number else count)
             } else {
                 it.remove(item)
             }
-        }, false)
+        })
 
         ModifyInventoryContext(storage).add(item)
         return StorageResult.PUT_SUCCESS

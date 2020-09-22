@@ -1,90 +1,86 @@
-package net.maple.handlers.group;
+package net.maple.handlers.group
 
-import client.Character;
-import client.Client;
-import client.player.friend.Friend;
-import client.player.friend.FriendList;
-import net.database.CharacterAPI;
-import net.database.FriendAPI;
-import net.maple.handlers.PacketHandler;
-import net.server.Server;
-import org.jetbrains.annotations.NotNull;
-import util.packet.PacketReader;
+import client.Client
+import net.database.CharacterAPI.getOfflineId
+import net.database.CharacterAPI.getOfflineName
+import net.database.FriendAPI.addFriend
+import net.database.FriendAPI.removeFriend
+import net.database.FriendAPI.removePendingStatus
+import net.database.FriendAPI.updateGroup
+import net.maple.handlers.PacketHandler
+import net.server.Server.getCharacter
+import util.packet.PacketReader
 
-public class FriendRequestHandler implements PacketHandler {
+class FriendRequestHandler : PacketHandler {
 
-    @Override
-    public void handlePacket(PacketReader reader, Client c) {
-        byte operation = reader.readByte();
-        FriendList friendList = c.getCharacter().getFriendList();
+    override fun handlePacket(reader: PacketReader, c: Client) {
+        val operation = reader.readByte()
+        val friendList = c.character.friendList
 
-        if (operation == FriendOperation.FRIEND_REQ_SET_FRIEND.getValue()) {
-            String name = reader.readMapleString();
-            String group = reader.readMapleString();
-            if (name.length() < 4 || name.length() > 12 || group.length() > 16) {
-                c.close(this, "Invalid name/group on SET friend request (" + name + "/" + group + ")");
-                return;
-            }
-            if (name.equals(c.getCharacter().getName())) {
-                c.close(this, "Adding yourself as friend");
-                return;
+        if (operation.toInt() == FriendOperation.FRIEND_REQ_SET_FRIEND.value) {
+            val name = reader.readMapleString()
+            val group = reader.readMapleString()
+
+            if (name.length < 4 || name.length > 12 || group.length > 16) {
+                c.close(this, "Invalid name/group on SET friend request ($name/$group)")
+                return
             }
 
-            Friend friend = friendList.getFriends().get(CharacterAPI.INSTANCE.getOfflineId(name));
-            if (friend == null) {
-                friendList.sendFriendRequest(name, group);
-            } else {
-                friend.setGroup(group);
-                FriendAPI.INSTANCE.updateGroup(c.getCharacter().getId(), friend.getCharacterId(), group);
-                friendList.updateFriendList();
+            if (name == c.character.name) {
+                c.close(this, "Adding yourself as friend")
+                return
             }
-        } else if (operation == FriendOperation.FRIEND_REQ_ACCEPT_FRIEND.getValue()) {
-            int cid = reader.read();
-            Character toAdd = Server.INSTANCE.getCharacter(cid);
-            if (toAdd != null) {
-                friendList.addFriend(toAdd, "Group Unknown", true);
-                FriendAPI.INSTANCE.addFriend(c.getCharacter().getId(), toAdd.getId(), "Group Unknown", false);
-                FriendAPI.INSTANCE.removePendingStatus(toAdd.getId(), c.getCharacter().getId());
-                Friend f = toAdd.getFriendList().getFriends().get(c.getCharacter().getId());
-                if (f != null) {
-                    f.setChannel(c.getCharacter().getChannel().getChannelId());
+
+            val friend = friendList.friends[getOfflineId(name)] ?: return friendList.sendFriendRequest(name, group)
+
+            friend.group = group
+            updateGroup(c.character.id, friend.characterId, group)
+            friendList.updateFriendList()
+        } else if (operation.toInt() == FriendOperation.FRIEND_REQ_ACCEPT_FRIEND.value) {
+            val cid = reader.read()
+            val toAdd = getCharacter(cid)
+
+            toAdd?.let {
+                friendList.addFriend(it, "Group Unknown", true)
+                addFriend(c.character.id, it.id, "Group Unknown", false)
+                removePendingStatus(it.id, c.character.id)
+
+                it.friendList.friends[c.character.id]?.let { friend ->
+                    friend.channel = c.character.getChannel().channelId
                 }
-                toAdd.getFriendList().updateFriendList();
-            } else { // player is offline already
-                String name = CharacterAPI.INSTANCE.getOfflineName(cid);
-                if (!name.equals("")) {
-                    friendList.addFriend(cid, CharacterAPI.INSTANCE.getOfflineName(cid), "Group Unknown");
-                    FriendAPI.INSTANCE.addFriend(c.getCharacter().getId(), cid, "Group Unknown", false);
-                    FriendAPI.INSTANCE.removePendingStatus(cid, c.getCharacter().getId());
+
+                it.friendList.updateFriendList()
+            } ?: run {
+                val name = getOfflineName(cid)
+
+                if (name != "") {
+                    friendList.addFriend(cid, getOfflineName(cid), "Group Unknown")
+                    addFriend(c.character.id, cid, "Group Unknown", false)
+                    removePendingStatus(cid, c.character.id)
                 } else {
-                    friendList.sendFriendMessage(FriendRequestHandler.FriendOperation.FRIEND_RES_SET_FRIEND_UNKNOWN_USER);
+                    friendList.sendFriendMessage(FriendOperation.FRIEND_RES_SET_FRIEND_UNKNOWN_USER)
                 }
             }
-            friendList.updateFriendList();
-            friendList.sendPendingRequest();
-        } else if (operation == FriendOperation.FRIEND_REQ_DELETE_FRIEND.getValue()) {
-            int cid = reader.read();
-            if (friendList.getFriends().containsKey(cid)) {
-                friendList.removeFriend(cid);
-                FriendAPI.INSTANCE.removeFriend(c.getCharacter().getId(), cid);
-                Character toRemove = Server.INSTANCE.getCharacter(cid);
-                if (toRemove != null) {
-                    toRemove.getFriendList().updateFriendList();
-                }
-                friendList.updateFriendList();
+
+            friendList.updateFriendList()
+            friendList.sendPendingRequest()
+        } else if (operation.toInt() == FriendOperation.FRIEND_REQ_DELETE_FRIEND.value) {
+            val cid = reader.read()
+
+            if (friendList.friends.containsKey(cid)) {
+                friendList.removeFriend(cid)
+                removeFriend(c.character.id, cid)
+
+                getCharacter(cid)?.friendList?.updateFriendList()
+
+                friendList.updateFriendList()
             } else {
-                c.close(this, "Deleting unknown friend");
+                c.close(this, "Deleting unknown friend")
             }
         }
     }
 
-    @Override
-    public boolean validateState(@NotNull Client c) {
-        return true;
-    }
-
-    public enum FriendOperation {
-
+    enum class FriendOperation(val value: Int) {
         FRIEND_REQ_LOAD_FRIEND(0x0),
         FRIEND_REQ_SET_FRIEND(0x1),
         FRIEND_REQ_ACCEPT_FRIEND(0x2),
@@ -109,15 +105,5 @@ public class FriendRequestHandler implements PacketHandler {
         FRIEND_RES_INC_MAX_COUNT_DONE(0x15),
         FRIEND_RES_INC_MAX_COUNT_UNKNOWN(0x16),
         FRIEND_RES_PLEASE_WAIT(0x17);
-
-        private final int value;
-
-        FriendOperation(int value) {
-            this.value = value;
-        }
-
-        public int getValue() {
-            return value;
-        }
     }
 }

@@ -13,6 +13,7 @@ import field.obj.portal.FieldPortal
 import field.obj.portal.PortalType
 import managers.MobManager
 import net.maple.packets.FieldPackets
+import net.maple.packets.FieldPackets.setField
 import net.maple.packets.PartyPackets.updateParty
 import scripting.map.FieldScriptManager.execute
 import util.packet.Packet
@@ -79,7 +80,7 @@ class Field(val id: Int) {
             obj.fieldId = id
             obj.position = portal.position
             obj.foothold = (if (portal.type != PortalType.START_POINT) getFhByPortal(portal).id else 0).toShort()
-            obj.write(FieldPackets.setField(obj))
+            obj.write(obj.setField())
             broadcast(obj.enterFieldPacket, obj)
 
             synchronized(objects) {

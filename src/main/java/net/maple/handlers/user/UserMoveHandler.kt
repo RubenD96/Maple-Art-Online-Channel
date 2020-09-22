@@ -23,9 +23,7 @@ class UserMoveHandler : PacketHandler {
 
         val path = chr.move(reader)
 
-        if (chr.field != null) {
-            chr.field.broadcast(movePlayer(chr, path), chr)
-        }
+        chr.field.broadcast(movePlayer(chr, path), chr)
     }
 
     companion object {

@@ -17,21 +17,27 @@ class PartyResultHandler : PacketHandler {
         val pid = reader.readInteger()
         val party = parties[pid] ?: return
 
-        if (operation.toInt() == PartyOperationType.PARTYRES_INVITEPARTY_REJECTED.value) {
-            party.leader?.character?.write(getServerMsgPacket(c.character.name + " has rejected the invite to the party."))
-        } else if (operation.toInt() == PartyOperationType.PARTYRES_INVITEPARTY_ACCEPTED.value) {
-            val chr = c.character
-            if (chr.party == null) {
-                party.addMember(chr)
-                chr.party = party
-                party.update()
+        when {
+            operation.toInt() == PartyOperationType.PARTYRES_INVITEPARTY_REJECTED.value -> {
+                party.leader?.character?.write(getServerMsgPacket(c.character.name + " has rejected the invite to the party."))
             }
-        } else if (operation.toInt() == PartyOperationType.PARTYRES_INVITEPARTY_ALREADYINVITEDBYINVITER.value) {
-            party.leader?.character?.write(getServerMsgPacket(c.character.name + " is busy."))
-        } else if (operation.toInt() == PartyOperationType.PARTYRES_INVITEPARTY_SENT.value) {
-            // nothing?
-        } else {
-            println("[PartyResultHandler] NEW OP: " + toHex(operation))
+            operation.toInt() == PartyOperationType.PARTYRES_INVITEPARTY_ACCEPTED.value -> {
+                val chr = c.character
+                chr.party ?: run {
+                    party.addMember(chr)
+                    chr.party = party
+                    party.update()
+                }
+            }
+            operation.toInt() == PartyOperationType.PARTYRES_INVITEPARTY_ALREADYINVITEDBYINVITER.value -> {
+                party.leader?.character?.write(getServerMsgPacket(c.character.name + " is busy."))
+            }
+            operation.toInt() == PartyOperationType.PARTYRES_INVITEPARTY_SENT.value -> {
+                // nothing?
+            }
+            else -> {
+                println("[PartyResultHandler] NEW OP: " + toHex(operation))
+            }
         }
     }
 }

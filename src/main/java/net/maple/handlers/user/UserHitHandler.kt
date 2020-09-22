@@ -3,6 +3,7 @@ package net.maple.handlers.user
 import client.Client
 import net.maple.handlers.PacketHandler
 import net.maple.packets.CharacterPackets
+import net.maple.packets.CharacterPackets.showDamage
 import util.packet.PacketReader
 
 class UserHitHandler : PacketHandler {
@@ -25,10 +26,10 @@ class UserHitHandler : PacketHandler {
                 val damageMissed = reader.readByte()
                 val v284x = reader.readByte()
 
-                CharacterPackets.showDamage(chr, type, dmg, mobId, left)
+                chr.showDamage(type, dmg, mobId, left)
             }
             DamageType.OBSTACLE -> {
-                CharacterPackets.showDamage(chr, type, dmg, 0, 0.toByte())
+                chr.showDamage(type, dmg, 0, 0.toByte())
             }
             else -> {
                 System.err.println("[UserHitHandler] Unknown damage type ($type)")

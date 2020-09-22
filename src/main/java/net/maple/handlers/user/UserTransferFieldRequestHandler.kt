@@ -30,12 +30,9 @@ class UserTransferFieldRequestHandler : PacketHandler {
                 }
             } else {
                 val portalName = reader.readMapleString()
-                val portal = chr.field.getPortalByName(portalName)
-
-                if (portal == null) {
+                val portal = chr.field.getPortalByName(portalName) ?: return run {
                     chr.enableActions()
                     chr.write(CharacterPackets.message(AlertMessage("There is a problem with the portal!\r\nName: $portalName")))
-                    return
                 }
 
                 portal.enter(chr)
