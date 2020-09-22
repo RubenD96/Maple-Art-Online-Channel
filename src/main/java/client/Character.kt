@@ -192,14 +192,14 @@ class Character(val client: Client, var name: String, val record: Record) : Abst
     }
 
     fun startQuest(qid: Int, npcId: Int) {
-        if (quests.containsKey(qid)) {
-            return
-        }
+        if (quests.containsKey(qid)) return
+
         val quest = Quest(qid, this)
         if (!quest.canStart()) {
             client.close(this, "Invalid quest start requirements ($qid)")
             return
         }
+
         quest.initializeMobs()
         quests[qid] = quest
         quest.updateState(PerformQuestRecordMessage(qid.toShort(), ""))

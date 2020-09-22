@@ -76,12 +76,15 @@ object GuildAPI {
         guild.ranks[3] = rec.getValue(Tables.GUILDS.RANK4)
         guild.ranks[4] = rec.getValue(Tables.GUILDS.RANK5)
         guild.leader = rec.getValue(Tables.GUILDS.LEADER)
+
         val res = connection.select().from(Tables.GUILDMEMBERS).where(Tables.GUILDMEMBERS.GID.eq(id)).fetch()
-        res.forEach(Consumer { member: Record -> guild.members[member.getValue(Tables.GUILDMEMBERS.CID)] = GuildMember(member) })
+        res.forEach { guild.members[it.getValue(Tables.GUILDMEMBERS.CID)] = GuildMember(it) }
+
         val mark = connection.select().from(Tables.GUILDMARK).where(Tables.GUILDMARK.GID.eq(id)).fetchOne()
         if (mark != null) {
             guild.mark = GuildMark(mark)
         }
+
         Server.guilds[id] = guild
         return guild
     }

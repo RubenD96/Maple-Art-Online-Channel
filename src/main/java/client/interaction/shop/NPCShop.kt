@@ -100,7 +100,7 @@ class NPCShop(val id: Int) : Interactable {
         val type = ItemInventoryType.values()[itemId / 1000000 - 1]
         val inventory = chr.inventories[type] ?: return ShopResult.SELL_UNKNOWN
 
-        if (!inventory.items.containsKey(pos)) return ShopResult.SELL_UNKNOWN
+        if (!inventory.items.containsKey(pos)) return ShopResult.SELL_UNKNOWN // redundant statement?
 
         val slot = inventory.items[pos] ?: return ShopResult.SELL_UNKNOWN
         val item = ItemManager.getItem(slot.templateId) ?: return ShopResult.SELL_UNKNOWN

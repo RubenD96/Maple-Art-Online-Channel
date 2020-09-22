@@ -55,8 +55,7 @@ class Quest(val id: Int, val character: Character) {
         if (reqs.quests.isNotEmpty()) {
             reqs.quests.forEach {
                 if (it.value == 0.toByte()) { // not started
-                    if (character.quests.containsKey(it.key)) { // but does exist??
-                        val quest = character.quests[it.key] ?: return false // nani
+                    character.quests[it.key]?.let {quest ->
                         if (quest.state != QuestState.NONE) { // shouldn't happen, I think? Checking anyway.
                             return false
                         }
