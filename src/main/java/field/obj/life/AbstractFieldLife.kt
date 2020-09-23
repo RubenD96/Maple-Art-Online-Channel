@@ -1,7 +1,7 @@
 package field.obj.life
 
-import field.obj.AbstractFieldObject
 import field.movement.MovePath
+import field.obj.AbstractFieldObject
 import util.packet.PacketReader
 
 abstract class AbstractFieldLife : AbstractFieldObject(), FieldLife {

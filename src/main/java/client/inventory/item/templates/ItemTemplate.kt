@@ -1,8 +1,8 @@
 package client.inventory.item.templates
 
-import client.inventory.ItemVariationType
 import client.inventory.item.flags.ItemFlag
-import client.inventory.slots.ItemSlot
+import client.inventory.item.slots.ItemSlot
+import client.inventory.item.variation.ItemVariationType
 import util.packet.PacketReader
 
 open class ItemTemplate(val id: Int, val r: PacketReader) {
@@ -40,7 +40,7 @@ open class ItemTemplate(val id: Int, val r: PacketReader) {
     }
 
     open fun toItemSlot(): ItemSlot {
-        return toItemSlot(ItemVariationType.NONE)
+        return toItemSlot(ItemVariationType.BASE)
     }
 
     open fun toItemSlot(type: ItemVariationType): ItemSlot {

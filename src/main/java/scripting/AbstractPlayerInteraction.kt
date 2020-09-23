@@ -6,7 +6,7 @@ import client.effects.field.TrembleFieldEffect
 import client.effects.user.QuestEffect
 import client.interaction.storage.ItemStorageInteraction
 import client.inventory.item.templates.ItemEquipTemplate
-import client.inventory.slots.ItemSlotEquip
+import client.inventory.item.slots.ItemSlotEquip
 import client.messages.IncEXPMessage
 import client.messages.broadcast.types.AlertMessage
 import client.messages.broadcast.types.NoticeWithoutPrefixMessage

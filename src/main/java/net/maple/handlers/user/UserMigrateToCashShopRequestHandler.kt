@@ -3,7 +3,6 @@ package net.maple.handlers.user
 import client.Client
 import net.maple.SendOpcode
 import net.maple.handlers.PacketHandler
-import net.maple.packets.CashShopPackets
 import net.maple.packets.CashShopPackets.sendSetCashShop
 import net.server.Server.clients
 import util.packet.Packet

@@ -1,8 +1,8 @@
 package client.inventory
 
 import client.inventory.item.templates.ItemTemplate
-import client.inventory.slots.ItemSlot
-import client.inventory.slots.ItemSlotBundle
+import client.inventory.item.slots.ItemSlot
+import client.inventory.item.slots.ItemSlotBundle
 import util.packet.PacketWriter
 
 interface ModifyInventoryContextInterface {

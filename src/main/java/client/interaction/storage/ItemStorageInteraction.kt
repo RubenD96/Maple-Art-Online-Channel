@@ -5,12 +5,10 @@ import client.Client
 import client.interaction.Interactable
 import client.inventory.ItemInventoryType
 import client.inventory.ModifyInventoryContext
-import client.inventory.slots.ItemSlot
-import client.inventory.slots.ItemSlotBundle
+import client.inventory.item.slots.ItemSlotBundle
 import client.player.DbChar
 import constants.ItemConstants
 import net.maple.SendOpcode
-import net.maple.packets.CharacterPackets
 import net.maple.packets.CharacterPackets.modifyInventory
 import net.maple.packets.ItemPackets.encode
 import util.packet.PacketWriter
@@ -20,34 +18,32 @@ import java.util.stream.Collectors
 class ItemStorageInteraction(val npcId: Int, val storage: ItemStorage) : Interactable {
 
     override fun open(chr: Character) {
-        if (chr.activeStorage != null) {
+        chr.activeStorage?.let {
             chr.client.close(this, "Attempting to open a storage while in a storage")
-            return
+        } ?: run {
+            val pw = PacketWriter(18) // min size (0 items, 0 meso)
+
+            pw.writeHeader(SendOpcode.STORAGE_RESULT)
+            pw.write(StorageResult.OPEN_STORAGE_DLG.value)
+            pw.writeInt(npcId)
+            encodeItems(pw)
+
+            chr.write(pw.createPacket())
+            chr.activeStorage = this
         }
-
-        val pw = PacketWriter(18) // min size (0 items, 0 meso)
-
-        pw.writeHeader(SendOpcode.STORAGE_RESULT)
-        pw.write(StorageResult.OPEN_STORAGE_DLG.value)
-        pw.writeInt(npcId)
-        encodeItems(pw)
-
-        chr.write(pw.createPacket())
-        chr.activeStorage = this
     }
 
     override fun close(c: Client) {
         c.character.activeStorage = null
     }
 
-    @JvmOverloads
     fun encodeItems(pw: PacketWriter, flags: DbChar = DbChar.ALL) {
         pw.write(storage.slotMax.toInt())
         pw.writeLong(flags.value.toLong())
 
         if (flags.containsFlag(DbChar.MONEY)) pw.writeInt(storage.meso)
 
-        val types: MutableMap<DbChar, ItemInventoryType> = EnumMap(client.player.DbChar::class.java)
+        val types: MutableMap<DbChar, ItemInventoryType> = EnumMap(DbChar::class.java)
         types[DbChar.ITEM_SLOT_EQUIP] = ItemInventoryType.EQUIP
         types[DbChar.ITEM_SLOT_CONSUME] = ItemInventoryType.CONSUME
         types[DbChar.ITEM_SLOT_INSTALL] = ItemInventoryType.INSTALL
@@ -58,7 +54,7 @@ class ItemStorageInteraction(val npcId: Int, val storage: ItemStorage) : Interac
                 .filter { flags.containsFlag(it.key) }
                 .forEach {
                     val items = storage.items.values.stream()
-                            .filter { itemSlot: ItemSlot -> ItemInventoryType.values()[itemSlot.templateId / 1000000] == it.value }
+                            .filter { itemSlot -> ItemInventoryType.values()[itemSlot.templateId / 1000000] == it.value }
                             .collect(Collectors.toList())
 
                     pw.write(items.size)
@@ -82,8 +78,7 @@ class ItemStorageInteraction(val npcId: Int, val storage: ItemStorage) : Interac
     }
 
     fun storeItem(chr: Character, pos: Short, id: Int, count: Short): StorageResult {
-        val inventory = chr.inventories[ItemInventoryType.values()[id / 1000000 - 1]]
-                ?: return StorageResult.PUT_UNKNOWN
+        val inventory = chr.getInventory(ItemInventoryType.values()[id / 1000000 - 1])
         var item = inventory.items[pos] ?: return StorageResult.PUT_UNKNOWN
 
         if (storage.items.size >= storage.slotMax) return StorageResult.PUT_NO_SPACE

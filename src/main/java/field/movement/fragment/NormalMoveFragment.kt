@@ -1,7 +1,7 @@
 package field.movement.fragment
 
-import field.obj.life.FieldLife
 import field.movement.MovePathAttribute
+import field.obj.life.FieldLife
 import util.packet.PacketReader
 import util.packet.PacketWriter
 import java.awt.Point

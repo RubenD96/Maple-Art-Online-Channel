@@ -1,8 +1,9 @@
 package field.obj.life
 
 import client.Character
-import client.inventory.ItemVariationType
-import client.inventory.slots.ItemSlotBundle
+import client.inventory.item.slots.ItemSlotBundle
+import client.inventory.item.templates.ItemEquipTemplate
+import client.inventory.item.variation.ItemVariationType
 import client.messages.IncEXPMessage
 import client.player.quest.QuestState
 import field.obj.FieldObjectType
@@ -80,16 +81,15 @@ class FieldMob(val template: FieldMobTemplate, left: Boolean) : AbstractFieldCon
                     val amount = (Math.random() * it.max + it.min).toInt()
                     drops.add(MesoDrop(owner.id, this, amount, it.quest))
                 } else { // item
-                    val template = ItemManager.getItem(it.id)
-                    if (template != null) {
-                        val item = template.toItemSlot(ItemVariationType.NORMAL)
+                    ItemManager.getItem(it.id)?.let { template ->
+                        val item = if (template is ItemEquipTemplate) template.toItemSlot(ItemVariationType.getRandom())
+                        else template.toItemSlot()
+
                         if (item is ItemSlotBundle) {
                             item.number = ((Math.random() * it.max + it.min).toInt().toShort())
                         }
                         drops.add(ItemDrop(owner.id, this, item, it.quest))
-                    } else {
-                        println("Invalid item drop " + it.id + " from " + this.template.id)
-                    }
+                    } ?: System.err.println("Invalid item drop ${it.id} from ${this.template.id}")
                 }
             }
         }

@@ -18,7 +18,7 @@ class QuestEffect : AbstractEffect {
         this.entries = entries
     }
 
-    override val type: EffectType get() = EffectType.QUEST
+    override val type = EffectType.QUEST
 
     override fun encodeData(pw: PacketWriter) {
         pw.write(entries.size)

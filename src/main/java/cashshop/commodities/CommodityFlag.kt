@@ -6,7 +6,7 @@ enum class CommodityFlag(val value: Int) {
     COUNT(0x04),
     PRIORITY(0x08),
     PRICE(0x10),
-    BONUS(0x20), 
+    BONUS(0x20),
     PERIOD(0x40),
     REQ_POP(0x80),
     REQ_LEV(0x100),

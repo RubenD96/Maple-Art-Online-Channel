@@ -6,7 +6,7 @@ import util.packet.PacketWriter
 
 class SquibEffect(val path: String) : AbstractEffect() {
 
-    override val type: EffectType get() = EffectType.SQUIB_EFFECT
+    override val type = EffectType.SQUIB_EFFECT
 
     override fun encodeData(pw: PacketWriter) {
         pw.writeMapleString(path)

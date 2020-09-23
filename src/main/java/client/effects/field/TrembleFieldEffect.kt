@@ -6,7 +6,7 @@ import util.packet.PacketWriter
 
 class TrembleFieldEffect(private val heavy: Boolean, val delay: Int) : AbstractFieldEffect() {
 
-    override val type: FieldEffectType get() = FieldEffectType.TREMBLE
+    override val type = FieldEffectType.TREMBLE
 
     override fun encodeData(pw: PacketWriter) {
         pw.writeBool(!heavy)

@@ -2,7 +2,6 @@ package net.database
 
 import database.jooq.Tables
 import net.database.DatabaseCore.connection
-import org.jooq.Record
 import world.ranking.PlayerRanking
 
 object RankingAPI {

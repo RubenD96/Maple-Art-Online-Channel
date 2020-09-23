@@ -1,6 +1,6 @@
 package client.inventory.item.templates
 
-import client.inventory.slots.ItemSlotPet
+import client.inventory.item.slots.ItemSlotPet
 import util.packet.PacketReader
 
 class PetItemTemplate(id: Int, r: PacketReader) : ItemTemplate(id, r) {

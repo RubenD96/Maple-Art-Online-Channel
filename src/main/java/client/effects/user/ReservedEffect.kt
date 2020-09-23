@@ -6,7 +6,7 @@ import util.packet.PacketWriter
 
 class ReservedEffect(val path: String) : AbstractEffect() {
 
-    override val type: EffectType get() = EffectType.RESERVED_EFFECT
+    override val type = EffectType.RESERVED_EFFECT
 
     override fun encodeData(pw: PacketWriter) {
         pw.writeMapleString(path)

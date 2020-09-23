@@ -1,10 +1,9 @@
 package client.inventory.item.templates
 
-import client.inventory.ItemVariation
-import client.inventory.ItemVariationType
 import client.inventory.item.flags.EquipFlag
-import client.inventory.slots.ItemSlotEquip
-import util.Rand32
+import client.inventory.item.slots.ItemSlotEquip
+import client.inventory.item.variation.ItemVariation
+import client.inventory.item.variation.ItemVariationType
 import util.packet.PacketReader
 
 class ItemEquipTemplate(id: Int, r: PacketReader) : ItemTemplate(id, r) {
@@ -112,7 +111,7 @@ class ItemEquipTemplate(id: Int, r: PacketReader) : ItemTemplate(id, r) {
     }
 
     override fun toItemSlot(type: ItemVariationType): ItemSlotEquip {
-        val variation = ItemVariation(Rand32.Create(), type)
+        val variation = ItemVariation(type)
         val equip = ItemSlotEquip()
         equip.templateId = id
         equip.ruc = tUC

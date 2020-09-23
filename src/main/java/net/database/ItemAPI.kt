@@ -3,14 +3,13 @@ package net.database
 import client.Character
 import client.Client
 import client.interaction.storage.ItemStorage
-import client.inventory.ItemInventory
 import client.inventory.ItemInventoryType
 import client.inventory.item.templates.ItemBundleTemplate
 import client.inventory.item.templates.ItemEquipTemplate
-import client.inventory.slots.ItemSlot
-import client.inventory.slots.ItemSlotBundle
-import client.inventory.slots.ItemSlotEquip
-import client.inventory.slots.ItemSlotLocker
+import client.inventory.item.slots.ItemSlot
+import client.inventory.item.slots.ItemSlotBundle
+import client.inventory.item.slots.ItemSlotEquip
+import client.inventory.item.slots.ItemSlotLocker
 import database.jooq.Tables
 import managers.ItemManager
 import net.database.DatabaseCore.connection
@@ -37,7 +36,7 @@ object ItemAPI {
         // inventories
         IntStream.range(0, 5).forEach {
             val type = ItemInventoryType.values()[it]
-            val inv = chr.inventories[type]!!.items
+            val inv = chr.getInventory(type).items
             inv.forEach { (slot: Short, item: ItemSlot) -> updateItem(chr, item, uuids, slot, type, 1) }
         }
 
@@ -90,16 +89,20 @@ object ItemAPI {
         for (id in res) {
             val uuid = id.getValue(Tables.INVENTORIES.ID)
             toDelete.add(uuid)
-            chr.inventories.values.forEach(Consumer { inv: ItemInventory ->
+
+            ItemInventoryType.values().forEach { type ->
+                val inv = chr.getInventory(type)
                 if (inv.items.values.stream().anyMatch { item: ItemSlot -> Arrays.equals(item.uuid, uuid) }) {
                     keep.add(uuid)
                     toDelete.remove(uuid)
                 }
-            })
+            }
+
             if (chr.client.locker.stream().anyMatch { item: ItemSlotLocker -> Arrays.equals(item.item.uuid, uuid) }) {
                 keep.add(uuid)
                 toDelete.remove(uuid)
             }
+
             if (chr.client.storage.items.values.stream().anyMatch { item: ItemSlot -> Arrays.equals(item.uuid, uuid) }) {
                 keep.add(uuid)
                 toDelete.remove(uuid)
@@ -254,15 +257,17 @@ object ItemAPI {
                 .and(Tables.INVENTORIES.CID.eq(chr.id))
                 .fetch()
         itemData.forEach(Consumer { rec: Record ->
-            val items = chr.inventories[ItemInventoryType.values()[rec.getValue(Tables.INVENTORIES.INVENTORY_TYPE) - 1]]?.items
+            val items = chr.getInventory(ItemInventoryType.values()[rec.getValue(Tables.INVENTORIES.INVENTORY_TYPE) - 1]).items
             val template = ItemManager.getItem(rec.getValue(Tables.INVENTORIES.ITEMID)) as ItemBundleTemplate
             val bundle = template.toItemSlot()
+
             if (rec.getValue(Tables.INVENTORIES.QUANTITY) > 1) {
                 bundle.number = rec.getValue(Tables.INVENTORIES.QUANTITY).toShort()
             }
+
             bundle.uuid = rec.getValue(Tables.INVENTORIES.ID)
             bundle.isNewItem = false
-            items?.set(rec.getValue(Tables.INVENTORIES.POSITION), bundle)
+            items[rec.getValue(Tables.INVENTORIES.POSITION)] = bundle
         })
     }
 
@@ -273,15 +278,16 @@ object ItemAPI {
                 .where(Tables.STORAGES.AID.eq(c.accId))
                 .fetchOne()
         val itemStorage: ItemStorage
+
         itemStorage = if (storage == null) {
-            connection
-                    .insertInto(Tables.STORAGES, Tables.STORAGES.AID)
+            connection.insertInto(Tables.STORAGES, Tables.STORAGES.AID)
                     .values(c.accId)
                     .execute()
             ItemStorage(4.toShort(), 0)
         } else {
             ItemStorage(storage.getValue(Tables.STORAGES.SIZE), storage.getValue(Tables.STORAGES.MESO))
         }
+
         c.storage = itemStorage
         val itemData = connection
                 .select()
@@ -289,18 +295,21 @@ object ItemAPI {
                 .where(Tables.INVENTORIES.STORAGE_TYPE.eq(2))
                 .and(Tables.INVENTORIES.AID.eq(c.accId))
                 .fetch()
-        itemData.forEach(Consumer { rec: Record ->
-            val template = ItemManager.getItem(rec.getValue(Tables.INVENTORIES.ITEMID))
+
+        itemData.forEach {
+            val template = ItemManager.getItem(it.getValue(Tables.INVENTORIES.ITEMID))
             if (template != null) {
                 val item = template.toItemSlot()
-                if (rec.getValue(Tables.INVENTORIES.QUANTITY) > 1) {
-                    (item as ItemSlotBundle).number = rec.getValue(Tables.INVENTORIES.QUANTITY).toShort()
+
+                if (it.getValue(Tables.INVENTORIES.QUANTITY) > 1) {
+                    (item as ItemSlotBundle).number = it.getValue(Tables.INVENTORIES.QUANTITY).toShort()
                 }
-                item.uuid = rec.getValue(Tables.INVENTORIES.ID)
+
+                item.uuid = it.getValue(Tables.INVENTORIES.ID)
                 item.isNewItem = false
-                c.storage.items[rec.getValue(Tables.INVENTORIES.POSITION)] = item
+                c.storage.items[it.getValue(Tables.INVENTORIES.POSITION)] = item
             }
-        })
+        }
     }
 
     /**
@@ -310,23 +319,21 @@ object ItemAPI {
      * @param chr The player to check
      */
     private fun deleteBrokenEquips(chr: Character) {
-        val itemData = connection
-                .select()
+        val itemData = connection.select()
                 .from(Tables.INVENTORIES)
                 .where(Tables.INVENTORIES.INVENTORY_TYPE.eq(1)) // equip inv
                 .and(Tables.INVENTORIES.CID.eq(chr.id))
                 .fetch()
-        itemData.forEach(Consumer { rec: Record ->
-            val match = connection
-                    .select()
+        itemData.forEach {
+            connection.select()
                     .from(Tables.EQUIPS)
-                    .where(Tables.EQUIPS.ITEMID.eq(rec.getValue(Tables.INVENTORIES.ID)))
+                    .where(Tables.EQUIPS.ITEMID.eq(it.getValue(Tables.INVENTORIES.ID)))
                     .fetchOne()
-            if (match == null) {
-                System.err.println("[ItemAPI] Broken equip found for ${chr.name} (${rec.getValue(Tables.INVENTORIES.ITEMID)})")
-                deleteItemByUUID(rec.getValue(Tables.INVENTORIES.ID))
-            }
-        })
+                    ?: run {
+                        System.err.println("[ItemAPI] Broken equip found for ${chr.name} (${it.getValue(Tables.INVENTORIES.ITEMID)})")
+                        deleteItemByUUID(it.getValue(Tables.INVENTORIES.ID))
+                    }
+        }
     }
 
     /**
@@ -335,7 +342,7 @@ object ItemAPI {
      * @param chr Player to load
      */
     private fun loadEquips(chr: Character) {
-        val equips = chr.inventories[ItemInventoryType.EQUIP]!!.items
+        val equips = chr.getInventory(ItemInventoryType.EQUIP).items
         val equipData = connection
                 .select()
                 .from(Tables.EQUIPS)

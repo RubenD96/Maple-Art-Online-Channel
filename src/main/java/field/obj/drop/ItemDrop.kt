@@ -1,7 +1,7 @@
 package field.obj.drop
 
 import client.Character
-import client.inventory.slots.ItemSlot
+import client.inventory.item.slots.ItemSlot
 import client.messages.ItemDropPickUpMessage
 import field.obj.FieldObject
 import net.maple.packets.CharacterPackets

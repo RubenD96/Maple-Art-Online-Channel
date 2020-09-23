@@ -10,11 +10,9 @@ import net.database.QuestAPI.remove
 import net.database.QuestAPI.update
 import net.maple.SendOpcode
 import net.maple.packets.CharacterPackets
-import scripting.quest.QuestConversationManager
 import scripting.quest.QuestScriptManager
 import util.packet.Packet
 import util.packet.PacketWriter
-import java.lang.IllegalArgumentException
 
 class Quest(val id: Int, val character: Character) {
 
@@ -55,7 +53,7 @@ class Quest(val id: Int, val character: Character) {
         if (reqs.quests.isNotEmpty()) {
             reqs.quests.forEach {
                 if (it.value == 0.toByte()) { // not started
-                    character.quests[it.key]?.let {quest ->
+                    character.quests[it.key]?.let { quest ->
                         if (quest.state != QuestState.NONE) { // shouldn't happen, I think? Checking anyway.
                             return false
                         }
@@ -114,7 +112,6 @@ class Quest(val id: Int, val character: Character) {
         return true
     }
 
-    @JvmOverloads
     fun progress(mob: Int, increase: Int = 1) {
         val mobCount = mobs[mob] ?: return
         val count = mobCount.toInt() + increase

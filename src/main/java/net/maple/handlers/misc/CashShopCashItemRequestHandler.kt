@@ -7,7 +7,7 @@ import client.Character
 import client.Client
 import client.inventory.ItemInventoryType
 import client.inventory.ModifyInventoriesContext
-import client.inventory.slots.ItemSlotLocker
+import client.inventory.item.slots.ItemSlotLocker
 import database.jooq.Tables
 import managers.CommodityManager.getCommodity
 import managers.ItemManager.getItem
@@ -273,7 +273,7 @@ class CashShopCashItemRequestHandler : PacketHandler {
                 return
             }
 
-            val inventory = c.character.inventories[ItemInventoryType.values()[inv - 1]] ?: return
+            val inventory = c.character.getInventory(ItemInventoryType.values()[inv - 1])
             if (inventory.items[pos] != null) {
                 System.err.println("[MOVE_L_TO_S] Position is not free inv: " + inv + " pos: " + pos + " " + c.character.name)
                 failRequest(c, 25)
@@ -286,7 +286,7 @@ class CashShopCashItemRequestHandler : PacketHandler {
                 return
             }
 
-            val context = ModifyInventoriesContext(c.character.inventories)
+            val context = ModifyInventoriesContext(c.character.allInventories)
             c.locker.remove(slot)
             context.add(slot.item)
 

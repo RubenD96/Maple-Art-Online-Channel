@@ -1,6 +1,6 @@
 package client.inventory.item.templates
 
-import client.inventory.slots.ItemSlotBundle
+import client.inventory.item.slots.ItemSlotBundle
 import util.packet.PacketReader
 
 open class ItemBundleTemplate(id: Int, r: PacketReader) : ItemTemplate(id, r) {

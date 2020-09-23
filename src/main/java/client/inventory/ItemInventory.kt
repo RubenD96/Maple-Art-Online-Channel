@@ -1,6 +1,6 @@
 package client.inventory
 
-import client.inventory.slots.ItemSlot
+import client.inventory.item.slots.ItemSlot
 
 open class ItemInventory(var slotMax: Short) {
 

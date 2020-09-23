@@ -1,4 +1,4 @@
-package client.inventory.slots
+package client.inventory.item.slots
 
 class ItemSlotEquip : ItemSlot() {
     var ruc: Byte = 0

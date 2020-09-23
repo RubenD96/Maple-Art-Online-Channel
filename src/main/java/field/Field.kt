@@ -12,7 +12,6 @@ import field.obj.life.*
 import field.obj.portal.FieldPortal
 import field.obj.portal.PortalType
 import managers.MobManager
-import net.maple.packets.FieldPackets
 import net.maple.packets.FieldPackets.setField
 import net.maple.packets.PartyPackets.updateParty
 import scripting.map.FieldScriptManager.execute

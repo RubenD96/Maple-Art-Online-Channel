@@ -6,7 +6,7 @@ import util.packet.PacketWriter
 
 class ScreenFieldEffect(val path: String) : AbstractFieldEffect() {
 
-    override val type: FieldEffectType get() = FieldEffectType.SCREEN
+    override val type = FieldEffectType.SCREEN
 
     override fun encodeData(pw: PacketWriter) {
         pw.writeMapleString(path)

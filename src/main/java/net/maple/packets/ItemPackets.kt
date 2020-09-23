@@ -1,9 +1,9 @@
 package net.maple.packets
 
-import client.inventory.slots.ItemSlot
-import client.inventory.slots.ItemSlotBundle
-import client.inventory.slots.ItemSlotEquip
-import client.inventory.slots.ItemSlotPet
+import client.inventory.item.slots.ItemSlot
+import client.inventory.item.slots.ItemSlotBundle
+import client.inventory.item.slots.ItemSlotEquip
+import client.inventory.item.slots.ItemSlotPet
 import constants.ItemConstants.isRechargeableItem
 import util.packet.PacketWriter
 

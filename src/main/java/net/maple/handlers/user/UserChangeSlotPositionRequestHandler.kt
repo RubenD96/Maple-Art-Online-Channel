@@ -2,7 +2,7 @@ package net.maple.handlers.user
 
 import client.Client
 import client.inventory.ItemInventoryType
-import client.inventory.slots.ItemSlotBundle
+import client.inventory.item.slots.ItemSlotBundle
 import constants.ItemConstants.isTreatSingly
 import field.obj.drop.ItemDrop
 import net.database.ItemAPI.deleteItemByUUID
@@ -24,7 +24,7 @@ class UserChangeSlotPositionRequestHandler : PacketHandler {
 
         if (to.toInt() == 0) { // drop
             chr.modifyInventory({
-                val inventory = chr.inventories[type] ?: return@modifyInventory
+                val inventory = chr.getInventory(type)
                 var item = inventory.items[from] ?: return@modifyInventory
                 val uuid = item.uuid
 

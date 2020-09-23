@@ -1,4 +1,4 @@
-package client.inventory.slots
+package client.inventory.item.slots
 
 abstract class ItemSlot {
 

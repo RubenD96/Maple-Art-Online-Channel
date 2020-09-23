@@ -50,7 +50,7 @@ class UserCharacterInfoRequestHandler : PacketHandler {
             pw.writeShort(0)
 
             // chairs
-            val chairs = target.inventories[ItemInventoryType.INSTALL]!!
+            val chairs = target.getInventory(ItemInventoryType.INSTALL)
                     .items
                     .values.stream()
                     .filter { it.templateId / 10000 == 301 }

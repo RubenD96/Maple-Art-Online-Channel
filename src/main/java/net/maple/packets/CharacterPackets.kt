@@ -3,12 +3,11 @@ package net.maple.packets
 import client.Character
 import client.effects.EffectInterface
 import client.effects.FieldEffectInterface
-import client.inventory.ItemInventory
 import client.inventory.ItemInventoryType
 import client.inventory.ModifyInventoriesContext
 import client.inventory.operations.AbstractModifyInventoryOperation
 import client.inventory.operations.MoveInventoryOperation
-import client.inventory.slots.ItemSlot
+import client.inventory.item.slots.ItemSlot
 import client.messages.Message
 import client.messages.broadcast.BroadcastMessage
 import client.player.StatType
@@ -52,19 +51,18 @@ object CharacterPackets {
         pw.writeInt(this.meso)
 
         // inv slots
-        pw.write(this.inventories[ItemInventoryType.EQUIP]!!.slotMax.toInt()) // equips
-        pw.write(this.inventories[ItemInventoryType.CONSUME]!!.slotMax.toInt()) // consumes
-        pw.write(this.inventories[ItemInventoryType.INSTALL]!!.slotMax.toInt()) // install
-        pw.write(this.inventories[ItemInventoryType.ETC]!!.slotMax.toInt()) // etc
-        pw.write(this.inventories[ItemInventoryType.CASH]!!.slotMax.toInt()) // cash
+        pw.write(this.getInventory(ItemInventoryType.EQUIP).slotMax.toInt()) // equips
+        pw.write(this.getInventory(ItemInventoryType.CONSUME).slotMax.toInt()) // consumes
+        pw.write(this.getInventory(ItemInventoryType.INSTALL).slotMax.toInt()) // install
+        pw.write(this.getInventory(ItemInventoryType.ETC).slotMax.toInt()) // etc
+        pw.write(this.getInventory(ItemInventoryType.CASH).slotMax.toInt()) // cash
 
         // admin shop
         /*pw.writeInt(0);
         pw.writeInt(0);*/
 
         // equips
-        val inventories: Map<ItemInventoryType, ItemInventory> = this.inventories
-        val inventory = inventories[ItemInventoryType.EQUIP]!!.items
+        val inventory = getInventory(ItemInventoryType.EQUIP).items
         val equip = inventory.entries.stream()
                 .filter { it.key >= 0 }
                 .collect(Collectors.toMap({ it.key }, { it.value }))
@@ -92,10 +90,10 @@ object CharacterPackets {
 
         // other inv's
         ArrayList(listOf(
-                (inventories[ItemInventoryType.CONSUME] ?: error("")).items,
-                inventories[ItemInventoryType.INSTALL]!!.items,
-                inventories[ItemInventoryType.ETC]!!.items,
-                inventories[ItemInventoryType.CASH]!!.items
+                getInventory(ItemInventoryType.CONSUME).items,
+                getInventory(ItemInventoryType.INSTALL).items,
+                getInventory(ItemInventoryType.ETC).items,
+                getInventory(ItemInventoryType.CASH).items
         )).forEach {
             it.forEach { (slot: Short, item: ItemSlot) ->
                 pw.write(slot.toInt())
@@ -200,17 +198,13 @@ object CharacterPackets {
 
         encodeVisualEquips(pw)
 
-        for (pet in this.pets) {
-            if (pet != null) {
-                pw.writeInt(pet.item)
-            } else {
-                pw.writeInt(0)
-            }
+        this.pets.forEach {
+            pw.writeInt(it?.item ?: 0)
         }
     }
 
     private fun Character.encodeVisualEquips(pw: PacketWriter) {
-        val equips = this.inventories[ItemInventoryType.EQUIP]!!.items
+        val equips = this.getInventory(ItemInventoryType.EQUIP).items
 
         val base = equips.entries.stream()
                 .filter { it.key >= -100 && it.key < 0 }
@@ -286,7 +280,7 @@ object CharacterPackets {
     }
 
     fun Character.modifyInventory(consumer: Consumer<ModifyInventoriesContext>, enableActions: Boolean = false) {
-        val context = ModifyInventoriesContext(this.inventories)
+        val context = ModifyInventoriesContext(this.allInventories)
         consumer.accept(context)
         val pw = PacketWriter(32)
         pw.writeHeader(SendOpcode.INVENTORY_OPERATION)

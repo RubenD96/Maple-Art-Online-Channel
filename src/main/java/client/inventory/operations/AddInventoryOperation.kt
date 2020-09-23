@@ -2,7 +2,7 @@ package client.inventory.operations
 
 import client.inventory.ItemInventoryType
 import client.inventory.ModifyInventoryOperationType
-import client.inventory.slots.ItemSlot
+import client.inventory.item.slots.ItemSlot
 import net.maple.packets.ItemPackets.encode
 import util.packet.PacketWriter
 

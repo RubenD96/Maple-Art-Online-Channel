@@ -103,7 +103,7 @@ abstract class Reader {
     fun readNullTerminatedString(): String {
         val sb = StringBuilder()
         var c: Char
-        while (((read().toChar()).also{ c = it }).toInt() != 0){
+        while (((read().toChar()).also { c = it }).toInt() != 0) {
             sb.append(c)
         }
         return sb.toString()

@@ -75,7 +75,8 @@ class PartyRequestHandler : PacketHandler {
                 }
             }
         } else if (operation.toInt() == PartyOperationType.PARTYREQ_KICKPARTY.value) {
-            val unmutableParty = party ?: return c.write(getPartyMessage(PartyOperationType.PARTYRES_WITHDRAWPARTY_NOTJOINED))
+            val unmutableParty = party
+                    ?: return c.write(getPartyMessage(PartyOperationType.PARTYRES_WITHDRAWPARTY_NOTJOINED))
 
             if (unmutableParty.leaderId == chr.id) {
                 val toKick = unmutableParty.expel(reader.readInteger())

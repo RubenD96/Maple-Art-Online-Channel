@@ -5,11 +5,11 @@ import client.effects.EffectType
 import util.packet.PacketWriter
 import java.util.function.Consumer
 
-class SkillUseEffect(val skillId: Int, val skillLevel: Byte) : AbstractEffect() {
+class SkillUseEffect(val skillId: Int, private val skillLevel: Byte) : AbstractEffect() {
 
     var additional: Consumer<PacketWriter>? = null
 
-    override val type: EffectType get() = EffectType.SKILL_USE
+    override val type = EffectType.SKILL_USE
 
     override fun encodeData(pw: PacketWriter) {
         pw.writeInt(skillId)

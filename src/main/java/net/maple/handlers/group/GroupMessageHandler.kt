@@ -38,7 +38,7 @@ class GroupMessageHandler : PacketHandler {
                 party.sendMessage(multiChat(ChatGroupType.PARTY, chr.name, message), chr.id)
             }
             ChatGroupType.GUILD -> {
-                val guild =chr.guild ?: return
+                val guild = chr.guild ?: return
                 guild.broadcast(multiChat(ChatGroupType.GUILD, chr.name, message), chr)
             }
             else -> println("Unknown GroupMessageHandler type ($type) from ${chr.name}")

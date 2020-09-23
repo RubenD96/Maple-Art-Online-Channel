@@ -4,11 +4,9 @@ import client.Character
 import database.jooq.Tables
 import net.database.DatabaseCore.connection
 import net.server.Server
-import org.jooq.Record
 import world.guild.Guild
 import world.guild.GuildMark
 import world.guild.GuildMember
-import java.util.function.Consumer
 
 object GuildAPI {
 

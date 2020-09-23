@@ -4,15 +4,13 @@ import client.Character
 import client.Client
 import client.interaction.Interactable
 import client.inventory.ItemInventoryType
-import client.inventory.ModifyInventoriesContext
 import client.inventory.item.templates.ItemBundleTemplate
-import client.inventory.slots.ItemSlotBundle
+import client.inventory.item.slots.ItemSlotBundle
 import constants.ItemConstants
 import database.jooq.Tables.SHOPITEMS
 import managers.ItemManager
 import net.database.ShopAPI.getShopsItems
 import net.maple.SendOpcode
-import net.maple.packets.CharacterPackets
 import net.maple.packets.CharacterPackets.modifyInventory
 import util.packet.PacketWriter
 import kotlin.math.max
@@ -89,7 +87,7 @@ class NPCShop(val id: Int) : Interactable {
         if (shopItem.price > 0) {
             chr.gainMeso(-(shopItem.price * count))
         } else if (shopItem.tokenId > 0) {
-            chr.modifyInventory({ i: ModifyInventoriesContext -> i.remove(id, (-(shopItem.tokenPrice * count)).toShort()) })
+            chr.modifyInventory({ it.remove(id, (-(shopItem.tokenPrice * count)).toShort()) })
         }
 
         chr.modifyInventory({ it.add(item, count) })
@@ -98,7 +96,7 @@ class NPCShop(val id: Int) : Interactable {
 
     fun sell(chr: Character, pos: Short, itemId: Int, count: Short): ShopResult {
         val type = ItemInventoryType.values()[itemId / 1000000 - 1]
-        val inventory = chr.inventories[type] ?: return ShopResult.SELL_UNKNOWN
+        val inventory = chr.getInventory(type)
 
         if (!inventory.items.containsKey(pos)) return ShopResult.SELL_UNKNOWN // redundant statement?
 

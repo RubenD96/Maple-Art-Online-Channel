@@ -4,7 +4,6 @@ import client.Character
 import field.obj.AbstractFieldObject
 import field.obj.FieldObject
 import field.obj.FieldObjectType
-import net.maple.packets.FieldPackets
 import net.maple.packets.FieldPackets.enterField
 import net.maple.packets.FieldPackets.leaveField
 import util.packet.Packet

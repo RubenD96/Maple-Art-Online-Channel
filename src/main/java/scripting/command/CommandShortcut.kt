@@ -4,7 +4,7 @@ import client.Character
 import client.Client
 import client.inventory.ModifyInventoriesContext
 import client.inventory.item.templates.ItemTemplate
-import client.inventory.slots.ItemSlotBundle
+import client.inventory.item.slots.ItemSlotBundle
 import field.obj.drop.ItemDrop
 import field.obj.life.FieldMob
 import field.obj.life.FieldNPC
@@ -13,7 +13,6 @@ import managers.NPCManager
 import managers.NPCShopManager
 import net.database.ShopAPI
 import net.maple.handlers.user.UserChatHandler
-import net.maple.packets.CharacterPackets
 import net.maple.packets.CharacterPackets.modifyInventory
 import net.server.Server
 import scripting.AbstractPlayerInteraction
