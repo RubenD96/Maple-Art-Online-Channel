@@ -9,6 +9,7 @@ import constants.ServerConstants.COMMAND_LIST
 import net.maple.SendOpcode
 import net.maple.handlers.PacketHandler
 import net.maple.packets.CharacterPackets
+import net.maple.packets.CharacterPackets.message
 import scripting.command.CommandShortcut
 import util.packet.Packet
 import util.packet.PacketReader
@@ -45,7 +46,7 @@ class UserChatHandler : PacketHandler {
 
                 engine.eval(COMMAND_FILE_LIST[cmd[0].substring(1)])
 
-                if (c.isAdmin) c.write(CharacterPackets.message(NoticeWithoutPrefixMessage("Successfully executed command!")))
+                if (c.isAdmin) chr.message(NoticeWithoutPrefixMessage("Successfully executed command!"))
             } catch (se: ScriptException) {
                 se.printStackTrace()
             }

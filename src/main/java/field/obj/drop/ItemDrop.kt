@@ -5,6 +5,7 @@ import client.inventory.item.slots.ItemSlot
 import client.messages.ItemDropPickUpMessage
 import field.obj.FieldObject
 import net.maple.packets.CharacterPackets
+import net.maple.packets.CharacterPackets.message
 import net.maple.packets.CharacterPackets.modifyInventory
 
 class ItemDrop(owner: Int, source: FieldObject, private val item: ItemSlot, questId: Int) : AbstractFieldDrop(owner, source, questId) {
@@ -16,6 +17,6 @@ class ItemDrop(owner: Int, source: FieldObject, private val item: ItemSlot, ques
         leaveType = LeaveType.PICKUP
         field.leave(this, getLeaveFieldPacket(chr))
         chr.modifyInventory({ it.add(item) }, true)
-        chr.write(CharacterPackets.message(ItemDropPickUpMessage(item.templateId)))
+        chr.message(ItemDropPickUpMessage(item.templateId))
     }
 }

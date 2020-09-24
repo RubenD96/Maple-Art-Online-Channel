@@ -50,7 +50,6 @@ class Field(val id: Int) {
         }
     }
 
-    @JvmOverloads
     fun broadcast(packet: Packet, source: Character? = null) {
         getObjects(FieldObjectType.CHARACTER).stream()
                 .filter { it !== source }

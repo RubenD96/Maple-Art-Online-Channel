@@ -55,7 +55,7 @@ class FieldManager : AbstractManager() {
 
         if (containsFlag(flags, FieldFlag.FOOTHOLDS)) {
             val size = r.readShort()
-            for (i in 0 until size) {
+            repeat(size.toInt()) {
                 val fh = Foothold()
                 fh.decode(r)
                 field.footholds[fh.id] = fh
@@ -69,7 +69,7 @@ class FieldManager : AbstractManager() {
 
         if (containsFlag(flags, FieldFlag.PORTALS)) {
             val size = r.readShort()
-            for (i in 0 until size) {
+            repeat(size.toInt()) {
                 val portal = FieldPortal(field)
                 portal.generate(r)
                 field.portals[portal.id.toByte()] = portal
@@ -78,15 +78,15 @@ class FieldManager : AbstractManager() {
 
         if (containsFlag(flags, FieldFlag.AREAS)) {
             val size = r.readShort()
-            for (i in 0 until size) {
+            repeat(size.toInt()) {
                 r.readRectangle()
             }
         }
 
         if (containsFlag(flags, FieldFlag.LIFE)) {
             val size = r.readShort()
-            for (i in 0 until size) {
-                var life: AbstractFieldControlledLife
+            repeat(size.toInt()) {
+                val life: AbstractFieldControlledLife
                 val id = r.readInteger()
                 var time = r.readInteger()
                 val x = r.readInteger()
@@ -100,7 +100,7 @@ class FieldManager : AbstractManager() {
                 val type = r.readMapleString()
 
                 if (type == "m") {
-                    val template = MobManager.getMob(id) ?: continue // mob data doesn't exist
+                    val template = MobManager.getMob(id) ?: return@repeat // mob data doesn't exist
 
                     val mob = FieldMob(template, f == 1)
                     mob.hp = mob.template.maxHP
@@ -112,7 +112,7 @@ class FieldManager : AbstractManager() {
 
                     field.mobSpawnPoints.add(FieldMobSpawnPoint(id, Point(x, y), rx0, rx1, cy, time, fh.toShort()))
                 } else { // npc
-                    val template = NPCManager.getNPC(id) ?: continue
+                    val template = NPCManager.getNPC(id) ?: return@repeat
                     val npc = FieldNPC(template)
                     life = npc
                 }
@@ -131,7 +131,7 @@ class FieldManager : AbstractManager() {
 
         if (containsFlag(flags, FieldFlag.REACTOR)) {
             val size = r.readShort()
-            for (i in 0 until size) {
+            repeat(size.toInt()) {
                 val reactor = FieldReactor(r.readInteger())
                 reactor.decode(r)
                 reactor.field = field

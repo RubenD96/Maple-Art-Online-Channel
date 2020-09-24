@@ -15,13 +15,13 @@ abstract class Requirement {
         if (containsFlag(flags, QuestRequirementType.NPC)) npc = reader.readInteger()
         if (containsFlag(flags, QuestRequirementType.ITEM)) {
             val size = reader.readShort().toInt()
-            for (i in 0 until size) {
+            repeat(size) {
                 items[reader.readInteger()] = reader.readShort()
             }
         }
         if (containsFlag(flags, QuestRequirementType.QUEST)) {
             val size = reader.readShort().toInt()
-            for (i in 0 until size) {
+            repeat(size) {
                 quests[reader.readInteger()] = reader.readByte()
             }
         }

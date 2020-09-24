@@ -12,7 +12,7 @@ class EndingRequirement : Requirement() {
 
         if (containsFlag(flags, QuestRequirementType.MOB)) {
             val size = reader.readShort().toInt()
-            for (i in 0 until size) {
+            repeat(size) {
                 val b = reader.readInteger()
                 mobs[b] = reader.readShort()
             }

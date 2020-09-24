@@ -4,6 +4,7 @@ import client.Character
 import client.messages.MesoDropPickUpMessage
 import field.obj.FieldObject
 import net.maple.packets.CharacterPackets
+import net.maple.packets.CharacterPackets.message
 
 class MesoDrop(owner: Int, source: FieldObject, override val info: Int, questId: Int) : AbstractFieldDrop(owner, source, questId) {
 
@@ -13,6 +14,6 @@ class MesoDrop(owner: Int, source: FieldObject, override val info: Int, questId:
         leaveType = LeaveType.PICKUP
         field.leave(this, getLeaveFieldPacket(chr))
         chr.gainMeso(info)
-        chr.write(CharacterPackets.message(MesoDropPickUpMessage(info)))
+        chr.message(MesoDropPickUpMessage(info))
     }
 }

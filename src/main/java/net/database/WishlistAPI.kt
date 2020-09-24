@@ -1,12 +1,12 @@
 package net.database
 
 import client.Character
-import database.jooq.Tables
+import database.jooq.Tables.WISHLIST
 import net.database.DatabaseCore.connection
-import org.jooq.Record
 import java.util.*
 
 object WishlistAPI {
+
     fun load(chr: Character) {
         val list: List<Int> = getWishList(chr.id)
         for (i in 0..9) {
@@ -20,42 +20,41 @@ object WishlistAPI {
 
     fun save(chr: Character) {
         val old = getWishList(chr.id)
-        Arrays.stream(chr.wishlist).forEach { wish: Int ->
-            if (wish != 0) {
-                if (!old.contains(wish)) { // new wish
-                    add(chr.id, wish)
+
+        Arrays.stream(chr.wishlist).forEach {
+            if (it != 0) {
+                if (!old.contains(it)) { // new wish
+                    add(chr.id, it)
                 } else {
-                    old.remove(Integer.valueOf(wish))
+                    old.remove(Integer.valueOf(it))
                 }
             }
         }
 
         // old wishes that are not in current wishlist
-        old.forEach { wish: Int -> remove(chr.id, wish) }
+        old.forEach { remove(chr.id, it) }
     }
 
     private fun getWishList(cid: Int): MutableList<Int> {
-        val res = connection
-                .select().from(Tables.WISHLIST)
-                .where(Tables.WISHLIST.CID.eq(cid))
+        val res = connection.select().from(WISHLIST)
+                .where(WISHLIST.CID.eq(cid))
                 .fetch()
+
         val wishlist: MutableList<Int> = ArrayList()
-        res.forEach { rec: Record -> wishlist.add(rec.getValue(Tables.WISHLIST.SN)) }
+        res.forEach { wishlist.add(it.getValue(WISHLIST.SN)) }
         return wishlist
     }
 
     private fun add(cid: Int, sn: Int) {
-        connection
-                .insertInto(Tables.WISHLIST, Tables.WISHLIST.CID, Tables.WISHLIST.SN)
+        connection.insertInto(WISHLIST, WISHLIST.CID, WISHLIST.SN)
                 .values(cid, sn)
                 .execute()
     }
 
     private fun remove(cid: Int, sn: Int) {
-        connection
-                .deleteFrom(Tables.WISHLIST)
-                .where(Tables.WISHLIST.CID.eq(cid))
-                .and(Tables.WISHLIST.SN.eq(sn))
+        connection.deleteFrom(WISHLIST)
+                .where(WISHLIST.CID.eq(cid))
+                .and(WISHLIST.SN.eq(sn))
                 .execute()
     }
 }

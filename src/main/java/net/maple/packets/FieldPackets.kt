@@ -1,6 +1,8 @@
 package net.maple.packets
 
 import client.Character
+import client.effects.FieldEffectInterface
+import field.Field
 import field.obj.FieldObject
 import field.obj.drop.AbstractFieldDrop
 import field.obj.drop.EnterType
@@ -164,5 +166,14 @@ object FieldPackets {
         }
 
         return pw.createPacket()
+    }
+
+    fun Field.fieldEffect(effect: FieldEffectInterface) {
+        val pw = PacketWriter(12)
+
+        pw.writeHeader(SendOpcode.FIELD_EFFECT)
+        effect.encode(pw)
+
+        this.broadcast(pw.createPacket())
     }
 }

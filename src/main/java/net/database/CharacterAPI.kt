@@ -3,7 +3,7 @@ package net.database
 import client.Character
 import client.Client
 import client.player.key.KeyBinding
-import database.jooq.Tables
+import database.jooq.Tables.CHARACTERS
 import database.jooq.Tables.KEYBINDINGS
 import net.database.DatabaseCore.connection
 import org.jooq.Record
@@ -12,44 +12,42 @@ object CharacterAPI {
 
     fun getOfflineName(cid: Int): String {
         val rec: Record? = connection
-                .select(Tables.CHARACTERS.NAME).from(Tables.CHARACTERS)
-                .where(Tables.CHARACTERS.ID.eq(cid)).fetchOne()
-        return rec?.let { rec.getValue(Tables.CHARACTERS.NAME) } ?: ""
+                .select(CHARACTERS.NAME).from(CHARACTERS)
+                .where(CHARACTERS.ID.eq(cid)).fetchOne()
+
+        return rec?.getValue(CHARACTERS.NAME) ?: ""
     }
 
-    fun getOfflineId(name: String?): Int {
+    fun getOfflineId(name: String): Int {
         val rec: Record? = connection
-                .select(Tables.CHARACTERS.ID).from(Tables.CHARACTERS)
-                .where(Tables.CHARACTERS.NAME.eq(name)).fetchOne()
-        return if (rec != null) {
-            rec.getValue(Tables.CHARACTERS.ID)
-        } else -1
+                .select(CHARACTERS.ID).from(CHARACTERS)
+                .where(CHARACTERS.NAME.eq(name)).fetchOne()
+
+        return rec?.getValue(CHARACTERS.ID) ?: -1
     }
 
     fun getOfflineCharacter(cid: Int): Record {
-        return connection
-                .select().from(Tables.CHARACTERS)
-                .where(Tables.CHARACTERS.ID.eq(cid))
+        return connection.select().from(CHARACTERS)
+                .where(CHARACTERS.ID.eq(cid))
                 .fetchOne()
     }
 
     fun resetParties() {
-        connection.update(Tables.CHARACTERS)
-                .set(Tables.CHARACTERS.PARTY, 0)
+        connection.update(CHARACTERS)
+                .set(CHARACTERS.PARTY, 0)
                 .execute()
     }
 
     fun getOldPartyId(cid: Int): Int {
-        return connection
-                .select(Tables.CHARACTERS.PARTY).from(Tables.CHARACTERS)
-                .where(Tables.CHARACTERS.ID.eq(cid)).fetchOne()
-                .getValue(Tables.CHARACTERS.PARTY)
+        return connection.select(CHARACTERS.PARTY).from(CHARACTERS)
+                .where(CHARACTERS.ID.eq(cid)).fetchOne()
+                .getValue(CHARACTERS.PARTY)
     }
 
     fun getNewCharacter(c: Client, id: Int): Character {
         println("start loading $id")
-        val record = connection.select().from(Tables.CHARACTERS).where(Tables.CHARACTERS.ID.eq(id)).fetchOne()
-        val name = record.getValue(Tables.CHARACTERS.NAME)
+        val record = connection.select().from(CHARACTERS).where(CHARACTERS.ID.eq(id)).fetchOne()
+        val name = record.getValue(CHARACTERS.NAME)
         val character = Character(c, name, record)
         println("finished loading $name")
         return character
@@ -64,29 +62,29 @@ object CharacterAPI {
      */
     fun saveCharacterStats(chr: Character) {
         println("start saving " + chr.name)
-        connection.update(Tables.CHARACTERS)
-                .set(Tables.CHARACTERS.LEVEL, chr.level)
-                .set(Tables.CHARACTERS.FACE, chr.face)
-                .set(Tables.CHARACTERS.HAIR, chr.hair)
-                .set(Tables.CHARACTERS.SKIN, chr.skinColor)
-                .set(Tables.CHARACTERS.JOB, chr.job.id)
-                .set(Tables.CHARACTERS.AP, chr.ap)
-                .set(Tables.CHARACTERS.SP, chr.sp)
-                .set(Tables.CHARACTERS.FAME, chr.fame)
-                .set(Tables.CHARACTERS.MAP, chr.field.forcedReturnMap)
-                .set(Tables.CHARACTERS.SPAWNPOINT, chr.field.getClosestSpawnpoint(chr.position).id)
-                .set(Tables.CHARACTERS.STR, chr.strength)
-                .set(Tables.CHARACTERS.DEX, chr.dexterity)
-                .set(Tables.CHARACTERS.INT, chr.intelligence)
-                .set(Tables.CHARACTERS.LUK, chr.luck)
-                .set(Tables.CHARACTERS.HP, chr.health)
-                .set(Tables.CHARACTERS.MAX_HP, chr.maxHealth)
-                .set(Tables.CHARACTERS.MP, chr.mana)
-                .set(Tables.CHARACTERS.MAX_MP, chr.maxMana)
-                .set(Tables.CHARACTERS.EXP, chr.exp)
-                .set(Tables.CHARACTERS.MESO, chr.meso)
-                .set(Tables.CHARACTERS.PARTY, chr.party?.id ?: 0)
-                .where(Tables.CHARACTERS.ID.eq(chr.id))
+        connection.update(CHARACTERS)
+                .set(CHARACTERS.LEVEL, chr.level)
+                .set(CHARACTERS.FACE, chr.face)
+                .set(CHARACTERS.HAIR, chr.hair)
+                .set(CHARACTERS.SKIN, chr.skinColor)
+                .set(CHARACTERS.JOB, chr.job.id)
+                .set(CHARACTERS.AP, chr.ap)
+                .set(CHARACTERS.SP, chr.sp)
+                .set(CHARACTERS.FAME, chr.fame)
+                .set(CHARACTERS.MAP, chr.field.forcedReturnMap)
+                .set(CHARACTERS.SPAWNPOINT, chr.field.getClosestSpawnpoint(chr.position).id)
+                .set(CHARACTERS.STR, chr.strength)
+                .set(CHARACTERS.DEX, chr.dexterity)
+                .set(CHARACTERS.INT, chr.intelligence)
+                .set(CHARACTERS.LUK, chr.luck)
+                .set(CHARACTERS.HP, chr.health)
+                .set(CHARACTERS.MAX_HP, chr.maxHealth)
+                .set(CHARACTERS.MP, chr.mana)
+                .set(CHARACTERS.MAX_MP, chr.maxMana)
+                .set(CHARACTERS.EXP, chr.exp)
+                .set(CHARACTERS.MESO, chr.meso)
+                .set(CHARACTERS.PARTY, chr.party?.id ?: 0)
+                .where(CHARACTERS.ID.eq(chr.id))
                 .execute()
         println("finished saving " + chr.name)
     }
@@ -102,9 +100,11 @@ object CharacterAPI {
         val res = connection.select().from(KEYBINDINGS)
                 .where(KEYBINDINGS.CID.eq(cid))
                 .fetch()
+
         res.forEach {
             keyBindings[it.getValue(KEYBINDINGS.KEY)] = KeyBinding(it.getValue(KEYBINDINGS.TYPE), it.getValue(KEYBINDINGS.ACTION))
         }
+
         return keyBindings
     }
 
@@ -128,6 +128,6 @@ object CharacterAPI {
     }
 
     fun getCharacterInfo(id: Int): Record {
-        return connection.select().from(Tables.CHARACTERS).where(Tables.CHARACTERS.ID.eq(id)).fetchOne()
+        return connection.select().from(CHARACTERS).where(CHARACTERS.ID.eq(id)).fetchOne()
     }
 }

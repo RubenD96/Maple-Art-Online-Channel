@@ -35,6 +35,7 @@ import net.database.QuestAPI.saveInfo
 import net.database.TownsAPI.add
 import net.database.WishlistAPI.save
 import net.maple.packets.CharacterPackets
+import net.maple.packets.CharacterPackets.message
 import net.maple.packets.CharacterPackets.statUpdate
 import net.maple.packets.FieldPackets.enterField
 import net.maple.packets.FieldPackets.leaveField
@@ -163,7 +164,7 @@ class Character(val client: Client, var name: String, val record: Record) : Abst
         this.meso += meso
         updateSingleStat(StatType.MESO)
         if (effect) {
-            write(CharacterPackets.message(IncMesoMessage(meso)))
+            message(IncMesoMessage(meso))
         }
     }
 

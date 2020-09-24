@@ -14,6 +14,7 @@ import client.player.StatType
 import client.player.quest.Quest
 import client.player.quest.QuestState
 import net.maple.SendOpcode
+import net.maple.packets.CharacterPackets.message
 import net.maple.packets.ItemPackets.encode
 import util.packet.Packet
 import util.packet.PacketWriter
@@ -347,49 +348,40 @@ object CharacterPackets {
         this.field.broadcast(pw.createPacket(), this)
     }
 
-    fun message(message: Message): Packet {
+    fun Character.message(message: Message) {
         val pw = PacketWriter(32)
 
         pw.writeHeader(SendOpcode.MESSAGE)
         message.encode(pw)
 
-        return pw.createPacket()
+        this.write(pw.createPacket())
     }
 
-    fun message(message: BroadcastMessage): Packet {
+    fun Character.message(message: BroadcastMessage) {
         val pw = PacketWriter(32)
 
         pw.writeHeader(SendOpcode.BROADCAST_MSG)
         message.encode(pw)
 
-        return pw.createPacket()
+        this.write(pw.createPacket())
     }
 
-    fun localEffect(effect: EffectInterface): Packet {
+    fun Character.localEffect(effect: EffectInterface) {
         val pw = PacketWriter(12)
 
         pw.writeHeader(SendOpcode.USER_EFFECT_LOCAL)
         effect.encode(pw)
 
-        return pw.createPacket()
+        this.write(pw.createPacket())
     }
 
-    fun remoteEffect(chr: Character, effect: EffectInterface): Packet {
+    fun Character.remoteEffect(chr: Character, effect: EffectInterface) {
         val pw = PacketWriter(12)
 
         pw.writeHeader(SendOpcode.USER_EFFECT_LOCAL)
         pw.writeInt(chr.id)
         effect.encode(pw)
 
-        return pw.createPacket()
-    }
-
-    fun fieldEffect(effect: FieldEffectInterface): Packet {
-        val pw = PacketWriter(12)
-
-        pw.writeHeader(SendOpcode.FIELD_EFFECT)
-        effect.encode(pw)
-
-        return pw.createPacket()
+        this.write(pw.createPacket())
     }
 }

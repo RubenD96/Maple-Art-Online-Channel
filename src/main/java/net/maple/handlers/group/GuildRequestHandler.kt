@@ -9,6 +9,7 @@ import net.database.GuildAPI.updateInfo
 import net.database.GuildAPI.updateMemberGrade
 import net.maple.handlers.PacketHandler
 import net.maple.packets.CharacterPackets
+import net.maple.packets.CharacterPackets.message
 import net.maple.packets.GuildPackets
 import net.maple.packets.GuildPackets.GuildReq
 import net.maple.packets.GuildPackets.GuildRes
@@ -48,7 +49,7 @@ class GuildRequestHandler : PacketHandler {
                 } ?: run {
                     chr.guildInvitesSent.add(name)
                     guild.sendInvite(invited, chr)
-                    c.write(CharacterPackets.message(AlertMessage("Invited $name to the guild.")))
+                    chr.message(AlertMessage("Invited $name to the guild."))
                 }
             }
             GuildReq.JOIN_GUILD -> {
@@ -98,9 +99,9 @@ class GuildRequestHandler : PacketHandler {
                     }
 
                     if (req == GuildReq.KICK_GUILD) {
-                        member.character?.write(CharacterPackets.message(EventMessage("You've been expelled from the guild.")))
+                        member.character?.message(EventMessage("You've been expelled from the guild."))
                     } else {
-                        member.character?.write(CharacterPackets.message(EventMessage("You've left the guild.")))
+                        member.character?.message(EventMessage("You've left the guild."))
                     }
                     member.character?.guild = null
                     guild.members.remove(cid)

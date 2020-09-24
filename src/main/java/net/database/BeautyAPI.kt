@@ -2,26 +2,25 @@ package net.database
 
 import client.player.Beauty
 import database.jooq.Tables
+import database.jooq.Tables.HAIRS
 import managers.BeautyManager
 import net.database.DatabaseCore.connection
-import org.jooq.Record
-import java.util.function.Consumer
 
 object BeautyAPI {
 
     fun loadHairs() {
-        connection.select().from(Tables.HAIRS)
-                .fetch()
-                .forEach(Consumer { hair: Record ->
-                    val id = hair.getValue(Tables.HAIRS.ID)
-                    BeautyManager.hairs[id] = Beauty(id, hair.getValue(Tables.HAIRS.GENDER).toInt(), hair.getValue(Tables.HAIRS.ENABLED) == 1.toByte())
-                })
+        connection.select().from(HAIRS).fetch()
+                .forEach {
+                    val id = it.getValue(HAIRS.ID)
+                    BeautyManager.hairs[id] = Beauty(id, it.getValue(HAIRS.GENDER).toInt(), it.getValue(HAIRS.ENABLED) == 1.toByte())
+                }
     }
 
     fun updateHair(id: Int) {
-        connection.update(Tables.HAIRS)
-                .set(Tables.HAIRS.ENABLED, (if (BeautyManager.hairs[id]!!.isEnabled) 1 else 0).toByte())
-                .where(Tables.HAIRS.ID.eq(id))
+        val hair = BeautyManager.hairs[id] ?: return
+        connection.update(HAIRS)
+                .set(HAIRS.ENABLED, (if (hair.isEnabled) 1 else 0).toByte())
+                .where(HAIRS.ID.eq(id))
                 .execute()
     }
 }

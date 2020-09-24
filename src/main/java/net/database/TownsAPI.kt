@@ -1,23 +1,20 @@
 package net.database
 
 import client.Character
-import database.jooq.Tables
+import database.jooq.Tables.UNLOCKEDTOWNS
 import net.database.DatabaseCore.connection
-import org.jooq.Record1
 
 object TownsAPI {
 
     fun load(chr: Character) {
-        connection
-                .select(Tables.UNLOCKEDTOWNS.TOWN).from(Tables.UNLOCKEDTOWNS)
-                .where(Tables.UNLOCKEDTOWNS.CID.eq(chr.id))
+        connection.select(UNLOCKEDTOWNS.TOWN).from(UNLOCKEDTOWNS)
+                .where(UNLOCKEDTOWNS.CID.eq(chr.id))
                 .fetch()
-                .forEach { rec: Record1<Int> -> chr.towns.add(rec.getValue(Tables.UNLOCKEDTOWNS.TOWN)) }
+                .forEach { chr.towns.add(it.getValue(UNLOCKEDTOWNS.TOWN)) }
     }
 
     fun add(chr: Character, town: Int) {
-        connection
-                .insertInto(Tables.UNLOCKEDTOWNS, Tables.UNLOCKEDTOWNS.CID, Tables.UNLOCKEDTOWNS.TOWN)
+        connection.insertInto(UNLOCKEDTOWNS, UNLOCKEDTOWNS.CID, UNLOCKEDTOWNS.TOWN)
                 .values(chr.id, town)
                 .execute()
     }

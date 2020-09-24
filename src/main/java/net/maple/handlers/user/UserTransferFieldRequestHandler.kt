@@ -4,6 +4,7 @@ import client.Client
 import client.messages.broadcast.types.AlertMessage
 import net.maple.handlers.PacketHandler
 import net.maple.packets.CharacterPackets
+import net.maple.packets.CharacterPackets.message
 import util.packet.PacketReader
 
 class UserTransferFieldRequestHandler : PacketHandler {
@@ -32,7 +33,7 @@ class UserTransferFieldRequestHandler : PacketHandler {
                 val portalName = reader.readMapleString()
                 val portal = chr.field.getPortalByName(portalName) ?: return run {
                     chr.enableActions()
-                    chr.write(CharacterPackets.message(AlertMessage("There is a problem with the portal!\r\nName: $portalName")))
+                    chr.message(AlertMessage("There is a problem with the portal!\r\nName: $portalName"))
                 }
 
                 portal.enter(chr)

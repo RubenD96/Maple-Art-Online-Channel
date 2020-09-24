@@ -15,16 +15,17 @@ abstract class AbstractFieldControlledLife : AbstractFieldLife(), FieldControlle
     override var controller: Character? = null
         set(controller) {
             if (this.controller == null || this.controller != controller) {
-                if (controller != null) {
-                    controller.controlledObjects.remove(this)
-                    if (controller.field === this.field) {
-                        controller.write(getChangeControllerPacket(false))
+                controller?.let {
+                    it.controlledObjects.remove(this)
+                    if (it.field === this.field) {
+                        it.write(getChangeControllerPacket(false))
                     }
                 }
-                field = controller
-                if (this.controller != null) {
-                    this.controller!!.controlledObjects.add(this)
-                    this.controller!!.write(getChangeControllerPacket(true))
+
+                field = controller?.let {
+                    it.controlledObjects.add(this)
+                    it.write(getChangeControllerPacket(true))
+                    it
                 }
             }
         }

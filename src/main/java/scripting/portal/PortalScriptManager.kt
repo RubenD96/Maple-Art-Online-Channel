@@ -4,6 +4,7 @@ import client.Client
 import client.messages.broadcast.types.AlertMessage
 import field.obj.portal.FieldPortal
 import net.maple.packets.CharacterPackets
+import net.maple.packets.CharacterPackets.message
 import scripting.AbstractScriptManager
 
 object PortalScriptManager : AbstractScriptManager() {
@@ -14,7 +15,7 @@ object PortalScriptManager : AbstractScriptManager() {
             val iv = getInvocable("portal/$script.js", c)
 
             if (iv == null) {
-                c.write(CharacterPackets.message(AlertMessage("Portal script $script does not exist")))
+                c.character.message(AlertMessage("Portal script $script does not exist"))
                 println("Portal " + script + " is uncoded. (" + portal.id + ")")
                 return
             }

@@ -18,7 +18,10 @@ import field.obj.life.FieldMobTemplate
 import managers.ItemManager
 import managers.MobManager
 import net.maple.packets.CharacterPackets
+import net.maple.packets.CharacterPackets.localEffect
+import net.maple.packets.CharacterPackets.message
 import net.maple.packets.CharacterPackets.modifyInventory
+import net.maple.packets.FieldPackets.fieldEffect
 import net.maple.packets.GuildPackets
 import net.maple.packets.GuildPackets.getLoadGuildPacket
 import org.graalvm.collections.Pair
@@ -34,7 +37,7 @@ abstract class AbstractPlayerInteraction(val c: Client) {
 
     fun gainItem(id: Int, quantity: Int) {
         gainItemInternal(id, quantity)
-        c.write(CharacterPackets.localEffect(QuestEffect(id, quantity)))
+        player.localEffect(QuestEffect(id, quantity))
     }
 
     fun massGainItem(items: Array<IntArray>) {
@@ -43,7 +46,7 @@ abstract class AbstractPlayerInteraction(val c: Client) {
             gainItemInternal(item[0], item[1])
             entries.add(Pair.create(item[0], item[1]))
         }
-        c.write(CharacterPackets.localEffect(QuestEffect(entries)))
+        player.localEffect(QuestEffect(entries))
     }
 
     private fun gainItemInternal(id: Int, quantity: Int) {
@@ -70,7 +73,7 @@ abstract class AbstractPlayerInteraction(val c: Client) {
         val msg = IncEXPMessage()
         msg.exp = exp
         msg.onQuest = true
-        player.write(CharacterPackets.message(msg))
+        player.message(msg)
     }
 
     fun warp(id: Int, portal: String) {
@@ -84,7 +87,7 @@ abstract class AbstractPlayerInteraction(val c: Client) {
     val mapId: Int get() = player.fieldId
 
     fun sendBlue(message: String) {
-        player.write(CharacterPackets.message(NoticeWithoutPrefixMessage(message)))
+        player.message(NoticeWithoutPrefixMessage(message))
     }
 
     fun setQuestProgress(qid: Int, mob: Int, progress: String) {
@@ -137,7 +140,7 @@ abstract class AbstractPlayerInteraction(val c: Client) {
     }
 
     fun tremble(heavy: Boolean, delay: Int) {
-        player.field.broadcast(CharacterPackets.fieldEffect(TrembleFieldEffect(heavy, delay)))
+        player.field.fieldEffect(TrembleFieldEffect(heavy, delay))
     }
 
     @JvmOverloads
@@ -156,7 +159,7 @@ abstract class AbstractPlayerInteraction(val c: Client) {
     }
 
     fun alert(msg: String) {
-        c.write(CharacterPackets.message(AlertMessage(msg)))
+        player.message(AlertMessage(msg))
     }
 
     fun openStorage(npcId: Int) {

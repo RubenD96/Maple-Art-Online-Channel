@@ -15,7 +15,7 @@ class StartingRequirement : Requirement() {
 
         if (containsFlag(flags, QuestRequirementType.JOB)) {
             val size = reader.readShort().toInt()
-            for (i in 0 until size) {
+            repeat(size) {
                 jobs.add(reader.readShort())
             }
         }

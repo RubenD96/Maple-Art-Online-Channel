@@ -3,7 +3,7 @@ package field.obj.portal
 import client.Character
 import client.messages.broadcast.types.AlertMessage
 import field.Field
-import net.maple.packets.CharacterPackets
+import net.maple.packets.CharacterPackets.message
 import scripting.portal.PortalScriptManager
 
 class FieldPortal(val field: Field) : AbstractFieldPortal(), Portal {
@@ -38,11 +38,9 @@ class FieldPortal(val field: Field) : AbstractFieldPortal(), Portal {
 
     private fun error(chr: Character) {
         chr.enableActions()
-        chr.write(CharacterPackets.message(
-                AlertMessage("There is a problem with the portal!" +
-                        "\r\nID: " + id +
-                        "\r\nTargetname: " + targetName))
-        )
+        chr.message(AlertMessage("There is a problem with the portal!" +
+                "\r\nID: " + id +
+                "\r\nTargetname: " + targetName))
         System.err.println(this)
     }
 }

@@ -19,27 +19,35 @@ class FriendList(private val owner: Character) {
     val friends: MutableMap<Int, Friend> = LinkedHashMap()
     val pending: Queue<Int> = LinkedBlockingQueue()
 
-    fun addFriend(friend: Character, group: String, online: Boolean) {
-        addFriend(friend.id, friend.getChannel().channelId, friend.name, group, online)
+    fun addFriend(friend: Character, group: String, online: Boolean): Friend {
+        return addFriend(friend.id, friend.getChannel().channelId, friend.name, group, online)
     }
 
-    fun addFriend(id: Int, name: String, group: String) {
-        addFriend(id, -1, name, group, false)
+    fun addFriend(id: Int, name: String, group: String): Friend {
+        return addFriend(id, -1, name, group, false)
     }
 
-    fun addFriend(id: Int, channel: Int, name: String, group: String, online: Boolean) {
-        friends[id] = Friend(id, channel, name, group, online)
+    fun addFriend(id: Int, channel: Int, name: String, group: String, online: Boolean): Friend {
+        synchronized(friends) {
+            val friend = Friend(id, channel, name, group, online)
+            friends[id] = friend
+            return friend
+        }
     }
 
     fun removeFriend(id: Int) {
-        friends.remove(id)
+        synchronized(friends) {
+            friends.remove(id)
+        }
     }
 
     fun sendMessage(packet: Packet) {
-        friends.keys.forEach {
-            getCharacter(it)?.let { chr ->
-                chr.friendList.friends[owner.id]?.run {
-                    chr.write(packet.clone())
+        synchronized(friends) {
+            friends.keys.forEach {
+                getCharacter(it)?.let { chr ->
+                    chr.friendList.friends[owner.id]?.run {
+                        chr.write(packet.clone())
+                    }
                 }
             }
         }
@@ -50,15 +58,16 @@ class FriendList(private val owner: Character) {
             val pw = PacketWriter(8)
             pw.writeHeader(SendOpcode.FRIEND_RESULT)
             pw.write(FriendOperation.FRIEND_RES_LOAD_FRIEND_DONE.value)
-            pw.write(friends.size)
 
-            for (f in friends.values) {
-                val visible = f.isOnline() && getCharacter(f.characterId)!!.friendList.friends.containsKey(owner.id)
-                encodeGWFriend(pw, f.group, f.characterId, f.name, if (visible) 0 else 2, f.channel)
-            }
+            synchronized(friends) {
+                pw.write(friends.size)
 
-            for (i in 0 until friends.size) {
-                pw.writeInt(0)
+                for (f in friends.values) {
+                    val visible = f.isOnline() && getCharacter(f.characterId)!!.friendList.friends.containsKey(owner.id)
+                    encodeGWFriend(pw, f.group, f.characterId, f.name, if (visible) 0 else 2, f.channel)
+                }
+
+                repeat(friends.count()) { pw.writeInt(0) }
             }
 
             return pw.createPacket()
@@ -93,14 +102,16 @@ class FriendList(private val owner: Character) {
             updateFriendList()
             val friendFriendList = friend.friendList // lul
 
-            if (!friendFriendList.friends.containsKey(owner.id)) {
-                if (friendFriendList.pending.isEmpty()) {
-                    friend.write(getSendFriendRequestPacket(group))
+            synchronized(pending) {
+                if (!friendFriendList.friends.containsKey(owner.id)) {
+                    if (friendFriendList.pending.isEmpty()) {
+                        friend.write(getSendFriendRequestPacket(group))
+                    } else {
+                        friendFriendList.pending.add(owner.id)
+                    }
                 } else {
-                    friendFriendList.pending.add(owner.id)
+                    friend.friendList.updateFriendList()
                 }
-            } else {
-                friend.friendList.updateFriendList()
             }
         } else {
             val id = getOfflineId(name)
@@ -161,12 +172,14 @@ class FriendList(private val owner: Character) {
         if (!owner.client.isCc) {
             val channel = if (owner.client.isDisconnecting) -1 else owner.getChannel().channelId
 
-            friends.keys.forEach { id ->
-                getCharacter(id)?.let { chr ->
-                    chr.friendList.friends[owner.id]?.let {
-                        it.channel = channel
-                        chr.write(getFriendChannelChangePacket(owner.id, channel))
-                        chr.friendList.updateFriendList()
+            synchronized(friends) {
+                friends.keys.forEach { id ->
+                    getCharacter(id)?.let { chr ->
+                        chr.friendList.friends[owner.id]?.let {
+                            it.channel = channel
+                            chr.write(getFriendChannelChangePacket(owner.id, channel))
+                            chr.friendList.updateFriendList()
+                        }
                     }
                 }
             }
@@ -174,8 +187,10 @@ class FriendList(private val owner: Character) {
     }
 
     fun sendPendingRequest() {
-        pending.poll()?.let {
-            owner.write(getSendFriendRequestPacket(it))
+        synchronized(pending) {
+            pending.poll()?.let {
+                owner.write(getSendFriendRequestPacket(it))
+            }
         }
     }
 

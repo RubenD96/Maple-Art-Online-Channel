@@ -13,7 +13,7 @@ import field.obj.drop.MesoDrop
 import managers.ItemManager
 import net.database.DropAPI.getMobDrops
 import net.maple.SendOpcode
-import net.maple.packets.CharacterPackets
+import net.maple.packets.CharacterPackets.message
 import util.packet.Packet
 import util.packet.PacketWriter
 import java.awt.Point
@@ -49,17 +49,21 @@ class FieldMob(val template: FieldMobTemplate, left: Boolean) : AbstractFieldCon
     fun kill(chr: Character) {
         field.leave(this, leaveFieldPacket)
         chr.gainExp(template.exp) // todo share
+
         val msg = IncEXPMessage()
         msg.isLastHit = true
         msg.exp = template.exp
-        chr.write(CharacterPackets.message(msg))
+        chr.message(msg)
+
         if (chr.registeredQuestMobs.contains(template.id)) {
             chr.quests.values.stream()
                     .filter { it.state === QuestState.PERFORM }
                     .filter { it.mobs.containsKey(template.id) }
                     .forEach { it.progress(template.id) }
         }
+
         field.queueRespawn(template.id, time, System.currentTimeMillis() + time * 1000)
+
         drop(chr)
     }
 

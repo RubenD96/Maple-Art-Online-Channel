@@ -1,7 +1,7 @@
 package net.database
 
 import client.Character
-import database.jooq.Tables
+import database.jooq.Tables.*
 import net.database.DatabaseCore.connection
 import net.server.Server
 import world.guild.Guild
@@ -18,9 +18,9 @@ object GuildAPI {
      * @return Guild id
      */
     fun create(guild: Guild, leader: Character): Int {
-        val id = connection.insertInto(Tables.GUILDS, Tables.GUILDS.NAME, Tables.GUILDS.LEADER)
+        val id = connection.insertInto(GUILDS, GUILDS.NAME, GUILDS.LEADER)
                 .values(guild.name, leader.id)
-                .returningResult(Tables.GUILDS.ID)
+                .returningResult(GUILDS.ID)
                 .fetchOne().value1()
         addMember(guild, leader, true)
         return id
@@ -34,7 +34,7 @@ object GuildAPI {
      * @param leader Whether this member is the leader (true for guild creation)
      */
     fun addMember(guild: Guild, member: Character, leader: Boolean) {
-        connection.insertInto(Tables.GUILDMEMBERS, Tables.GUILDMEMBERS.GID, Tables.GUILDMEMBERS.CID, Tables.GUILDMEMBERS.GRADE)
+        connection.insertInto(GUILDMEMBERS, GUILDMEMBERS.GID, GUILDMEMBERS.CID, GUILDMEMBERS.GRADE)
                 .values(guild.id, member.id, (if (leader) 1 else 5).toByte())
                 .execute()
     }
@@ -46,9 +46,9 @@ object GuildAPI {
      * @param cid   Character id
      */
     fun expel(guild: Guild, cid: Int) {
-        connection.deleteFrom(Tables.GUILDMEMBERS)
-                .where(Tables.GUILDMEMBERS.GID.eq(guild.id))
-                .and(Tables.GUILDMEMBERS.CID.eq(cid))
+        connection.deleteFrom(GUILDMEMBERS)
+                .where(GUILDMEMBERS.GID.eq(guild.id))
+                .and(GUILDMEMBERS.CID.eq(cid))
                 .execute()
     }
 
@@ -62,25 +62,26 @@ object GuildAPI {
     fun load(id: Int): Guild? {
         if (Server.guilds.containsKey(id)) return Server.guilds[id]
 
-        val rec = connection.select().from(Tables.GUILDS).where(Tables.GUILDS.ID.eq(id)).fetchOne() ?: return null
+        val rec = connection.select().from(GUILDS).where(GUILDS.ID.eq(id)).fetchOne() ?: return null
 
         val guild = Guild(id)
-        guild.name = rec.getValue(Tables.GUILDS.NAME)
-        guild.notice = rec.getValue(Tables.GUILDS.NOTICE)
-        guild.maxSize = rec.getValue(Tables.GUILDS.SIZE)
-        guild.ranks[0] = rec.getValue(Tables.GUILDS.RANK1)
-        guild.ranks[1] = rec.getValue(Tables.GUILDS.RANK2)
-        guild.ranks[2] = rec.getValue(Tables.GUILDS.RANK3)
-        guild.ranks[3] = rec.getValue(Tables.GUILDS.RANK4)
-        guild.ranks[4] = rec.getValue(Tables.GUILDS.RANK5)
-        guild.leader = rec.getValue(Tables.GUILDS.LEADER)
+        guild.name = rec.getValue(GUILDS.NAME)
+        guild.notice = rec.getValue(GUILDS.NOTICE)
+        guild.maxSize = rec.getValue(GUILDS.SIZE)
+        guild.ranks[0] = rec.getValue(GUILDS.RANK1)
+        guild.ranks[1] = rec.getValue(GUILDS.RANK2)
+        guild.ranks[2] = rec.getValue(GUILDS.RANK3)
+        guild.ranks[3] = rec.getValue(GUILDS.RANK4)
+        guild.ranks[4] = rec.getValue(GUILDS.RANK5)
+        guild.leader = rec.getValue(GUILDS.LEADER)
 
-        val res = connection.select().from(Tables.GUILDMEMBERS).where(Tables.GUILDMEMBERS.GID.eq(id)).fetch()
-        res.forEach { guild.members[it.getValue(Tables.GUILDMEMBERS.CID)] = GuildMember(it) }
+        val res = connection.select().from(GUILDMEMBERS).where(GUILDMEMBERS.GID.eq(id)).fetch()
+        res.forEach {
+            guild.members[it.getValue(GUILDMEMBERS.CID)] = GuildMember(it)
+        }
 
-        val mark = connection.select().from(Tables.GUILDMARK).where(Tables.GUILDMARK.GID.eq(id)).fetchOne()
-        if (mark != null) {
-            guild.mark = GuildMark(mark)
+        connection.select().from(GUILDMARK).where(GUILDMARK.GID.eq(id)).fetchOne()?.let {
+            guild.mark = GuildMark(it)
         }
 
         Server.guilds[id] = guild
@@ -94,8 +95,8 @@ object GuildAPI {
      * @param guild The guild to remove
      */
     fun disband(guild: Guild) {
-        connection.deleteFrom(Tables.GUILDS)
-                .where(Tables.GUILDS.ID.eq(guild.id))
+        connection.deleteFrom(GUILDS)
+                .where(GUILDS.ID.eq(guild.id))
                 .execute()
     }
 
@@ -105,21 +106,21 @@ object GuildAPI {
      * @param guild Guild to update
      */
     fun updateInfo(guild: Guild) {
-        connection.update(Tables.GUILDS)
-                .set(Tables.GUILDS.NOTICE, guild.notice)
-                .set(Tables.GUILDS.RANK1, guild.ranks[0])
-                .set(Tables.GUILDS.RANK2, guild.ranks[1])
-                .set(Tables.GUILDS.RANK3, guild.ranks[2])
-                .set(Tables.GUILDS.RANK4, guild.ranks[3])
-                .set(Tables.GUILDS.RANK5, guild.ranks[4])
-                .set(Tables.GUILDS.LEADER, guild.leader)
+        connection.update(GUILDS)
+                .set(GUILDS.NOTICE, guild.notice)
+                .set(GUILDS.RANK1, guild.ranks[0])
+                .set(GUILDS.RANK2, guild.ranks[1])
+                .set(GUILDS.RANK3, guild.ranks[2])
+                .set(GUILDS.RANK4, guild.ranks[3])
+                .set(GUILDS.RANK5, guild.ranks[4])
+                .set(GUILDS.LEADER, guild.leader)
                 .execute()
     }
 
     fun updateMemberGrade(cid: Int, grade: Byte) {
-        connection.update(Tables.GUILDMEMBERS)
-                .set(Tables.GUILDMEMBERS.GRADE, grade)
-                .where(Tables.GUILDMEMBERS.CID.eq(cid))
+        connection.update(GUILDMEMBERS)
+                .set(GUILDMEMBERS.GRADE, grade)
+                .where(GUILDMEMBERS.CID.eq(cid))
                 .execute()
     }
 
@@ -128,8 +129,8 @@ object GuildAPI {
      * @return Guild id, -1 if no guild was found
      */
     fun getGuildId(chr: Character): Int {
-        val rec = connection.select(Tables.GUILDMEMBERS.GID).from(Tables.GUILDMEMBERS)
-                .where(Tables.GUILDMEMBERS.CID.eq(chr.id))
+        val rec = connection.select(GUILDMEMBERS.GID).from(GUILDMEMBERS)
+                .where(GUILDMEMBERS.CID.eq(chr.id))
                 .fetchOne()
         return if (rec == null) -1 else rec.value1()
     }
