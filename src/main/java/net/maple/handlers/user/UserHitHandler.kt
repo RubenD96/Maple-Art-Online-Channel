@@ -16,7 +16,7 @@ class UserHitHandler : PacketHandler {
         val dmg = reader.readInteger()
 
         when (type) {
-            DamageType.MOB_PYSHICAL, DamageType.MOB_MAGIC -> {
+            DamageType.MOB_PHYSICAL, DamageType.MOB_MAGIC -> {
                 val mobId = reader.readInteger()
                 val objId = reader.readInteger()
                 val left = reader.readByte()
@@ -43,7 +43,7 @@ class UserHitHandler : PacketHandler {
         //public static final byte MOB_PYSHICAL = 0x0;
         //public static final byte MOB_MAGIC = 0xFFFFFFFF;
         const val MOB_MAGIC: Byte = 0x0
-        const val MOB_PYSHICAL: Byte = -0x1
+        const val MOB_PHYSICAL: Byte = -0x1
         const val COUNTER: Byte = -0x2
         const val OBSTACLE: Byte = -0x3
         const val STAT: Byte = -0x4

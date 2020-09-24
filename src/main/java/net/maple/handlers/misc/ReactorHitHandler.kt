@@ -19,6 +19,9 @@ class ReactorHitHandler : PacketHandler {
 
         val reactor = c.character.field.getObject(FieldObjectType.REACTOR, oid) as FieldReactor? ?: return
 
+        reactor.actionDelay = tDelay
+        //tStateEnd is tCur (current time) + tActionDelay (the tDelay from your handler) + pTemplate.tMoveDelay (parsed from the reactor if it exists) + GetHitDelay(nEventIdx)
+        reactor.stateEnd = 0
         reactor.state++
     }
 }

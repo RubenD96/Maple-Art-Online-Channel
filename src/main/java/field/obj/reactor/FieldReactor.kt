@@ -15,7 +15,12 @@ class FieldReactor(val template: ReactorTemplate) : AbstractFieldObject() {
 
     var time = 0
     var f = false
-    var fieldName = "" // an attribute in Map.wz/reactor, theres a diff name in Reactor.wz
+    var name = ""
+    var actionDelay: Short = 0
+    var stateEnd: Long = 0
+        set(value) {
+            field = System.currentTimeMillis() + actionDelay + value + 120
+        }
 
     var state = 0
         set(value) {
@@ -32,10 +37,10 @@ class FieldReactor(val template: ReactorTemplate) : AbstractFieldObject() {
             pw.writeHeader(SendOpcode.REACTOR_ENTER_FIELD)
             pw.writeInt(id)
             pw.writeInt(template.id)
-            pw.write(0) // state
+            pw.write(state) // state
             pw.writePosition(position)
             pw.writeBool(f)
-            pw.writeMapleString(fieldName)
+            pw.writeMapleString(name)
 
             return pw.createPacket()
         }
@@ -55,16 +60,13 @@ class FieldReactor(val template: ReactorTemplate) : AbstractFieldObject() {
     private fun changeState() {
         sendChangeStatePacket()
 
-        if (state >= template.maxState) {
-            field.leave(this, leaveFieldPacket)
-
+        if (state >= template.events.size) {
             val reactor = this
             GlobalScope.launch {
-                val start = System.currentTimeMillis()
-                println("Waiting for reactor ${template.id} to respawn ($time)")
-                delay(time.toLong())
+                //field.leave(reactor, leaveFieldPacket)
+                delay(time * 50L)
+                state = 0
                 field.enter(reactor)
-                println("Reactor ${template.id} respawned after ${System.currentTimeMillis() - start} milliseconds")
             }
         }
     }
@@ -76,17 +78,18 @@ class FieldReactor(val template: ReactorTemplate) : AbstractFieldObject() {
         pw.writeInt(id)
         pw.write(state)
         pw.writePosition(position)
-        pw.writeShort(393)
+        pw.writeShort(actionDelay) // hitStart? aniState?
         pw.write(0) // properEventIdx
-        pw.write(0) // stateEnd
+        //pw.write(((stateEnd - System.currentTimeMillis() + 99) / 100).toInt()) // stateEnd
+        pw.write(4)
 
-        field.broadcast(pw.createPacket())
+        //field.broadcast(pw.createPacket())
     }
 
     fun decode(reader: Reader) {
         position = Point(reader.readInteger(), reader.readInteger())
         time = reader.readInteger()
         f = reader.readBool()
-        fieldName = reader.readMapleString()
+        name = reader.readMapleString()
     }
 }
