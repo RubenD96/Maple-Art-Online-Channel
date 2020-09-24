@@ -5,11 +5,13 @@ import client.inventory.item.templates.*
 
 object ItemManager : AbstractManager() {
 
+    private const val fallback = 4000000
+
     // assertion test to check if the fallback items exist:
     // (4000000, blue snail shell)
     // (1302000, sword) - don't think we need this
     init {
-        getData("wz/Item/4000000.mao")!!
+        getData("wz/Item/$fallback.mao")!!
         getData("wz/Equip/1302000.mao")!!
     }
 
@@ -17,7 +19,8 @@ object ItemManager : AbstractManager() {
 
     fun getItem(id: Int): ItemTemplate {
         if (id < 999999) {
-            return getItem(4000000)
+            System.err.println("Item $id does not exist!")
+            return getItem(fallback)
         }
 
         synchronized(items) {
@@ -25,12 +28,13 @@ object ItemManager : AbstractManager() {
             if (item == null) {
                 val type = ItemInventoryType.values()[id / 1000000 - 1]
                 val subType = id % 1000000 / 10000
-                val data = getData(
-                        "wz/" +
-                                "" + (if (type != ItemInventoryType.EQUIP) "Item" else "Equip") +
-                                "/" + id + ".mao"
-                )
-                        ?: return getItem(4000000)
+                val data = getData("wz/" +
+                        "" + (if (type != ItemInventoryType.EQUIP) "Item" else "Equip") +
+                        "/" + id + ".mao")
+                        ?: return run {
+                            System.err.println("Item $id does not exist!")
+                            getItem(fallback)
+                        }
 
                 item = when (type) {
                     ItemInventoryType.EQUIP -> ItemEquipTemplate(id, data)
@@ -46,7 +50,8 @@ object ItemManager : AbstractManager() {
                         if (type != ItemInventoryType.CASH || subType != 0) {
                             ItemBundleTemplate(id, data)
                         } else { // todo pets
-                            getItem(4000000)
+                            System.err.println("Pets are not implemented yet!")
+                            getItem(fallback)
                         }
                     }
                 }

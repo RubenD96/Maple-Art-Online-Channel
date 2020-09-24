@@ -4,9 +4,11 @@ import field.obj.life.FieldNPC
 
 object NPCManager : AbstractManager() {
 
+    private const val fallback = 22000
+
     // assertion test to check if the fallback mob (22000, shanks) exists
     init {
-        getData("wz/Npc/22000.mao")!!
+        getData("wz/Npc/$fallback.mao")!!
     }
 
     private val npcs: MutableMap<Int, FieldNPC> = HashMap()
@@ -17,7 +19,10 @@ object NPCManager : AbstractManager() {
 
             if (npc == null) {
                 npc = FieldNPC(id)
-                if (!loadNPCData(npc)) return getNPC(22000)
+                if (!loadNPCData(npc)) {
+                    System.err.println("NPC $id does not exist!")
+                    return getNPC(fallback)
+                }
                 npcs[id] = npc
             }
 

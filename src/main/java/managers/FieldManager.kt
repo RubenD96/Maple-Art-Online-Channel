@@ -15,8 +15,10 @@ class FieldManager : AbstractManager() {
 
     // assertion test to check if the fallback map (1000, town of beginnings) exists
     companion object {
+        private const val fallback = 1000
+
         init {
-            getData("wz/Map/1000.mao")!!
+            getData("wz/Map/$fallback.mao")!!
         }
     }
 
@@ -29,8 +31,8 @@ class FieldManager : AbstractManager() {
             if (field == null) {
                 field = Field(id)
                 if (!loadFieldData(field)) {
-                    System.err.println("Field " + field.id + " does not exist!")
-                    return getField(1000)
+                    System.err.println("Field $id does not exist!")
+                    return getField(fallback)
                 }
                 fields[id] = field
             }

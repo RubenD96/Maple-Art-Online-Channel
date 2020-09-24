@@ -4,9 +4,11 @@ import field.obj.life.FieldMobTemplate
 
 object MobManager : AbstractManager() {
 
+    private const val fallback = 100100
+
     // assertion test to check if the fallback mob (100100, snail) exists
     init {
-        getData("wz/Mob/100100.mao")!!
+        getData("wz/Mob/$fallback.mao")!!
     }
 
     private val mobs: MutableMap<Int, FieldMobTemplate> = HashMap()
@@ -17,7 +19,10 @@ object MobManager : AbstractManager() {
 
             if (mob == null) {
                 mob = FieldMobTemplate(id)
-                if (!loadMobData(mob)) return getMob(100100)
+                if (!loadMobData(mob)) {
+                    System.err.println("Mob $id does not exist!")
+                    return getMob(fallback)
+                }
                 mobs[id] = mob
             }
 
