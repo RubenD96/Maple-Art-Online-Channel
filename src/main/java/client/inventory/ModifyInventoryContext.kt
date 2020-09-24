@@ -34,7 +34,7 @@ class ModifyInventoryContext : ModifyInventoryContextInterface {
             if (item.number < 1) item.number = 1.toShort()
             if (item.maxNumber < 1) item.maxNumber = 1.toShort()
 
-            val template = getItem(item.templateId) ?: return
+            val template = getItem(item.templateId)
             while (item.number > item.maxNumber) {
                 item.number = (item.number - item.maxNumber).toShort()
                 add(template, item.maxNumber)

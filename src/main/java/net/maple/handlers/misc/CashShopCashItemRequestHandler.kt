@@ -102,7 +102,7 @@ class CashShopCashItemRequestHandler : PacketHandler {
                 return  // lmao hoarding much?
             }
 
-            val template = getItem(commodity.itemId) ?: return failRequest(c, 2)
+            val template = getItem(commodity.itemId)
 
             val slot = ItemSlotLocker(template.toItemSlot())
             slot.buyCharacterName = ""
@@ -208,10 +208,10 @@ class CashShopCashItemRequestHandler : PacketHandler {
             val aid = getOfflineAccountId(c, chr, cid)
             if (aid == -1) return
 
-            val commodity = getCommodity(sn)
+            val commodity = getCommodity(sn) ?: return failRequest(c, 2)
             if (!commodityBuyChecks(c, commodity, sn, chr, aid)) return
 
-            val template = getItem(commodity!!.itemId) ?: return failRequest(c, 2)
+            val template = getItem(commodity.itemId)
 
             val slot = ItemSlotLocker(template.toItemSlot())
             slot.buyCharacterName = c.character.name

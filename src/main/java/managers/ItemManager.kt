@@ -5,11 +5,19 @@ import client.inventory.item.templates.*
 
 object ItemManager : AbstractManager() {
 
+    // assertion test to check if the fallback items exist:
+    // (4000000, blue snail shell)
+    // (1302000, sword) - don't think we need this
+    init {
+        getData("wz/Item/4000000.mao")!!
+        getData("wz/Equip/1302000.mao")!!
+    }
+
     private val items: MutableMap<Int, ItemTemplate> = HashMap()
 
-    fun getItem(id: Int): ItemTemplate? {
+    fun getItem(id: Int): ItemTemplate {
         if (id < 999999) {
-            return null
+            return getItem(4000000)
         }
 
         synchronized(items) {
@@ -22,7 +30,7 @@ object ItemManager : AbstractManager() {
                                 "" + (if (type != ItemInventoryType.EQUIP) "Item" else "Equip") +
                                 "/" + id + ".mao"
                 )
-                        ?: return null
+                        ?: return getItem(4000000)
 
                 item = when (type) {
                     ItemInventoryType.EQUIP -> ItemEquipTemplate(id, data)
@@ -38,13 +46,11 @@ object ItemManager : AbstractManager() {
                         if (type != ItemInventoryType.CASH || subType != 0) {
                             ItemBundleTemplate(id, data)
                         } else { // todo pets
-                            null
+                            getItem(4000000)
                         }
                     }
                 }
-                if (item != null) {
-                    items[id] = item
-                }
+                items[id] = item
             }
             return item
         }

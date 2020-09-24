@@ -100,7 +100,7 @@ class FieldManager : AbstractManager() {
                 val type = r.readMapleString()
 
                 if (type == "m") {
-                    val template = MobManager.getMob(id) ?: return@repeat // mob data doesn't exist
+                    val template = MobManager.getMob(id)
 
                     val mob = FieldMob(template, f == 1)
                     mob.hp = mob.template.maxHP
@@ -112,7 +112,7 @@ class FieldManager : AbstractManager() {
 
                     field.mobSpawnPoints.add(FieldMobSpawnPoint(id, Point(x, y), rx0, rx1, cy, time, fh.toShort()))
                 } else { // npc
-                    val template = NPCManager.getNPC(id) ?: return@repeat
+                    val template = NPCManager.getNPC(id)
                     val npc = FieldNPC(template)
                     life = npc
                 }

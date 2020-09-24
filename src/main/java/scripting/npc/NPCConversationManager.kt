@@ -185,7 +185,9 @@ open class NPCConversationManager(c: Client, val npcId: Int) : AbstractPlayerInt
     }
 
     fun getMobDrops(id: Int): List<DropEntry> {
-        val template: FieldMobTemplate = MobManager.getMob(id) ?: return ArrayList()
+        val template: FieldMobTemplate = MobManager.getMob(id)
+        if (template.id != id) return ArrayList()
+
         if (template.drops == null) {
             template.drops = DropAPI.getMobDrops(template.id)
         }

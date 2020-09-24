@@ -30,24 +30,24 @@ class CommandShortcut(c: Client, _args: Array<String>) : AbstractPlayerInteracti
         }
     }
 
-    fun getNpc(id: Int): FieldNPC? {
+    fun getNpc(id: Int): FieldNPC {
         return NPCManager.getNPC(id)
     }
 
-    fun getMob(id: Int): FieldMob? {
-        val template = getMobTemplate(id) ?: return null
+    fun getMob(id: Int): FieldMob {
+        val template = getMobTemplate(id)
         val mob = FieldMob(template, false)
         mob.hp = mob.template.maxHP
         mob.mp = mob.template.maxMP
         return mob
     }
 
-    fun getItemTemplate(id: Int): ItemTemplate? {
+    fun getItemTemplate(id: Int): ItemTemplate {
         return ItemManager.getItem(id)
     }
 
     fun dropItem(id: Int, qty: Int) {
-        val template = getItemTemplate(id) ?: return
+        val template = getItemTemplate(id)
         val it = template.toItemSlot()
         if (it is ItemSlotBundle) {
             it.number = qty.toShort()
@@ -65,9 +65,7 @@ class CommandShortcut(c: Client, _args: Array<String>) : AbstractPlayerInteracti
 
     fun addItem(id: Int, qty: Int) {
         val item = ItemManager.getItem(id)
-        if (item != null) {
-            chr.modifyInventory({ i: ModifyInventoriesContext -> i.add(item, qty.toShort()) })
-        }
+        chr.modifyInventory({ i: ModifyInventoriesContext -> i.add(item, qty.toShort()) })
     }
 
     fun reloadMap() {

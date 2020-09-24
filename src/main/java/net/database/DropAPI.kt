@@ -29,7 +29,8 @@ object DropAPI {
     }
 
     fun addMobDrop(mid: Int, iid: Int, min: Int, max: Int, questId: Int, chance: Double) {
-        val template = MobManager.getMob(mid) ?: return
+        val template = MobManager.getMob(mid)
+        if (template.id != mid) return
         val drops = template.drops ?: return
 
         connection.insertInto(MOBDROPS,
@@ -51,7 +52,8 @@ object DropAPI {
     }
 
     fun updateDropChance(mid: Int, iid: Int, chance: Double) {
-        val template = MobManager.getMob(mid) ?: return
+        val template = MobManager.getMob(mid)
+        if (template.id != mid) return
         val drops = template.drops ?: return
         drops.stream().filter { it.id == iid }.forEach { it.chance = chance }
 
@@ -63,7 +65,8 @@ object DropAPI {
     }
 
     fun updateMinMaxChance(mid: Int, iid: Int, min: Int, max: Int, chance: Double) {
-        val template: FieldMobTemplate = MobManager.getMob(mid) ?: return
+        val template: FieldMobTemplate = MobManager.getMob(mid)
+        if (template.id != mid) return
         val drops = template.drops ?: return
 
         drops.stream().filter { it.id == iid }.forEach {
@@ -82,7 +85,8 @@ object DropAPI {
     }
 
     fun removeDrop(mid: Int, iid: Int) {
-        val template: FieldMobTemplate = MobManager.getMob(mid) ?: return
+        val template: FieldMobTemplate = MobManager.getMob(mid)
+        if (template.id != mid) return
         val drops = template.drops ?: return
 
         drops.stream().filter { it.id == iid }.findFirst().ifPresent { drops.remove(it) }

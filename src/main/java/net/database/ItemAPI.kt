@@ -292,7 +292,7 @@ object ItemAPI {
                 .fetch()
 
         itemData.forEach {
-            ItemManager.getItem(it.getValue(INVENTORIES.ITEMID))?.let { template ->
+            ItemManager.getItem(it.getValue(INVENTORIES.ITEMID)).let { template ->
                 val item = template.toItemSlot()
 
                 if (it.getValue(INVENTORIES.QUANTITY) > 1) {
@@ -415,32 +415,21 @@ object ItemAPI {
                 .and(INVENTORIES.AID.eq(c.accId))
                 .fetch()
 
-        val toRemove: MutableList<Int> = ArrayList()
         val toAdd: MutableMap<Short, ItemSlotLocker> = TreeMap()
 
         locker.forEach {
             val itemId = it.getValue(INVENTORIES.ITEMID)
-            ItemManager.getItem(itemId)?.let { template ->
+            ItemManager.getItem(itemId).let { template ->
                 val giftFrom = it.getValue(INVENTORIES.GIFTFROM) ?: ""
                 val lockerItem = ItemSlotLocker(template.toItemSlot())
 
                 lockerItem.item.uuid = it.getValue(INVENTORIES.ID)
                 lockerItem.buyCharacterName = giftFrom
                 toAdd[it.getValue(INVENTORIES.POSITION)] = lockerItem
-            } ?: toRemove.add(itemId)
+            }
         }
 
         c.locker.addAll(toAdd.values)
-
-        if (toRemove.isNotEmpty()) {
-            val del = connection.deleteFrom(INVENTORIES)
-            var conditionStep = del.where(INVENTORIES.ITEMID.eq(toRemove[0]))
-            toRemove.removeAt(0) // this is pretty derpy...
-            for (r in toRemove) {
-                conditionStep = conditionStep.or(INVENTORIES.ITEMID.eq(r))
-            }
-            del.execute()
-        }
     }
 
     fun addLockerItem(cid: Int, aid: Int, item: ItemSlotLocker) {

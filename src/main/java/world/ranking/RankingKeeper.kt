@@ -100,10 +100,7 @@ object RankingKeeper {
         players.forEach { player: PlayerRanking ->
             mobs.addAll(player.mobKills
                     .keys.stream()
-                    .filter {
-                        val template = MobManager.getMob(it) ?: return@filter false
-                        !template.isBoss
-                    }.collect(Collectors.toList()))
+                    .filter { !MobManager.getMob(it).isBoss }.collect(Collectors.toList()))
         }
         mobs.forEach { updateMobKillsRanking(mobKills, it) }
     }
@@ -113,10 +110,7 @@ object RankingKeeper {
         players.forEach { player: PlayerRanking ->
             bosses.addAll(player.mobKills
                     .keys.stream()
-                    .filter {
-                        val template = MobManager.getMob(it) ?: return@filter false
-                        template.isBoss
-                    }.collect(Collectors.toList()))
+                    .filter { MobManager.getMob(it).isBoss }.collect(Collectors.toList()))
         }
         bosses.forEach { updateMobKillsRanking(bossKills, it) }
     }

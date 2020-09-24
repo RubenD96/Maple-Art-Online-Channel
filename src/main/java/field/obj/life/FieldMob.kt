@@ -85,7 +85,7 @@ class FieldMob(val template: FieldMobTemplate, left: Boolean) : AbstractFieldCon
                     val amount = (Math.random() * it.max + it.min).toInt()
                     drops.add(MesoDrop(owner.id, this, amount, it.quest))
                 } else { // item
-                    ItemManager.getItem(it.id)?.let { template ->
+                    ItemManager.getItem(it.id).let { template ->
                         val item = if (template is ItemEquipTemplate) template.toItemSlot(ItemVariationType.getRandom())
                         else template.toItemSlot()
 
@@ -93,7 +93,7 @@ class FieldMob(val template: FieldMobTemplate, left: Boolean) : AbstractFieldCon
                             item.number = ((Math.random() * it.max + it.min).toInt().toShort())
                         }
                         drops.add(ItemDrop(owner.id, this, item, it.quest))
-                    } ?: System.err.println("Invalid item drop ${it.id} from ${this.template.id}")
+                    }
                 }
             }
         }

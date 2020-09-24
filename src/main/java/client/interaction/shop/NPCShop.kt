@@ -60,7 +60,7 @@ class NPCShop(val id: Int) : Interactable {
         if (pos >= items.size) return ShopResult.CANT_BUY_ANYMORE
 
         val shopItem = items[itemId] ?: return ShopResult.BUY_UNKNOWN
-        val item = ItemManager.getItem(shopItem.id) ?: return ShopResult.BUY_UNKNOWN
+        val item = ItemManager.getItem(shopItem.id)
 
         var count = quantity
         if (shopItem.quantity > 1) count = 1
@@ -101,7 +101,7 @@ class NPCShop(val id: Int) : Interactable {
         if (!inventory.items.containsKey(pos)) return ShopResult.SELL_UNKNOWN // redundant statement?
 
         val slot = inventory.items[pos] ?: return ShopResult.SELL_UNKNOWN
-        val item = ItemManager.getItem(slot.templateId) ?: return ShopResult.SELL_UNKNOWN
+        val item = ItemManager.getItem(slot.templateId)
         var price = item.sellPrice
 
         if (ItemConstants.isRechargeableItem(item.id)) {

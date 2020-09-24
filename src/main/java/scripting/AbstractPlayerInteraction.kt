@@ -52,9 +52,7 @@ abstract class AbstractPlayerInteraction(val c: Client) {
     private fun gainItemInternal(id: Int, quantity: Int) {
         if (quantity > 0) {
             val item = ItemManager.getItem(id)
-            if (item != null) {
-                player.modifyInventory({ it.add(item, quantity.toShort()) })
-            }
+            player.modifyInventory({ it.add(item, quantity.toShort()) })
         } else {
             player.modifyInventory({ it.take(id, (-quantity).toShort()) })
         }
@@ -106,13 +104,13 @@ abstract class AbstractPlayerInteraction(val c: Client) {
     }
 
     fun isEquip(id: Int): Boolean {
-        val template = ItemManager.getItem(id) ?: return false
+        val template = ItemManager.getItem(id)
         return template is ItemEquipTemplate
     }
 
     fun getEquipById(id: Int): ItemSlotEquip? {
-        val template = ItemManager.getItem(id) ?: return null
-        return template.toItemSlot() as ItemSlotEquip
+        val template = ItemManager.getItem(id)
+        return template.toItemSlot() as ItemSlotEquip?
     }
 
     fun gainStatItem(id: Int, obj: Any) {
@@ -176,7 +174,7 @@ abstract class AbstractPlayerInteraction(val c: Client) {
         }
     }
 
-    fun getMobTemplate(id: Int): FieldMobTemplate? {
+    fun getMobTemplate(id: Int): FieldMobTemplate {
         return MobManager.getMob(id)
     }
 

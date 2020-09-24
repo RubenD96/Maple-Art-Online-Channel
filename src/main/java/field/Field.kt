@@ -162,7 +162,6 @@ class Field(val id: Int) {
                 if (time > it.time) {
                     val newSpawn: FieldMobSpawnPoint = getRandomViableMobSpawnPoint(it.mob)
                     val template: FieldMobTemplate = MobManager.getMob(it.mob)
-                            ?: return@forEach // should never happen...
                     val mob = FieldMob(template, false)
                     mob.hp = mob.template.maxHP
                     mob.mp = mob.template.maxMP
