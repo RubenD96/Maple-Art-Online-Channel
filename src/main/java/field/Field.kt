@@ -143,7 +143,6 @@ class Field(val id: Int) {
         }
     }
 
-    @JvmOverloads
     fun leave(obj: FieldObject, leaveFieldPacket: Packet? = null) {
         removeObject(obj)
         if (obj is Character) {

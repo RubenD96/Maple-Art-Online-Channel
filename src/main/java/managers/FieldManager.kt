@@ -134,9 +134,12 @@ class FieldManager : AbstractManager() {
         if (containsFlag(flags, FieldFlag.REACTOR)) {
             val size = r.readShort()
             repeat(size.toInt()) {
-                val reactor = FieldReactor(r.readInteger())
+                val template = ReactorManager.getReactor(r.readInteger())
+
+                val reactor = FieldReactor(template)
                 reactor.decode(r)
                 reactor.field = field
+
                 field.enter(reactor)
             }
         }
