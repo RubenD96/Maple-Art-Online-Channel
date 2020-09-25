@@ -5,6 +5,9 @@ import client.messages.broadcast.types.AlertMessage
 import field.Field
 import net.maple.packets.CharacterPackets.message
 import scripting.portal.PortalScriptManager
+import util.logging.LogType
+import util.logging.Logger
+import util.logging.Logger.log
 
 class FieldPortal(val field: Field) : AbstractFieldPortal(), Portal {
 
@@ -28,7 +31,7 @@ class FieldPortal(val field: Field) : AbstractFieldPortal(), Portal {
 
     private fun enterInternal(chr: Character) {
         val field = chr.getChannel().fieldManager.getField(targetMap)
-        val portal: Portal = field.getPortalByName(targetName) ?: return error(chr)
+        val portal = field.getPortalByName(targetName) ?: return error(chr)
         portal.leave(chr)
     }
 
@@ -41,6 +44,6 @@ class FieldPortal(val field: Field) : AbstractFieldPortal(), Portal {
         chr.message(AlertMessage("There is a problem with the portal!" +
                 "\r\nID: " + id +
                 "\r\nTargetname: " + targetName))
-        System.err.println(this)
+        log(LogType.NULL, "target portal does not exist " + toString(), this, chr.client)
     }
 }

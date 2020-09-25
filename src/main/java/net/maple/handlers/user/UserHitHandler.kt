@@ -3,6 +3,9 @@ package net.maple.handlers.user
 import client.Client
 import net.maple.handlers.PacketHandler
 import net.maple.packets.CharacterPackets.showDamage
+import util.logging.LogType
+import util.logging.Logger
+import util.logging.Logger.log
 import util.packet.PacketReader
 
 class UserHitHandler : PacketHandler {
@@ -31,7 +34,7 @@ class UserHitHandler : PacketHandler {
                 chr.showDamage(type, dmg, 0, 0.toByte())
             }
             else -> {
-                System.err.println("[UserHitHandler] Unknown damage type ($type)")
+                log(LogType.UNCODED, "Unknown damage type ($type)", this, c)
                 return
             }
         }

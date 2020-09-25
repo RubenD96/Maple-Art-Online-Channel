@@ -29,7 +29,6 @@ abstract class Reader {
 
     abstract fun read(): Int
 
-    @JvmOverloads
     fun read(byteArr: ByteArray, off: Int = 0, len: Int = byteArr.size) {
         for (i in off until len) {
             byteArr[i] = readByte()

@@ -15,6 +15,9 @@ import managers.ItemManager
 import net.database.DatabaseCore.connection
 import org.jooq.exception.DataAccessException
 import util.HexTool
+import util.logging.LogType
+import util.logging.Logger
+import util.logging.Logger.log
 import java.util.*
 import java.util.stream.IntStream
 import kotlin.collections.HashSet
@@ -189,7 +192,7 @@ object ItemAPI {
                             giftFrom)
                     .execute()
         } catch (dae: DataAccessException) {
-            System.err.println("[ItemAPI] Duplicate UUID for $cid on $item")
+            log(LogType.HACK, "Duplicate UUID for $cid on $item", this)
             dae.printStackTrace()
         }
     }
@@ -325,7 +328,7 @@ object ItemAPI {
                     .where(EQUIPS.ITEMID.eq(it.getValue(INVENTORIES.ID)))
                     .fetchOne()
                     ?: run {
-                        System.err.println("[ItemAPI] Broken equip found for ${chr.name} (${it.getValue(INVENTORIES.ITEMID)})")
+                        log(LogType.INVALID, "Broken equip found (${it.getValue(INVENTORIES.ITEMID)})", this, chr.client)
                         deleteItemByUUID(it.getValue(INVENTORIES.ID))
                     }
         }

@@ -1,7 +1,6 @@
 package field
 
 import client.Character
-import client.party.PartyMember
 import client.player.quest.QuestState
 import field.obj.FieldObject
 import field.obj.FieldObjectType
@@ -72,7 +71,9 @@ class Field(val id: Int) {
             obj.field.leave(obj, obj.leaveFieldPacket)
             obj.field = this
         }
+
         addObject(obj)
+
         if (obj is Character) {
             val portal: FieldPortal = portals[obj.portal] ?: firstSpawnpoint
             obj.id = obj.id
@@ -117,7 +118,7 @@ class Field(val id: Int) {
                 }
             }
 
-            if (script.isNotEmpty()) {
+            if (script.isNotEmpty()) { // never happens as we set script to mapid when onEnter is not present
                 execute(obj.client, this, script)
             }
         } else {

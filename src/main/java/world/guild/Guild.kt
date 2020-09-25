@@ -52,7 +52,7 @@ class Guild(val id: Int) {
         synchronized(members) {
             members.values.stream()
                     .filter { it.isOnline }
-                    .filter { it.character !== ignored }
+                    .filter { it.character !== ignored } // useless filter?
                     .forEach { it.character?.write(packet.clone()) }
         }
     }

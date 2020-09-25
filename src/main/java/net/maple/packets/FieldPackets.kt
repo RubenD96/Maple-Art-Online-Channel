@@ -55,13 +55,10 @@ object FieldPackets {
         pw.writeMapleString(this.name)
 
         // guild
-        val guild = this.guild
-        pw.writeMapleString(guild?.name ?: "")
-        if (guild != null && guild.mark != null) {
-            guild.mark!!.encode(pw)
-        } else {
-            pw.write(ByteArray(6))
-        }
+        this.guild?.let {
+            pw.writeMapleString(it.name)
+            it.mark?.encode(pw) ?: pw.write(ByteArray(6))
+        } ?: pw.writeMapleString("").write(ByteArray(6))
 
         // temp stats
         // masks
@@ -84,9 +81,7 @@ object FieldPackets {
         pw.writeInt(0)
         pw.writeInt(0) // complete set itemid
 
-        this.portableChair?.let {
-            pw.writeInt(it)
-        } ?: pw.writeInt(0)
+        pw.writeInt(this.portableChair ?: 0)
 
         pw.writePosition(this.position)
         pw.write(this.moveAction.toInt())

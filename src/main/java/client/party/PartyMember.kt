@@ -2,9 +2,6 @@ package client.party
 
 import client.Character
 
-/**
- * TODO: this class is very susceptible for null pointers, think of another solution
- */
 class PartyMember {
 
     val cid: Int
@@ -14,7 +11,6 @@ class PartyMember {
     var job = 0
     var field = 0
     var isOnline = false
-    var character: Character? = null
 
     constructor(chr: Character) {
         cid = chr.id
@@ -24,23 +20,19 @@ class PartyMember {
         job = chr.job.value
         field = chr.fieldId
         isOnline = true
-        character = chr
     }
 
     constructor() {
         cid = 0
     }
 
-    /**
-     * TODO: see top of file todo
-     */
-    fun loadParty(party: Party) {
+    fun loadParty(chr: Character, party: Party) {
         isOnline = true
-        field = character!!.fieldId
-        channel = character!!.getChannel().channelId
+        field = chr.fieldId
+        channel = chr.getChannel().channelId
 
         party.update()
-        character!!.updatePartyHP(true)
+        chr.updatePartyHP(true)
     }
 
     override fun toString(): String {

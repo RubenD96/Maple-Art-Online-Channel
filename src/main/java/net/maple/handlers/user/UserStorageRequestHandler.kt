@@ -5,6 +5,9 @@ import client.inventory.ItemInventoryType
 import client.player.DbChar
 import net.maple.SendOpcode
 import net.maple.handlers.PacketHandler
+import util.logging.LogType
+import util.logging.Logger
+import util.logging.Logger.log
 import util.packet.PacketReader
 import util.packet.PacketWriter
 
@@ -47,7 +50,7 @@ class UserStorageRequestHandler : PacketHandler {
                 storage.encodeItems(pw, DbChar.MONEY)
             }
             else -> {
-                System.err.println("Invalid/new StorageRequest $request")
+                log(LogType.UNCODED, "Invalid/new StorageRequest $request", this, c)
                 storage.close(c)
                 return
             }

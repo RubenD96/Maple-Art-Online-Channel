@@ -4,6 +4,7 @@ import client.Client
 import client.party.PartyOperationType
 import net.maple.handlers.PacketHandler
 import net.maple.packets.PartyPackets.getServerMsgPacket
+import net.server.Server.getCharacter
 import net.server.Server.parties
 import util.HexTool.toHex
 import util.packet.PacketReader
@@ -19,7 +20,7 @@ class PartyResultHandler : PacketHandler {
 
         when {
             operation.toInt() == PartyOperationType.PARTYRES_INVITEPARTY_REJECTED.value -> {
-                party.leader?.character?.write(getServerMsgPacket(c.character.name + " has rejected the invite to the party."))
+                getCharacter(party.leaderId)?.write(getServerMsgPacket(c.character.name + " has rejected the invite to the party."))
             }
             operation.toInt() == PartyOperationType.PARTYRES_INVITEPARTY_ACCEPTED.value -> {
                 val chr = c.character
@@ -30,7 +31,7 @@ class PartyResultHandler : PacketHandler {
                 }
             }
             operation.toInt() == PartyOperationType.PARTYRES_INVITEPARTY_ALREADYINVITEDBYINVITER.value -> {
-                party.leader?.character?.write(getServerMsgPacket(c.character.name + " is busy."))
+                getCharacter(party.leaderId)?.write(getServerMsgPacket(c.character.name + " is busy."))
             }
             operation.toInt() == PartyOperationType.PARTYRES_INVITEPARTY_SENT.value -> {
                 // nothing?

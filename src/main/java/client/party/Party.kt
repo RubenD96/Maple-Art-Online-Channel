@@ -2,6 +2,7 @@ package client.party
 
 import client.Character
 import net.maple.packets.PartyPackets
+import net.server.Server.getCharacter
 import util.packet.Packet
 import util.packet.PacketWriter
 import java.util.*
@@ -12,7 +13,6 @@ class Party(leader: Character) {
     val id: Int
     var leaderId: Int
     private val members: MutableList<PartyMember> = ArrayList()
-    val leader: PartyMember? get() = getMember(leaderId)
 
     companion object {
         var availableId = 1
@@ -54,7 +54,7 @@ class Party(leader: Character) {
         synchronized(members) {
             for (member in members) {
                 if (member.isOnline && from != member.cid) {
-                    member.character?.write(packet.clone())
+                    getCharacter(member.cid)?.write(packet.clone())
                 }
             }
         }
@@ -64,8 +64,8 @@ class Party(leader: Character) {
         synchronized(members) {
             for (member in getMembers()) {
                 if (member.isOnline) {
-                    member.character?.write(PartyPackets.updateParty(this, member.channel).clone()) // todo don't think clone is needed here
-                    member.character?.updatePartyHP(true)
+                    getCharacter(member.cid)?.write(PartyPackets.updateParty(this, member.channel).clone()) // todo don't think clone is needed here
+                    getCharacter(member.cid)?.updatePartyHP(true)
                 }
             }
         }
@@ -122,7 +122,7 @@ class Party(leader: Character) {
         pw.writeInt(id) // nPartyID
         encodePortal(pw)
 
-        leader?.character?.write(pw.createPacket())
+        getCharacter(leaderId)?.write(pw.createPacket())
     }
 
     fun encode(pw: PacketWriter, memChannel: Int) {

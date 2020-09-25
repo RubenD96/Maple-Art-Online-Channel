@@ -341,8 +341,7 @@ class Character(val client: Client, var name: String, val record: Record) : Abst
         val member = party.getMember(id) ?: return
 
         this.party = party
-        member.character = this
-        member.loadParty(party)
+        member.loadParty(this, party)
     }
 
     fun loadGuild() {

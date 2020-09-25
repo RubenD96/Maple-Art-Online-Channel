@@ -9,6 +9,9 @@ import field.obj.life.FieldNPC
 import field.obj.portal.FieldPortal
 import field.obj.reactor.FieldReactor
 import managers.flag.FieldFlag
+import util.logging.LogType
+import util.logging.Logger
+import util.logging.Logger.log
 import java.awt.Point
 
 class FieldManager : AbstractManager() {
@@ -31,7 +34,7 @@ class FieldManager : AbstractManager() {
             if (field == null) {
                 field = Field(id)
                 if (!loadFieldData(field)) {
-                    System.err.println("Field $id does not exist!")
+                    log(LogType.MISSING, "Field $id does not exist", this)
                     return getField(fallback)
                 }
                 fields[id] = field

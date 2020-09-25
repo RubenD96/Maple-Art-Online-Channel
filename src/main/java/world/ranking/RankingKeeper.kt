@@ -4,6 +4,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import managers.MobManager
 import net.database.RankingAPI
+import util.logging.LogType
+import util.logging.Logger
+import util.logging.Logger.log
 import java.util.*
 import java.util.stream.Collectors
 import kotlin.collections.HashSet
@@ -61,7 +64,7 @@ object RankingKeeper {
             GlobalScope.launch {
                 update()
             }
-        } else System.err.println("[RankingKeeper] Not done updating yet")
+        } else log(LogType.MISC_CONSOLE, "Ranking not done updating yet", this)
     }
 
     private fun update() {

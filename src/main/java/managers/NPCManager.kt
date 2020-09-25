@@ -1,6 +1,9 @@
 package managers
 
 import field.obj.life.FieldNPC
+import util.logging.LogType
+import util.logging.Logger
+import util.logging.Logger.log
 
 object NPCManager : AbstractManager() {
 
@@ -20,7 +23,7 @@ object NPCManager : AbstractManager() {
             if (npc == null) {
                 npc = FieldNPC(id)
                 if (!loadNPCData(npc)) {
-                    System.err.println("NPC $id does not exist!")
+                    log(LogType.MISSING, "NPC $id does not exist", this)
                     return getNPC(fallback)
                 }
                 npcs[id] = npc

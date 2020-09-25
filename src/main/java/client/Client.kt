@@ -132,7 +132,6 @@ class Client(c: Channel, siv: ByteArray, riv: ByteArray) : NettyClient(c, siv, r
         val party = character.party ?: return
         val member = party.getMember(character.id) ?: return
 
-        member.character = null
         if (!isCc) {
             val online = party.onlineMembers
             member.isOnline = false

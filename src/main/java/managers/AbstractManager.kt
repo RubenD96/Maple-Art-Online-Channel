@@ -1,5 +1,7 @@
 package managers
 
+import util.logging.LogType
+import util.logging.Logger
 import util.packet.PacketReader
 import java.io.File
 import java.io.IOException
@@ -14,6 +16,7 @@ abstract class AbstractManager {
                 return if (file.exists()) {
                     PacketReader().next(Files.readAllBytes(file.toPath()))
                 } else {
+                    //Logger.log(LogType.MISSING, "File does not exist: $path", this)
                     System.err.println("File does not exist ($path)")
                     null
                 }

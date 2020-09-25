@@ -2,26 +2,25 @@ package net.maple.packets
 
 import client.Character
 import client.effects.EffectInterface
-import client.effects.FieldEffectInterface
 import client.inventory.ItemInventoryType
 import client.inventory.ModifyInventoriesContext
+import client.inventory.item.slots.ItemSlot
 import client.inventory.operations.AbstractModifyInventoryOperation
 import client.inventory.operations.MoveInventoryOperation
-import client.inventory.item.slots.ItemSlot
 import client.messages.Message
 import client.messages.broadcast.BroadcastMessage
 import client.player.StatType
 import client.player.quest.Quest
 import client.player.quest.QuestState
 import net.maple.SendOpcode
-import net.maple.packets.CharacterPackets.message
 import net.maple.packets.ItemPackets.encode
-import util.packet.Packet
+import util.logging.LogType
+import util.logging.Logger
+import util.logging.Logger.log
 import util.packet.PacketWriter
-import java.util.*
 import java.util.function.Consumer
 import java.util.stream.Collectors
-import kotlin.collections.HashMap
+import java.util.stream.Collectors.toMap
 import kotlin.math.abs
 
 object CharacterPackets {
@@ -64,44 +63,30 @@ object CharacterPackets {
 
         // equips
         val inventory = getInventory(ItemInventoryType.EQUIP).items
-        val equip = inventory.entries.stream()
-                .filter { it.key >= 0 }
-                .collect(Collectors.toMap({ it.key }, { it.value }))
-        val equipped = inventory.entries.stream()
-                .filter { it.key >= -100 && it.key < 0 }
-                .collect(Collectors.toMap({ it.key }, { it.value }))
-        val mask = inventory.entries.stream()
-                .filter { it.key >= -1000 && it.key < -100 }
-                .collect(Collectors.toMap({ it.key }, { it.value }))
-        val dragon = inventory.entries.stream()
-                .filter { it.key >= -1100 && it.key < -1000 }
-                .collect(Collectors.toMap({ it.key }, { it.value }))
-        val mech = inventory.entries.stream()
-                .filter { it.key >= -1200 && it.key < -1100 }
-                .collect(Collectors.toMap({ it.key }, { it.value }))
+        inventory.entries.stream().filter { it.key >= 0 }
+                .collect(toMap({ it.key }, { it.value }))
+                .encodeEquipInventory(pw) // equip
 
-        ArrayList(listOf(equipped, mask, equip, dragon, mech))
-                .forEach {
-                    it.forEach { (slot: Short, item: ItemSlot) ->
-                        pw.writeShort(abs(slot.toInt()) % 100)
-                        item.encode(pw)
-                    }
-                    pw.writeShort(0)
-                }
+        inventory.entries.stream().filter { it.key >= -100 && it.key < 0 }
+                .collect(toMap({ it.key }, { it.value }))
+                .encodeEquipInventory(pw) // equipped
 
-        // other inv's
-        ArrayList(listOf(
-                getInventory(ItemInventoryType.CONSUME).items,
-                getInventory(ItemInventoryType.INSTALL).items,
-                getInventory(ItemInventoryType.ETC).items,
-                getInventory(ItemInventoryType.CASH).items
-        )).forEach {
-            it.forEach { (slot: Short, item: ItemSlot) ->
-                pw.write(slot.toInt())
-                item.encode(pw)
-            }
-            pw.write(0)
-        }
+        inventory.entries.stream().filter { it.key >= -1000 && it.key < -100 }
+                .collect(toMap({ it.key }, { it.value }))
+                .encodeEquipInventory(pw) // mask
+
+        inventory.entries.stream().filter { it.key >= -1100 && it.key < -1000 }
+                .collect(toMap({ it.key }, { it.value }))
+                .encodeEquipInventory(pw) // dragon
+
+        inventory.entries.stream().filter { it.key >= -1200 && it.key < -1100 }
+                .collect(toMap({ it.key }, { it.value }))
+                .encodeEquipInventory(pw) // mech
+
+        getInventory(ItemInventoryType.CONSUME).items.encodeBundleInventory(pw)
+        getInventory(ItemInventoryType.INSTALL).items.encodeBundleInventory(pw)
+        getInventory(ItemInventoryType.ETC).items.encodeBundleInventory(pw)
+        getInventory(ItemInventoryType.CASH).items.encodeBundleInventory(pw)
 
         // skills
         pw.writeShort(0) // count
@@ -155,6 +140,22 @@ object CharacterPackets {
         pw.writeShort(0); // visitor log*/
     }
 
+    private fun Map<Short, ItemSlot>.encodeEquipInventory(pw: PacketWriter) {
+        this.forEach {
+            pw.writeShort(abs(it.key.toInt()) % 100)
+            it.value.encode(pw)
+        }
+        pw.writeShort(0)
+    }
+
+    private fun Map<Short, ItemSlot>.encodeBundleInventory(pw: PacketWriter) {
+        this.forEach {
+            pw.write(it.key.toInt())
+            it.value.encode(pw)
+        }
+        pw.write(0)
+    }
+
     private fun Character.encodeStats(pw: PacketWriter) {
         pw.writeInt(this.id) // character id
         pw.writeFixedString(this.name, 13)
@@ -162,13 +163,9 @@ object CharacterPackets {
         pw.write(this.skinColor) // skin color
         pw.writeInt(this.face) // face
         pw.writeInt(this.hair) // hair
-        for (pet in this.pets) {
-            if (pet != null) {
-                pw.writeLong(pet.id.toLong())
-            } else {
-                pw.writeLong(0)
-            }
-        }
+
+        this.pets.forEach { pw.writeLong(it?.id?.toLong() ?: 0) }
+
         pw.write(this.level) // 51
         pw.writeShort(this.job)
         pw.writeShort(this.strength)
@@ -199,9 +196,7 @@ object CharacterPackets {
 
         encodeVisualEquips(pw)
 
-        this.pets.forEach {
-            pw.writeInt(it?.item ?: 0)
-        }
+        this.pets.forEach { pw.writeInt(it?.item ?: 0) }
     }
 
     private fun Character.encodeVisualEquips(pw: PacketWriter) {
@@ -209,7 +204,7 @@ object CharacterPackets {
 
         val base = equips.entries.stream()
                 .filter { it.key >= -100 && it.key < 0 }
-                .collect(Collectors.toMap({ it.key }, { it.value }))
+                .collect(toMap({ it.key }, { it.value }))
         val mask = HashMap<Short, ItemSlot>()
 
         equips.entries.stream()
@@ -250,7 +245,7 @@ object CharacterPackets {
                 StatType.SKIN -> pw.write(this.skinColor)
                 StatType.FACE -> pw.writeInt(this.face)
                 StatType.HAIR -> pw.writeInt(this.hair)
-                StatType.PET, StatType.PET2, StatType.PET3, StatType.TEMP_EXP -> System.err.println("[statUpdate] unimplemented " + it.name)
+                StatType.PET, StatType.PET2, StatType.PET3, StatType.TEMP_EXP -> log(LogType.UNCODED, "Pets and tempexp is not implemented (yet)", this)
                 StatType.LEVEL -> pw.write(this.level)
                 StatType.JOB -> pw.writeShort(this.job)
                 StatType.STR -> pw.writeShort(this.strength)
@@ -266,7 +261,7 @@ object CharacterPackets {
                 StatType.EXP -> pw.writeInt(this.exp)
                 StatType.FAME -> pw.writeShort(this.fame)
                 StatType.MESO -> pw.writeInt(this.meso)
-                else -> System.err.println("[statUpdate] unimplemented " + it.name)
+                else -> log(LogType.UNCODED, "Unimplemented stattype ${it.name}", this)
             }
         }
 

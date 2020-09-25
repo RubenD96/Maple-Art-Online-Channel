@@ -3,6 +3,9 @@ package managers
 import field.obj.reactor.ReactorEvent
 import field.obj.reactor.ReactorSubEvent
 import field.obj.reactor.ReactorTemplate
+import util.logging.LogType
+import util.logging.Logger
+import util.logging.Logger.log
 
 object ReactorManager : AbstractManager() {
 
@@ -20,7 +23,7 @@ object ReactorManager : AbstractManager() {
             return reactors[id] ?: run {
                 val reactor = ReactorTemplate(id)
                 if (!loadReactorData(reactor)) {
-                    System.err.println("Reactor $id does not exist!")
+                    log(LogType.MISSING, "Reactor $id does not exist", this)
                     return getReactor(fallback)
                 }
                 reactors[id] = reactor

@@ -12,6 +12,9 @@ import net.maple.SendOpcode
 import net.maple.packets.CharacterPackets
 import net.maple.packets.CharacterPackets.message
 import scripting.quest.QuestScriptManager
+import util.logging.LogType
+import util.logging.Logger
+import util.logging.Logger.log
 import util.packet.Packet
 import util.packet.PacketWriter
 
@@ -103,9 +106,7 @@ class Quest(val id: Int, val character: Character) {
             reqs.mobs.forEach {
                 val mobCount = mobs[it.key] ?: return false
                 if (mobCount.toInt() < it.value) {
-                    System.err.println(it.key)
-                    System.err.println(mobs[it.key])
-                    System.err.println(it.value)
+                    log(LogType.INVALID, "${it.key} - ${mobs[it.key]} - ${it.value}", this, character.client)
                     return false
                 }
             }

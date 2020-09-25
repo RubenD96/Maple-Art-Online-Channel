@@ -141,7 +141,6 @@ abstract class AbstractPlayerInteraction(val c: Client) {
         player.field.fieldEffect(TrembleFieldEffect(heavy, delay))
     }
 
-    @JvmOverloads
     fun openNpcIn(npc: Int, time: Int, dispose: Boolean = true) {
         c.ch.eventLoop().schedule({
             if (dispose) {

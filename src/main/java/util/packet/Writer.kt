@@ -32,7 +32,6 @@ abstract class Writer {
         return write(lb.toInt())
     }
 
-    @JvmOverloads
     fun write(byteArr: ByteArray, off: Int = 0, len: Int = byteArr.size): Writer {
         for (i in off until len) {
             write(byteArr[i].toInt())

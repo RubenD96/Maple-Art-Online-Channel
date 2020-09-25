@@ -2,6 +2,9 @@ package managers
 
 import client.inventory.ItemInventoryType
 import client.inventory.item.templates.*
+import util.logging.LogType
+import util.logging.Logger
+import util.logging.Logger.log
 
 object ItemManager : AbstractManager() {
 
@@ -19,7 +22,7 @@ object ItemManager : AbstractManager() {
 
     fun getItem(id: Int): ItemTemplate {
         if (id < 999999) {
-            System.err.println("Item $id does not exist!")
+            log(LogType.MISSING, "item $id does not exist", this)
             return getItem(fallback)
         }
 
@@ -32,7 +35,7 @@ object ItemManager : AbstractManager() {
                         "" + (if (type != ItemInventoryType.EQUIP) "Item" else "Equip") +
                         "/" + id + ".mao")
                         ?: return run {
-                            System.err.println("Item $id does not exist!")
+                            log(LogType.MISSING, "item $id does not exist", this)
                             getItem(fallback)
                         }
 
@@ -50,7 +53,7 @@ object ItemManager : AbstractManager() {
                         if (type != ItemInventoryType.CASH || subType != 0) {
                             ItemBundleTemplate(id, data)
                         } else { // todo pets
-                            System.err.println("Pets are not implemented yet!")
+                            log(LogType.INVALID, "Pets are not implemented yet", this)
                             getItem(fallback)
                         }
                     }

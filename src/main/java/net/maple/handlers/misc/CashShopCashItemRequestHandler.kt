@@ -24,6 +24,8 @@ import net.maple.packets.CashShopPackets.updateWishlist
 import net.maple.packets.ItemPackets.encode
 import net.server.Server.getCharacter
 import util.HexTool.toHex
+import util.logging.LogType
+import util.logging.Logger.log
 import util.packet.Packet
 import util.packet.PacketReader
 import util.packet.PacketWriter
@@ -58,7 +60,7 @@ class CashShopCashItemRequestHandler : PacketHandler {
                 // ignore...
             }
             else -> {
-                System.err.println("[CashShopCashItemRequestHandler] Unhandled cash item operation 0x${toHex(type)} ($type) ${toHex(reader.data)}")
+                log(LogType.UNCODED, "[BUY] Unhandled cash item operation 0x${toHex(type)} ($type) ${toHex(reader.data)}", this, c)
             }
         }
     }
@@ -72,7 +74,7 @@ class CashShopCashItemRequestHandler : PacketHandler {
             val cashType = reader.readInteger()
 
             if (cashType != 4) {
-                System.err.println("[BUY] invalid cash type $cashType - ${c.character.name}")
+                log(LogType.HACK, "[BUY] invalid cash type $cashType", this, c)
                 failRequest(c, 2)
                 return  // we don't support anything but "NX Prepaid"
             }
@@ -80,19 +82,19 @@ class CashShopCashItemRequestHandler : PacketHandler {
             val commoditySN = reader.readInteger()
             println("[BUY] $cashType - $commoditySN")
             val commodity = getCommodity(commoditySN) ?: return run {
-                System.err.println("""[BUY] commodity ($commoditySN) is null - ${c.character.name}""")
+                log(LogType.NULL, "[BUY] commodity ($commoditySN) is null", this, c)
                 failRequest(c, 2)
             }
 
             if (!commodity.isOnSale) {
-                System.err.println("[BUY] commodity ($commoditySN) is not for sale - ${c.character.name}")
+                log(LogType.INVALID, "[BUY] commodity ($commoditySN) is not for sale", this, c)
                 failRequest(c, 30)
                 return
             }
 
             val price = commodity.price
             if (c.cash < price) {
-                System.err.println("[BUY] not enough NX for $commoditySN. Price:$price NX: ${c.cash} - ${c.character.name}")
+                log(LogType.INVALID, "[BUY] not enough NX for $commoditySN. Price:$price NX: ${c.cash}", this, c)
                 failRequest(c, 3)
                 return
             }
@@ -144,20 +146,20 @@ class CashShopCashItemRequestHandler : PacketHandler {
 
         private fun commodityBuyChecks(c: Client, commodity: Commodity?, sn: Int, chr: Character?, aid: Int): Boolean {
             if (commodity == null) {
-                System.err.println("[GIFT] commodity ($sn) is null - ${c.character.name}")
+                log(LogType.NULL, "[GIFT] commodity ($sn) is null", this, c)
                 failRequest(c, 2)
                 return false
             }
 
             if (!commodity.isOnSale) {
-                System.err.println("[GIFT] commodity ($sn) is not for sale - ${c.character.name}")
+                log(LogType.INVALID, "[GIFT] commodity ($sn) is not for sale", this, c)
                 failRequest(c, 30)
                 return false
             }
 
             val price = commodity.price
             if (c.cash < price) {
-                System.err.println("[GIFT] not enough NX for $sn. Price:$price NX: ${c.cash} - ${c.character.name}")
+                log(LogType.INVALID, "[GIFT] not enough NX for $sn. Price:$price NX: ${c.cash}", this, c)
                 failRequest(c, 3)
                 return false
             }
@@ -249,39 +251,39 @@ class CashShopCashItemRequestHandler : PacketHandler {
             val pos = reader.readShort()
 
             val slot = c.locker.stream()
-                    .filter { i: ItemSlotLocker -> i.item.cashItemSN == sn }
+                    .filter { it.item.cashItemSN == sn }
                     .findFirst().orElse(null) ?: return run {
-                System.err.println("[MOVE_L_TO_S] Slot is null " + c.character.name)
+                log(LogType.NULL, "[MOVE_L_TO_S] Slot is null", this, c)
                 failRequest(c, 2)
             }
 
             if (!c.character.hasInvSpace(slot.item)) {
-                System.err.println("[MOVE_L_TO_S] No inv space " + c.character.name)
+                log(LogType.BLOCK, "[MOVE_L_TO_S] No inv space", this, c)
                 failRequest(c, 25)
                 return
             }
 
             if (slot.item.templateId / 1000000 != inv.toInt()) {
-                System.err.println("[MOVE_L_TO_S] Wrong inventory attempt: " + slot.item.templateId / 1000000 + " inv: " + inv + " " + c.character.name)
+                log(LogType.INVALID, "[MOVE_L_TO_S] Wrong inventory attempt: ${slot.item.templateId / 1000000} inv: $inv", this, c)
                 failRequest(c, 2)
                 return
             }
 
             if (inv < 1 || inv > 5) {
-                System.err.println("[MOVE_L_TO_S] Invalid inv type: " + inv + " " + c.character.name)
+                log(LogType.INVALID, "[MOVE_L_TO_S] Invalid inv type: $inv", this, c)
                 failRequest(c, 2)
                 return
             }
 
             val inventory = c.character.getInventory(ItemInventoryType.values()[inv - 1])
             if (inventory.items[pos] != null) {
-                System.err.println("[MOVE_L_TO_S] Position is not free inv: " + inv + " pos: " + pos + " " + c.character.name)
+                log(LogType.BLOCK, "[MOVE_L_TO_S] Position is not free inv: $inv pos: $pos", this, c)
                 failRequest(c, 25)
                 return
             }
 
             if (inventory.slotMax < pos || pos < 0) {
-                System.err.println("[MOVE_L_TO_S] Position too high/low: " + inv + " pos: " + pos + " slotmax: " + inventory.slotMax + " " + c.character.name)
+                log(LogType.HACK, "[MOVE_L_TO_S] Position too high/low: $inv pos: $pos slotmax: ${inventory.slotMax}", this, c)
                 failRequest(c, 25)
                 return
             }
@@ -319,12 +321,12 @@ class CashShopCashItemRequestHandler : PacketHandler {
 
                 val commodity = getCommodity(sn)
                 if (commodity == null) {
-                    System.err.println("[SET_WISH] commodity is null")
+                    log(LogType.NULL, "[SET_WISH] commodity is null ($sn)", this, c)
                     continue
                 }
 
                 if (!commodity.isOnSale) {
-                    System.err.println("[SET_WISH] commodity is not on sale")
+                    log(LogType.INVALID, "[SET_WISH] commodity is not on sale ($sn)", this, c)
                     continue
                 }
 
@@ -342,7 +344,7 @@ class CashShopCashItemRequestHandler : PacketHandler {
 
             val cashType = reader.readInteger()
             if (cashType != 4) {
-                System.err.println("[BUY] invalid cash type " + cashType + " - " + c.character.name)
+                log(LogType.HACK, "[BUY] invalid cash type $cashType", this, c)
                 failRequest(c, 2)
                 return  // we don't support anything but "NX Prepaid"
             }

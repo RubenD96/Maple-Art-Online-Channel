@@ -1,6 +1,9 @@
 package managers
 
 import field.obj.life.FieldMobTemplate
+import util.logging.LogType
+import util.logging.Logger
+import util.logging.Logger.log
 
 object MobManager : AbstractManager() {
 
@@ -20,7 +23,7 @@ object MobManager : AbstractManager() {
             if (mob == null) {
                 mob = FieldMobTemplate(id)
                 if (!loadMobData(mob)) {
-                    System.err.println("Mob $id does not exist!")
+                    log(LogType.MISSING, "mob $id does not exist", this)
                     return getMob(fallback)
                 }
                 mobs[id] = mob

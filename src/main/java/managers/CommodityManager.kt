@@ -2,6 +2,9 @@ package managers
 
 import cashshop.commodities.Commodity
 import cashshop.commodities.CommodityFlag
+import util.logging.LogType
+import util.logging.Logger
+import util.logging.Logger.log
 
 object CommodityManager : AbstractManager() {
 
@@ -14,7 +17,7 @@ object CommodityManager : AbstractManager() {
             if (commodity == null) {
                 commodity = Commodity(sn)
                 if (!loadData(commodity)) {
-                    System.err.println("Commodity " + commodity.SN + " does not exist!")
+                    log(LogType.MISSING, "Commodity ${commodity.SN} does not exist", this)
                     return null
                 }
                 commodities[sn] = commodity

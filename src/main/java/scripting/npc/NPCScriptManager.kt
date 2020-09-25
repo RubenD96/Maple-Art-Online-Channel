@@ -14,7 +14,6 @@ object NPCScriptManager : AbstractScriptManager() {
         converse(c, cm.npcId, null, mode, selection)
     }
 
-    @JvmOverloads
     fun converse(c: Client, npc: Int, fileName: String? = null, mode: Int = 1, selection: Int = -1): Boolean {
         return try {
             if (scripts[c] == null) {

@@ -5,6 +5,8 @@ import field.obj.life.FieldMob
 import field.obj.life.FieldNPC
 import net.maple.SendOpcode
 import net.maple.handlers.PacketHandler
+import util.logging.LogType
+import util.logging.Logger.log
 import util.packet.Packet
 import util.packet.PacketReader
 import util.packet.PacketWriter
@@ -18,7 +20,7 @@ class MobMoveHandler : PacketHandler {
 
         val obj = field.getControlledObject(c.character, oid) ?: return
         if (obj is FieldNPC) {
-            System.err.println("[MobMoveHandler] Packet sent from FieldNPC object: $oid")
+            log(LogType.MISC_NO_CONSOLE, "Packet sent from FieldNPC object: $oid", this, c)
             return
         }
 
