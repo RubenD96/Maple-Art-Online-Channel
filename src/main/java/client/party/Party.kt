@@ -3,6 +3,8 @@ package client.party
 import client.Character
 import net.maple.packets.PartyPackets
 import net.server.Server.getCharacter
+import util.logging.LogType
+import util.logging.Logger.log
 import util.packet.Packet
 import util.packet.PacketWriter
 import java.util.*
@@ -23,7 +25,7 @@ class Party(leader: Character) {
         id = availableId++
         leaderId = leader.id
         addMember(leader)
-        println("created party with partyid $id")
+        log(LogType.PARTY, "[pid: $id] create", this, leader.client)
     }
 
     // todo remove?
@@ -36,6 +38,7 @@ class Party(leader: Character) {
     fun addMember(member: Character) {
         synchronized(members) {
             members.add(PartyMember(member))
+            log(LogType.PARTY, "[pid: $id] Add member ($member)", this)
         }
     }
 
@@ -55,6 +58,7 @@ class Party(leader: Character) {
             for (member in members) {
                 if (member.isOnline && from != member.cid) {
                     getCharacter(member.cid)?.write(packet.clone())
+                    log(LogType.PARTY, "[pid: $id] sendMessage from $from (${packet.header})", this)
                 }
             }
         }
@@ -82,6 +86,7 @@ class Party(leader: Character) {
                 }
             }
             if (toExpel != null) {
+                log(LogType.PARTY, "[pid: $id] Kick member (k:${toExpel?.cid}, l:$leaderId)", this)
                 members.remove(toExpel)
             }
         }
@@ -102,7 +107,6 @@ class Party(leader: Character) {
             return members
         }
 
-    // todo check... wtf this is? was i drunk?
     fun getRandomOnline(exclude: Int): PartyMember? {
         var member: PartyMember
 

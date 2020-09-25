@@ -16,6 +16,8 @@ import net.maple.packets.PartyPackets.getTransferLeaderMessagePacket
 import net.server.Server.getCharacter
 import net.server.Server.parties
 import util.HexTool.toHex
+import util.logging.LogType
+import util.logging.Logger.log
 import util.packet.PacketReader
 
 class PartyRequestHandler : PacketHandler {
@@ -34,6 +36,7 @@ class PartyRequestHandler : PacketHandler {
                 val pid = it.id
                 val online = it.onlineMembers
                 if (it.getMembers().size == 1 || online.size == 1 && chr.id == it.leaderId) { // alone, so disband
+                    log(LogType.PARTY, "[pid: $pid] disband by ${it.leaderId}", this)
                     c.write(getDisbandPartyPacket(pid, chr.id))
                     parties.remove(pid)
                 } else { // leaving
@@ -46,6 +49,8 @@ class PartyRequestHandler : PacketHandler {
                                 pm.write(getTransferLeaderMessagePacket(newLeader.cid, false))
                             }
                         }
+
+                        log(LogType.PARTY, "[pid: $pid] transfer leader by leaving from $chr to $newLeader", this)
                     }
 
                     c.write(it.getLeavePartyPacket(chr.id, false, chr.name, chr.getChannel().channelId))
@@ -56,6 +61,8 @@ class PartyRequestHandler : PacketHandler {
                             pm.write(it.getLeavePartyPacket(chr.id, false, chr.name, pmember.channel))
                         }
                     }
+
+                    log(LogType.PARTY, "[pid: $pid] $chr left", this)
                 }
                 chr.party = null
             } ?: c.write(getPartyMessage(PartyOperationType.PARTYRES_WITHDRAWPARTY_NOTJOINED))
@@ -64,6 +71,8 @@ class PartyRequestHandler : PacketHandler {
 
             if (unmutableParty.leaderId == chr.id) {
                 val name = reader.readMapleString()
+                log(LogType.PARTY, "[pid: ${unmutableParty.id}] $chr invited $name", this)
+
                 val invited = getCharacter(name)
                         ?: return chr.message(AlertMessage("$name is not present in any channel."))
                 if (invited.getChannel() !== c.worldChannel) return chr.message(AlertMessage("$name is not present in the current channel."))
@@ -111,6 +120,8 @@ class PartyRequestHandler : PacketHandler {
                             pm.write(getTransferLeaderMessagePacket(newLeader, false))
                         }
                     }
+
+                    log(LogType.PARTY, "[pid: ${party.id}] transfer leader by choice from $chr to $member", this)
                 }
             }
         }

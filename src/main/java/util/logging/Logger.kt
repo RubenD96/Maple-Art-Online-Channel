@@ -2,12 +2,23 @@ package util.logging
 
 import client.Client
 import constants.ServerConstants
-import java.io.File
-import java.io.FileOutputStream
+import constants.ServerConstants.BULK_DUMP_TIMER
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
+import java.io.*
+import java.time.Instant
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 object Logger {
 
     private const val root = "logs"
+    private val bulkAdder = HashMap<LogType, ArrayList<String>>()
+    private val timestamp: String
+        get() {
+            return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneOffset.UTC).format(Instant.now())
+        }
 
     init {
         val rootFolder = File(root)
@@ -16,31 +27,69 @@ object Logger {
         }
 
         for (type in LogType.values()) {
-            val subFolder = File("$root/${type.name}")
+            val subFolder = if (!type.bulk) {
+                File("$root/${type.name}")
+            } else {
+                File("$root/bulk")
+            }
+
             if (!subFolder.exists()) {
                 subFolder.mkdir()
+            }
+
+            if (type.bulk) {
+                bulkAdder[type] = ArrayList()
             }
         }
     }
 
     fun log(type: LogType, message: String, cl: Any, client: Client? = null) {
-        val file = File("$root/${type.name}/${cl.javaClass.name} - ${System.currentTimeMillis()}.txt")
+        val file = if (!type.bulk) {
+            File("$root/${type.name}/${cl.javaClass.name} - ${System.currentTimeMillis()}.txt")
+        } else {
+            File("$root/bulk/${type.name}")
+        }
 
         if (!file.exists()) {
             file.createNewFile()
+
+            if (ServerConstants.LOG) {
+                println("File ${file.name} created")
+            }
         }
 
-        if (type.console) {
+        if (type.console || ServerConstants.LOG) {
             System.err.println("[LOGGER] ${cl.javaClass.name} - ${getAccInfo(client)}")
             System.err.println(message)
         }
 
-        FileOutputStream(file).use {
-            val complete = getAccInfo(client) + "\r\n" + message
-            it.write(complete.toByteArray())
+        if (!type.bulk) {
+            FileOutputStream(file).use {
+                val complete = getAccInfo(client) + "\r\n" + message
+                it.write(complete.toByteArray())
+            }
+        } else {
+            bulkAdder[type]?.add(message) ?: log(LogType.MISSING, "Could not add ${type.name} to the bulkAdder", this)
+        }
+    }
 
-            if (ServerConstants.LOG) {
-                println("File ${file.name} created")
+    suspend fun dumpBulk() {
+        delay(BULK_DUMP_TIMER)
+        withContext(Dispatchers.IO) {
+            for (bulk in bulkAdder) {
+                try {
+                    FileWriter("$root/bulk/${bulk.key.name}", true).use { fw ->
+                        BufferedWriter(fw).use { bw ->
+                            PrintWriter(bw).use { out ->
+                                for (message in bulk.value) {
+                                    out.println("[$timestamp] $message")
+                                }
+                            }
+                        }
+                    }
+                } catch (ioe: IOException) {
+                    ioe.printStackTrace()
+                }
             }
         }
     }

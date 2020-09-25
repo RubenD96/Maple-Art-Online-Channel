@@ -11,6 +11,7 @@ import net.database.BeautyAPI
 import net.database.CharacterAPI
 import net.database.ShopAPI
 import util.crypto.MapleAESOFB
+import util.logging.Logger
 import world.guild.Guild
 import world.ranking.RankingKeeper
 import java.io.File
@@ -48,6 +49,7 @@ object Server {
         GlobalScope.launch {
             withContext(NonCancellable) {
                 async { rankingRoutine() }
+                async { Logger.dumpBulk() }
             }
         }
         BeautyAPI.loadHairs()

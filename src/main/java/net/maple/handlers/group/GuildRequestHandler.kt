@@ -23,6 +23,9 @@ import net.maple.packets.GuildPackets.setNotice
 import net.server.Server.getCharacter
 import net.server.Server.guilds
 import util.HexTool.toHex
+import util.logging.LogType
+import util.logging.Logger
+import util.logging.Logger.log
 import util.packet.PacketReader
 
 class GuildRequestHandler : PacketHandler {
@@ -34,10 +37,14 @@ class GuildRequestHandler : PacketHandler {
         when (val req = reader.readByte()) {
             GuildReq.INVITE_GUILD -> {
                 val guild = chr.guild ?: return
-                if (guild.getMemberSecure(chr.id).grade > 2) return
+                if (guild.getMemberSecure(chr.id).grade > 2) {
+                    log(LogType.HACK, "$chr tried invite to guild without proper grade", this, c)
+                    return
+                }
 
                 if (guild.maxSize == guild.members.size) {
                     GuildPackets.message(chr, GuildRes.JOIN_GUILD_ALREADY_FULL)
+                    log(LogType.INVALID, "guild already full", this, c)
                     return
                 }
 

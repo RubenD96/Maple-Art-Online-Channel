@@ -1,6 +1,9 @@
 package world.guild
 
 import client.Character
+import util.logging.LogType
+import util.logging.Logger
+import util.logging.Logger.log
 import util.packet.Packet
 import util.packet.PacketWriter
 import java.util.*
@@ -50,6 +53,7 @@ class Guild(val id: Int) {
 
     fun broadcast(packet: Packet, ignored: Character?) {
         synchronized(members) {
+            log(LogType.GUILD, "[gid: $id] broadcast (${packet.header})", this)
             members.values.stream()
                     .filter { it.isOnline }
                     .filter { it.character !== ignored } // useless filter?
@@ -60,6 +64,7 @@ class Guild(val id: Int) {
     fun addMember(chr: Character) {
         synchronized(members) {
             members[chr.id] = GuildMember(chr)
+            log(LogType.GUILD, "[gid: $id] add ($chr)", this)
         }
     }
 

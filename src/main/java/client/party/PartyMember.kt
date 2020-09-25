@@ -1,6 +1,9 @@
 package client.party
 
 import client.Character
+import util.logging.LogType
+import util.logging.Logger
+import util.logging.Logger.log
 
 class PartyMember {
 
@@ -33,6 +36,7 @@ class PartyMember {
 
         party.update()
         chr.updatePartyHP(true)
+        log(LogType.PARTY, "[pid: ${party.id}] load party for $chr", this)
     }
 
     override fun toString(): String {
