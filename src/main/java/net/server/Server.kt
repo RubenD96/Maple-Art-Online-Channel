@@ -4,7 +4,7 @@ import client.Character
 import client.party.Party
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine
 import constants.ServerConstants
-import constants.UserConstants
+import constants.ServerConstants.RANKING_TIMER
 import kotlinx.coroutines.*
 import managers.*
 import net.database.BeautyAPI
@@ -55,14 +55,14 @@ object Server {
     }
 
     private suspend fun rankingRoutine() {
-        delay(1800000L)
+        delay(RANKING_TIMER)
         RankingKeeper.updateAllRankings()
         rankingRoutine()
     }
 
     fun getCharacter(name: String): Character? {
         synchronized(characters) {
-            return characters.values.stream().filter { c: Character -> (c.name == name) }.findFirst().orElse(null)
+            return characters.values.stream().filter { it.name == name }.findFirst().orElse(null)
         }
     }
 

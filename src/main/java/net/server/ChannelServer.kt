@@ -1,8 +1,8 @@
 package net.server
 
-import client.Character
 import constants.ServerConstants
-import field.Field
+import constants.ServerConstants.DROP_CLEAR_TIMER
+import constants.ServerConstants.RESPAWN_TIMER
 import field.obj.FieldObjectType
 import io.netty.bootstrap.ServerBootstrap
 import io.netty.channel.ChannelFuture
@@ -19,14 +19,10 @@ import net.netty.PacketDecoder
 import net.netty.PacketEncoder
 import net.netty.ServerHandler
 import java.util.*
-import java.util.function.Consumer
-import kotlin.collections.HashMap
-import kotlin.collections.set
 
 class ChannelServer(val channelId: Int, val port: Int, val IP: String) : Thread() {
 
     var fieldManager: FieldManager = FieldManager()
-    //val characters: MutableMap<Int, Character> = HashMap()
     lateinit var loginConnector: LoginConnector
 
     fun init() {
@@ -42,43 +38,19 @@ class ChannelServer(val channelId: Int, val port: Int, val IP: String) : Thread(
         }
     }
 
-    /*fun getCharacter(name: String): Character? {
-        synchronized(characters) {
-            return characters.values.stream().filter { c: Character -> (c.name == name) }.findFirst().orElse(null)
-        }
-    }
-
-    fun getCharacter(id: Int): Character? {
-        synchronized(characters) {
-            return characters[id]
-        }
-    }
-
-    fun addCharacter(chr: Character) {
-        synchronized(characters) {
-            characters[chr.id] = chr
-        }
-    }
-
-    fun removeCharacter(chr: Character) {
-        synchronized(characters) {
-            characters.remove(chr.id)
-        }
-    }*/
-
     private suspend fun mobRespawnRoutine() {
-        delay(5000L)
-        fieldManager.fields.values.forEach(Consumer { field: Field ->
-            if (field.getObjects(FieldObjectType.CHARACTER).isNotEmpty()) {
-                field.respawn()
+        delay(RESPAWN_TIMER)
+        fieldManager.fields.values.forEach {
+            if (it.getObjects(FieldObjectType.CHARACTER).isNotEmpty()) {
+                it.respawn()
             }
-        })
+        }
         mobRespawnRoutine()
     }
 
     private suspend fun itemClearRoutine() {
-        delay(10000L)
-        fieldManager.fields.values.forEach(Consumer { obj: Field -> obj.removeExpiredDrops() })
+        delay(DROP_CLEAR_TIMER)
+        fieldManager.fields.values.forEach { it.removeExpiredDrops() }
         itemClearRoutine()
     }
 
