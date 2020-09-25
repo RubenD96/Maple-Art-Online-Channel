@@ -15,6 +15,7 @@ import net.netty.NettyClient
 import net.server.ChannelServer
 import net.server.MigrateInfo
 import net.server.Server
+import net.server.Server.removeCharacter
 import org.jooq.Record
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -96,7 +97,7 @@ class Client(c: Channel, siv: ByteArray, riv: ByteArray) : NettyClient(c, siv, r
             notifyGuildLogout()
             notifyPartyLogout()
             character.friendList.notifyMutualFriends()
-            worldChannel.removeCharacter(character)
+            removeCharacter(character)
             if (!isCc) character.save() // we save when changing channel at another point
             isDisconnecting = false // uuh dont think i need this anymore
         }

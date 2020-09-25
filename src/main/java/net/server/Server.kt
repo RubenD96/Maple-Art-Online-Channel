@@ -23,6 +23,7 @@ object Server {
 
     val channels: MutableList<ChannelServer> = ArrayList()
     val clients: MutableMap<Int, MigrateInfo> = HashMap()
+    val characters: MutableMap<Int, Character> = HashMap()
     val parties: MutableMap<Int, Party> = HashMap()
     val guilds: MutableMap<Int, Guild> = HashMap()
     var shops: List<Int>
@@ -59,14 +60,28 @@ object Server {
         rankingRoutine()
     }
 
-    fun getCharacter(id: Int): Character? {
-        for (channel in channels) {
-            val chr = channel.getCharacter(id)
-            if (chr != null) {
-                return chr
-            }
+    fun getCharacter(name: String): Character? {
+        synchronized(characters) {
+            return characters.values.stream().filter { c: Character -> (c.name == name) }.findFirst().orElse(null)
         }
-        return null
+    }
+
+    fun getCharacter(id: Int): Character? {
+        synchronized(characters) {
+            return characters[id]
+        }
+    }
+
+    fun addCharacter(chr: Character) {
+        synchronized(characters) {
+            characters[chr.id] = chr
+        }
+    }
+
+    fun removeCharacter(chr: Character) {
+        synchronized(characters) {
+            characters.remove(chr.id)
+        }
     }
 
     private fun benchmark() {

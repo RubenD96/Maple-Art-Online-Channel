@@ -6,6 +6,7 @@ import net.maple.handlers.PacketHandler
 import net.maple.packets.CharacterPackets
 import net.maple.packets.CharacterPackets.message
 import net.maple.packets.GuildPackets.GuildRes
+import net.server.Server.getCharacter
 import util.HexTool.toHex
 import util.packet.PacketReader
 
@@ -19,7 +20,7 @@ class GuildResultHandler : PacketHandler {
             GuildRes.INVITE_GUILD_REJECTED -> {
                 val inviterName = reader.readMapleString()
                 val rejecterName = reader.readMapleString()
-                val inviter = c.worldChannel.getCharacter(inviterName) ?: return
+                val inviter = getCharacter(inviterName) ?: return
                 if (!inviter.guildInvitesSent.contains(rejecterName)) return
 
                 chr.guildInvitesSent.remove(rejecterName)

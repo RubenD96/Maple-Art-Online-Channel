@@ -26,7 +26,7 @@ import kotlin.collections.set
 class ChannelServer(val channelId: Int, val port: Int, val IP: String) : Thread() {
 
     var fieldManager: FieldManager = FieldManager()
-    var characters: MutableMap<Int, Character> = HashMap()
+    //val characters: MutableMap<Int, Character> = HashMap()
     lateinit var loginConnector: LoginConnector
 
     fun init() {
@@ -42,7 +42,7 @@ class ChannelServer(val channelId: Int, val port: Int, val IP: String) : Thread(
         }
     }
 
-    fun getCharacter(name: String): Character? {
+    /*fun getCharacter(name: String): Character? {
         synchronized(characters) {
             return characters.values.stream().filter { c: Character -> (c.name == name) }.findFirst().orElse(null)
         }
@@ -64,7 +64,7 @@ class ChannelServer(val channelId: Int, val port: Int, val IP: String) : Thread(
         synchronized(characters) {
             characters.remove(chr.id)
         }
-    }
+    }*/
 
     private suspend fun mobRespawnRoutine() {
         delay(5000L)

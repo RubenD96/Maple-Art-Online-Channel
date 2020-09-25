@@ -14,6 +14,7 @@ import field.obj.portal.PortalType
 import managers.MobManager
 import net.maple.packets.FieldPackets.setField
 import net.maple.packets.PartyPackets.updateParty
+import net.server.Server.getCharacter
 import scripting.map.FieldScriptManager.execute
 import util.packet.Packet
 import java.awt.Point
@@ -101,13 +102,14 @@ class Field(val id: Int) {
                 }
             }
 
-            if (obj.party != null) {
-                val me = obj.party?.getMember(obj.id)
-                me!!.field = id
-                obj.party?.getMembers()?.forEach { member: PartyMember ->
+            obj.party?.let {
+                val me = it.getMember(obj.id) ?: return@let
+                me.field = id
+                it.getMembers().forEach { member ->
                     if (member.isOnline && member.channel == obj.getChannel().channelId) {
-                        val mem = obj.getChannel().getCharacter(member.cid)
-                        mem!!.write(updateParty(obj.party!!, member.channel))
+                        val mem = getCharacter(member.cid) ?: return@forEach
+                        mem.write(updateParty(it, member.channel))
+
                         if (member.field == id) {
                             mem.updatePartyHP(true)
                         }

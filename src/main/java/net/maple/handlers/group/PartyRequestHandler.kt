@@ -6,7 +6,6 @@ import client.messages.broadcast.types.AlertMessage
 import client.party.Party
 import client.party.PartyOperationType
 import net.maple.handlers.PacketHandler
-import net.maple.packets.CharacterPackets
 import net.maple.packets.CharacterPackets.message
 import net.maple.packets.PartyPackets.getDisbandPartyPacket
 import net.maple.packets.PartyPackets.getLeavePartyPacket
@@ -65,8 +64,9 @@ class PartyRequestHandler : PacketHandler {
 
             if (unmutableParty.leaderId == chr.id) {
                 val name = reader.readMapleString()
-                val invited = c.worldChannel.getCharacter(name)
-                        ?: return chr.message(AlertMessage("$name is not present in the current channel."))
+                val invited = getCharacter(name)
+                        ?: return chr.message(AlertMessage("$name is not present in any channel."))
+                if (invited.getChannel() !== c.worldChannel) return chr.message(AlertMessage("$name is not present in the current channel."))
 
                 invited.party?.let {
                     c.write(getPartyMessage(PartyOperationType.PARTYRES_CREATENEWPARTY_ALREAYJOINED))

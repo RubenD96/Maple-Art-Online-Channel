@@ -20,6 +20,7 @@ import net.maple.packets.GuildPackets.sendInvite
 import net.maple.packets.GuildPackets.setGradeNames
 import net.maple.packets.GuildPackets.setMemberGrade
 import net.maple.packets.GuildPackets.setNotice
+import net.server.Server.getCharacter
 import net.server.Server.guilds
 import util.HexTool.toHex
 import util.packet.PacketReader
@@ -41,8 +42,9 @@ class GuildRequestHandler : PacketHandler {
                 }
 
                 val name = reader.readMapleString()
-                val invited = c.worldChannel.getCharacter(name)
+                val invited = getCharacter(name)
                         ?: return GuildPackets.message(chr, GuildRes.JOIN_GUILD_UNKNOWN_USER)
+                if (invited.getChannel() !== c.worldChannel) return GuildPackets.message(chr, GuildRes.JOIN_GUILD_UNKNOWN_USER)
 
                 invited.guild?.let {
                     GuildPackets.message(chr, GuildRes.JOIN_GUILD_ALREADY_JOINED)

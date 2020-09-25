@@ -7,6 +7,7 @@ import net.database.CharacterAPI.getOfflineId
 import net.database.FriendAPI.addFriend
 import net.maple.SendOpcode
 import net.maple.handlers.group.FriendRequestHandler.FriendOperation
+import net.server.Server
 import net.server.Server.getCharacter
 import util.packet.Packet
 import util.packet.PacketWriter
@@ -94,7 +95,7 @@ class FriendList(private val owner: Character) {
     }
 
     fun sendFriendRequest(name: String, group: String) {
-        val friend = owner.getChannel().getCharacter(name)
+        val friend = getCharacter(name)
 
         if (friend != null) {
             addFriend(friend, group, false)

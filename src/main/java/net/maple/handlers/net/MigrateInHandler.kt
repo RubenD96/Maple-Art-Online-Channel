@@ -16,6 +16,7 @@ import net.maple.SendOpcode
 import net.maple.handlers.PacketHandler
 import net.maple.packets.GuildPackets.getLoadGuildPacket
 import net.maple.packets.GuildPackets.notifyLoginLogout
+import net.server.Server
 import net.server.Server.clients
 import util.packet.Packet
 import util.packet.PacketReader
@@ -36,7 +37,7 @@ class MigrateInHandler : PacketHandler {
                 //Server.getInstance().getClients().remove(accInfo.getValue(ACCOUNTS.ID));
                 c.login(accInfo, mi)
                 val chr = getNewCharacter(c, cid)
-                c.worldChannel.addCharacter(chr)
+                Server.addCharacter(chr)
                 c.character = chr
 
                 loadInventories(chr)
