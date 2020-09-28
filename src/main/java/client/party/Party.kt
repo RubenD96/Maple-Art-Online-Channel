@@ -28,7 +28,6 @@ class Party(leader: Character) {
         log(LogType.PARTY, "[pid: $id] create", this, leader.client)
     }
 
-    // todo remove?
     fun getMembers(): List<PartyMember> {
         synchronized(members) {
             return ArrayList(members)

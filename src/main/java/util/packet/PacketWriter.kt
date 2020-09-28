@@ -58,7 +58,7 @@ class PacketWriter(size: Int) : Writer() {
 
     fun writeHeader(i: Short): Writer {
         val hex = Integer.toHexString(i.toInt())
-        if (ServerConstants.LOG && Arrays.stream(ignoreOps).noneMatch { it == i.toInt() })
+        if (ServerConstants.LOG && !ignoreOps.contains(i.toInt())/*Arrays.stream(ignoreOps).noneMatch { it == i.toInt() }*/)
             println("[SEND] packet " + i + " (" + (if (hex.length == 1) "0x0" else "0x") + hex.toUpperCase() + ") - " + getStringByCode(i.toInt()))
         return writeShort(i)
     }

@@ -55,7 +55,7 @@ class ServerHandler : ChannelInboundHandlerAdapter() {
         val packetHandler = processor.getHandler(opCode)
 
         val hex = Integer.toHexString(opCode.toInt())
-        if (ServerConstants.LOG && Arrays.stream(ignoreOps).noneMatch { it == opCode.toInt() }) {
+        if (ServerConstants.LOG && !ignoreOps.contains(opCode.toInt())/* Arrays.stream(ignoreOps).noneMatch { it == opCode.toInt() }*/) {
             if (packetHandler == null) {
                 println("[RECEIVED] packet " + opCode + " (" + (if (hex.length == 1) "0x0" else "0x") + hex.toUpperCase() + ")")
             } else {
@@ -67,16 +67,14 @@ class ServerHandler : ChannelInboundHandlerAdapter() {
             //System.out.printf("data: %s.%n", packet.toString());
         }
 
-        if (packetHandler != null) {
-            if (packetHandler.validateState(client)) {
-                packetHandler.handlePacket(packetReader, client)
+        packetHandler?.let {
+            if (it.validateState(client)) {
+                it.handlePacket(packetReader, client)
             } else {
                 System.out.printf("Client failed to validate state for packet %s.%n", opCode)
                 channel.close()
             }
-        } else {
-            System.out.printf("Received completely unhandled packet %s.%n", packet.toString())
-        }
+        } ?: System.out.printf("Received completely unhandled packet %s.%n", packet.toString())
     }
 
     override fun channelInactive(chc: ChannelHandlerContext) {

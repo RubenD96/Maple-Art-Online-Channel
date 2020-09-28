@@ -2,6 +2,9 @@ package field
 
 import client.Character
 import client.player.quest.QuestState
+import client.replay.MoveCollection
+import constants.FieldConstants
+import constants.FieldConstants.JQ_FIELDS
 import field.obj.FieldObject
 import field.obj.FieldObjectType
 import field.obj.Foothold
@@ -48,6 +51,10 @@ class Field(val id: Int) {
         for (type in FieldObjectType.values()) {
             objects[type] = LinkedHashSet()
         }
+
+        if (JQ_FIELDS.contains(id)) {
+
+        }
     }
 
     fun broadcast(packet: Packet, source: Character? = null) {
@@ -78,6 +85,7 @@ class Field(val id: Int) {
             val portal: FieldPortal = portals[obj.portal] ?: firstSpawnpoint
             obj.id = obj.id
             obj.fieldId = id
+            obj.moveCollections[id] = MoveCollection(id)
             obj.position = portal.position
             obj.foothold = (if (portal.type != PortalType.START_POINT) getFhByPortal(portal).id else 0).toShort()
             obj.write(obj.setField())
@@ -89,15 +97,9 @@ class Field(val id: Int) {
                             .filter { it != obj }
                             .forEach {
                                 when (it) {
-                                    is AbstractFieldDrop -> {
-                                        enterItemDrop(it, it.enterFieldPacket)
-                                    }
-                                    is FieldMob -> {
-                                        obj.write(it.getEnterFieldPacket(MobSummonType.NORMAL))
-                                    }
-                                    else -> {
-                                        obj.write(it.enterFieldPacket)
-                                    }
+                                    is AbstractFieldDrop -> enterItemDrop(it, it.enterFieldPacket)
+                                    is FieldMob -> obj.write(it.getEnterFieldPacket(MobSummonType.NORMAL))
+                                    else -> obj.write(it.enterFieldPacket)
                                 }
                             }
                 }

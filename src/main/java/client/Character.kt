@@ -17,6 +17,7 @@ import client.player.StatType
 import client.player.friend.FriendList
 import client.player.key.KeyBinding
 import client.player.quest.Quest
+import client.replay.MoveCollection
 import constants.UserConstants
 import constants.UserConstants.expTable
 import database.jooq.Tables
@@ -52,7 +53,7 @@ import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 import kotlin.math.min
 
-class Character(val client: Client, var name: String, val record: Record) : AbstractFieldLife() {
+class Character(val client: Client, var name: String, val record: Record) : SimpleCharacter() {
 
     override var id: Int = record.getValue(Tables.CHARACTERS.ID)
     var gmLevel: Int = record.getValue(Tables.CHARACTERS.GM_LEVEL)
@@ -61,10 +62,10 @@ class Character(val client: Client, var name: String, val record: Record) : Abst
             field = value
             updateSingleStat(StatType.LEVEL)
         }
-    var face: Int = record.getValue(Tables.CHARACTERS.FACE)
-    var hair: Int = record.getValue(Tables.CHARACTERS.HAIR)
-    var gender: Int = record.getValue(Tables.CHARACTERS.GENDER)
-    var skinColor: Int = record.getValue(Tables.CHARACTERS.SKIN)
+    override var face: Int = record.getValue(Tables.CHARACTERS.FACE)
+    override var hair: Int = record.getValue(Tables.CHARACTERS.HAIR)
+    override var gender: Int = record.getValue(Tables.CHARACTERS.GENDER)
+    override var skinColor: Int = record.getValue(Tables.CHARACTERS.SKIN)
     var job: Job = Job.getById(record.getValue(Tables.CHARACTERS.JOB))
         set(value) {
             field = value
@@ -73,7 +74,7 @@ class Character(val client: Client, var name: String, val record: Record) : Abst
     var ap: Int = record.getValue(Tables.CHARACTERS.AP)
     var sp: Int = record.getValue(Tables.CHARACTERS.SP)
     var fame: Int = record.getValue(Tables.CHARACTERS.FAME)
-    var fieldId: Int = record.getValue(Tables.CHARACTERS.MAP)
+    override var fieldId: Int = record.getValue(Tables.CHARACTERS.MAP)
     var spawnpoint: Int = record.getValue(Tables.CHARACTERS.SPAWNPOINT)
 
     var strength: Int = record.getValue(Tables.CHARACTERS.STR)
@@ -119,6 +120,7 @@ class Character(val client: Client, var name: String, val record: Record) : Abst
     val towns: MutableSet<Int> = TreeSet()
     val registeredQuestMobs: MutableSet<Int> = HashSet()
     val guildInvitesSent: MutableSet<String> = HashSet()
+    val moveCollections = HashMap<Int, MoveCollection>()
 
     var keyBindings: MutableMap<Int, KeyBinding> = HashMap()
     var wishlist = IntArray(10)

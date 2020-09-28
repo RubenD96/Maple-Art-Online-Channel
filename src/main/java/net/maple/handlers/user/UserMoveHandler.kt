@@ -2,6 +2,8 @@ package net.maple.handlers.user
 
 import client.Character
 import client.Client
+import client.replay.MoveCollection.Movement
+import constants.FieldConstants.JQ_FIELDS
 import field.movement.MovePath
 import net.maple.SendOpcode
 import net.maple.handlers.PacketHandler
@@ -22,6 +24,20 @@ class UserMoveHandler : PacketHandler {
         reader.readInteger()
 
         val path = chr.move(reader)
+
+        if (JQ_FIELDS.contains(chr.fieldId)) {
+            val len = reader.data.size
+            val data = ByteArray(len)
+            System.arraycopy(reader.data, 0, data, 0, len) // is cloning required?
+
+            println("COMPARE START")
+            println(reader.data)
+            println(data)
+            println("COMPARE END")
+
+            //chr.moveCollections.putIfAbsent(chr.fieldId, MoveCollection(chr.fieldId))
+            chr.moveCollections[chr.fieldId]?.movements?.add(Movement(System.currentTimeMillis(), data))
+        }
 
         chr.field.broadcast(movePlayer(chr, path), chr)
     }
