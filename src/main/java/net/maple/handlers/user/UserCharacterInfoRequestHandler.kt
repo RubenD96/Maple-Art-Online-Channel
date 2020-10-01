@@ -17,9 +17,9 @@ class UserCharacterInfoRequestHandler : PacketHandler {
     override fun handlePacket(reader: PacketReader, c: Client) {
         val chr = c.character
 
-        reader.readInteger()
+        reader.readInteger() // timestamp?
 
-        val target = chr.field.getObject(FieldObjectType.CHARACTER, reader.readInteger()) as Character? ?: return
+        val target = chr.field.getObject(FieldObjectType.CHARACTER, reader.readInteger()) as? Character ?: return
         chr.write(getCharacterInfo(target))
     }
 
@@ -33,7 +33,7 @@ class UserCharacterInfoRequestHandler : PacketHandler {
             pw.writeShort(target.job)
             pw.writeShort(target.fame)
             pw.writeBool(false) // married or not
-            pw.writeMapleString("Guild")
+            pw.writeMapleString(target.guild?.name ?: "")
             pw.writeMapleString("")
             pw.write(0) // pMedalInfo
 
