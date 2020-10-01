@@ -10,34 +10,46 @@ import field.obj.portal.FieldPortal
 import field.obj.reactor.FieldReactor
 import managers.flag.FieldFlag
 import util.logging.LogType
-import util.logging.Logger
 import util.logging.Logger.log
 import java.awt.Point
 
 class FieldManager : Loadable {
 
     // assertion test to check if the fallback map (1000, town of beginnings) exists
-    companion object: Loadable {
+    companion object : Loadable {
         private const val fallback = 1000
 
         init {
             getData("wz/Map/$fallback.mao")!!
         }
+
+        private val instanced = arrayOf(1999, 2999)
     }
 
     val fields: MutableMap<Int, Field> = HashMap()
 
     fun getField(id: Int): Field {
-        synchronized(fields) {
-            var field = fields[id]
+        if (!instanced.contains(id)) {
+            synchronized(fields) {
+                var field = fields[id]
 
-            if (field == null) {
-                field = Field(id)
-                if (!loadFieldData(field)) {
-                    log(LogType.MISSING, "Field $id does not exist", this)
-                    return getField(fallback)
+                if (field == null) {
+                    field = Field(id)
+                    if (!loadFieldData(field)) {
+                        log(LogType.MISSING, "Field $id does not exist", this)
+                        return getField(fallback)
+                    }
+                    fields[id] = field
                 }
-                fields[id] = field
+
+                return field
+            }
+        } else {
+            val field = Field(id)
+
+            if (!loadFieldData(field)) {
+                log(LogType.MISSING, "Field $id does not exist", this)
+                return getField(fallback)
             }
 
             return field
