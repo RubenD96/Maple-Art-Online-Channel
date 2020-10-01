@@ -23,13 +23,21 @@ class FieldManager : Loadable {
             getData("wz/Map/$fallback.mao")!!
         }
 
-        private val instanced = arrayOf(1999, 2999)
+        private val instanced = arrayOf(
+                1999, 2999, 10999, 13999, // boss maps
+                11121, // balloon
+                11998, 11999, 12103, // boat ride to aqua
+                10021, 10022, 10023, // 3rd job
+                13001, 13201, // boat ride joel
+                1602, 1603, 1604, 1605, 1606, 1607, // Deep Tree PQ
+                12011, 12012, 12013, 12014, 12015 // Aqua PQ
+        )
     }
 
     val fields: MutableMap<Int, Field> = HashMap()
 
     fun getField(id: Int): Field {
-        if (!instanced.contains(id)) {
+        if (!isInstanced(id)) {
             synchronized(fields) {
                 var field = fields[id]
 
@@ -60,6 +68,13 @@ class FieldManager : Loadable {
         synchronized(fields) {
             fields.remove(id)
         }
+    }
+
+    private fun isInstanced(id: Int): Boolean {
+        if (instanced.contains(id)) return true
+        if (id >= 101000) return true // floor 101
+        if (id in 14402..14441) return true // CWPQ, just too many maps to do manually
+        return false
     }
 
     private fun loadFieldData(field: Field): Boolean {
