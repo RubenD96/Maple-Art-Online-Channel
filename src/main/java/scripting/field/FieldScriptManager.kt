@@ -1,4 +1,4 @@
-package scripting.map
+package scripting.field
 
 import client.Client
 import field.Field
@@ -14,9 +14,10 @@ object FieldScriptManager : AbstractScriptManager() {
                 println("Mapscript " + script + " is uncoded. (" + field.id + ")")
                 return
             }
-            val unmutableEngine = engine ?: return
-            unmutableEngine.put("field", map)
-            iv.invokeFunction("execute")
+            engine?.let {
+                it.put("field", map)
+                iv.invokeFunction("execute")
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }

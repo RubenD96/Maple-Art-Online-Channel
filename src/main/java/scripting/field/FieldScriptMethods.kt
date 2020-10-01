@@ -1,4 +1,4 @@
-package scripting.map
+package scripting.field
 
 import client.Client
 import field.Field

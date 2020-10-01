@@ -2,10 +2,14 @@ package client.replay
 
 import client.Avatar
 import client.player.Job
+import field.movement.MovePath
 import field.obj.FieldObjectType
+import kotlinx.coroutines.*
 import managers.Loadable
+import net.maple.packets.CharacterPackets.move
 import util.logging.LogType
 import util.logging.Logger
+import util.packet.PacketReader
 
 class Replay : Avatar(), Loadable {
 
@@ -20,7 +24,8 @@ class Replay : Avatar(), Loadable {
     override val fieldObjectType = FieldObjectType.REPLAY
     override var job: Job = Job.getById(jobId)
 
-    val movements = ArrayList<ReplayMovement>()
+    private val movements = ArrayList<ReplayMovement>()
+    private var coroutine: kotlinx.coroutines.Job? = null
 
     fun load(field: Int) {
         val reader = getData("data/replays/$field.replay")
@@ -43,9 +48,27 @@ class Replay : Avatar(), Loadable {
                 data[it] = reader.readByte()
             }
 
-            movements.add(ReplayMovement(timestamp, data))
+            movements.add(ReplayMovement(timestamp.toLong(), move(PacketReader().next(data))))
         }
     }
 
-    class ReplayMovement(val timestamp: Int, val data: ByteArray)
+    fun start() {
+        movements.forEach {
+            coroutine = GlobalScope.launch {
+                async { it.move() }
+            }
+        }
+    }
+
+    private suspend fun ReplayMovement.move() {
+        delay(this.timestamp)
+        move(this.path)
+    }
+
+    // todo test
+    private fun stop() {
+        coroutine?.cancel()
+    }
+
+    private class ReplayMovement(val timestamp: Long, val path: MovePath)
 }

@@ -64,8 +64,9 @@ abstract class AbstractScriptManager {
                 return null;
             }
              */
-            engine = GraalJSScriptEngine.create()
-            c.engines[mutablePath] = engine!!
+            engine = GraalJSScriptEngine.create().also {
+                c.engines[mutablePath] = it
+            }
             try {
                 FileReader(scriptFile).use { engine?.eval(it) }
             } catch (se: ScriptException) {

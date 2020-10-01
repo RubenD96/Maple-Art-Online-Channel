@@ -13,11 +13,13 @@ import client.messages.broadcast.BroadcastMessage
 import client.player.StatType
 import client.player.quest.Quest
 import client.player.quest.QuestState
+import field.movement.MovePath
 import net.maple.SendOpcode
 import net.maple.packets.ItemPackets.encode
 import util.logging.LogType
 import util.logging.Logger
 import util.logging.Logger.log
+import util.packet.Packet
 import util.packet.PacketWriter
 import java.util.function.Consumer
 import java.util.stream.Collectors
@@ -380,5 +382,15 @@ object CharacterPackets {
         effect.encode(pw)
 
         this.write(pw.createPacket())
+    }
+
+    fun Avatar.move(path: MovePath): Packet {
+        val pw = PacketWriter(32)
+
+        pw.writeHeader(SendOpcode.USER_MOVE)
+        pw.writeInt(this.id)
+        path.encode(pw)
+
+        return pw.createPacket()
     }
 }

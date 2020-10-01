@@ -3,7 +3,7 @@ package field
 import client.Character
 import client.player.quest.QuestState
 import client.replay.MoveCollection
-import constants.FieldConstants
+import client.replay.Replay
 import constants.FieldConstants.JQ_FIELDS
 import field.obj.FieldObject
 import field.obj.FieldObjectType
@@ -17,7 +17,7 @@ import managers.MobManager
 import net.maple.packets.FieldPackets.setField
 import net.maple.packets.PartyPackets.updateParty
 import net.server.Server.getCharacter
-import scripting.map.FieldScriptManager.execute
+import scripting.field.FieldScriptManager.execute
 import util.packet.Packet
 import java.awt.Point
 import java.awt.Rectangle
@@ -37,6 +37,8 @@ class Field(val id: Int) {
     lateinit var script: String
     lateinit var mapArea: Rectangle
 
+    var replay: Replay? = null
+
     val portals: MutableMap<Byte, FieldPortal> = HashMap()
     val footholds: MutableMap<Int, Foothold> = HashMap()
     private val objects: MutableMap<FieldObjectType, MutableSet<FieldObject>> = EnumMap(FieldObjectType::class.java)
@@ -53,14 +55,17 @@ class Field(val id: Int) {
         }
 
         if (JQ_FIELDS.contains(id)) {
-
+            replay = Replay().also {
+                it.load(id)
+                enter(it)
+            }
         }
     }
 
     fun broadcast(packet: Packet, source: Character? = null) {
         getObjects(FieldObjectType.CHARACTER).stream()
                 .filter { it !== source }
-                .forEach { (it as Character).write(packet.clone()) }
+                .forEach { (it as? Character)?.write(packet.clone()) }
     }
 
     fun enter(chr: Character, portalName: String) {
@@ -125,11 +130,13 @@ class Field(val id: Int) {
             }
         } else {
             obj.id = runningObjectId.addAndGet(1)
-            if (obj.fieldObjectType === FieldObjectType.DROP) {
-                val drop: AbstractFieldDrop = obj as AbstractFieldDrop
-                enterItemDrop(drop, drop.getEnterFieldPacket(EnterType.PARTY))
-            } else {
-                broadcast(obj.enterFieldPacket)
+            when (obj) {
+                is AbstractFieldDrop -> enterItemDrop(obj, obj.getEnterFieldPacket(EnterType.PARTY))
+                is Replay -> {
+                    broadcast(obj.enterFieldPacket)
+                    obj.start()
+                }
+                else -> broadcast(obj.enterFieldPacket)
             }
         }
         updateControlledObjects()

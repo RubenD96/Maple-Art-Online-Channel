@@ -13,6 +13,9 @@ data class FieldMobTemplate(val id: Int) {
     var maxMP = 0
     var isBoss = false
 
+    var onHit = true
+    var onDeath = true
+
     override fun toString(): String {
         return "FieldMobTemplate{id=$id, name='$name', moveType=$moveType, level=$level, exp=$exp, maxHP=$maxHP, maxMP=$maxMP, boss=$isBoss}"
     }

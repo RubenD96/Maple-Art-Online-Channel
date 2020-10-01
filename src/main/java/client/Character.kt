@@ -36,8 +36,6 @@ import net.database.TownsAPI.add
 import net.database.WishlistAPI.save
 import net.maple.packets.CharacterPackets.message
 import net.maple.packets.CharacterPackets.statUpdate
-import net.maple.packets.FieldPackets.enterField
-import net.maple.packets.FieldPackets.leaveField
 import net.maple.packets.PartyPackets.getUpdatePartyHealthPacket
 import net.server.ChannelServer
 import net.server.Server.getCharacter
@@ -45,7 +43,6 @@ import net.server.Server.parties
 import org.jooq.Record
 import scripting.npc.NPCScriptManager.dispose
 import util.packet.Packet
-import world.guild.Guild
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
