@@ -157,10 +157,17 @@ class Field(val id: Int) {
 
     fun leave(obj: FieldObject, leaveFieldPacket: Packet? = null) {
         removeObject(obj)
-        if (obj is Character) {
-            broadcast(obj.leaveFieldPacket, obj)
-        } else {
-            broadcast(leaveFieldPacket!!)
+        when (obj) {
+            is Character -> {
+                broadcast(obj.leaveFieldPacket, obj)
+            }
+            is Replay -> {
+                broadcast(obj.leaveFieldPacket)
+                replay = null
+            }
+            else -> {
+                broadcast(leaveFieldPacket!!)
+            }
         }
         updateControlledObjects()
     }

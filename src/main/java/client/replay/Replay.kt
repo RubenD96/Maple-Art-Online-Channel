@@ -69,7 +69,7 @@ class Replay : Avatar(), Loadable {
     // todo test
     fun stop() {
         coroutine?.cancel()
-        leaveField()
+        field.leave(this)
     }
 
     private class ReplayMovement(val timestamp: Long, val path: MovePath)
