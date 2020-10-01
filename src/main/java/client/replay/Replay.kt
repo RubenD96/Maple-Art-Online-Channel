@@ -7,6 +7,7 @@ import field.obj.FieldObjectType
 import kotlinx.coroutines.*
 import managers.Loadable
 import net.maple.packets.CharacterPackets.move
+import net.maple.packets.FieldPackets.leaveField
 import util.logging.LogType
 import util.logging.Logger
 import util.packet.PacketReader
@@ -66,8 +67,9 @@ class Replay : Avatar(), Loadable {
     }
 
     // todo test
-    private fun stop() {
+    fun stop() {
         coroutine?.cancel()
+        leaveField()
     }
 
     private class ReplayMovement(val timestamp: Long, val path: MovePath)

@@ -32,8 +32,6 @@ class UserChatHandler : PacketHandler {
         val cmd = msg.split(" ".toRegex()).toTypedArray()
         val textBox = !reader.readBool()
 
-        chr.moveCollections[chr.fieldId]?.export()
-
         if (COMMAND_LIST[chr.gmLevel].contains(cmd[0].substring(1)) && msg[0] == '!') {
             val engine = c.engines["cmd"] ?: GraalJSScriptEngine.create() ?: return
 

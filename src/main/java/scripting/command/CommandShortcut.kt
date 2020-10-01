@@ -3,8 +3,9 @@ package scripting.command
 import client.Character
 import client.Client
 import client.inventory.ModifyInventoriesContext
-import client.inventory.item.templates.ItemTemplate
 import client.inventory.item.slots.ItemSlotBundle
+import client.inventory.item.templates.ItemTemplate
+import client.replay.Replay
 import field.obj.drop.ItemDrop
 import field.obj.life.FieldMob
 import field.obj.life.FieldNPC
@@ -74,5 +75,20 @@ class CommandShortcut(c: Client, _args: Array<String>) : AbstractPlayerInteracti
 
     fun kickMe() {
         chr.client.close()
+    }
+
+    fun exportReplay() {
+        chr.moveCollections[chr.fieldId]?.export()
+    }
+
+    fun startReplay() {
+        chr.field.replay = Replay().also {
+            it.load(chr.field.id)
+            chr.field.enter(it)
+        }
+    }
+
+    fun stopReplay() {
+        chr.field.replay?.stop()
     }
 }
