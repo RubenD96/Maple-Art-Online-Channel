@@ -85,7 +85,7 @@ class Field(val id: Int) {
             val portal: FieldPortal = portals[obj.portal] ?: firstSpawnpoint
             obj.id = obj.id
             obj.fieldId = id
-            obj.moveCollections[id] = MoveCollection(id)
+            obj.moveCollections[id] = MoveCollection(obj, id)
             obj.position = portal.position
             obj.foothold = (if (portal.type != PortalType.START_POINT) getFhByPortal(portal).id else 0).toShort()
             obj.write(obj.setField())

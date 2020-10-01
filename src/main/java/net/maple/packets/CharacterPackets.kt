@@ -1,5 +1,6 @@
 package net.maple.packets
 
+import client.Avatar
 import client.Character
 import client.effects.EffectInterface
 import client.inventory.ItemInventoryType
@@ -63,9 +64,6 @@ object CharacterPackets {
 
         // equips
         val inventory = getInventory(ItemInventoryType.EQUIP).items
-        inventory.entries.stream().filter { it.key >= 0 }
-                .collect(toMap({ it.key }, { it.value }))
-                .encodeEquipInventory(pw) // equip
 
         inventory.entries.stream().filter { it.key >= -100 && it.key < 0 }
                 .collect(toMap({ it.key }, { it.value }))
@@ -74,6 +72,10 @@ object CharacterPackets {
         inventory.entries.stream().filter { it.key >= -1000 && it.key < -100 }
                 .collect(toMap({ it.key }, { it.value }))
                 .encodeEquipInventory(pw) // mask
+
+        inventory.entries.stream().filter { it.key >= 0 }
+                .collect(toMap({ it.key }, { it.value }))
+                .encodeEquipInventory(pw) // equip
 
         inventory.entries.stream().filter { it.key >= -1100 && it.key < -1000 }
                 .collect(toMap({ it.key }, { it.value }))
@@ -187,7 +189,7 @@ object CharacterPackets {
         pw.writeShort(0) // subjob?
     }
 
-    fun Character.encodeLooks(pw: PacketWriter, mega: Boolean) {
+    fun Avatar.encodeLooks(pw: PacketWriter, mega: Boolean) {
         pw.write(this.gender)
         pw.write(this.skinColor)
         pw.writeInt(this.face)
@@ -199,8 +201,8 @@ object CharacterPackets {
         this.pets.forEach { pw.writeInt(it?.item ?: 0) }
     }
 
-    private fun Character.encodeVisualEquips(pw: PacketWriter) {
-        val equips = this.getInventory(ItemInventoryType.EQUIP).items
+    private fun Avatar.encodeVisualEquips(pw: PacketWriter) {
+        val equips = this.getEquips().items
 
         val base = equips.entries.stream()
                 .filter { it.key >= -100 && it.key < 0 }

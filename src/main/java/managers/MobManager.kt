@@ -5,7 +5,7 @@ import util.logging.LogType
 import util.logging.Logger
 import util.logging.Logger.log
 
-object MobManager : AbstractManager() {
+object MobManager : Loadable {
 
     private const val fallback = 100100
 

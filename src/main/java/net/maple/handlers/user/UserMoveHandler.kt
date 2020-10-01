@@ -7,6 +7,7 @@ import constants.FieldConstants.JQ_FIELDS
 import field.movement.MovePath
 import net.maple.SendOpcode
 import net.maple.handlers.PacketHandler
+import util.HexTool
 import util.packet.Packet
 import util.packet.PacketReader
 import util.packet.PacketWriter
@@ -16,7 +17,7 @@ class UserMoveHandler : PacketHandler {
     override fun handlePacket(reader: PacketReader, c: Client) {
         val chr = c.character
 
-        reader.readLong() // probably timestamp
+        reader.readLong()
         reader.read()
         reader.readLong()
         reader.readInteger()
@@ -25,19 +26,10 @@ class UserMoveHandler : PacketHandler {
 
         val path = chr.move(reader)
 
-        if (JQ_FIELDS.contains(chr.fieldId)) {
-            val len = reader.data.size
-            val data = ByteArray(len)
-            System.arraycopy(reader.data, 0, data, 0, len) // is cloning required?
-
-            println("COMPARE START")
-            println(reader.data)
-            println(data)
-            println("COMPARE END")
-
+        //if (JQ_FIELDS.contains(chr.fieldId)) {
             //chr.moveCollections.putIfAbsent(chr.fieldId, MoveCollection(chr.fieldId))
-            chr.moveCollections[chr.fieldId]?.movements?.add(Movement(System.currentTimeMillis(), data))
-        }
+            chr.moveCollections[chr.fieldId]?.movements?.add(Movement(System.currentTimeMillis(), reader.data))
+        //}
 
         chr.field.broadcast(movePlayer(chr, path), chr)
     }

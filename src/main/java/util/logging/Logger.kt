@@ -47,14 +47,14 @@ object Logger {
         val file = if (!type.bulk) {
             File("$root/${type.name}/${cl.javaClass.name} - ${System.currentTimeMillis()}.txt")
         } else {
-            File("$root/bulk/${type.name}")
+            File("$root/bulk/${type.name}.txt")
         }
 
         if (!file.exists()) {
             file.createNewFile()
 
             if (ServerConstants.LOG) {
-                println("File ${file.name} created")
+                println("[LOGGER] File ${file.name} created")
             }
         }
 
@@ -69,16 +69,17 @@ object Logger {
                 it.write(complete.toByteArray())
             }
         } else {
-            bulkAdder[type]?.add(message) ?: log(LogType.MISSING, "Could not add ${type.name} to the bulkAdder", this)
+            bulkAdder[type]?.add(message) ?: log(LogType.MISSING, "[LOGGER] Could not add ${type.name} to the bulkAdder", this)
         }
     }
 
     suspend fun dumpBulk() {
         delay(BULK_DUMP_TIMER)
+        println("[LOGGER] Bulk dumped")
         withContext(Dispatchers.IO) {
             for (bulk in bulkAdder) {
                 try {
-                    FileWriter("$root/bulk/${bulk.key.name}", true).use { fw ->
+                    FileWriter("$root/bulk/${bulk.key.name}.txt", true).use { fw ->
                         BufferedWriter(fw).use { bw ->
                             PrintWriter(bw).use { out ->
                                 for (message in bulk.value) {

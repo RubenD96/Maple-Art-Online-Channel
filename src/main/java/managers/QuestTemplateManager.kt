@@ -2,7 +2,7 @@ package managers
 
 import client.player.quest.QuestTemplate
 
-object QuestTemplateManager : AbstractManager() {
+object QuestTemplateManager : Loadable {
 
     private val templates: MutableMap<Int, QuestTemplate> = HashMap()
 

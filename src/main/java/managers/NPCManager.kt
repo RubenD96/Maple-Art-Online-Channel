@@ -5,7 +5,7 @@ import util.logging.LogType
 import util.logging.Logger
 import util.logging.Logger.log
 
-object NPCManager : AbstractManager() {
+object NPCManager : Loadable {
 
     private const val fallback = 22000
 

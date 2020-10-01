@@ -6,12 +6,12 @@ import util.logging.LogType
 import util.logging.Logger
 import util.logging.Logger.log
 
-object ItemManager : AbstractManager() {
+object ItemManager : Loadable {
 
-    private const val fallback = 4000000
+    private const val fallback = 3990024
 
     // assertion test to check if the fallback items exist:
-    // (4000000, blue snail shell)
+    // (3990024, question mark)
     // (1302000, sword) - don't think we need this
     init {
         getData("wz/Item/$fallback.mao")!!

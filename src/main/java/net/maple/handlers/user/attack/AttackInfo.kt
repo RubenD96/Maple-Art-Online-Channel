@@ -51,12 +51,12 @@ class AttackInfo(val type: AttackType, val chr: Character, val r: PacketReader) 
         val v17 = r.readShort()
         isLeft = v17.toInt() shr 15 and 1 != 0
         action = v17.toInt() and 0xFFF
-        println(action)
+        //println(action)
 
         r.readInteger()
 
         attackActionType = r.readByte()
-        println(attackActionType)
+        //println(attackActionType)
         attackSpeed = r.readByte()
         attackTime = r.readInteger()
 

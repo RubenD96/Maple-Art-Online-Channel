@@ -23,7 +23,6 @@ import constants.UserConstants.expTable
 import database.jooq.Tables
 import field.Field
 import field.obj.FieldObjectType
-import field.obj.life.AbstractFieldLife
 import field.obj.life.FieldControlledObject
 import net.database.CharacterAPI.getKeyBindings
 import net.database.CharacterAPI.getOldPartyId
@@ -35,7 +34,6 @@ import net.database.ItemAPI.saveInventories
 import net.database.QuestAPI.saveInfo
 import net.database.TownsAPI.add
 import net.database.WishlistAPI.save
-import net.maple.packets.CharacterPackets
 import net.maple.packets.CharacterPackets.message
 import net.maple.packets.CharacterPackets.statUpdate
 import net.maple.packets.FieldPackets.enterField
@@ -53,11 +51,11 @@ import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 import kotlin.math.min
 
-class Character(val client: Client, var name: String, val record: Record) : SimpleCharacter() {
+class Character(val client: Client, override var name: String, val record: Record) : Avatar() {
 
     override var id: Int = record.getValue(Tables.CHARACTERS.ID)
     var gmLevel: Int = record.getValue(Tables.CHARACTERS.GM_LEVEL)
-    var level: Int = record.getValue(Tables.CHARACTERS.LEVEL)
+    override var level: Int = record.getValue(Tables.CHARACTERS.LEVEL)
         set(value) {
             field = value
             updateSingleStat(StatType.LEVEL)
@@ -66,7 +64,7 @@ class Character(val client: Client, var name: String, val record: Record) : Simp
     override var hair: Int = record.getValue(Tables.CHARACTERS.HAIR)
     override var gender: Int = record.getValue(Tables.CHARACTERS.GENDER)
     override var skinColor: Int = record.getValue(Tables.CHARACTERS.SKIN)
-    var job: Job = Job.getById(record.getValue(Tables.CHARACTERS.JOB))
+    override var job: Job = Job.getById(record.getValue(Tables.CHARACTERS.JOB))
         set(value) {
             field = value
             updateSingleStat(StatType.JOB)
@@ -74,7 +72,7 @@ class Character(val client: Client, var name: String, val record: Record) : Simp
     var ap: Int = record.getValue(Tables.CHARACTERS.AP)
     var sp: Int = record.getValue(Tables.CHARACTERS.SP)
     var fame: Int = record.getValue(Tables.CHARACTERS.FAME)
-    override var fieldId: Int = record.getValue(Tables.CHARACTERS.MAP)
+    var fieldId: Int = record.getValue(Tables.CHARACTERS.MAP)
     var spawnpoint: Int = record.getValue(Tables.CHARACTERS.SPAWNPOINT)
 
     var strength: Int = record.getValue(Tables.CHARACTERS.STR)
@@ -112,8 +110,6 @@ class Character(val client: Client, var name: String, val record: Record) : Simp
     /**
      * Collections
      */
-    private val inventories: MutableMap<ItemInventoryType, ItemInventory> = EnumMap(ItemInventoryType::class.java)
-    val pets = arrayOfNulls<Pet>(3)
     val quickSlotKeys = IntArray(8)
     val controlledObjects: MutableList<FieldControlledObject> = ArrayList()
     val quests: MutableMap<Int, Quest> = HashMap()
@@ -128,17 +124,14 @@ class Character(val client: Client, var name: String, val record: Record) : Simp
     /**
      * nullables
      */
-    var portableChair: Int? = null
     var party: Party? = null
     var npcShop: NPCShop? = null
-    var guild: Guild? = null
     var activeStorage: ItemStorageInteraction? = null
 
     init {
         portal = spawnpoint.toByte()
         resetQuickSlot()
         keyBindings = getKeyBindings(id)
-        inventories[ItemInventoryType.EQUIP] = ItemInventory(24.toShort())
         inventories[ItemInventoryType.CONSUME] = ItemInventory(24.toShort())
         inventories[ItemInventoryType.INSTALL] = ItemInventory(24.toShort())
         inventories[ItemInventoryType.ETC] = ItemInventory(24.toShort())
@@ -435,11 +428,6 @@ class Character(val client: Client, var name: String, val record: Record) : Simp
     fun removeMe() {
         field.removeObject(this)
     }
-
-    override val enterFieldPacket: Packet
-        get() = enterField()
-    override val leaveFieldPacket: Packet
-        get() = leaveField()
 
     override fun toString(): String {
         return "$name:$id"

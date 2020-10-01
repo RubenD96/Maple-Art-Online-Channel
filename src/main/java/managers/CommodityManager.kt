@@ -6,7 +6,7 @@ import util.logging.LogType
 import util.logging.Logger
 import util.logging.Logger.log
 
-object CommodityManager : AbstractManager() {
+object CommodityManager : Loadable {
 
     private val commodities: MutableMap<Int, Commodity> = HashMap()
 

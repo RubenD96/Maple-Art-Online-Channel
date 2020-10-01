@@ -1,5 +1,6 @@
 package net.maple.packets
 
+import client.Avatar
 import client.Character
 import client.effects.FieldEffectInterface
 import field.Field
@@ -46,7 +47,7 @@ object FieldPackets {
         return pw.createPacket()
     }
 
-    fun Character.enterField(): Packet {
+    fun Avatar.enterField(): Packet {
         val pw = PacketWriter(32)
 
         pw.writeHeader(SendOpcode.USER_ENTER_FIELD)
@@ -107,7 +108,7 @@ object FieldPackets {
         return pw.createPacket()
     }
 
-    fun Character.leaveField(): Packet {
+    fun Avatar.leaveField(): Packet {
         val pw = PacketWriter(6)
 
         pw.writeHeader(SendOpcode.USER_LEAVE_FIELD)

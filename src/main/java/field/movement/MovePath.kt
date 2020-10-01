@@ -17,10 +17,6 @@ class MovePath(packet: PacketReader) : MoveFragment {
         decode(packet)
     }
 
-    override fun apply(life: FieldLife) {
-        fragments.forEach { it.apply(life) }
-    }
-
     override fun decode(packet: PacketReader) {
         position = packet.readPoint()
         vposition = packet.readPoint()
@@ -69,6 +65,10 @@ class MovePath(packet: PacketReader) : MoveFragment {
                 MovePathAttribute.STAT_CHANGE -> fragments.add(StatChangeMoveFragment(movePathAttribute, packet))
             }
         }
+    }
+
+    override fun apply(life: FieldLife) {
+        fragments.forEach { it.apply(life) }
     }
 
     override fun encode(packet: PacketWriter) {

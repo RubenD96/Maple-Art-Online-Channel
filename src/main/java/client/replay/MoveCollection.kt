@@ -1,10 +1,13 @@
 package client.replay
 
+import client.Character
 import util.Exportable
 import util.packet.Packet
+import util.packet.PacketReader
 import util.packet.PacketWriter
+import java.awt.Point
 
-class MoveCollection(val field: Int) : Exportable {
+class MoveCollection(val chr: Character, val field: Int) : Exportable {
 
     companion object {
         // 2 (header) + 29 (see UserMoveHandler)
@@ -18,7 +21,14 @@ class MoveCollection(val field: Int) : Exportable {
     override fun toByteStream(): Packet {
         val pw = PacketWriter(32)
 
-        // TODO write character data
+        pw.writeInt(chr.gender)
+        pw.writeInt(chr.skinColor)
+        pw.writeInt(chr.face)
+        pw.writeInt(chr.hair)
+        pw.writeInt(chr.level)
+        pw.writeMapleString(chr.name)
+        pw.writeInt(chr.job)
+
         val firstTS = movements[0].timestamp
 
         pw.writeShort(movements.size)

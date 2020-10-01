@@ -1,6 +1,7 @@
 package world.guild
 
 import client.Character
+import util.HexTool
 import util.logging.LogType
 import util.logging.Logger
 import util.logging.Logger.log
@@ -53,7 +54,7 @@ class Guild(val id: Int) {
 
     fun broadcast(packet: Packet, ignored: Character?) {
         synchronized(members) {
-            log(LogType.GUILD, "[gid: $id] broadcast (${packet.header})", this)
+            log(LogType.GUILD, "[gid: $id] broadcast (${HexTool.toHex(packet.header.toByte())})", this, ignored?.client)
             members.values.stream()
                     .filter { it.isOnline }
                     .filter { it.character !== ignored } // useless filter?

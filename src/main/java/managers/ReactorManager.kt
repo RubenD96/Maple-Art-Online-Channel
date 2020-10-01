@@ -7,7 +7,7 @@ import util.logging.LogType
 import util.logging.Logger
 import util.logging.Logger.log
 
-object ReactorManager : AbstractManager() {
+object ReactorManager : Loadable {
 
     private const val fallback = 2402001
 

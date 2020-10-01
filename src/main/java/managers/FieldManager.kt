@@ -14,10 +14,10 @@ import util.logging.Logger
 import util.logging.Logger.log
 import java.awt.Point
 
-class FieldManager : AbstractManager() {
+class FieldManager : Loadable {
 
     // assertion test to check if the fallback map (1000, town of beginnings) exists
-    companion object {
+    companion object: Loadable {
         private const val fallback = 1000
 
         init {
