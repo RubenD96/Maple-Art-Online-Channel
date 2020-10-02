@@ -15,11 +15,11 @@ import java.awt.Point
 
 class FieldManager : Loadable {
 
-    // assertion test to check if the fallback map (1000, town of beginnings) exists
     companion object : Loadable {
         private const val fallback = 1000
 
         init {
+            // assertion test to check if the fallback map (1000, town of beginnings) exists
             getData("wz/Map/$fallback.mao")!!
         }
 
@@ -28,9 +28,7 @@ class FieldManager : Loadable {
                 11121, // balloon
                 11998, 11999, 12103, // boat ride to aqua
                 10021, 10022, 10023, // 3rd job
-                13001, 13201, // boat ride joel
-                1602, 1603, 1604, 1605, 1606, 1607, // Deep Tree PQ
-                12011, 12012, 12013, 12014, 12015 // Aqua PQ
+                13001, 13201 // boat ride joel
         )
     }
 
@@ -73,7 +71,9 @@ class FieldManager : Loadable {
     private fun isInstanced(id: Int): Boolean {
         if (instanced.contains(id)) return true
         if (id >= 101000) return true // floor 101
-        if (id in 14402..14441) return true // CWPQ, just too many maps to do manually
+        if (id in 1602..1607) return true // DTPQ
+        if (id in 12011..12015) return true // APQ
+        if (id in 14402..14441) return true // CWPQ
         return false
     }
 

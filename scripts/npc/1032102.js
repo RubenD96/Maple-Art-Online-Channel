@@ -55,16 +55,3 @@ function getAvailableDestinations() {
     }
     return ret;
 }
-
-function getCorrectPortalForTown(town) {
-    switch (town) {
-        case 1500: // town 1
-            return "st03";
-        case 2000: // town 2
-            return "st00";
-        case 10000: // town 10
-            return "st05";
-        default:
-            return 0;
-    }
-}
