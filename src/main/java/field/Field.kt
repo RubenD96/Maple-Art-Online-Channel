@@ -56,8 +56,9 @@ class Field(val id: Int) {
 
         if (JQ_FIELDS.contains(id)) {
             replay = Replay().also {
-                it.load(id)
-                enter(it)
+                if (it.load(this)) {
+                    enter(it)
+                }
             }
         }
     }

@@ -2,12 +2,15 @@ package client.replay
 
 import client.Avatar
 import client.player.Job
+import field.Field
 import field.movement.MovePath
 import field.obj.FieldObjectType
-import kotlinx.coroutines.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import managers.Loadable
 import net.maple.packets.CharacterPackets.move
-import net.maple.packets.FieldPackets.leaveField
 import util.logging.LogType
 import util.logging.Logger
 import util.packet.PacketReader
@@ -28,10 +31,14 @@ class Replay : Avatar(), Loadable {
     private val movements = ArrayList<ReplayMovement>()
     private var coroutine: kotlinx.coroutines.Job? = null
 
-    fun load(field: Int) {
-        val reader = getData("data/replays/$field.replay")
-                ?: return Logger.log(LogType.MISSING, "Replay on field $field not found", this@Replay)
+    fun load(field: Field): Boolean {
+        val reader = getData("data/replays/${field.id}.replay")
+                ?: return run {
+                    Logger.log(LogType.MISSING, "Replay on field ${field.id} not found", this@Replay)
+                    false
+                }
 
+        this.field = field
         gender = reader.readInteger()
         skinColor = reader.readInteger()
         face = reader.readInteger()
@@ -51,22 +58,27 @@ class Replay : Avatar(), Loadable {
 
             movements.add(ReplayMovement(timestamp.toLong(), move(PacketReader().next(data))))
         }
+        position = movements[0].path.position
+        return true
     }
 
     fun start() {
-        movements.forEach {
-            coroutine = GlobalScope.launch {
+        coroutine = GlobalScope.launch {
+            movements.forEach {
                 async { it.move() }
+            }
+            async {
+                delay(movements[movements.size - 1].timestamp + 1000)
+                start()
             }
         }
     }
 
     private suspend fun ReplayMovement.move() {
         delay(this.timestamp)
-        move(this.path)
+        field.broadcast(move(this.path))
     }
 
-    // todo test
     fun stop() {
         coroutine?.cancel()
         field.leave(this)
