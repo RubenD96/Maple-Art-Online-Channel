@@ -1,11 +1,10 @@
 package client.replay
 
 import client.Character
+import net.maple.packets.CharacterPackets.encodeVisualEquips
 import util.Exportable
 import util.packet.Packet
-import util.packet.PacketReader
 import util.packet.PacketWriter
-import java.awt.Point
 
 class MoveCollection(val chr: Character, val field: Int) : Exportable {
 
@@ -16,7 +15,9 @@ class MoveCollection(val chr: Character, val field: Int) : Exportable {
 
     val movements = ArrayList<Movement>()
 
-    override val location: String = "data/replays/$field.replay"
+    override val fileName: String = "$field.replay"
+    override val location: String = "data/replays/"
+    override val backups: String = "data/replays/backups/"
 
     override fun toByteStream(): Packet {
         val pw = PacketWriter(32)
@@ -28,6 +29,8 @@ class MoveCollection(val chr: Character, val field: Int) : Exportable {
         pw.writeInt(chr.level)
         pw.writeMapleString(chr.name)
         pw.writeInt(chr.job)
+
+        chr.encodeVisualEquips(pw)
 
         val firstTS = movements[0].timestamp
 

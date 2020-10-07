@@ -203,7 +203,7 @@ object CharacterPackets {
         this.pets.forEach { pw.writeInt(it?.item ?: 0) }
     }
 
-    private fun Avatar.encodeVisualEquips(pw: PacketWriter) {
+    fun Avatar.encodeVisualEquips(pw: PacketWriter) {
         val equips = this.getEquips().items
 
         val base = equips.entries.stream()

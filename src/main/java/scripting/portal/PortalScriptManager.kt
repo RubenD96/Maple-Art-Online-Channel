@@ -20,9 +20,10 @@ object PortalScriptManager : AbstractScriptManager() {
                 return
             }
 
-            val unmutableEngine = engine ?: return
-            unmutableEngine.put("portal", portalScriptMethods)
-            iv.invokeFunction("execute")
+            engine?.run {
+                this.put("portal", portalScriptMethods)
+                iv.invokeFunction("execute")
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }

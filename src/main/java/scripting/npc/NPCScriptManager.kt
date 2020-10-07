@@ -64,15 +64,9 @@ object NPCScriptManager : AbstractScriptManager() {
 
     fun dispose(cm: NPCConversationManager) {
         val c = cm.c
-        //c.getCharacter().setCS(false);
-        //c.getCharacter().setNpcCooldown(System.currentTimeMillis());
         cms.remove(c)
         scripts.remove(c)
-
-        /*if (cm.getScriptName() != null) {
-            resetContext("npc/" + cm.getScriptName() + ".js", c);
-        } else {*/resetContext("npc/" + cm.npcId + ".js", c)
-        //}
+        resetContext("npc/" + cm.npcId + ".js", c)
     }
 
     fun dispose(c: Client) {

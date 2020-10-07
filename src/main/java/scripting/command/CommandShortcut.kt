@@ -82,14 +82,14 @@ class CommandShortcut(c: Client, _args: Array<String>) : AbstractPlayerInteracti
     }
 
     fun startReplay() {
-        chr.field.replay = Replay().also {
-            if (it.load(chr.field)) {
-                chr.field.enter(it)
-            }
-        }
+        chr.field.startReplay()
     }
 
     fun stopReplay() {
         chr.field.replay?.stop()
+    }
+
+    fun clearEngines() {
+        c.engines.clear()
     }
 }

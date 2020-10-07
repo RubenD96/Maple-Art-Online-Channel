@@ -19,7 +19,10 @@ class UserCharacterInfoRequestHandler : PacketHandler {
 
         reader.readInteger() // timestamp?
 
-        val target = chr.field.getObject(FieldObjectType.CHARACTER, reader.readInteger()) as? Character ?: return
+        val target = chr.field.getObject(FieldObjectType.CHARACTER, reader.readInteger()) as? Character
+                ?: return run {
+                    chr.enableActions()
+                }
         chr.write(getCharacterInfo(target))
     }
 

@@ -9,6 +9,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import managers.ItemManager
 import managers.Loadable
 import net.maple.packets.CharacterPackets.move
 import util.logging.LogType
@@ -31,11 +32,11 @@ class Replay : Avatar(), Loadable {
     private val movements = ArrayList<ReplayMovement>()
     private var coroutine: kotlinx.coroutines.Job? = null
 
-    fun load(field: Field): Boolean {
+    fun load(field: Field): Replay? {
         val reader = getData("data/replays/${field.id}.replay")
                 ?: return run {
                     Logger.log(LogType.MISSING, "Replay on field ${field.id} not found", this@Replay)
-                    false
+                    null
                 }
 
         this.field = field
@@ -46,6 +47,8 @@ class Replay : Avatar(), Loadable {
         level = reader.readInteger()
         name = reader.readMapleString()
         job = Job.getById(reader.readInteger())
+
+        decodeVisualEquips(reader)
 
         val count = reader.readShort()
         repeat(count.toInt()) {
@@ -59,7 +62,22 @@ class Replay : Avatar(), Loadable {
             movements.add(ReplayMovement(timestamp.toLong(), move(PacketReader().next(data))))
         }
         position = movements[0].path.position
-        return true
+
+        return this
+    }
+
+    private fun decodeVisualEquips(reader: PacketReader) {
+        var slot: Byte
+        while (reader.readByte().also { slot = it } != 0xFF.toByte()) { // base
+            getEquips().items[(-slot).toShort()] = ItemManager.getItem(reader.readInteger()).toItemSlot()
+        }
+
+        while (reader.readByte().also { slot = it } != 0xFF.toByte()) { // mask
+            getEquips().items[(-slot).toShort()] = ItemManager.getItem(reader.readInteger()).toItemSlot()
+        }
+
+        val weapon = reader.readInteger()
+        if (weapon != 0) getEquips().items[-111] = ItemManager.getItem(weapon).toItemSlot()
     }
 
     fun start() {

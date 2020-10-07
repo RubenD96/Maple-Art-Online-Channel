@@ -5,7 +5,6 @@ import net.maple.SendOpcode
 import net.maple.handlers.PacketHandler
 import net.server.Server.channels
 import util.logging.LogType
-import util.logging.Logger
 import util.logging.Logger.log
 import util.packet.Packet
 import util.packet.PacketReader
@@ -17,26 +16,24 @@ class UserTransferChannelRequestHandler : PacketHandler {
         val chr = c.character
         val channelId = reader.readByte()
         // todo field limit check
+        val id = channelId.toInt()
         try {
-            val id = channelId.toInt()
             val channel = channels[id]
-            if (id < 0 || id >= channels.size) {
-                if (c.worldChannel != channel) {
-                    c.acquireMigrateState()
-                    try {
-                        //c.getCharacter().save();
-                        c.changeChannel(channel)
-                    } finally {
-                        c.releaseMigrateState()
-                    }
-                    return
+
+            if (c.worldChannel != channel) {
+                c.acquireMigrateState()
+                try {
+                    //c.getCharacter().save();
+                    c.changeChannel(channel)
+                } finally {
+                    c.releaseMigrateState()
                 }
-                //c.write(fail())
-                //c.close(this, "CC to same channel");
-            } else {
-                log(LogType.NULL, "Channel is null ($id)", this)
+                return
             }
+            //c.write(fail())
+            //c.close(this, "CC to same channel");
         } catch (e: Exception) {
+            log(LogType.NULL, "Channel is null ($id) (${channels.size})", this, c)
             e.printStackTrace()
         }
         c.write(fail())

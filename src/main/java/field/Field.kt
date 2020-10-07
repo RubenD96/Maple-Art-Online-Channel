@@ -49,17 +49,18 @@ class Field(val id: Int) {
         private val runningObjectId = AtomicInteger(1000000000)
     }
 
+    fun startReplay() {
+        replay?.stop()
+        replay = Replay().load(this)?.also { enter(it) }
+    }
+
     init {
         for (type in FieldObjectType.values()) {
             objects[type] = LinkedHashSet()
         }
 
         if (JQ_FIELDS.contains(id)) {
-            replay = Replay().also {
-                if (it.load(this)) {
-                    enter(it)
-                }
-            }
+            startReplay()
         }
     }
 
