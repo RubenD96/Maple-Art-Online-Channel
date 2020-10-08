@@ -1,7 +1,7 @@
 function onHit() {
-    console.log(`onHit (${mob.template.id})`)
+    console.log(`onHit (${mob.getMob().getTemplate().getId()})`);
 }
 
 function onDeath() {
-    console.log(`onDeath (${mob.template.id})`)
+    console.log(`onDeath (${mob.getMob().getTemplate().getId()})`);
 }

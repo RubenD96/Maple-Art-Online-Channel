@@ -24,6 +24,7 @@ object MobScriptManager : AbstractScriptManager() {
                 return false
             }
 
+            println(function)
             engine?.let {
                 it.put("mob", mob)
                 iv.invokeFunction(function) // todo add exception, probably

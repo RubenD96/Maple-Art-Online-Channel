@@ -178,31 +178,34 @@ class Field(val id: Int) {
         synchronized(toRespawn) {
             val spawned: MutableList<Respawn> = ArrayList()
             val time = System.currentTimeMillis()
-            toRespawn.forEach {
-                if (time > it.time) {
-                    val newSpawn: FieldMobSpawnPoint = getRandomViableMobSpawnPoint(it.mob)
-                    val template: FieldMobTemplate = MobManager.getMob(it.mob)
-                    val mob = FieldMob(template, false)
-                    mob.hp = mob.template.maxHP
-                    mob.mp = mob.template.maxMP
-                    mob.home = newSpawn.fh
-                    mob.time = it.cooldown
-                    mob.rx0 = newSpawn.rx0
-                    mob.rx1 = newSpawn.rx1
-                    mob.position = newSpawn.point
-                    mob.foothold = newSpawn.fh
-                    mob.cy = newSpawn.cy
-                    mob.hide = false
-                    mob.field = this
-                    enter(mob)
-                    spawned.add(it)
+            toRespawn.forEach { respawn ->
+                if (time > respawn.time) {
+                    getRandomViableMobSpawnPoint(respawn.mob)?.let {
+                        val template: FieldMobTemplate = MobManager.getMob(respawn.mob)
+                        val mob = FieldMob(template, false)
+                        mob.hp = mob.template.maxHP
+                        mob.mp = mob.template.maxMP
+                        mob.home = it.fh
+                        mob.time = respawn.cooldown
+                        mob.rx0 = it.rx0
+                        mob.rx1 = it.rx1
+                        mob.position = it.point
+                        mob.foothold = it.fh
+                        mob.cy = it.cy
+                        mob.hide = false
+                        mob.field = this
+                        enter(mob)
+                    }
+                    spawned.add(respawn)
                 }
             }
             spawned.forEach { toRespawn.remove(it) }
         }
     }
 
-    private fun getRandomViableMobSpawnPoint(mob: Int): FieldMobSpawnPoint {
+    private fun getRandomViableMobSpawnPoint(mob: Int): FieldMobSpawnPoint? {
+        if (mobSpawnPoints.isEmpty()) return null // spawned in a map with no mob spawns, don't respawn
+
         val spawnPoints = mobSpawnPoints.stream().filter { sp: FieldMobSpawnPoint -> sp.id == mob }.toArray()
         return spawnPoints[Random().nextInt(spawnPoints.size)] as FieldMobSpawnPoint
     }
