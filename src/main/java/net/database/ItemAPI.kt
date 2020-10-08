@@ -16,7 +16,6 @@ import net.database.DatabaseCore.connection
 import org.jooq.exception.DataAccessException
 import util.HexTool
 import util.logging.LogType
-import util.logging.Logger
 import util.logging.Logger.log
 import java.util.*
 import java.util.stream.IntStream
@@ -86,8 +85,7 @@ object ItemAPI {
     private fun deleteOldItems(chr: Character): Set<ByteArray> {
         val toDelete: MutableSet<ByteArray> = HashSet()
         val keep: MutableSet<ByteArray> = HashSet()
-        val res = connection
-                .select(INVENTORIES.ID)
+        val res = connection.select(INVENTORIES.ID)
                 .from(INVENTORIES)
                 .where(INVENTORIES.CID.eq(chr.id))
                 .fetch()
@@ -341,8 +339,7 @@ object ItemAPI {
      */
     private fun loadEquips(chr: Character) {
         val equips = chr.getInventory(ItemInventoryType.EQUIP).items
-        val equipData = connection
-                .select()
+        val equipData = connection.select()
                 .from(EQUIPS)
                 .join(INVENTORIES)
                 .onKey()

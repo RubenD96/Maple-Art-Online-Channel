@@ -59,7 +59,7 @@ object FieldPackets {
         this.guild?.let {
             pw.writeMapleString(it.name)
             it.mark?.encode(pw) ?: pw.write(ByteArray(6))
-        } ?: pw.writeMapleString("").write(ByteArray(6))
+        } ?: pw.writeMapleString(if (this is Character) "" else "Replay").write(ByteArray(6))
 
         // temp stats
         // masks
