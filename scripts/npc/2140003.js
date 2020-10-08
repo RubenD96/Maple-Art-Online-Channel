@@ -10,6 +10,7 @@ let name;
 let rankings;
 let option;
 let sel;
+let mastery;
 
 const line = "-----------------------";
 const options = [
@@ -18,6 +19,7 @@ const options = [
     "Kill count",
     "Mob kills",
     "Boss kills",
+    "Masteries",
     //"Total playtime rankings",
     //"Mastery rankings"
 ];
@@ -48,6 +50,7 @@ function converse(m, s) {
             cm.sendSimple(str);
         } else if (status === 2) {
             sel = -1;
+            mastery = undefined;
             option = options[s];
             switch (option) {
                 case "Regular":
@@ -60,20 +63,28 @@ function converse(m, s) {
                     showRankings(rankings.getKillCount());
                     break;
                 case "Mob kills":
-                    showList(rankings.getMobs(), "Mobs");
+                    showMobList(rankings.getMobs(), "Mobs");
                     break;
                 case "Boss kills":
-                    showList(rankings.getBosses(), "Bosses");
+                    showMobList(rankings.getBosses(), "Bosses");
+                    break;
+                case "Masteries":
+                    showMasteryList(rankings.getMasteryTypes(), "Masteries");
                     break;
             }
         } else if (status === 3) {
-            sel = s;
             switch (option) {
                 case "Mob kills":
+                    sel = s;
                     showRankings(rankings.getMobKills().get(s));
                     break;
                 case "Boss kills":
+                    sel = s;
                     showRankings(rankings.getBossKills().get(s));
+                    break;
+                case "Masteries":
+                    mastery = rankings.getMasteryTypes().get(s);
+                    showRankings(rankings.getMasteries().get(mastery));
                     break;
             }
         }
@@ -83,6 +94,7 @@ function converse(m, s) {
 function showRankings(players) {
     let str = ``;
     let showPersonal = true;
+
     for (let i = 0; i < players.size(); i++) {
         const player = players.get(i);
         if (player.getName() === name) {
@@ -96,6 +108,7 @@ function showRankings(players) {
         }
         str += `\r\n\t#k${getValueType(player)}#k` + (i !== players.size() - 1 ? (`\r\n` + line) : ``);
     }
+
     if (showPersonal) {
         let personalRank = rankings.getRankByName(players, name);
         if (personalRank !== null) { // player is in the rankings
@@ -104,8 +117,16 @@ function showRankings(players) {
             str += `\r\n\t${getValueType(player)}`;
         }
     }
-    const title = sel === -1 ? cm.letters(option) : cm.letters(cm.getMobTemplate(sel).getName());
-    cm.sendOk(`${title}\r\n\r\nThe rankings are as follows:\r\n${str}`);
+
+    let title;
+    if (sel === -1 && mastery === undefined) {
+        title = option;
+    } else if (mastery === undefined) {
+        title = cm.getMobTemplate(sel).getName();
+    } else {
+        title = mastery.toString();
+    }
+    cm.sendOk(`${cm.letters(title)}\r\n\r\nThe rankings are as follows:\r\n${str}`);
     status = 0;
 }
 
@@ -120,10 +141,12 @@ function getValueType(player) {
         case "Boss kills":
             const kills = player.getMobKills().get(sel);
             return `#e#r${kills}#k kill` + (kills === 1 ? "" : "s" + `#n`);
+        case "Masteries":
+            return `Lvl. #r${player.getMasteries().get(sel)}#k`;
     }
 }
 
-function showList(list, title) {
+function showMobList(list, title) {
     let str = `#b`;
     for (const item of list) {
         if (title !== "Bosses" || cm.getMobTemplate(item).isBoss()) {
@@ -135,5 +158,15 @@ function showList(list, title) {
         cm.dispose();
         return;
     }
-    cm.sendSimple(`${cm.letters(title)}\r\n\r\nWhich mob would you like to see the kill rankings for?\r\n${str}`);
+    cm.sendSimple(`${cm.letters(title)}\r\n\r\nWhich mob would you like to see the kill rankings for?${str}`);
+}
+
+function showMasteryList(list, title) {
+    let str = `#b`;
+    let i = 0;
+    for (const item of list) {
+        str += `\r\n#L${i}#${item.toString().toLowerCase()}#l`;
+        i++;
+    }
+    cm.sendSimple(`${cm.letters(title)}\r\n\r\nWhich mastery would you like to see the rankings for?${str}`);
 }

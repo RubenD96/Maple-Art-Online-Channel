@@ -27,7 +27,7 @@ class FieldMob(val template: FieldMobTemplate, left: Boolean) : AbstractFieldCon
     var hp = 0
     var mp = 0
     var home: Short = 0
-    var time = 0
+    var time = -1
     var controllerDistance = 0
 
     init {
@@ -68,7 +68,9 @@ class FieldMob(val template: FieldMobTemplate, left: Boolean) : AbstractFieldCon
                     .forEach { it.progress(template.id) }
         }
 
-        field.queueRespawn(template.id, time, System.currentTimeMillis() + time * 1000)
+        if (time != -1) {
+            field.queueRespawn(template.id, time, System.currentTimeMillis() + time * 1000)
+        }
 
         drop(chr)
     }

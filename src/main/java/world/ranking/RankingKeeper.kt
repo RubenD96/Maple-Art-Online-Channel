@@ -1,11 +1,11 @@
 package world.ranking
 
+import client.mastery.MasteryType
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import managers.MobManager
 import net.database.RankingAPI
 import util.logging.LogType
-import util.logging.Logger
 import util.logging.Logger.log
 import java.util.*
 import java.util.stream.Collectors
@@ -22,8 +22,9 @@ object RankingKeeper {
     var regular: List<PlayerRanking> = ArrayList()
     var hardcore: List<PlayerRanking> = ArrayList()
     var killCount: List<PlayerRanking> = ArrayList()
-    private val mobKills: MutableMap<Int, List<PlayerRanking>> = LinkedHashMap()
-    private val bossKills: MutableMap<Int, List<PlayerRanking>> = LinkedHashMap()
+    val mobKills: MutableMap<Int, List<PlayerRanking>> = LinkedHashMap()
+    val bossKills: MutableMap<Int, List<PlayerRanking>> = LinkedHashMap()
+    val masteries: MutableMap<MasteryType, List<PlayerRanking>> = LinkedHashMap()
 
     // todo playtime
     // todo mastery
@@ -32,6 +33,7 @@ object RankingKeeper {
     // selection lists
     private val mobs: MutableSet<Int> = HashSet()
     private val bosses: MutableSet<Int> = HashSet()
+    val masteryTypes: MutableList<MasteryType> = ArrayList()
 
     /**
      * For script use
@@ -59,6 +61,10 @@ object RankingKeeper {
         return ArrayList(mobs)
     }
 
+    fun getBosses(): List<Int> {
+        return ArrayList(bosses)
+    }
+
     fun updateAllRankings() {
         if (!isUpdating) {
             GlobalScope.launch {
@@ -75,6 +81,7 @@ object RankingKeeper {
         updateKillCountRanking()
         updateMobKillsRanking()
         updateBossKillsRanking()
+        updateMasteryRanking()
         isUpdating = false
         println("[RankingKeeper] All rankings have been updated!")
     }
@@ -118,20 +125,25 @@ object RankingKeeper {
         bosses.forEach { updateMobKillsRanking(bossKills, it) }
     }
 
-    /*
-    private void updateMobKillsRanking(Map<Integer, List<PlayerRanking>> list, int id) {
-    List<PlayerRanking> players = characterData.values().stream()
-            .filter(playerRanking -> playerRanking.getMobKills().get(id) != null)
-            .sorted((p1, p2) -> p2.getMobKills().get(id).compareTo(p1.getMobKills().get(id)))
-            .collect(Collectors.toList());
-    list.put(id, players); // override old data
-}
-     */
     private fun updateMobKillsRanking(list: MutableMap<Int, List<PlayerRanking>>, id: Int) {
         val players = characterData.values.stream()
-                .filter { playerRanking: PlayerRanking -> playerRanking.mobKills[id] != null }
-                .sorted { p1, p2 -> p1.mobKills[id]?.let { p2.mobKills[id]?.compareTo(it) }!! } // todo work on this or test
+                .filter { it.mobKills[id] != null }
+                .sorted { p1, p2 -> p1.mobKills[id]?.let { p2.mobKills[id]?.compareTo(it) }!! }
                 .collect(Collectors.toList())
         list[id] = players // override old data
+    }
+
+    private fun updateMasteryRanking() {
+        masteryTypes.clear()
+        MasteryType.values().forEach { type ->
+            masteryTypes.add(type)
+
+            // how the hell does one separate this...
+            val players = characterData.values.stream()
+                    .filter { it.masteries[type] != null }
+                    .sorted { p1, p2 -> p1.masteries[type]?.let { p2.masteries[type]?.compareTo(it) }!! }
+                    .collect(Collectors.toList())
+            masteries[type] = players // override old data
+        }
     }
 }

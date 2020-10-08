@@ -57,8 +57,8 @@ object Server {
     }
 
     private suspend fun rankingRoutine() {
-        delay(RANKING_TIMER)
         RankingKeeper.updateAllRankings()
+        delay(RANKING_TIMER)
         rankingRoutine()
     }
 
