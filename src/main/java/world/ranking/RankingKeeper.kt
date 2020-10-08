@@ -27,7 +27,7 @@ object RankingKeeper {
     val masteries: MutableMap<MasteryType, List<PlayerRanking>> = LinkedHashMap()
 
     // todo playtime
-    // todo mastery
+    // todo total dmg done
     // todo bosses
     // todo jq's
     // selection lists
@@ -125,25 +125,21 @@ object RankingKeeper {
         bosses.forEach { updateMobKillsRanking(bossKills, it) }
     }
 
-    private fun updateMobKillsRanking(list: MutableMap<Int, List<PlayerRanking>>, id: Int) {
-        val players = characterData.values.stream()
-                .filter { it.mobKills[id] != null }
-                .sorted { p1, p2 -> p1.mobKills[id]?.let { p2.mobKills[id]?.compareTo(it) }!! }
-                .collect(Collectors.toList())
-        list[id] = players // override old data
-    }
-
     private fun updateMasteryRanking() {
         masteryTypes.clear()
         MasteryType.values().forEach { type ->
             masteryTypes.add(type)
-
-            // how the hell does one separate this...
-            val players = characterData.values.stream()
-                    .filter { it.masteries[type] != null }
-                    .sorted { p1, p2 -> p1.masteries[type]?.let { p2.masteries[type]?.compareTo(it) }!! }
-                    .collect(Collectors.toList())
-            masteries[type] = players // override old data
+            sortInnerList(masteries, type, { playerRank, index -> playerRank.masteries[index] })
         }
+    }
+
+    private fun updateMobKillsRanking(list: MutableMap<Int, List<PlayerRanking>>, id: Int) {
+        sortInnerList(list, id, { playerRank, mobId -> playerRank.mobKills[mobId] })
+    }
+
+    private fun <T> sortInnerList(map: MutableMap<T, List<PlayerRanking>>, mapKey: T, valueGetter: (PlayerRanking, T) -> (Int?)) {
+        map[mapKey] = characterData.values
+                .filter { valueGetter.invoke(it, mapKey) != null }
+                .sortedByDescending { valueGetter.invoke(it, mapKey) }
     }
 }
