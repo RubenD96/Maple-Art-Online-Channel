@@ -93,6 +93,7 @@ class Character(val client: Client, override var name: String, val record: Recor
 
     var exp: Int = record.getValue(Tables.CHARACTERS.EXP)
     var meso: Int = record.getValue(Tables.CHARACTERS.MESO)
+    var totalDamage: Int = record.getValue(Tables.CHARACTERS.TOTAL_DAMAGE)
 
     /**
      * End constructor fields

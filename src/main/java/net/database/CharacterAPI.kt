@@ -84,6 +84,8 @@ object CharacterAPI {
                 .set(CHARACTERS.EXP, chr.exp)
                 .set(CHARACTERS.MESO, chr.meso)
                 .set(CHARACTERS.PARTY, chr.party?.id ?: 0)
+                // todo hardcore, killcount?
+                .set(CHARACTERS.TOTAL_DAMAGE, chr.totalDamage)
                 .where(CHARACTERS.ID.eq(chr.id))
                 .execute()
         println("finished saving " + chr.name)

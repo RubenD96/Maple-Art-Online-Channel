@@ -48,5 +48,6 @@ class DamageInfo(val type: AttackType, val chr: Character) {
 
         mob.controller = chr
         mob.damage(chr, totalDamage)
+        chr.totalDamage += totalDamage
     }
 }

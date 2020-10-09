@@ -161,46 +161,50 @@ object CharacterPackets {
     }
 
     private fun Character.encodeStats(pw: PacketWriter) {
-        pw.writeInt(this.id) // character id
-        pw.writeFixedString(this.name, 13)
-        pw.write(this.gender)
-        pw.write(this.skinColor) // skin color
-        pw.writeInt(this.face) // face
-        pw.writeInt(this.hair) // hair
+        with (this) {
+            pw.writeInt(id) // character id
+            pw.writeFixedString(name, 13)
+            pw.write(gender)
+            pw.write(skinColor) // skin color
+            pw.writeInt(face) // face
+            pw.writeInt(hair) // hair
 
-        this.pets.forEach { pw.writeLong(it?.id?.toLong() ?: 0) }
+            pets.forEach { pw.writeLong(it?.id?.toLong() ?: 0) }
 
-        pw.write(this.level) // 51
-        pw.writeShort(this.job)
-        pw.writeShort(this.strength)
-        pw.writeShort(this.dexterity)
-        pw.writeShort(this.intelligence)
-        pw.writeShort(this.luck) // 61
-        pw.writeInt(this.health)
-        pw.writeInt(this.maxHealth)
-        pw.writeInt(this.mana)
-        pw.writeInt(this.maxMana) // 77
-        pw.writeShort(this.ap)
-        pw.writeShort(this.sp)
-        pw.writeInt(this.exp)
-        pw.writeShort(this.fame) // 87
-        pw.writeInt(69) // Gacha Exp (87-91)
-        pw.writeInt(this.field.id)
-        pw.write(this.portal.toInt())
-        pw.writeInt(0) // playtime
-        pw.writeShort(0) // subjob?
+            pw.write(level) // 51
+            pw.writeShort(job)
+            pw.writeShort(strength)
+            pw.writeShort(dexterity)
+            pw.writeShort(intelligence)
+            pw.writeShort(luck) // 61
+            pw.writeInt(health)
+            pw.writeInt(maxHealth)
+            pw.writeInt(mana)
+            pw.writeInt(maxMana) // 77
+            pw.writeShort(ap)
+            pw.writeShort(sp)
+            pw.writeInt(exp)
+            pw.writeShort(fame) // 87
+            pw.writeInt(69) // Gacha Exp (87-91)
+            pw.writeInt(field.id)
+            pw.write(portal.toInt())
+            pw.writeInt(0) // playtime
+            pw.writeShort(0) // subjob?
+        }
     }
 
     fun Avatar.encodeLooks(pw: PacketWriter, mega: Boolean) {
-        pw.write(this.gender)
-        pw.write(this.skinColor)
-        pw.writeInt(this.face)
-        pw.writeBool(mega)
-        pw.writeInt(this.hair)
+        with(this) {
+            pw.write(gender)
+            pw.write(skinColor)
+            pw.writeInt(face)
+            pw.writeBool(mega)
+            pw.writeInt(hair)
 
-        encodeVisualEquips(pw)
+            encodeVisualEquips(pw)
 
-        this.pets.forEach { pw.writeInt(it?.item ?: 0) }
+            pets.forEach { pw.writeInt(it?.item ?: 0) }
+        }
     }
 
     fun Avatar.encodeVisualEquips(pw: PacketWriter) {
