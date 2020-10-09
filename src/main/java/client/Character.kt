@@ -24,6 +24,7 @@ import database.jooq.Tables
 import field.Field
 import field.obj.FieldObjectType
 import field.obj.life.FieldControlledObject
+import kotlinx.coroutines.*
 import net.database.CharacterAPI.getKeyBindings
 import net.database.CharacterAPI.getOldPartyId
 import net.database.CharacterAPI.saveCharacterStats
@@ -348,6 +349,18 @@ class Character(val client: Client, override var name: String, val record: Recor
             guild.getMemberSecure(id).isOnline = true
             this.guild = guild
         }
+    }
+
+    /**
+     * Damages the player $dmg over $delay time
+     */
+    fun damageOverTime(dmg: Int, delay: Long) {
+        coroutines.register(CoroutineType.HURT, GlobalScope.launch(Dispatchers.Default) {
+            while (isActive) {
+                modifyHealth(-dmg)
+                delay(delay)
+            }
+        })
     }
 
     fun validateStats() {

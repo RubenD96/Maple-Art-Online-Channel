@@ -6,6 +6,8 @@ import kotlinx.coroutines.Job
  * Collection class that keeps track of all active coroutines for the player so they can be canceled easily.
  * Coroutines in the collection must be unique due to CoroutineType enum.
  * No two coroutines of the same type can be active at the same time.
+ *
+ * @author Chronos
  */
 class CoroutineCollection {
 

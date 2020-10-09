@@ -15,6 +15,7 @@ class Party(leader: Character) {
     val id: Int
     var leaderId: Int
     private val members: MutableList<PartyMember> = ArrayList()
+    var partyQuest: PartyQuest? = null
 
     companion object {
         var availableId = 1
