@@ -10,7 +10,7 @@ class PartyMember {
     val cid: Int
     var name = ""
     var level = 0
-    var channel = -2
+    var channel = -2 // todo 0?
     var job = 0
     var field = 0
     var isOnline = false

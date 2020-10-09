@@ -114,13 +114,13 @@ class Field(val id: Int) {
                 }
             }
 
-            obj.party?.let {
-                val me = it.getMember(obj.id) ?: return@let
+            obj.party?.let { party ->
+                val me = party.getMember(obj.id) ?: return@let
                 me.field = id
-                it.getMembers().forEach { member ->
+                party.getMembers().forEach { member ->
                     if (member.isOnline && member.channel == obj.getChannel().channelId) {
                         val mem = getCharacter(member.cid) ?: return@forEach
-                        mem.write(updateParty(it, member.channel))
+                        mem.write(updateParty(party, member.channel))
 
                         if (member.field == id) {
                             mem.updatePartyHP(true)

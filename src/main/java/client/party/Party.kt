@@ -136,16 +136,12 @@ class Party(leader: Character) {
         }
 
         encodeMembers(pw, members, leaderId) // PARTYMEMBER party
-        members.forEach {
-            if (it.channel == memChannel) {
-                pw.writeInt(it.field)
-            } else {
-                pw.writeInt(0)
-            }
-        } // unsigned int adwFieldID[6]
+        members.forEach { pw.writeInt(if (it.channel == memChannel) it.field else -1) } // unsigned int adwFieldID[6]
+
         repeat(members.size) { encodePortal(pw) } // PARTYDATA::TOWNPORTAL aTownPortal[6]
         repeat(members.size) { pw.writeInt(0) } // int aPQReward
         repeat(members.size) { pw.writeInt(0) } // int aPQRewardType
+
         pw.writeInt(0) // unsigned int dwPQRewardMobTemplateID
         pw.writeInt(0) // int bPQReward
     }
@@ -160,11 +156,15 @@ class Party(leader: Character) {
     }
 
     private fun encodePortal(pw: PacketWriter) {
-        pw.writeInt(999999999) // dwTownID
-        pw.writeInt(999999999) // dwFieldID
+        pw.writeInt(0) // dwTownID
+        pw.writeInt(0) // dwFieldID
         pw.writeInt(0) // nSkillID
-        pw.writeInt(0) // tagPOINT m_ptFieldPortal; x
-        pw.writeInt(0) // tagPOINT m_ptFieldPortal; y
+
+        pw.writeLong(0)
+        pw.writeLong(0)
+        // todo long?
+        //pw.writeInt(0) // tagPOINT m_ptFieldPortal; x
+        //pw.writeInt(0) // tagPOINT m_ptFieldPortal; y
     }
 }
 /*
