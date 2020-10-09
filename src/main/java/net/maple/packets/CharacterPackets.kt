@@ -285,36 +285,43 @@ object CharacterPackets {
 
     fun Character.modifyInventory(consumer: Consumer<ModifyInventoriesContext>, enableActions: Boolean = false) {
         val context = ModifyInventoriesContext(this.allInventories)
+
         consumer.accept(context)
+
         val pw = PacketWriter(32)
+
         pw.writeHeader(SendOpcode.INVENTORY_OPERATION)
         pw.writeBool(enableActions)
         context.encode(pw)
+
         pw.writeBool(false)
+
         this.write(pw.createPacket())
 
         // equip check
-        if (context.operations.stream().anyMatch { op: AbstractModifyInventoryOperation -> op.slot < 0 } ||
-                context.operations.stream().filter { op: AbstractModifyInventoryOperation? -> op is MoveInventoryOperation }.anyMatch { mio: AbstractModifyInventoryOperation -> (mio as MoveInventoryOperation).toSlot < 0 }) {
+        if (context.operations.stream().anyMatch { it.slot < 0 } ||
+                context.operations.stream().filter { it is MoveInventoryOperation }.anyMatch { (it as MoveInventoryOperation).toSlot < 0 }) {
             this.validateStats()
             modifyAvatar()
         }
     }
 
     fun Character.modifyAvatar() {
-        val pw = PacketWriter(32)
+        with(this) {
+            val pw = PacketWriter(32)
 
-        pw.writeHeader(SendOpcode.USER_AVATAR_MODIFIED)
-        pw.writeInt(this.id)
-        pw.write(0x01) // some flag
-        encodeLooks(pw, false)
-        pw.writeBool(false)
-        pw.writeBool(false)
-        pw.writeBool(false)
-        pw.writeBool(false)
-        pw.writeInt(0) // set items
+            pw.writeHeader(SendOpcode.USER_AVATAR_MODIFIED)
+            pw.writeInt(id)
+            pw.write(0x01) // some flag
+            encodeLooks(pw, false)
+            pw.writeBool(false)
+            pw.writeBool(false)
+            pw.writeBool(false)
+            pw.writeBool(false)
+            pw.writeInt(0) // set items
 
-        this.field.broadcast(pw.createPacket(), this)
+            this.field.broadcast(pw.createPacket(), this)
+        }
     }
 
     fun Character.showDamage(type: Byte, dmg: Int, mobId: Int, left: Byte) {

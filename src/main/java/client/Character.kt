@@ -115,6 +115,7 @@ class Character(val client: Client, override var name: String, val record: Recor
     val registeredQuestMobs: MutableSet<Int> = HashSet()
     val guildInvitesSent: MutableSet<String> = HashSet()
     val moveCollections = HashMap<Int, MoveCollection>()
+    val coroutines = CoroutineCollection()
 
     var keyBindings: MutableMap<Int, KeyBinding> = HashMap()
     var wishlist = IntArray(10)

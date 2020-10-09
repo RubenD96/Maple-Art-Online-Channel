@@ -17,7 +17,10 @@ class UserEmotionHandler : PacketHandler {
         val duration = reader.readInteger()
         val item = reader.readBool()
 
+        println("[UserEmotionHandler] e: $emotion d: $duration i: $item")
         // todo check if item is actually in possession
+        println("[UserEmotionHandler] ${chr.getItemQuantity(emotion) != 0}")
+
         chr.field.broadcast(sendEmotion(chr, emotion, duration, item), chr)
     }
 

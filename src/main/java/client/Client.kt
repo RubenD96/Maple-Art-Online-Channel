@@ -94,6 +94,8 @@ class Client(c: Channel, siv: ByteArray, riv: ByteArray) : NettyClient(c, siv, r
             isLoggedIn = false
             character.field.leave(character)
 
+            character.coroutines.cancelAll()
+
             notifyGuildLogout()
             notifyPartyLogout()
             character.friendList.notifyMutualFriends()
