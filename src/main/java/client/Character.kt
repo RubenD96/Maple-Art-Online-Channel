@@ -43,6 +43,8 @@ import net.server.Server.getCharacter
 import net.server.Server.parties
 import org.jooq.Record
 import scripting.npc.NPCScriptManager.dispose
+import util.logging.LogType
+import util.logging.Logger.log
 import util.packet.Packet
 import java.util.*
 import kotlin.collections.HashMap
@@ -94,7 +96,7 @@ class Character(val client: Client, override var name: String, val record: Recor
 
     var exp: Int = record.getValue(Tables.CHARACTERS.EXP)
     var meso: Int = record.getValue(Tables.CHARACTERS.MESO)
-    var totalDamage: Int = record.getValue(Tables.CHARACTERS.TOTAL_DAMAGE)
+    var totalDamage: Long = record.getValue(Tables.CHARACTERS.TOTAL_DAMAGE)
 
     /**
      * End constructor fields
@@ -370,6 +372,10 @@ class Character(val client: Client, override var name: String, val record: Recor
     }
 
     fun getItemQuantity(item: Int): Int {
+        if (item < 1000000) {
+            log(LogType.INVALID, "ItemId is 0 in getItemQuantity method", this, client)
+            return 0
+        }
         val type = ItemInventoryType.values()[item / 1000000 - 1]
         val inventory = getInventory(type)
 

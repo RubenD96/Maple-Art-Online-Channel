@@ -5,11 +5,12 @@ import client.Client
 import client.effects.field.TrembleFieldEffect
 import client.effects.user.QuestEffect
 import client.interaction.storage.ItemStorageInteraction
-import client.inventory.item.templates.ItemEquipTemplate
 import client.inventory.item.slots.ItemSlotEquip
+import client.inventory.item.templates.ItemEquipTemplate
 import client.messages.IncEXPMessage
 import client.messages.broadcast.types.AlertMessage
 import client.messages.broadcast.types.NoticeWithoutPrefixMessage
+import client.messages.broadcast.types.UtilDlgExMessage
 import client.player.quest.Quest
 import field.Field
 import field.obj.FieldObjectType
@@ -17,15 +18,16 @@ import field.obj.life.FieldMob
 import field.obj.life.FieldMobTemplate
 import managers.ItemManager
 import managers.MobManager
-import net.maple.packets.CharacterPackets
 import net.maple.packets.CharacterPackets.localEffect
 import net.maple.packets.CharacterPackets.message
 import net.maple.packets.CharacterPackets.modifyInventory
 import net.maple.packets.FieldPackets.fieldEffect
 import net.maple.packets.GuildPackets
 import net.maple.packets.GuildPackets.getLoadGuildPacket
+import net.server.Server
 import org.graalvm.collections.Pair
 import scripting.npc.NPCScriptManager
+import world.guild.Guild
 import world.ranking.RankingKeeper
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -86,6 +88,10 @@ abstract class AbstractPlayerInteraction(val c: Client) {
 
     fun sendBlue(message: String) {
         player.message(NoticeWithoutPrefixMessage(message))
+    }
+
+    fun sendNpcMessage(message: String, npc: Int) {
+        player.message(UtilDlgExMessage(message, npc))
     }
 
     fun setQuestProgress(qid: Int, mob: Int, progress: String) {
@@ -163,6 +169,10 @@ abstract class AbstractPlayerInteraction(val c: Client) {
         ItemStorageInteraction(npcId, c.storage).open(player)
     }
 
+    fun getGuild(): Guild? {
+        return player.guild
+    }
+
     fun changeGuildName(name: String) {
         GuildPackets.changeGuildName(player, name)
     }
@@ -190,5 +200,9 @@ abstract class AbstractPlayerInteraction(val c: Client) {
 
     fun getRankings(): RankingKeeper {
         return RankingKeeper
+    }
+
+    fun getServer(): Server {
+        return Server
     }
 }

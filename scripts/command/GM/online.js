@@ -1,5 +1,5 @@
 execute = () => {
-    const players = cs.getChr().getChannel().getCharacters();
+    const players = cs.getServer().getCharacters();
     for (let player of players) {
         cs.sendBlue(`${player.getName()} - ${player.getFieldId()}`)
     }

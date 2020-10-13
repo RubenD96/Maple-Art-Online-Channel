@@ -3,6 +3,7 @@ package constants
 object ItemConstants {
 
     const val PERMANENT = 150841440000000000L
+    const val BASE_EMOTE = 5160000
 
     fun isRechargeableItem(templateID: Int): Boolean {
         val type = templateID / 10000

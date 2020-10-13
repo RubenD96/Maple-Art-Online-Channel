@@ -2,8 +2,11 @@ package net.maple.handlers.user
 
 import client.Character
 import client.Client
+import constants.ItemConstants.BASE_EMOTE
 import net.maple.SendOpcode
 import net.maple.handlers.PacketHandler
+import util.logging.LogType
+import util.logging.Logger
 import util.packet.Packet
 import util.packet.PacketReader
 import util.packet.PacketWriter
@@ -14,12 +17,16 @@ class UserEmotionHandler : PacketHandler {
         val chr = c.character
 
         val emotion = reader.readInteger()
-        val duration = reader.readInteger()
-        val item = reader.readBool()
+        val duration = reader.readInteger() // always -1?
+        val item = reader.readBool() // always false?
 
-        println("[UserEmotionHandler] e: $emotion d: $duration i: $item")
-        // todo check if item is actually in possession
-        println("[UserEmotionHandler] ${chr.getItemQuantity(emotion) != 0}")
+        if (emotion > 7) { // item emote
+            if (chr.getItemQuantity(BASE_EMOTE + (emotion - 8)) == 0) {
+                Logger.log(LogType.INVALID, "Emote item not in possession", this, c)
+                c.close(this, "Emote item not in possession")
+                return
+            }
+        }
 
         chr.field.broadcast(sendEmotion(chr, emotion, duration, item), chr)
     }
