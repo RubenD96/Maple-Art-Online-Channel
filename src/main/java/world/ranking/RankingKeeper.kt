@@ -9,6 +9,7 @@ import util.logging.LogType
 import util.logging.Logger.log
 import java.util.*
 import java.util.stream.Collectors
+import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 import kotlin.collections.LinkedHashMap
 import kotlin.collections.set
@@ -22,13 +23,12 @@ object RankingKeeper {
     var regular: List<PlayerRanking> = ArrayList()
     var hardcore: List<PlayerRanking> = ArrayList()
     var killCount: List<PlayerRanking> = ArrayList()
+    var totalDamage: List<PlayerRanking> = ArrayList()
     val mobKills: MutableMap<Int, List<PlayerRanking>> = LinkedHashMap()
     val bossKills: MutableMap<Int, List<PlayerRanking>> = LinkedHashMap()
     val masteries: MutableMap<MasteryType, List<PlayerRanking>> = LinkedHashMap()
 
     // todo playtime
-    // todo total dmg done
-    // todo bosses
     // todo jq's
     // selection lists
     private val mobs: MutableSet<Int> = HashSet()
@@ -79,6 +79,7 @@ object RankingKeeper {
         updateRegularRanking()
         updateHardcoreRanking()
         updateKillCountRanking()
+        updateTotalDamageRanking()
         updateMobKillsRanking()
         updateBossKillsRanking()
         updateMasteryRanking()
@@ -103,6 +104,12 @@ object RankingKeeper {
         val players = ArrayList(characterData.values)
         players.sortWith(Comparator.comparingInt { obj: PlayerRanking -> obj.killCount }.reversed())
         killCount = players
+    }
+
+    private fun updateTotalDamageRanking() {
+        val players = ArrayList(characterData.values)
+        players.sortWith(Comparator.comparingLong { obj: PlayerRanking -> obj.totalDamage }.reversed())
+        totalDamage = players
     }
 
     private fun updateMobKillsRanking() {

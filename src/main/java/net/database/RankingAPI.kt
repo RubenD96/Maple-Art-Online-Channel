@@ -26,7 +26,8 @@ object RankingAPI {
                             it.getValue(CHARACTERS.KILL_COUNT),
                             name,
                             it.getValue(CHARACTERS.HARDCORE) == 1.toByte(),
-                            it.getValue(CHARACTERS.MAP) == 666)
+                            it.getValue(CHARACTERS.MAP) == 666,
+                            it.getValue(CHARACTERS.TOTAL_DAMAGE))
                     rankings[name] = ranking
                 }
 

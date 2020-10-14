@@ -16,6 +16,7 @@ object NPCScriptManager : AbstractScriptManager() {
 
     fun converse(c: Client, npc: Int, fileName: String? = null, mode: Int = 1, selection: Int = -1): Boolean {
         return try {
+            c.lastNpcClick = System.currentTimeMillis()
             if (scripts[c] == null) {
                 val cm = NPCConversationManager(c, npc)
                 if (cms.containsKey(c)) {
@@ -39,7 +40,6 @@ object NPCScriptManager : AbstractScriptManager() {
                     val unmutableEngine = engine ?: return false
                     unmutableEngine.put("cm", cm)
                     scripts[c] = iv
-                    c.lastNpcClick = System.currentTimeMillis()
                     try {
                         iv.invokeFunction("init")
                     } catch (ignored: NoSuchMethodException) {
@@ -50,7 +50,6 @@ object NPCScriptManager : AbstractScriptManager() {
                     c.character.enableActions()
                 }
             } else {
-                c.lastNpcClick = System.currentTimeMillis()
                 scripts[c]?.invokeFunction("converse", mode, selection)
             }
             true

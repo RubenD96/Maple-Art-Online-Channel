@@ -17,6 +17,7 @@ const options = [
     "Regular",
     "Hardcore",
     "Kill count",
+    "Total damage",
     "Mob kills",
     "Boss kills",
     "Masteries",
@@ -61,6 +62,9 @@ function converse(m, s) {
                     break;
                 case "Kill count":
                     showRankings(rankings.getKillCount());
+                    break;
+                case "Total damage":
+                    showRankings(rankings.getTotalDamage());
                     break;
                 case "Mob kills":
                     showMobList(rankings.getMobs(), "Mobs");
@@ -137,6 +141,8 @@ function getValueType(player) {
             return `Lvl. #r${player.getLevel()}#k`;
         case "Kill count":
             return `#r${player.getKillCount()}#k total kills`;
+        case "Total damage":
+            return `#r${player.getTotalDamage()}#k damage done`;
         case "Mob kills":
         case "Boss kills":
             const kills = player.getMobKills().get(sel);
