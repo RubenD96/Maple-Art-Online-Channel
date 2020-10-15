@@ -1,8 +1,8 @@
 package client.party
 
-enum class PartyQuestType {
+enum class PartyQuestType(val startMap: Int) {
 
-    DEEP_TREE,
-    AQUA,
-    CLOCKWORK
+    DEEP_TREE(1601),
+    AQUA(12000),
+    CLOCKWORK(14401)
 }
