@@ -1,6 +1,7 @@
 package scripting.mob
 
 import client.Client
+import constants.ServerConstants
 import field.obj.life.FieldMob
 import scripting.AbstractScriptManager
 
@@ -21,7 +22,7 @@ object MobScriptManager : AbstractScriptManager() {
             if (iv == null) {
                 // todo remove msg
                 println("Mobscript " + fieldMob.template.id + " is uncoded. (" + fieldMob.template.id + ")")
-                return false
+                return ServerConstants.DEBUG
             }
 
             println(function)
@@ -31,7 +32,7 @@ object MobScriptManager : AbstractScriptManager() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            return false
+            return ServerConstants.DEBUG
         }
         return true
     }

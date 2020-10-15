@@ -1,5 +1,6 @@
 package net.netty
 
+import constants.ServerConstants
 import io.netty.channel.Channel
 import io.netty.util.AttributeKey
 import util.crypto.MapleAESOFB
@@ -20,11 +21,11 @@ open class NettyClient(val ch: Channel, var sendIV: ByteArray, var recvIV: ByteA
 
     fun close(cl: Any, reason: String) {
         println("[" + cl.javaClass.name + "] " + reason + " - " + ip)
-        ch.flush().close()
+        close()
     }
 
     fun close() {
-        ch.flush().close()
+        if (!ServerConstants.DEBUG) ch.flush().close()
     }
 
     val ip: String get() = ch.remoteAddress().toString().split(":".toRegex()).toTypedArray()[0].substring(1)
