@@ -1,7 +1,10 @@
 package net.maple.handlers.user
 
+import client.Avatar
 import client.Character
 import client.Client
+import client.replay.MoveCollection.Emote
+import constants.FieldConstants.JQ_FIELDS
 import constants.ItemConstants.BASE_EMOTE
 import net.maple.SendOpcode
 import net.maple.handlers.PacketHandler
@@ -28,15 +31,19 @@ class UserEmotionHandler : PacketHandler {
             }
         }
 
+        if (JQ_FIELDS.contains(chr.fieldId)) {
+            chr.moveCollections[chr.fieldId]?.emotes?.add(Emote(System.currentTimeMillis(), emotion))
+        }
+
         chr.field.broadcast(sendEmotion(chr, emotion, duration, item), chr)
     }
 
     companion object {
-        private fun sendEmotion(chr: Character, emotion: Int, duration: Int, item: Boolean): Packet {
+        fun sendEmotion(avatar: Avatar, emotion: Int, duration: Int, item: Boolean): Packet {
             val pw = PacketWriter(15)
 
             pw.writeHeader(SendOpcode.USER_EMOTION)
-            pw.writeInt(chr.id)
+            pw.writeInt(avatar.id)
             pw.writeInt(emotion)
             pw.writeInt(duration)
             pw.writeBool(item)

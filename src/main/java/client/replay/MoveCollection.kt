@@ -14,6 +14,7 @@ class MoveCollection(val chr: Character, val field: Int) : Exportable {
     }
 
     val movements = ArrayList<Movement>()
+    val emotes = ArrayList<Emote>()
 
     override val fileName: String = "$field.replay"
     override val location: String = "data/replays/"
@@ -41,8 +42,15 @@ class MoveCollection(val chr: Character, val field: Int) : Exportable {
             pw.write(it.data, HEADER_SIZE)
         }
 
+        pw.writeShort(emotes.size)
+        emotes.forEach {
+            pw.writeInt((it.timestamp - firstTS).toInt())
+            pw.writeInt(it.emote)
+        }
+
         return pw.createPacket()
     }
 
     class Movement(val timestamp: Long, val data: ByteArray)
+    class Emote(val timestamp: Long, val emote: Int)
 }

@@ -22,7 +22,6 @@ class UserMoveHandler : PacketHandler {
         val path = chr.move(reader)
 
         if (JQ_FIELDS.contains(chr.fieldId)) {
-            //chr.moveCollections.putIfAbsent(chr.fieldId, MoveCollection(chr.fieldId))
             chr.moveCollections[chr.fieldId]?.movements?.add(Movement(System.currentTimeMillis(), reader.data))
         }
 
