@@ -74,7 +74,7 @@ class CommandShortcut(c: Client, _args: Array<String>) : AbstractPlayerInteracti
     }
 
     fun kickMe() {
-        chr.client.close()
+        chr.client.ch.flush().close()
     }
 
     fun exportReplay() {
