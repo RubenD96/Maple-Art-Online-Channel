@@ -1,9 +1,9 @@
 package net.server
 
+import client.Character
 import constants.ServerConstants
 import constants.ServerConstants.DROP_CLEAR_TIMER
 import constants.ServerConstants.RESPAWN_TIMER
-import field.obj.FieldObjectType
 import io.netty.bootstrap.ServerBootstrap
 import io.netty.channel.ChannelFuture
 import io.netty.channel.ChannelInitializer
@@ -41,7 +41,7 @@ class ChannelServer(val channelId: Int, val port: Int, val IP: String) : Thread(
     private suspend fun mobRespawnRoutine() {
         delay(RESPAWN_TIMER)
         fieldManager.fields.values.forEach {
-            if (it.getObjects(FieldObjectType.CHARACTER).isNotEmpty()) {
+            if (it.getObjects<Character>().isNotEmpty()) {
                 it.respawn()
             }
         }

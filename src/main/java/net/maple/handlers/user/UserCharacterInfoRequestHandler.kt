@@ -3,7 +3,6 @@ package net.maple.handlers.user
 import client.Character
 import client.Client
 import client.inventory.ItemInventoryType
-import field.obj.FieldObjectType
 import net.maple.SendOpcode
 import net.maple.handlers.PacketHandler
 import util.packet.Packet
@@ -19,8 +18,7 @@ class UserCharacterInfoRequestHandler : PacketHandler {
 
         reader.readInteger() // timestamp?
 
-        val target = chr.field.getObject(FieldObjectType.CHARACTER, reader.readInteger()) as? Character
-                ?: return chr.enableActions()
+        val target = chr.field.getObject<Character>(reader.readInteger()) ?: return chr.enableActions()
         chr.write(target.getInfo())
     }
 

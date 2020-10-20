@@ -1,7 +1,6 @@
 package field.obj.reactor
 
 import field.obj.AbstractFieldObject
-import field.obj.FieldObjectType
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -27,8 +26,6 @@ class FieldReactor(val template: ReactorTemplate) : AbstractFieldObject() {
             field = value
             changeState()
         }
-
-    override val fieldObjectType = FieldObjectType.REACTOR
 
     override val enterFieldPacket: Packet
         get() {

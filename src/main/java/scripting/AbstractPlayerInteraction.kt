@@ -13,7 +13,6 @@ import client.messages.broadcast.types.NoticeWithoutPrefixMessage
 import client.messages.broadcast.types.UtilDlgExMessage
 import client.player.quest.Quest
 import field.Field
-import field.obj.FieldObjectType
 import field.obj.life.FieldMob
 import field.obj.life.FieldMobTemplate
 import managers.ItemManager
@@ -194,7 +193,7 @@ abstract class AbstractPlayerInteraction(val c: Client) {
     val mobsOnField: List<Any>
         get() {
             val mobs: MutableList<FieldMob> = ArrayList<FieldMob>()
-            c.character.field.getObjects(FieldObjectType.MOB).forEach { mobs.add(it as FieldMob) }
+            c.character.field.getObjects<FieldMob>().forEach { mobs.add(it) }
             return mobs
         }
 

@@ -2,7 +2,6 @@ package net.maple.handlers.user
 
 import client.Character
 import client.Client
-import field.obj.FieldObjectType
 import net.maple.SendOpcode
 import net.maple.handlers.PacketHandler
 import util.packet.Packet
@@ -36,8 +35,7 @@ class UserGivePopularityRequestHandler : PacketHandler {
         }
 
         val fame = reader.readByte()
-        val receiver = sender.field.getObject(FieldObjectType.CHARACTER, cid) as Character?
-                ?: return c.write(invalidCharacterIdPacket)
+        val receiver = sender.field.getObject<Character>(cid) ?: return c.write(invalidCharacterIdPacket)
 
         if (fame < 0 || fame > 1) {
             c.close(this, "Invalid byte")

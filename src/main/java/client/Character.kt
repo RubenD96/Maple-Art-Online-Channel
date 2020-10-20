@@ -22,7 +22,6 @@ import constants.UserConstants
 import constants.UserConstants.expTable
 import database.jooq.Tables
 import field.Field
-import field.obj.FieldObjectType
 import field.obj.life.FieldControlledObject
 import kotlinx.coroutines.*
 import net.database.CharacterAPI.getKeyBindings
@@ -440,8 +439,6 @@ class Character(val client: Client, override var name: String, val record: Recor
     fun write(msg: Packet) {
         client.write(msg)
     }
-
-    override val fieldObjectType = FieldObjectType.CHARACTER
 
     fun removeMe() {
         field.removeObject(this)

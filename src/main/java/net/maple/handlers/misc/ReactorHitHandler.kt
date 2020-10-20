@@ -1,7 +1,6 @@
 package net.maple.handlers.misc
 
 import client.Client
-import field.obj.FieldObjectType
 import field.obj.reactor.FieldReactor
 import net.maple.handlers.PacketHandler
 import util.packet.PacketReader
@@ -17,7 +16,7 @@ class ReactorHitHandler : PacketHandler {
 
         println("oid: $oid, dwHitOption: $dwHitOption, tDelay: $tDelay")
 
-        val reactor = c.character.field.getObject(FieldObjectType.REACTOR, oid) as FieldReactor? ?: return
+        val reactor = c.character.field.getObject<FieldReactor>(oid) ?: return
 
         reactor.actionDelay = tDelay
         //tStateEnd is tCur (current time) + tActionDelay (the tDelay from your handler) + pTemplate.tMoveDelay (parsed from the reactor if it exists) + GetHitDelay(nEventIdx)

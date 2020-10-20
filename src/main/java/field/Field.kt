@@ -6,13 +6,13 @@ import client.replay.MoveCollection
 import client.replay.Replay
 import constants.FieldConstants.JQ_FIELDS
 import field.obj.FieldObject
-import field.obj.FieldObjectType
 import field.obj.Foothold
 import field.obj.drop.AbstractFieldDrop
 import field.obj.drop.EnterType
 import field.obj.life.*
 import field.obj.portal.FieldPortal
 import field.obj.portal.PortalType
+import field.obj.reactor.FieldReactor
 import managers.MobManager
 import net.maple.packets.FieldPackets.setField
 import net.maple.packets.PartyPackets.updateParty
@@ -26,9 +26,10 @@ import java.awt.Rectangle
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.stream.Collectors
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
-import kotlin.collections.LinkedHashSet
+import kotlin.reflect.KClass
 
 class Field(val id: Int) {
 
@@ -43,8 +44,17 @@ class Field(val id: Int) {
 
     val portals: MutableMap<Byte, FieldPortal> = HashMap()
     val footholds: MutableMap<Int, Foothold> = HashMap()
-    private val objects: MutableMap<FieldObjectType, MutableSet<FieldObject>> = EnumMap(FieldObjectType::class.java)
-    val mobSpawnPoints: MutableList<FieldMobSpawnPoint> = ArrayList<FieldMobSpawnPoint>()
+
+    //CHARACTER, SUMMONED, MOB, NPC, DROP, TOWN_PORTAL, REACTOR, ETC, REPLAY
+    val fieldObjects: Map<KClass<out FieldObject>, MutableSet<FieldObject>> =
+            mapOf(Character::class to mutableSetOf(),
+                    FieldMob::class to mutableSetOf(),
+                    AbstractFieldDrop::class to mutableSetOf(),
+                    FieldReactor::class to mutableSetOf(),
+                    Replay::class to mutableSetOf(),
+                    FieldNPC::class to mutableSetOf())
+
+    val mobSpawnPoints: MutableList<FieldMobSpawnPoint> = ArrayList()
     private val toRespawn: MutableList<Respawn> = ArrayList()
 
     companion object {
@@ -57,19 +67,15 @@ class Field(val id: Int) {
     }
 
     init {
-        for (type in FieldObjectType.values()) {
-            objects[type] = LinkedHashSet()
-        }
-
         if (JQ_FIELDS.contains(id)) {
             startReplay()
         }
     }
 
     fun broadcast(packet: Packet, source: Character? = null) {
-        getObjects(FieldObjectType.CHARACTER).stream()
+        getObjects<Character>().stream()
                 .filter { it !== source }
-                .forEach { (it as? Character)?.write(packet.clone()) }
+                .forEach { it.write(packet.clone()) }
     }
 
     fun enter(chr: Character, portalName: String) {
@@ -100,8 +106,8 @@ class Field(val id: Int) {
             obj.write(obj.setField())
             broadcast(obj.enterFieldPacket, obj)
 
-            synchronized(objects) {
-                objects.values.forEach { set ->
+            synchronized(fieldObjects) {
+                fieldObjects.values.forEach { set ->
                     set.stream()
                             .filter { it != obj }
                             .forEach {
@@ -147,15 +153,14 @@ class Field(val id: Int) {
     }
 
     private fun enterItemDrop(drop: AbstractFieldDrop, enterPacket: Packet) {
-        getObjects(FieldObjectType.CHARACTER).forEach {
-            val chr = it as Character
+        getObjects<Character>().forEach {
             if (drop.questId != 0) {
-                val quest = chr.quests[drop.questId]
+                val quest = it.quests[drop.questId]
                 if (quest != null && quest.state !== QuestState.PERFORM) {
                     return@forEach
                 }
             }
-            chr.write(enterPacket.clone())
+            it.write(enterPacket.clone())
         }
     }
 
@@ -213,12 +218,11 @@ class Field(val id: Int) {
     }
 
     fun removeExpiredDrops() {
-        val drops: MutableList<AbstractFieldDrop> = ArrayList<AbstractFieldDrop>()
+        val drops: MutableList<AbstractFieldDrop> = ArrayList()
         val time = System.currentTimeMillis()
-        getObjects(FieldObjectType.DROP).forEach {
-            val drop: AbstractFieldDrop = it as AbstractFieldDrop
-            if (time > drop.expire) {
-                drops.add(drop)
+        getObjects<AbstractFieldDrop>().forEach {
+            if (time > it.expire) {
+                drops.add(it)
             }
         }
         drops.forEach { leave(it, it.leaveFieldPacket) }
@@ -226,83 +230,62 @@ class Field(val id: Int) {
 
     @Synchronized
     fun updateControlledObjects() {
-        val characters: List<FieldObject> = getObjects(FieldObjectType.CHARACTER).stream()
-                .sorted(Comparator.comparingInt { (it as Character).controlledObjects.size })
+        val characters: List<Character> = getObjects<Character>().stream()
+                .sorted(Comparator.comparingInt { it.controlledObjects.size })
                 .collect(Collectors.toList())
 
-        val types: Array<FieldObjectType> = arrayOf(FieldObjectType.NPC, FieldObjectType.MOB)
-        val controlled: List<FieldObject> = getObjects(*types).stream()
-                .filter { it is FieldControlledObject }
-                .collect(Collectors.toList())
+        val controlled: Set<FieldObject> = getObjects<FieldNPC>() + getObjects<FieldMob>()
 
         controlled.stream()
                 .filter {
                     val c: FieldControlledObject = it as FieldControlledObject
                     c.controller == null || !characters.contains(c.controller)
                 }.forEach {
-                    (it as FieldControlledObject).controller = characters.stream().findFirst().orElse(null) as Character?
+                    (it as FieldControlledObject).controller = characters.stream().findFirst().orElse(null)
                 }
     }
 
     fun getControlledObject(chr: Character, oid: Int): FieldControlledObject? {
-        val types: Array<FieldObjectType> = arrayOf(FieldObjectType.NPC, FieldObjectType.MOB)
-        return getObjects(*types).stream().filter {
+        return (getObjects<FieldNPC>() + getObjects<FieldMob>()).stream().filter {
             (it as FieldControlledObject).controller == chr && it.id == oid
-        }.findAny().orElse(null) as FieldControlledObject?
+        }.findAny().orElse(null)
     }
 
     fun addObject(obj: FieldObject) {
-        synchronized(objects) {
-            objects[obj.fieldObjectType]?.add(obj)
+        synchronized(fieldObjects) {
+            fieldObjects[obj::class]?.add(obj)
         }
     }
 
     fun removeObject(obj: FieldObject) {
-        synchronized(objects) {
-            objects[obj.fieldObjectType]?.remove(obj)
+        synchronized(fieldObjects) {
+            fieldObjects[obj::class]?.remove(obj)
                     ?: throw NullPointerException("[Field] Removal of field object failed.\n${toString()}")
         }
     }
 
-    fun getObjects(): Map<FieldObjectType, MutableSet<FieldObject>> {
-        synchronized(objects) {
-            return HashMap(objects)
+    fun getObjects(): HashMap<KClass<out FieldObject>, MutableSet<FieldObject>> {
+        synchronized(fieldObjects) {
+            return HashMap(fieldObjects)
         }
     }
 
-    fun getObjects(vararg t: FieldObjectType): Set<FieldObject> {
-        synchronized(objects) {
-            val objects: MutableSet<FieldObject> = HashSet()
-            for (type in t) {
-                objects.addAll(this.objects[type]!!)
-            }
-            return objects
+    @Suppress("UNCHECKED_CAST")
+    inline fun <reified T : FieldObject> getObjects(): Set<T> {
+        synchronized(fieldObjects) {
+            return (fieldObjects[T::class] ?: error("Type ${T::class.simpleName} does not exist in field")).toSet() as Set<T>
         }
     }
 
-    /**
-     * Try not to use this version too much, in most cases you should already know the type.
-     * Use [.getObject] instead
-     *
-     * @param i obj id
-     * @return FieldObject of any type
-     */
-    fun getObject(i: Int): FieldObject? {
-        synchronized(objects) {
-            for (type in objects.keys) {
-                for (obj in getObjects(type)) {
-                    if (obj.id == i) return obj
+    inline fun <reified T : FieldObject> getObject(id: Int): T? {
+        synchronized(fieldObjects) {
+            fieldObjects[T::class]?.forEach {
+                if (it.id == id) {
+                    return it as T
                 }
             }
             return null
         }
-    }
-
-    fun getObject(t: FieldObjectType, i: Int): FieldObject? {
-        for (obj in getObjects(t)) {
-            if (obj.id == i) return obj
-        }
-        return null
     }
 
     fun getClosestSpawnpoint(point: Point): FieldPortal {
@@ -338,7 +321,7 @@ class Field(val id: Int) {
     val objectsAsList: Set<Any?>
         get() {
             val ret: MutableSet<FieldObject?> = HashSet()
-            for (fieldObjects in objects.values) {
+            for (fieldObjects in fieldObjects.values) {
                 println(fieldObjects)
                 for (fieldObject in fieldObjects) {
                     println(fieldObject)
@@ -350,7 +333,7 @@ class Field(val id: Int) {
         }
 
     override fun toString(): String {
-        return "Field{id=$id, runningObjectId=$runningObjectId, name='$name', objects=$objects}"
+        return "Field{id=$id, runningObjectId=$runningObjectId, name='$name', objects=$fieldObjects}"
     }
 
     fun queueRespawn(mob: Int, cooldown: Int, time: Long) {

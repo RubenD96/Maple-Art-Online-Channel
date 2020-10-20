@@ -4,7 +4,6 @@ import client.Avatar
 import client.player.Job
 import field.Field
 import field.movement.MovePath
-import field.obj.FieldObjectType
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -27,7 +26,6 @@ class Replay : Avatar(), Loadable {
     override var name: String = ""
     var jobId: Int = 0
 
-    override val fieldObjectType = FieldObjectType.REPLAY
     override var job: Job = Job.getById(jobId)
 
     private val movements = ArrayList<ReplayMovement>()

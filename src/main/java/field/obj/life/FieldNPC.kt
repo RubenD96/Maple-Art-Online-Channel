@@ -1,6 +1,5 @@
 package field.obj.life
 
-import field.obj.FieldObjectType
 import net.maple.SendOpcode
 import util.packet.Packet
 import util.packet.PacketWriter
@@ -19,8 +18,6 @@ class FieldNPC : AbstractFieldControlledLife {
         name = npc.name
         isMove = npc.isMove
     }
-
-    override val fieldObjectType = FieldObjectType.NPC
 
     // obj id
     override val enterFieldPacket: Packet

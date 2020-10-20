@@ -6,7 +6,6 @@ import client.inventory.item.templates.ItemEquipTemplate
 import client.inventory.item.variation.ItemVariationType
 import client.messages.IncEXPMessage
 import client.player.quest.QuestState
-import field.obj.FieldObjectType
 import field.obj.drop.AbstractFieldDrop
 import field.obj.drop.ItemDrop
 import field.obj.drop.MesoDrop
@@ -165,8 +164,6 @@ class FieldMob(val template: FieldMobTemplate, left: Boolean) : AbstractFieldCon
         pw.writeInt(0)
         pw.writeInt(0)
     }
-
-    override val fieldObjectType = FieldObjectType.MOB
 
     fun getEnterFieldPacket(type: MobSummonType): Packet {
         val pw = PacketWriter(32)

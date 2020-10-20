@@ -1,7 +1,6 @@
 package net.maple.handlers.user.attack
 
 import client.Character
-import field.obj.FieldObjectType
 import field.obj.life.FieldMob
 import util.packet.PacketReader
 import java.awt.Point
@@ -43,7 +42,7 @@ class DamageInfo(val type: AttackType, val chr: Character) {
     }
 
     fun apply() {
-        val mob = chr.field.getObject(FieldObjectType.MOB, mobId) as FieldMob? ?: return
+        val mob = chr.field.getObject<FieldMob>(mobId) ?: return
         val totalDamage = Arrays.stream(damage).sum()
 
         mob.controller = chr

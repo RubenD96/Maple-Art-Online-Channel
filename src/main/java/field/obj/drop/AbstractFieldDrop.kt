@@ -3,7 +3,6 @@ package field.obj.drop
 import client.Character
 import field.obj.AbstractFieldObject
 import field.obj.FieldObject
-import field.obj.FieldObjectType
 import net.maple.packets.FieldPackets.enterField
 import net.maple.packets.FieldPackets.leaveField
 import util.packet.Packet
@@ -17,8 +16,6 @@ abstract class AbstractFieldDrop(val owner: Int, val source: FieldObject, val qu
     abstract val info: Int
 
     abstract fun pickUp(chr: Character)
-
-    override val fieldObjectType: FieldObjectType get() = FieldObjectType.DROP
 
     override val enterFieldPacket: Packet get() = getEnterFieldPacket(EnterType.FFA)
 

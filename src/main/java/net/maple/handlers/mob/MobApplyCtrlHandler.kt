@@ -1,7 +1,6 @@
 package net.maple.handlers.mob
 
 import client.Client
-import field.obj.FieldObjectType
 import field.obj.life.FieldMob
 import net.maple.handlers.PacketHandler
 import util.packet.PacketReader
@@ -14,7 +13,7 @@ class MobApplyCtrlHandler : PacketHandler {
 
         val chr = c.character
         val field = chr.field
-        val mob = field.getObject(FieldObjectType.MOB, oid) as FieldMob? ?: return
+        val mob = field.getObject<FieldMob>(oid) ?: return
 
         //println("[MobApplyCtrlHandler] (${chr.getName()}) ${mob.name} ($oid) distance: $distanceToPlayer");
         when {

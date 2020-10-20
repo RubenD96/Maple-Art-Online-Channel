@@ -10,7 +10,6 @@ abstract class AbstractFieldObject : FieldObject {
     override lateinit var field: Field
     override var id = 0
 
-    abstract override val fieldObjectType: FieldObjectType
     abstract override val enterFieldPacket: Packet
     abstract override val leaveFieldPacket: Packet
 }
