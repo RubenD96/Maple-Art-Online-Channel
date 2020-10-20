@@ -5,7 +5,6 @@ import client.Client
 import client.inventory.ModifyInventoriesContext
 import client.inventory.item.slots.ItemSlotBundle
 import client.inventory.item.templates.ItemTemplate
-import client.replay.Replay
 import field.obj.drop.ItemDrop
 import field.obj.life.FieldMob
 import field.obj.life.FieldNPC

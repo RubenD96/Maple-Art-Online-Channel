@@ -4,8 +4,8 @@ import client.Character
 import client.Client
 import client.interaction.Interactable
 import client.inventory.ItemInventoryType
-import client.inventory.item.templates.ItemBundleTemplate
 import client.inventory.item.slots.ItemSlotBundle
+import client.inventory.item.templates.ItemBundleTemplate
 import constants.ItemConstants
 import database.jooq.Tables.SHOPITEMS
 import managers.ItemManager

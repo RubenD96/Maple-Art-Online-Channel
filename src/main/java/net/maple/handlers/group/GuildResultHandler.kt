@@ -3,7 +3,6 @@ package net.maple.handlers.group
 import client.Client
 import client.messages.broadcast.types.EventMessage
 import net.maple.handlers.PacketHandler
-import net.maple.packets.CharacterPackets
 import net.maple.packets.CharacterPackets.message
 import net.maple.packets.GuildPackets.GuildRes
 import net.server.Server.getCharacter

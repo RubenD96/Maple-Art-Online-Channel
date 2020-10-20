@@ -6,7 +6,6 @@ import client.effects.EffectInterface
 import client.inventory.ItemInventoryType
 import client.inventory.ModifyInventoriesContext
 import client.inventory.item.slots.ItemSlot
-import client.inventory.operations.AbstractModifyInventoryOperation
 import client.inventory.operations.MoveInventoryOperation
 import client.messages.Message
 import client.messages.broadcast.BroadcastMessage
@@ -17,7 +16,6 @@ import field.movement.MovePath
 import net.maple.SendOpcode
 import net.maple.packets.ItemPackets.encode
 import util.logging.LogType
-import util.logging.Logger
 import util.logging.Logger.log
 import util.packet.Packet
 import util.packet.PacketWriter
@@ -161,7 +159,7 @@ object CharacterPackets {
     }
 
     private fun Character.encodeStats(pw: PacketWriter) {
-        with (this) {
+        with(this) {
             pw.writeInt(id) // character id
             pw.writeFixedString(name, 13)
             pw.write(gender)

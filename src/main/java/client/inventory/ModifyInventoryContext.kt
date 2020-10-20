@@ -1,9 +1,9 @@
 package client.inventory
 
-import client.inventory.item.templates.ItemTemplate
-import client.inventory.operations.*
 import client.inventory.item.slots.ItemSlot
 import client.inventory.item.slots.ItemSlotBundle
+import client.inventory.item.templates.ItemTemplate
+import client.inventory.operations.*
 import constants.ItemConstants.isRechargeableItem
 import managers.ItemManager.getItem
 import util.packet.PacketWriter

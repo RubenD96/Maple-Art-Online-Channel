@@ -9,11 +9,9 @@ import net.database.QuestAPI.register
 import net.database.QuestAPI.remove
 import net.database.QuestAPI.update
 import net.maple.SendOpcode
-import net.maple.packets.CharacterPackets
 import net.maple.packets.CharacterPackets.message
 import scripting.quest.QuestScriptManager
 import util.logging.LogType
-import util.logging.Logger
 import util.logging.Logger.log
 import util.packet.Packet
 import util.packet.PacketWriter
@@ -87,9 +85,7 @@ class Quest(val id: Int, val character: Character) {
             if (!isJob) return false
         }
 
-        return if (reqs.maxLevel != 0 && character.level > reqs.maxLevel) {
-            false
-        } else true
+        return !(reqs.maxLevel != 0 && character.level > reqs.maxLevel)
 
         // todo date check
     }

@@ -9,7 +9,7 @@ class ItemVariation(private val type: ItemVariationType) {
 
         var new = base
         val rand = ceil(Math.random() * 100).toInt()
-        when(type) {
+        when (type) {
             ItemVariationType.BROKEN -> {
                 new -= when {
                     rand <= 50 -> 5

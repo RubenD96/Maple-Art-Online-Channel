@@ -3,7 +3,6 @@ package scripting.portal
 import client.Client
 import client.messages.broadcast.types.AlertMessage
 import field.obj.portal.FieldPortal
-import net.maple.packets.CharacterPackets
 import net.maple.packets.CharacterPackets.message
 import scripting.AbstractScriptManager
 

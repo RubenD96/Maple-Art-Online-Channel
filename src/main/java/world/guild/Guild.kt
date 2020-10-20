@@ -3,7 +3,6 @@ package world.guild
 import client.Character
 import util.HexTool
 import util.logging.LogType
-import util.logging.Logger
 import util.logging.Logger.log
 import util.packet.Packet
 import util.packet.PacketWriter

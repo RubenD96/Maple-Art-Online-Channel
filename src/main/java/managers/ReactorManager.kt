@@ -4,7 +4,6 @@ import field.obj.reactor.ReactorEvent
 import field.obj.reactor.ReactorSubEvent
 import field.obj.reactor.ReactorTemplate
 import util.logging.LogType
-import util.logging.Logger
 import util.logging.Logger.log
 
 object ReactorManager : Loadable {

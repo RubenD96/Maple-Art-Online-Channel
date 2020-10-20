@@ -8,7 +8,6 @@ import net.database.GuildAPI.expel
 import net.database.GuildAPI.updateInfo
 import net.database.GuildAPI.updateMemberGrade
 import net.maple.handlers.PacketHandler
-import net.maple.packets.CharacterPackets
 import net.maple.packets.CharacterPackets.message
 import net.maple.packets.GuildPackets
 import net.maple.packets.GuildPackets.GuildReq
@@ -24,7 +23,6 @@ import net.server.Server.getCharacter
 import net.server.Server.guilds
 import util.HexTool.toHex
 import util.logging.LogType
-import util.logging.Logger
 import util.logging.Logger.log
 import util.packet.PacketReader
 

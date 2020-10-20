@@ -273,7 +273,8 @@ class Field(val id: Int) {
     @Suppress("UNCHECKED_CAST")
     inline fun <reified T : FieldObject> getObjects(): Set<T> {
         synchronized(fieldObjects) {
-            return (fieldObjects[T::class] ?: error("Type ${T::class.simpleName} does not exist in field")).toSet() as Set<T>
+            return (fieldObjects[T::class]
+                    ?: error("Type ${T::class.simpleName} does not exist in field")).toSet() as Set<T>
         }
     }
 

@@ -69,7 +69,8 @@ object Logger {
                 it.write(complete.toByteArray())
             }
         } else {
-            bulkAdder[type]?.add(message) ?: log(LogType.MISSING, "[LOGGER] Could not add ${type.name} to the bulkAdder", this)
+            bulkAdder[type]?.add(message)
+                    ?: log(LogType.MISSING, "[LOGGER] Could not add ${type.name} to the bulkAdder", this)
         }
     }
 

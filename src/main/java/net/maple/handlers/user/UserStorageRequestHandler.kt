@@ -6,7 +6,6 @@ import client.player.DbChar
 import net.maple.SendOpcode
 import net.maple.handlers.PacketHandler
 import util.logging.LogType
-import util.logging.Logger
 import util.logging.Logger.log
 import util.packet.PacketReader
 import util.packet.PacketWriter

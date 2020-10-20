@@ -21,7 +21,6 @@ import constants.ServerConstants
 import net.maple.SendOpcode
 import net.maple.SendOpcode.Companion.getStringByCode
 import util.HexTool.toHex
-import java.util.*
 
 /**
  * Artifact from Invictus. Modified because this is relatively cheap enough

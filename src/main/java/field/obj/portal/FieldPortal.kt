@@ -6,7 +6,6 @@ import field.Field
 import net.maple.packets.CharacterPackets.message
 import scripting.portal.PortalScriptManager
 import util.logging.LogType
-import util.logging.Logger
 import util.logging.Logger.log
 
 class FieldPortal(val field: Field) : AbstractFieldPortal(), Portal {

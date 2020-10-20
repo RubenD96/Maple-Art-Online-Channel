@@ -1,7 +1,6 @@
 package net.database
 
 import client.player.Beauty
-import database.jooq.Tables
 import database.jooq.Tables.HAIRS
 import managers.BeautyManager
 import net.database.DatabaseCore.connection

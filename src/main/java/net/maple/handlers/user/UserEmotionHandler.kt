@@ -1,7 +1,6 @@
 package net.maple.handlers.user
 
 import client.Avatar
-import client.Character
 import client.Client
 import client.replay.MoveCollection.Emote
 import constants.FieldConstants.JQ_FIELDS

@@ -8,7 +8,6 @@ import constants.ServerConstants.COMMAND_FILE_LIST
 import constants.ServerConstants.COMMAND_LIST
 import net.maple.SendOpcode
 import net.maple.handlers.PacketHandler
-import net.maple.packets.CharacterPackets
 import net.maple.packets.CharacterPackets.message
 import scripting.command.CommandShortcut
 import util.packet.Packet

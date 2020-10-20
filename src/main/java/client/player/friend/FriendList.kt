@@ -7,7 +7,6 @@ import net.database.CharacterAPI.getOfflineId
 import net.database.FriendAPI.addFriend
 import net.maple.SendOpcode
 import net.maple.handlers.group.FriendRequestHandler.FriendOperation
-import net.server.Server
 import net.server.Server.getCharacter
 import util.packet.Packet
 import util.packet.PacketWriter

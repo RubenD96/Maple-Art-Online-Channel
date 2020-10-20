@@ -3,7 +3,6 @@ package net.maple.handlers.user
 import client.Client
 import client.messages.broadcast.types.AlertMessage
 import net.maple.handlers.PacketHandler
-import net.maple.packets.CharacterPackets
 import net.maple.packets.CharacterPackets.message
 import util.packet.PacketReader
 

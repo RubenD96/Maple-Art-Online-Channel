@@ -3,7 +3,6 @@ package managers
 import cashshop.commodities.Commodity
 import cashshop.commodities.CommodityFlag
 import util.logging.LogType
-import util.logging.Logger
 import util.logging.Logger.log
 
 object CommodityManager : Loadable {

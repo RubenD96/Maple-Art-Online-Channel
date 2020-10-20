@@ -4,7 +4,6 @@ import client.Client
 import net.maple.handlers.PacketHandler
 import net.maple.packets.CharacterPackets.showDamage
 import util.logging.LogType
-import util.logging.Logger
 import util.logging.Logger.log
 import util.packet.PacketReader
 

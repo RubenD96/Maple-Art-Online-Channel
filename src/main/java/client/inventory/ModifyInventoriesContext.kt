@@ -1,9 +1,9 @@
 package client.inventory
 
-import client.inventory.item.templates.ItemTemplate
-import client.inventory.operations.AbstractModifyInventoryOperation
 import client.inventory.item.slots.ItemSlot
 import client.inventory.item.slots.ItemSlotBundle
+import client.inventory.item.templates.ItemTemplate
+import client.inventory.operations.AbstractModifyInventoryOperation
 import util.packet.PacketWriter
 import java.util.*
 

@@ -2,7 +2,6 @@ package managers
 
 import field.obj.life.FieldMobTemplate
 import util.logging.LogType
-import util.logging.Logger
 import util.logging.Logger.log
 
 object MobManager : Loadable {

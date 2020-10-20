@@ -2,7 +2,6 @@ package client.party
 
 import client.Character
 import util.logging.LogType
-import util.logging.Logger
 import util.logging.Logger.log
 
 class PartyMember {

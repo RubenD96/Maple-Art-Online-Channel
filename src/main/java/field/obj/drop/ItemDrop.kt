@@ -4,7 +4,6 @@ import client.Character
 import client.inventory.item.slots.ItemSlot
 import client.messages.ItemDropPickUpMessage
 import field.obj.FieldObject
-import net.maple.packets.CharacterPackets
 import net.maple.packets.CharacterPackets.message
 import net.maple.packets.CharacterPackets.modifyInventory
 

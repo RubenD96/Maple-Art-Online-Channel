@@ -11,7 +11,6 @@ import net.netty.NettyClient.Companion.CLIENT_KEY
 import net.netty.NettyClient.Companion.CRYPTO_KEY
 import util.crypto.MapleAESOFB
 import util.packet.Packet
-import java.util.*
 
 class ServerHandler : ChannelInboundHandlerAdapter() {
 

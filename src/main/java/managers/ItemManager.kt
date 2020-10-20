@@ -3,7 +3,6 @@ package managers
 import client.inventory.ItemInventoryType
 import client.inventory.item.templates.*
 import util.logging.LogType
-import util.logging.Logger
 import util.logging.Logger.log
 
 object ItemManager : Loadable {

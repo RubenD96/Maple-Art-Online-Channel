@@ -2,7 +2,6 @@ package managers
 
 import field.obj.life.FieldNPC
 import util.logging.LogType
-import util.logging.Logger
 import util.logging.Logger.log
 
 object NPCManager : Loadable {
