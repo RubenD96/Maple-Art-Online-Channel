@@ -206,7 +206,9 @@ class FieldManager : Loadable {
                     mobSpawnPoints = mobSpawnPoints,
                     npcSpawnPoints = npcSpawnPoints,
                     reactorSpawnPoints = reactorSpawnPoints
-            )
+            ).also {
+                templates[fieldId] = it
+            }
         }
     }
 
