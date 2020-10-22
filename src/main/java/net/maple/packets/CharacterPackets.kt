@@ -184,7 +184,7 @@ object CharacterPackets {
             pw.writeInt(exp)
             pw.writeShort(fame) // 87
             pw.writeInt(69) // Gacha Exp (87-91)
-            pw.writeInt(field.id)
+            pw.writeInt(field.template.id)
             pw.write(portal.toInt())
             pw.writeInt(0) // playtime
             pw.writeShort(0) // subjob?

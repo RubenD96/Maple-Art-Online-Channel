@@ -8,7 +8,9 @@ import scripting.portal.PortalScriptManager
 import util.logging.LogType
 import util.logging.Logger.log
 
-class FieldPortal(val field: Field) : AbstractFieldPortal(), Portal {
+class FieldPortal : AbstractFieldPortal(), Portal {
+    
+    lateinit var field: Field
 
     override fun enter(chr: Character) {
         if (targetMap != 999999999) {

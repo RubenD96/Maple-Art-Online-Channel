@@ -71,7 +71,7 @@ object CharacterAPI {
                 .set(CHARACTERS.AP, chr.ap)
                 .set(CHARACTERS.SP, chr.sp)
                 .set(CHARACTERS.FAME, chr.fame)
-                .set(CHARACTERS.MAP, chr.field.forcedReturnMap)
+                .set(CHARACTERS.MAP, chr.field.template.forcedReturnMap)
                 .set(CHARACTERS.SPAWNPOINT, chr.field.getClosestSpawnpoint(chr.position).id)
                 .set(CHARACTERS.STR, chr.strength)
                 .set(CHARACTERS.DEX, chr.dexterity)

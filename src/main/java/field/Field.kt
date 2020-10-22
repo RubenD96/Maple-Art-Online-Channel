@@ -31,19 +31,19 @@ import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 import kotlin.reflect.KClass
 
-class Field(val id: Int) {
+class Field(val template: FieldTemplate) {
 
-    var returnMap = 0
+    /*var returnMap = 0
     var forcedReturnMap = 0
     var fieldLimit = 0
     lateinit var name: String
     lateinit var script: String
-    lateinit var mapArea: Rectangle
+    lateinit var mapArea: Rectangle*/
 
     var replay: Replay? = null
 
-    val portals: MutableMap<Byte, FieldPortal> = HashMap()
-    val footholds: MutableMap<Int, Foothold> = HashMap()
+    /*val portals: MutableMap<Byte, FieldPortal> = HashMap()
+    val footholds: MutableMap<Int, Foothold> = HashMap()*/
 
     //CHARACTER, SUMMONED, MOB, NPC, DROP, TOWN_PORTAL, REACTOR, ETC, REPLAY
     val fieldObjects: Map<KClass<out FieldObject>, MutableSet<FieldObject>> =
@@ -54,7 +54,7 @@ class Field(val id: Int) {
                     Replay::class to mutableSetOf(),
                     FieldNPC::class to mutableSetOf())
 
-    val mobSpawnPoints: MutableList<FieldMobSpawnPoint> = ArrayList()
+    //val mobSpawnPoints: MutableList<FieldMobSpawnPoint> = ArrayList()
     private val toRespawn: MutableList<Respawn> = ArrayList()
 
     companion object {
@@ -67,7 +67,7 @@ class Field(val id: Int) {
     }
 
     init {
-        if (JQ_FIELDS.contains(id)) {
+        if (JQ_FIELDS.contains(template.id)) {
             startReplay()
         }
     }
@@ -97,48 +97,51 @@ class Field(val id: Int) {
         addObject(obj)
 
         if (obj is Character) {
-            val portal: FieldPortal = portals[obj.portal] ?: firstSpawnpoint
-            obj.id = obj.id
-            obj.fieldId = id
-            obj.moveCollections[id] = MoveCollection(obj, id)
-            obj.position = portal.position
-            obj.foothold = (if (portal.type != PortalType.START_POINT) getFhByPortal(portal).id else 0).toShort()
-            obj.write(obj.setField())
-            broadcast(obj.enterFieldPacket, obj)
+            with (template) {
+                val portal: FieldPortal = portals[obj.portal] ?: firstSpawnpoint
+                obj.id = obj.id
+                obj.fieldId = id
+                obj.moveCollections[id] = MoveCollection(obj, id)
+                obj.position = portal.position
+                obj.foothold = (if (portal.type != PortalType.START_POINT) getFhByPortal(portal).id else 0).toShort()
+                obj.write(obj.setField())
+                broadcast(obj.enterFieldPacket, obj)
 
-            synchronized(fieldObjects) {
-                fieldObjects.values.forEach { set ->
-                    set.stream()
-                            .filter { it != obj }
-                            .forEach {
-                                when (it) {
-                                    is AbstractFieldDrop -> enterItemDrop(it, it.enterFieldPacket)
-                                    is FieldMob -> obj.write(it.getEnterFieldPacket(MobSummonType.NORMAL))
-                                    else -> obj.write(it.enterFieldPacket)
+                // Show the player what objects are present on the field
+                synchronized(fieldObjects) {
+                    fieldObjects.values.forEach { set ->
+                        set.stream()
+                                .filter { it != obj }
+                                .forEach {
+                                    when (it) {
+                                        is AbstractFieldDrop -> enterItemDrop(it, it.enterFieldPacket)
+                                        is FieldMob -> obj.write(it.getEnterFieldPacket(MobSummonType.NORMAL))
+                                        else -> obj.write(it.enterFieldPacket)
+                                    }
                                 }
-                            }
+                    }
                 }
-            }
 
-            obj.party?.let { party ->
-                val me = party.getMember(obj.id) ?: return@let
-                me.field = id
-                party.getMembers().forEach { member ->
-                    if (member.isOnline && member.channel == obj.getChannel().channelId) {
-                        val mem = getCharacter(member.cid) ?: return@forEach
-                        mem.write(updateParty(party, member.channel))
+                // Let party know you changed field
+                obj.party?.let { party ->
+                    val me = party.getMember(obj.id) ?: return@let
+                    me.field = id
+                    party.getMembers().forEach { member ->
+                        if (member.isOnline && member.channel == obj.getChannel().channelId) {
+                            val mem = getCharacter(member.cid) ?: return@forEach
+                            mem.write(updateParty(party, member.channel))
 
-                        if (member.field == id) {
-                            mem.updatePartyHP(true)
+                            if (member.field == id) {
+                                mem.updatePartyHP(true)
+                            }
                         }
                     }
                 }
             }
-
-            if (script.isNotEmpty()) { // never happens as we set script to mapid when onEnter is not present
-                execute(obj.client, this, script)
+            if (template.script.isNotEmpty()) { // never happens as we set script to mapid when onEnter is not present
+                execute(obj.client, this, template.script)
             }
-        } else {
+        } else { // not a character object
             obj.id = runningObjectId.addAndGet(1)
             when (obj) {
                 is AbstractFieldDrop -> enterItemDrop(obj, obj.getEnterFieldPacket(EnterType.PARTY))
@@ -196,7 +199,7 @@ class Field(val id: Int) {
                         mob.time = respawn.cooldown
                         mob.rx0 = it.rx0
                         mob.rx1 = it.rx1
-                        mob.position = it.point
+                        mob.position = it.position
                         mob.foothold = it.fh
                         mob.cy = it.cy
                         mob.hide = false
@@ -210,11 +213,13 @@ class Field(val id: Int) {
         }
     }
 
-    private fun getRandomViableMobSpawnPoint(mob: Int): FieldMobSpawnPoint? {
-        if (mobSpawnPoints.isEmpty()) return null // spawned in a map with no mob spawns, don't respawn
+    private fun getRandomViableMobSpawnPoint(mob: Int): FieldLifeSpawnPoint? {
+        with(template) {
+            if (mobSpawnPoints.isEmpty()) return null // spawned in a map with no mob spawns, don't respawn
 
-        val spawnPoints = mobSpawnPoints.stream().filter { sp: FieldMobSpawnPoint -> sp.id == mob }.toArray()
-        return spawnPoints[Random().nextInt(spawnPoints.size)] as FieldMobSpawnPoint
+            val spawnPoints = mobSpawnPoints.stream().filter { sp: FieldLifeSpawnPoint -> sp.id == mob }.toArray()
+            return spawnPoints[Random().nextInt(spawnPoints.size)] as FieldLifeSpawnPoint
+        }
     }
 
     fun removeExpiredDrops() {
@@ -245,14 +250,15 @@ class Field(val id: Int) {
     }
 
     fun getControlledObject(chr: Character, oid: Int): FieldControlledObject? {
-        return (getObjects<FieldNPC>() + getObjects<FieldMob>()).stream().filter {
-            (it as FieldControlledObject).controller == chr && it.id == oid
-        }.findAny().orElse(null)
+        return (getObjects<FieldNPC>() + getObjects<FieldMob>()).stream()
+                .filter {
+                    it.controller == chr && it.id == oid
+                }.findAny().orElse(null)
     }
 
     fun addObject(obj: FieldObject) {
         synchronized(fieldObjects) {
-            fieldObjects[obj::class]?.add(obj)
+            fieldObjects[obj::class]?.add(obj) ?: error("Invalid field object type: ${obj::class.simpleName}")
         }
     }
 
@@ -263,6 +269,10 @@ class Field(val id: Int) {
         }
     }
 
+    /**
+     * Probably not smort to use this.
+     * Use the one that uses generics: getObjects<FieldObject>()
+     */
     fun getObjects(): HashMap<KClass<out FieldObject>, MutableSet<FieldObject>> {
         synchronized(fieldObjects) {
             return HashMap(fieldObjects)
@@ -288,10 +298,14 @@ class Field(val id: Int) {
         }
     }
 
+    fun isEmpty(): Boolean {
+        return getObjects<Character>().isEmpty()
+    }
+
     fun getClosestSpawnpoint(point: Point): FieldPortal {
         var sp: FieldPortal? = null
         var shortestDistance = Double.POSITIVE_INFINITY
-        portals.values.forEach {
+        template.portals.values.forEach {
             val distance: Double = it.position.distanceSq(point)
             if (it.type == PortalType.START_POINT && distance < shortestDistance && it.targetMap == 999999999) {
                 sp = it
@@ -302,14 +316,14 @@ class Field(val id: Int) {
     }
 
     private val firstSpawnpoint: FieldPortal
-        get() = portals.values.stream().filter { it.type == PortalType.START_POINT }.findFirst().get()
+        get() = template.portals.values.stream().filter { it.type == PortalType.START_POINT }.findFirst().get()
 
     fun getPortalByName(name: String): FieldPortal? {
-        return portals.values.stream().filter { it.name == name }.findFirst().orElse(null)
+        return template.portals.values.stream().filter { it.name == name }.findFirst().orElse(null)
     }
 
     private fun getFhByPortal(portal: FieldPortal): Foothold {
-        return footholds.values.stream()
+        return template.footholds.values.stream()
                 .filter {
                     it.x1 <= portal.position.getX() && it.x2 >= portal.position.getX()
                 }
@@ -317,23 +331,8 @@ class Field(val id: Int) {
                 .findFirst().get()
     }
 
-    //this.objects.values().forEach(ret::addAll);
-    val objectsAsList: Set<Any?>
-        get() {
-            val ret: MutableSet<FieldObject?> = HashSet()
-            for (fieldObjects in fieldObjects.values) {
-                println(fieldObjects)
-                for (fieldObject in fieldObjects) {
-                    println(fieldObject)
-                    ret.add(fieldObject)
-                }
-            }
-            //this.objects.values().forEach(ret::addAll);
-            return ret
-        }
-
     override fun toString(): String {
-        return "Field{id=$id, runningObjectId=$runningObjectId, name='$name', objects=$fieldObjects}"
+        return "Field{id=${template.id}, runningObjectId=$runningObjectId, name='${template.name}', objects=$fieldObjects}"
     }
 
     fun queueRespawn(mob: Int, cooldown: Int, time: Long) {

@@ -8,6 +8,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import managers.FieldManager
 import managers.ItemManager
 import managers.Loadable
 import net.maple.handlers.user.UserEmotionHandler.Companion.sendEmotion
@@ -33,9 +34,9 @@ class Replay : Avatar(), Loadable {
     private var coroutine: kotlinx.coroutines.Job? = null
 
     fun load(field: Field): Replay? {
-        val reader = getData("data/replays/${field.id}.replay")
+        val reader = getData("data/replays/${field.template.id}.replay")
                 ?: return run {
-                    Logger.log(LogType.MISSING, "Replay on field ${field.id} not found", this@Replay)
+                    Logger.log(LogType.MISSING, "Replay on field ${field.template.id} not found", this@Replay)
                     null
                 }
 
@@ -96,7 +97,9 @@ class Replay : Avatar(), Loadable {
             }
             async {
                 delay(movements[movements.size - 1].timestamp + 1000)
-                start()
+                if (!(FieldManager.isInstanced(field.template.id) && field.isEmpty())) {
+                    start()
+                }
             }
         }
     }

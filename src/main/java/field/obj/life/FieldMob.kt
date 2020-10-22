@@ -105,7 +105,7 @@ class FieldMob(val template: FieldMobTemplate, left: Boolean) : AbstractFieldCon
             }
         }
 
-        val bounds = field.mapArea
+        val bounds = field.template.mapArea
         drops.forEach {
             var x = position.x + (drops.indexOf(it) - (drops.size - 1) / 2) * 28
             val y = position.y

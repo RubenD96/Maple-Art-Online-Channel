@@ -11,7 +11,7 @@ object FieldScriptManager : AbstractScriptManager() {
             val map = FieldScriptMethods(c, field)
             val iv = getInvocable("map/$script.js", c)
             if (iv == null) {
-                println("Mapscript " + script + " is uncoded. (" + field.id + ")")
+                println("Mapscript " + script + " is uncoded. (" + field.template.id + ")")
                 return
             }
             engine?.let {
