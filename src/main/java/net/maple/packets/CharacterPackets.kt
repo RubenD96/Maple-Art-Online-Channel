@@ -242,7 +242,10 @@ object CharacterPackets {
         }
 
         pw.writeHeader(SendOpcode.STAT_CHANGED)
+
+        // exclusive request flag, causes the player to be unable to perform an action for the next 100ms if enabled
         pw.writeBool(enableActions)
+
         val flag = statTypes.stream().mapToInt(StatType::stat).reduce(0) { a: Int, b: Int -> a or b }
 
         pw.writeInt(flag)

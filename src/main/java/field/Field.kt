@@ -234,14 +234,13 @@ class Field(val id: Int) {
                 .sorted(Comparator.comparingInt { it.controlledObjects.size })
                 .collect(Collectors.toList())
 
-        val controlled: Set<FieldObject> = getObjects<FieldNPC>() + getObjects<FieldMob>()
+        val controlled: Set<FieldControlledObject> = getObjects<FieldNPC>() + getObjects<FieldMob>()
 
         controlled.stream()
                 .filter {
-                    val c: FieldControlledObject = it as FieldControlledObject
-                    c.controller == null || !characters.contains(c.controller)
+                    it.controller == null || !characters.contains(it.controller)
                 }.forEach {
-                    (it as FieldControlledObject).controller = characters.stream().findFirst().orElse(null)
+                    it.controller = characters.stream().findFirst().orElse(null)
                 }
     }
 
