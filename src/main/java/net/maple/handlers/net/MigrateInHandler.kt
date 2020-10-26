@@ -52,6 +52,7 @@ class MigrateInHandler : PacketHandler {
                 }
 
                 chr.loadGuild()
+                chr.loadMobKills()
 
                 val field = c.worldChannel.fieldManager.getField(chr.fieldId)
 

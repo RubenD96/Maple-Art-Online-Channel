@@ -3,8 +3,7 @@ package net.database
 import client.Character
 import client.Client
 import client.player.key.KeyBinding
-import database.jooq.Tables.CHARACTERS
-import database.jooq.Tables.KEYBINDINGS
+import database.jooq.Tables.*
 import net.database.DatabaseCore.connection
 import org.jooq.Record
 
@@ -127,6 +126,19 @@ object CharacterAPI {
                     .and(KEYBINDINGS.KEY.eq(it.key))
                     .execute()
         }
+    }
+
+    fun getMobKills(cid: Int): MutableMap<Int, Int> {
+        val mobKills: MutableMap<Int, Int> = HashMap()
+        val res = connection.select().from(MOBKILLS)
+                .where(MOBKILLS.CID.eq(cid))
+                .fetch()
+
+        res.forEach {
+            mobKills[it.getValue(MOBKILLS.MID)] = it.getValue(MOBKILLS.COUNT)
+        }
+
+        return mobKills
     }
 
     fun getCharacterInfo(id: Int): Record {

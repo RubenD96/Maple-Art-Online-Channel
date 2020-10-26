@@ -13,6 +13,7 @@ import managers.ItemManager
 import net.database.DropAPI.getMobDrops
 import net.maple.SendOpcode
 import net.maple.packets.CharacterPackets.message
+import net.server.Server
 import scripting.mob.MobScriptManager
 import util.packet.Packet
 import util.packet.PacketWriter
@@ -54,6 +55,16 @@ class FieldMob(val template: FieldMobTemplate, left: Boolean) : AbstractFieldCon
 
         field.leave(this, leaveFieldPacket)
         chr.gainExp(template.exp) // todo share
+
+        chr.party?.onlineMembers?.forEach {
+            if (it.field == field.template.id) { // same id
+                Server.getCharacter(it.cid)?.run {
+                    if (this.field == field) { // same instance
+                        this.updateMobKills(template.id)
+                    }
+                }
+            }
+        } ?: chr.updateMobKills(template.id)
 
         val msg = IncEXPMessage()
         msg.isLastHit = true

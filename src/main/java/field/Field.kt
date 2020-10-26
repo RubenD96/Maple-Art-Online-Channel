@@ -1,5 +1,6 @@
 package field
 
+import client.Avatar
 import client.Character
 import client.player.quest.QuestState
 import client.replay.MoveCollection
@@ -22,13 +23,11 @@ import util.logging.LogType
 import util.logging.Logger
 import util.packet.Packet
 import java.awt.Point
-import java.awt.Rectangle
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.stream.Collectors
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
-import kotlin.collections.HashSet
 import kotlin.reflect.KClass
 
 class Field(val template: FieldTemplate) {
@@ -97,7 +96,7 @@ class Field(val template: FieldTemplate) {
         addObject(obj)
 
         if (obj is Character) {
-            with (template) {
+            with(template) {
                 val portal: FieldPortal = portals[obj.portal] ?: firstSpawnpoint
                 obj.id = obj.id
                 obj.fieldId = id
@@ -167,21 +166,31 @@ class Field(val template: FieldTemplate) {
         }
     }
 
-    fun leave(obj: FieldObject, leaveFieldPacket: Packet? = null) {
-        removeObject(obj)
-        when (obj) {
+    fun leave(avatar: Avatar) {
+        removeObject(avatar)
+        when (avatar) {
             is Character -> {
-                broadcast(obj.leaveFieldPacket, obj)
+                broadcast(avatar.leaveFieldPacket, avatar)
             }
             is Replay -> {
-                broadcast(obj.leaveFieldPacket)
+                broadcast(avatar.leaveFieldPacket)
                 replay = null
-            }
-            else -> {
-                broadcast(leaveFieldPacket!!)
             }
         }
         updateControlledObjects()
+    }
+
+    /**
+     * Do NOT use for FieldObjects that extend from Avatar
+     */
+    fun leave(obj: FieldObject, leaveFieldPacket: Packet) {
+        if (obj is Avatar) {
+            leave(obj)
+        } else {
+            removeObject(obj)
+            broadcast(leaveFieldPacket)
+            updateControlledObjects()
+        }
     }
 
     fun respawn() {
@@ -269,10 +278,7 @@ class Field(val template: FieldTemplate) {
         }
     }
 
-    /**
-     * Probably not smort to use this.
-     * Use the one that uses generics: getObjects<FieldObject>()
-     */
+    @Deprecated(message = "Use the one that uses generics: getObjects<FieldObject>()")
     fun getObjects(): HashMap<KClass<out FieldObject>, MutableSet<FieldObject>> {
         synchronized(fieldObjects) {
             return HashMap(fieldObjects)

@@ -8,6 +8,7 @@ import client.inventory.item.slots.ItemSlot
 import client.inventory.item.slots.ItemSlotBundle
 import client.inventory.item.slots.ItemSlotEquip
 import client.messages.IncMesoMessage
+import client.messages.broadcast.types.NoticeWithoutPrefixMessage
 import client.messages.quest.CompleteQuestRecordMessage
 import client.messages.quest.PerformQuestRecordMessage
 import client.messages.quest.ResignQuestRecordMessage
@@ -23,8 +24,10 @@ import constants.UserConstants.expTable
 import database.jooq.Tables
 import field.Field
 import field.obj.life.FieldControlledObject
+import field.obj.life.FieldMobTemplate
 import kotlinx.coroutines.*
 import net.database.CharacterAPI.getKeyBindings
+import net.database.CharacterAPI.getMobKills
 import net.database.CharacterAPI.getOldPartyId
 import net.database.CharacterAPI.saveCharacterStats
 import net.database.CharacterAPI.updateKeyBindings
@@ -118,6 +121,7 @@ class Character(val client: Client, override var name: String, val record: Recor
     val guildInvitesSent: MutableSet<String> = HashSet()
     val moveCollections = HashMap<Int, MoveCollection>()
     val coroutines = CoroutineCollection()
+    val mobKills: MutableMap<Int, Int> = HashMap()
 
     var keyBindings: MutableMap<Int, KeyBinding> = HashMap()
     var wishlist = IntArray(10)
@@ -349,6 +353,22 @@ class Character(val client: Client, override var name: String, val record: Recor
             guild.getMemberSecure(id).character = this
             guild.getMemberSecure(id).isOnline = true
             this.guild = guild
+        }
+    }
+
+    fun loadMobKills() {
+        mobKills.putAll(getMobKills(id))
+    }
+
+    fun updateMobKills(mob: FieldMobTemplate) {
+        synchronized(mobKills) {
+            mobKills.putIfAbsent(mob.id, 0)?.also {
+                val new = it + 1
+                mobKills[mob.id] = new
+                if (mob.isBoss || new % 1000 == 0) {
+                    message(NoticeWithoutPrefixMessage(mob.name + " killcount: " + new))
+                }
+            }
         }
     }
 
