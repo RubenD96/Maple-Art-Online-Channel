@@ -113,6 +113,13 @@ class Character(val client: Client, override var name: String, val record: Recor
     /**
      * Collections
      */
+    override val inventories: Map<ItemInventoryType, ItemInventory> = mapOf(
+            ItemInventoryType.EQUIP to ItemInventory(24.toShort()),
+            ItemInventoryType.CONSUME to ItemInventory(24.toShort()),
+            ItemInventoryType.INSTALL to ItemInventory(24.toShort()),
+            ItemInventoryType.ETC to ItemInventory(24.toShort()),
+            ItemInventoryType.CASH to ItemInventory(24.toShort())
+    )
     val quickSlotKeys = IntArray(8)
     val controlledObjects: MutableList<FieldControlledObject> = ArrayList()
     val quests: MutableMap<Int, Quest> = HashMap()
@@ -137,10 +144,6 @@ class Character(val client: Client, override var name: String, val record: Recor
         portal = spawnpoint.toByte()
         resetQuickSlot()
         keyBindings = getKeyBindings(id)
-        inventories[ItemInventoryType.CONSUME] = ItemInventory(24.toShort())
-        inventories[ItemInventoryType.INSTALL] = ItemInventory(24.toShort())
-        inventories[ItemInventoryType.ETC] = ItemInventory(24.toShort())
-        inventories[ItemInventoryType.CASH] = ItemInventory(96.toShort())
         friendList = FriendList(this)
     }
 
@@ -362,8 +365,7 @@ class Character(val client: Client, override var name: String, val record: Recor
 
     fun updateMobKills(mob: FieldMobTemplate) {
         synchronized(mobKills) {
-            mobKills.putIfAbsent(mob.id, 0)?.also {
-                val new = it + 1
+            mobKills.merge(mob.id, 1, Int::plus)?.also { new ->
                 mobKills[mob.id] = new
                 if (mob.isBoss || new % 1000 == 0) {
                     message(NoticeWithoutPrefixMessage(mob.name + " killcount: " + new))
@@ -437,7 +439,7 @@ class Character(val client: Client, override var name: String, val record: Recor
     }
 
     fun getInventory(type: ItemInventoryType): ItemInventory {
-        return inventories[type]!!
+        return inventories[type] ?: error("Inventory ${type.name} does not exist!")
     }
 
     val allInventories: Map<ItemInventoryType, ItemInventory>

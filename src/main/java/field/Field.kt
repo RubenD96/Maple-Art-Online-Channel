@@ -40,6 +40,11 @@ class Field(val template: FieldTemplate) {
     lateinit var mapArea: Rectangle*/
 
     var replay: Replay? = null
+    val portals: Map<Byte, FieldPortal> = HashMap(template.portals).also {
+        it.values.forEach { portal ->
+            portal.field = this
+        }
+    }
 
     /*val portals: MutableMap<Byte, FieldPortal> = HashMap()
     val footholds: MutableMap<Int, Foothold> = HashMap()*/
@@ -295,12 +300,7 @@ class Field(val template: FieldTemplate) {
 
     inline fun <reified T : FieldObject> getObject(id: Int): T? {
         synchronized(fieldObjects) {
-            fieldObjects[T::class]?.forEach {
-                if (it.id == id) {
-                    return it as T
-                }
-            }
-            return null
+            return fieldObjects[T::class]?.firstOrNull { it.id == id } as? T
         }
     }
 

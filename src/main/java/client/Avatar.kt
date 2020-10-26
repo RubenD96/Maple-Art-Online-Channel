@@ -21,13 +21,11 @@ abstract class Avatar : AbstractFieldLife() {
     abstract var job: Job
 
     open val pets = arrayOfNulls<Pet>(3)
-    protected val inventories: MutableMap<ItemInventoryType, ItemInventory> = EnumMap(ItemInventoryType::class.java)
+    protected open val inventories: Map<ItemInventoryType, ItemInventory> = mapOf(
+            ItemInventoryType.EQUIP to ItemInventory(24.toShort())
+    )
     var portableChair: Int? = null
     var guild: Guild? = null
-
-    init {
-        inventories[ItemInventoryType.EQUIP] = ItemInventory(24.toShort())
-    }
 
     override val enterFieldPacket: Packet
         get() = enterField()
@@ -35,6 +33,6 @@ abstract class Avatar : AbstractFieldLife() {
         get() = leaveField()
 
     fun getEquips(): ItemInventory {
-        return inventories[ItemInventoryType.EQUIP]!!
+        return inventories[ItemInventoryType.EQUIP] ?: error("Equip inventory not found")
     }
 }

@@ -71,8 +71,11 @@ class FieldManager : Loadable {
     }
 
     fun reloadField(id: Int) {
-        synchronized(fields) {
-            fields.remove(id)
+        synchronized(templates) {
+            synchronized(fields) {
+                templates.remove(id)
+                fields.remove(id)
+            }
         }
     }
 

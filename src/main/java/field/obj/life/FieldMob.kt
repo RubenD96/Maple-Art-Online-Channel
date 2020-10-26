@@ -56,15 +56,19 @@ class FieldMob(val template: FieldMobTemplate, left: Boolean) : AbstractFieldCon
         field.leave(this, leaveFieldPacket)
         chr.gainExp(template.exp) // todo share
 
-        chr.party?.onlineMembers?.forEach {
-            if (it.field == field.template.id) { // same id
-                Server.getCharacter(it.cid)?.run {
-                    if (this.field == field) { // same instance
-                        this.updateMobKills(template.id)
+        if (template.isBoss) { // only give party a kc if its a boss, not for regular mobs
+            chr.party?.onlineMembers?.forEach {
+                if (it.field == field.template.id) { // same id
+                    Server.getCharacter(it.cid)?.run {
+                        if (this.field == field) { // same instance
+                            this.updateMobKills(template)
+                        }
                     }
                 }
-            }
-        } ?: chr.updateMobKills(template.id)
+            } ?: chr.updateMobKills(template)
+        } else {
+            chr.updateMobKills(template)
+        }
 
         val msg = IncEXPMessage()
         msg.isLastHit = true
