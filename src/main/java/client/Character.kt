@@ -131,6 +131,7 @@ class Character(val client: Client, override var name: String, val record: Recor
     val moveCollections = HashMap<Int, MoveCollection>()
     val coroutines = CoroutineCollection()
     val mobKills: MutableMap<Int, Int> = HashMap()
+    val times: MutableMap<String, Long> = HashMap() // used for storing multiple start/end times
 
     /**
      * Session updates

@@ -16,13 +16,15 @@ object NPCScriptManager : AbstractScriptManager() {
 
     fun converse(c: Client, npc: Int, fileName: String? = null, mode: Int = 1, selection: Int = -1): Boolean {
         return try {
-            c.lastNpcClick = System.currentTimeMillis()
-            if (scripts[c] == null) {
-                val cm = NPCConversationManager(c, npc)
-                if (cms.containsKey(c)) {
-                    dispose(c)
-                }
-                if (c.canClickNPC()) {
+            if (c.canClickNPC()) {
+                c.lastNpcClick = System.currentTimeMillis()
+                if (scripts[c] == null) {
+                    val cm = NPCConversationManager(c, npc)
+
+                    if (cms.containsKey(c)) {
+                        dispose(c)
+                    }
+
                     cms[c] = cm
 
                     var iv: Invocable? = null
@@ -47,10 +49,10 @@ object NPCScriptManager : AbstractScriptManager() {
                         iv.invokeFunction("converse", mode, selection)
                     }
                 } else {
-                    c.character.enableActions()
+                    scripts[c]?.invokeFunction("converse", mode, selection)
                 }
             } else {
-                scripts[c]?.invokeFunction("converse", mode, selection)
+                c.character.enableActions()
             }
             true
         } catch (e: Exception) {

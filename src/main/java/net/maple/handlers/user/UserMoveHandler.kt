@@ -23,6 +23,7 @@ class UserMoveHandler : PacketHandler {
 
         if (JQ_FIELDS.contains(chr.fieldId)) {
             chr.moveCollections[chr.fieldId]?.movements?.add(Movement(System.currentTimeMillis(), reader.data))
+            chr.times["jq start"] = System.currentTimeMillis()
         }
 
         chr.field.broadcast(chr.move(path), chr)

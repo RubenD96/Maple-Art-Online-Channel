@@ -83,7 +83,7 @@ object CharacterAPI {
                 .set(CHARACTERS.EXP, chr.exp)
                 .set(CHARACTERS.MESO, chr.meso)
                 .set(CHARACTERS.PARTY, chr.party?.id ?: 0)
-                // todo hardcore, killcount?
+                .set(CHARACTERS.KILL_COUNT, chr.mobKills.values.sum())
                 .set(CHARACTERS.TOTAL_DAMAGE, chr.totalDamage)
                 .where(CHARACTERS.ID.eq(chr.id))
                 .execute()
