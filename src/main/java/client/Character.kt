@@ -30,6 +30,7 @@ import net.database.CharacterAPI.getKeyBindings
 import net.database.CharacterAPI.getMobKills
 import net.database.CharacterAPI.getOldPartyId
 import net.database.CharacterAPI.saveCharacterStats
+import net.database.CharacterAPI.saveMobKills
 import net.database.CharacterAPI.updateKeyBindings
 import net.database.GuildAPI.getGuildId
 import net.database.GuildAPI.load
@@ -49,6 +50,7 @@ import util.logging.LogType
 import util.logging.Logger.log
 import util.packet.Packet
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 import kotlin.math.min
@@ -130,6 +132,11 @@ class Character(val client: Client, override var name: String, val record: Recor
     val coroutines = CoroutineCollection()
     val mobKills: MutableMap<Int, Int> = HashMap()
 
+    /**
+     * Session updates
+     */
+    val killedMobs: MutableSet<Int> = HashSet()
+
     var keyBindings: MutableMap<Int, KeyBinding> = HashMap()
     var wishlist = IntArray(10)
 
@@ -155,6 +162,7 @@ class Character(val client: Client, override var name: String, val record: Recor
     fun save() {
         saveCharacterStats(this)
         updateKeyBindings(this)
+        saveMobKills(this)
         saveInventories(this)
         saveInfo(this)
         save(this)
@@ -365,6 +373,7 @@ class Character(val client: Client, override var name: String, val record: Recor
 
     fun updateMobKills(mob: FieldMobTemplate) {
         synchronized(mobKills) {
+            killedMobs.add(mob.id)
             mobKills.merge(mob.id, 1, Int::plus)?.also { new ->
                 mobKills[mob.id] = new
                 if (mob.isBoss || new % 1000 == 0) {

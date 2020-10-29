@@ -141,6 +141,18 @@ object CharacterAPI {
         return mobKills
     }
 
+    fun saveMobKills(chr: Character) {
+        chr.killedMobs.forEach {
+            connection.insertInto(MOBKILLS, MOBKILLS.CID, MOBKILLS.MID, MOBKILLS.COUNT)
+                    .values(chr.id, it, chr.mobKills[it])
+                    .onDuplicateKeyUpdate()
+                    .set(MOBKILLS.COUNT, chr.mobKills[it])
+                    .where(MOBKILLS.CID.eq(chr.id))
+                    .and(MOBKILLS.MID.eq(it))
+                    .execute()
+        }
+    }
+
     fun getCharacterInfo(id: Int): Record {
         return connection.select().from(CHARACTERS).where(CHARACTERS.ID.eq(id)).fetchOne()
     }
