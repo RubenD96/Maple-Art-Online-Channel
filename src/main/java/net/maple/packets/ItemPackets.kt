@@ -9,6 +9,10 @@ import util.packet.PacketWriter
 
 object ItemPackets {
 
+    private const val ENCODE_EQUIP = 0x01
+    private const val ENCODE_BUNDLE = 0x02
+    private const val ENCODE_PET = 0x03
+
     fun ItemSlot.encode(pw: PacketWriter) {
         when (this) {
             is ItemSlotEquip -> {
@@ -35,7 +39,7 @@ object ItemPackets {
     }
 
     private fun ItemSlotEquip.encode(pw: PacketWriter) {
-        pw.write(1)
+        pw.write(ENCODE_EQUIP)
         encodeBase(pw)
         pw.write(ruc.toInt())
         pw.write(cuc.toInt())
@@ -81,7 +85,7 @@ object ItemPackets {
     }
 
     private fun ItemSlotBundle.encode(pw: PacketWriter) {
-        pw.write(2)
+        pw.write(ENCODE_BUNDLE)
         encodeBase(pw)
 
         pw.writeShort(number)
@@ -94,7 +98,7 @@ object ItemPackets {
     }
 
     private fun ItemSlotPet.encode(pw: PacketWriter) {
-        pw.write(3)
+        pw.write(ENCODE_PET)
         encodeBase(pw)
 
         pw.writeFixedString(petName, 13)
