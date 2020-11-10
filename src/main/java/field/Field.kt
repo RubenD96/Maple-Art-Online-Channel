@@ -10,6 +10,8 @@ import field.obj.FieldObject
 import field.obj.Foothold
 import field.obj.drop.AbstractFieldDrop
 import field.obj.drop.EnterType
+import field.obj.drop.ItemDrop
+import field.obj.drop.MesoDrop
 import field.obj.life.*
 import field.obj.portal.FieldPortal
 import field.obj.portal.PortalType
@@ -272,13 +274,13 @@ class Field(val template: FieldTemplate) {
 
     fun addObject(obj: FieldObject) {
         synchronized(fieldObjects) {
-            fieldObjects[obj::class]?.add(obj) ?: error("Invalid field object type: ${obj::class.simpleName}")
+            fieldObjects[obj.kclass]?.add(obj) ?: error("Invalid field object type: ${obj::class.simpleName}")
         }
     }
 
     fun removeObject(obj: FieldObject) {
         synchronized(fieldObjects) {
-            fieldObjects[obj::class]?.remove(obj)
+            fieldObjects[obj.kclass]?.remove(obj)
                     ?: throw NullPointerException("[Field] Removal of field object failed.\n${toString()}")
         }
     }
