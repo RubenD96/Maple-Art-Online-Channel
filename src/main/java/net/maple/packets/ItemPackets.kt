@@ -12,100 +12,100 @@ object ItemPackets {
     fun ItemSlot.encode(pw: PacketWriter) {
         when (this) {
             is ItemSlotEquip -> {
-                encode(this, pw)
+                this.encode(pw)
             }
             is ItemSlotBundle -> {
-                encode(this, pw)
+                this.encode(pw)
             }
             is ItemSlotPet -> {
-                encode(this, pw)
+                this.encode(pw)
             }
         }
     }
 
-    private fun encodeBase(item: ItemSlot, pw: PacketWriter) {
-        pw.writeInt(item.templateId)
-        pw.writeBool(item.cashItemSN > 0)
+    private fun ItemSlot.encodeBase(pw: PacketWriter) {
+        pw.writeInt(templateId)
+        pw.writeBool(cashItemSN > 0)
 
-        if (item.cashItemSN > 0) {
-            pw.writeLong(item.cashItemSN)
+        if (cashItemSN > 0) {
+            pw.writeLong(cashItemSN)
         }
 
-        pw.writeLong(if (item.expire > 0) item.expire else 150842304000000000L)
+        pw.writeLong(if (expire > 0) expire else 150842304000000000L)
     }
 
-    private fun encode(item: ItemSlotEquip, pw: PacketWriter) {
+    private fun ItemSlotEquip.encode(pw: PacketWriter) {
         pw.write(1)
-        encodeBase(item, pw)
-        pw.write(item.ruc.toInt())
-        pw.write(item.cuc.toInt())
+        encodeBase(pw)
+        pw.write(ruc.toInt())
+        pw.write(cuc.toInt())
 
-        pw.writeShort(item.str)
-        pw.writeShort(item.dex)
-        pw.writeShort(item.int)
-        pw.writeShort(item.luk)
-        pw.writeShort(item.maxHP)
-        pw.writeShort(item.maxMP)
-        pw.writeShort(item.pad)
-        pw.writeShort(item.mad)
-        pw.writeShort(item.pdd)
-        pw.writeShort(item.mdd)
-        pw.writeShort(item.acc)
-        pw.writeShort(item.eva)
+        pw.writeShort(str)
+        pw.writeShort(dex)
+        pw.writeShort(int)
+        pw.writeShort(luk)
+        pw.writeShort(maxHP)
+        pw.writeShort(maxMP)
+        pw.writeShort(pad)
+        pw.writeShort(mad)
+        pw.writeShort(pdd)
+        pw.writeShort(mdd)
+        pw.writeShort(acc)
+        pw.writeShort(eva)
 
-        pw.writeShort(item.craft)
-        pw.writeShort(item.speed)
-        pw.writeShort(item.jump)
-        pw.writeMapleString(item.title)
-        pw.writeShort(item.attribute)
+        pw.writeShort(craft)
+        pw.writeShort(speed)
+        pw.writeShort(jump)
+        pw.writeMapleString(title)
+        pw.writeShort(attribute)
 
-        pw.write(item.levelUpType.toInt())
-        pw.write(item.level.toInt())
-        pw.writeInt(item.exp)
-        pw.writeInt(item.durability)
+        pw.write(levelUpType.toInt())
+        pw.write(level.toInt())
+        pw.writeInt(exp)
+        pw.writeInt(durability)
 
-        pw.writeInt(item.iuc)
+        pw.writeInt(iuc)
 
-        pw.write(item.grade.toInt())
-        pw.write(item.chuc.toInt())
+        pw.write(grade.toInt())
+        pw.write(chuc.toInt())
 
-        pw.writeShort(item.option1)
-        pw.writeShort(item.option2)
-        pw.writeShort(item.option3)
-        pw.writeShort(item.socket1)
-        pw.writeShort(item.socket2)
+        pw.writeShort(option1)
+        pw.writeShort(option2)
+        pw.writeShort(option3)
+        pw.writeShort(socket1)
+        pw.writeShort(socket2)
 
-        if (item.cashItemSN == 0L) pw.writeLong(0)
+        if (cashItemSN == 0L) pw.writeLong(0)
         pw.writeLong(0)
         pw.writeInt(0)
     }
 
-    private fun encode(item: ItemSlotBundle, pw: PacketWriter) {
+    private fun ItemSlotBundle.encode(pw: PacketWriter) {
         pw.write(2)
-        encodeBase(item, pw)
+        encodeBase(pw)
 
-        pw.writeShort(item.number)
-        pw.writeMapleString(item.title)
-        pw.writeShort(item.attribute)
+        pw.writeShort(number)
+        pw.writeMapleString(title)
+        pw.writeShort(attribute)
 
-        if (isRechargeableItem(item.templateId)) {
+        if (isRechargeableItem(templateId)) {
             pw.writeLong(0)
         }
     }
 
-    fun encode(item: ItemSlotPet, pw: PacketWriter) {
+    private fun ItemSlotPet.encode(pw: PacketWriter) {
         pw.write(3)
-        encodeBase(item, pw)
+        encodeBase(pw)
 
-        pw.writeFixedString(item.petName, 13)
-        pw.write(item.level.toInt())
-        pw.writeShort(item.tameness)
-        pw.write(item.repleteness.toInt())
-        pw.writeLong(item.dateDead)
+        pw.writeFixedString(petName, 13)
+        pw.write(level.toInt())
+        pw.writeShort(tameness)
+        pw.write(repleteness.toInt())
+        pw.writeLong(dateDead)
 
-        pw.writeShort(item.petAttribute)
-        pw.writeShort(item.petSkill)
-        pw.writeInt(item.remainLife)
-        pw.writeShort(item.attribute)
+        pw.writeShort(petAttribute)
+        pw.writeShort(petSkill)
+        pw.writeInt(remainLife)
+        pw.writeShort(attribute)
     }
 }
