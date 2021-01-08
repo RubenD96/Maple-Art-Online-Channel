@@ -19,6 +19,7 @@ import util.packet.Packet
 import util.packet.PacketWriter
 import java.awt.Point
 import java.util.*
+import kotlin.collections.HashMap
 import kotlin.math.max
 import kotlin.math.min
 
@@ -30,6 +31,9 @@ class FieldMob(val template: FieldMobTemplate, left: Boolean) : AbstractFieldCon
     var time = -1
     var controllerDistance = 0
 
+    // Stores which CID has done X dmg to the mob
+    private val damageIndex: MutableMap<Int, Int> = HashMap()
+
     init {
         moveAction = 3
     }
@@ -37,6 +41,11 @@ class FieldMob(val template: FieldMobTemplate, left: Boolean) : AbstractFieldCon
     fun damage(chr: Character, damage: Int) {
         synchronized(this) {
             hp -= damage
+
+            var add = damage
+            if (hp <= 0) add = damage - hp
+            addToDamageIndex(chr, add)
+
             if (template.onHit) MobScriptManager.onHit(chr.client, this)
         }
 
@@ -47,6 +56,14 @@ class FieldMob(val template: FieldMobTemplate, left: Boolean) : AbstractFieldCon
 
         if (hp <= 0) {
             kill(chr)
+        }
+    }
+
+    private fun addToDamageIndex(chr: Character, damage: Int) {
+        damageIndex[chr.id]?.let {
+            damageIndex[chr.id]?.plus(damage)
+        } ?: run {
+            damageIndex[chr.id] = damage
         }
     }
 
