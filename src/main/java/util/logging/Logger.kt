@@ -94,6 +94,7 @@ object Logger {
                 }
             }
         }
+        dumpBulk()
     }
 
     private fun getAccInfo(client: Client?): String {

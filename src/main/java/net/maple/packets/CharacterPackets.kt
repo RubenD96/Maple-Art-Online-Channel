@@ -12,6 +12,10 @@ import client.messages.broadcast.BroadcastMessage
 import client.player.StatType
 import client.player.quest.Quest
 import client.player.quest.QuestState
+import client.stats.ModifyTemporaryStatContext
+import client.stats.TemporaryStatExtensions.encodeLocal
+import client.stats.TemporaryStatExtensions.encodeMask
+import client.stats.TemporaryStatExtensions.encodeRemote
 import field.movement.MovePath
 import net.maple.SendOpcode
 import net.maple.packets.ItemPackets.encode
@@ -284,8 +288,61 @@ object CharacterPackets {
         }
     }
 
+    fun Character.modifyTemporaryStats(consumer: Consumer<ModifyTemporaryStatContext>) {
+        val context = ModifyTemporaryStatContext(this)
+
+        consumer.accept(context)
+        validateStats()
+
+        if (context.resetOperations.isNotEmpty()) {
+            run {
+                val pw = PacketWriter(8)
+
+                pw.writeHeader(SendOpcode.TEMPORARY_STAT_RESET)
+                context.resetOperations.encodeMask(pw)
+                pw.write(0); // IsMovementAffectingStat
+
+                write(pw.createPacket())
+            }
+
+            run {
+                val pw = PacketWriter(8)
+
+                pw.writeHeader(SendOpcode.USER_TEMPORARY_STAT_RESET)
+                pw.writeInt(id)
+                context.resetOperations.encodeMask(pw)
+
+                field.broadcast(pw.createPacket(), this)
+            }
+        }
+
+        if (context.setOperations.isNotEmpty()) {
+            run {
+                val pw = PacketWriter(8)
+
+                pw.writeHeader(SendOpcode.TEMPORARY_STAT_SET)
+                context.setOperations.encodeLocal(pw)
+                pw.writeShort(0); // tDelay
+                pw.write(0); // IsMovementAffectingStat
+
+                write(pw.createPacket())
+            }
+
+            run {
+                val pw = PacketWriter(8)
+
+                pw.writeHeader(SendOpcode.USER_TEMPORARY_STAT_SET)
+                pw.writeInt(id)
+                context.setOperations.encodeRemote(pw)
+                pw.writeShort(0); // tDelay
+
+                field.broadcast(pw.createPacket(), this)
+            }
+        }
+    }
+
     fun Character.modifyInventory(consumer: Consumer<ModifyInventoriesContext>, enableActions: Boolean = false) {
-        val context = ModifyInventoriesContext(this.allInventories)
+        val context = ModifyInventoriesContext(allInventories)
 
         consumer.accept(context)
 
@@ -297,12 +354,12 @@ object CharacterPackets {
 
         pw.writeBool(false)
 
-        this.write(pw.createPacket())
+        write(pw.createPacket())
 
         // equip check
         if (context.operations.stream().anyMatch { it.slot < 0 } ||
                 context.operations.stream().filter { it is MoveInventoryOperation }.anyMatch { (it as MoveInventoryOperation).toSlot < 0 }) {
-            this.validateStats()
+            validateStats()
             modifyAvatar()
         }
     }

@@ -19,6 +19,8 @@ import client.player.friend.FriendList
 import client.player.key.KeyBinding
 import client.player.quest.Quest
 import client.replay.MoveCollection
+import client.stats.TemporaryStat
+import client.stats.TemporaryStatType
 import constants.UserConstants
 import constants.UserConstants.expTable
 import database.jooq.Tables
@@ -132,6 +134,7 @@ class Character(val client: Client, override var name: String, val record: Recor
     val coroutines = CoroutineCollection()
     val mobKills: MutableMap<Int, Int> = HashMap()
     val times: MutableMap<String, Long> = HashMap() // used for storing multiple start/end times
+    val temporaryStats: MutableMap<TemporaryStatType, TemporaryStat> = EnumMap(TemporaryStatType::class.java)
 
     /**
      * Session updates

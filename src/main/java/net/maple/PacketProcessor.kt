@@ -3,6 +3,7 @@ package net.maple
 import net.maple.handlers.DoNothingHandler
 import net.maple.handlers.PacketHandler
 import net.maple.handlers.group.*
+import net.maple.handlers.item.UserStatChangeItemUseRequestHandler
 import net.maple.handlers.misc.*
 import net.maple.handlers.mob.MobApplyCtrlHandler
 import net.maple.handlers.mob.MobMoveHandler
@@ -42,6 +43,7 @@ object PacketProcessor {
         handlers[RecvOpcode.USER_SHOP_REQUEST] = UserShopRequestHandler()
         handlers[RecvOpcode.USER_STORAGE_REQUEST] = UserStorageRequestHandler()
         handlers[RecvOpcode.USER_CHANGE_SLOT_POSITION_REQUEST] = UserChangeSlotPositionRequestHandler()
+        handlers[RecvOpcode.USER_STAT_CHANGE_ITEM_USE_REQUEST] = UserStatChangeItemUseRequestHandler()
         handlers[RecvOpcode.USER_ABILITY_UP_REQUEST] = UserAbilityUpRequestHandler()
         handlers[RecvOpcode.USER_ABILITY_MASS_UP_REQUEST] = UserAbilityMassUpRequestHandler()
         handlers[RecvOpcode.USER_CHANGE_STAT_REQUEST] = UserChangeStatRequestHandler()

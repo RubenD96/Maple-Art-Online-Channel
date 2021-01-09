@@ -6,17 +6,17 @@ import util.packet.PacketReader
 class StatChangeItemTemplate(id: Int, r: PacketReader) : ItemBundleTemplate(id, r) {
 
     val consumeFlags: Int
-    var hP = 0
-    var mP = 0
-    var hPR = 0
-    var mPR = 0
+    var HP = 0
+    var MP = 0
+    var HPR = 0
+    var MPR = 0
     var isNoCancelMouse = false
-    var pAD: Short = 0
-    var pDD: Short = 0
-    var mAD: Short = 0
-    var mDD: Short = 0
-    var aCC: Short = 0
-    var eVA: Short = 0
+    var PAD: Short = 0
+    var PDD: Short = 0
+    var MAD: Short = 0
+    var MDD: Short = 0
+    var ACC: Short = 0
+    var EVA: Short = 0
     var craft: Short = 0
     var speed: Short = 0
     var jump: Short = 0
@@ -25,17 +25,17 @@ class StatChangeItemTemplate(id: Int, r: PacketReader) : ItemBundleTemplate(id, 
 
     init {
         consumeFlags = r.readInteger()
-        if (containsFlag(StatFlag.HP)) hP = r.readInteger()
-        if (containsFlag(StatFlag.MP)) mP = r.readInteger()
-        if (containsFlag(StatFlag.HPR)) hPR = r.readInteger()
-        if (containsFlag(StatFlag.MPR)) mPR = r.readInteger()
+        if (containsFlag(StatFlag.HP)) HP = r.readInteger()
+        if (containsFlag(StatFlag.MP)) MP = r.readInteger()
+        if (containsFlag(StatFlag.HPR)) HPR = r.readInteger()
+        if (containsFlag(StatFlag.MPR)) MPR = r.readInteger()
         if (containsFlag(StatFlag.NO_CANCEL_MOUSE)) isNoCancelMouse = r.readBool()
-        if (containsFlag(StatFlag.PAD)) pAD = r.readShort()
-        if (containsFlag(StatFlag.PDD)) pDD = r.readShort()
-        if (containsFlag(StatFlag.MAD)) mAD = r.readShort()
-        if (containsFlag(StatFlag.MDD)) mDD = r.readShort()
-        if (containsFlag(StatFlag.ACC)) aCC = r.readShort()
-        if (containsFlag(StatFlag.EVA)) eVA = r.readShort()
+        if (containsFlag(StatFlag.PAD)) PAD = r.readShort()
+        if (containsFlag(StatFlag.PDD)) PDD = r.readShort()
+        if (containsFlag(StatFlag.MAD)) MAD = r.readShort()
+        if (containsFlag(StatFlag.MDD)) MDD = r.readShort()
+        if (containsFlag(StatFlag.ACC)) ACC = r.readShort()
+        if (containsFlag(StatFlag.EVA)) EVA = r.readShort()
         if (containsFlag(StatFlag.CRAFT)) craft = r.readShort()
         if (containsFlag(StatFlag.SPEED)) speed = r.readShort()
         if (containsFlag(StatFlag.JUMP)) jump = r.readShort()
@@ -48,6 +48,6 @@ class StatChangeItemTemplate(id: Int, r: PacketReader) : ItemBundleTemplate(id, 
     }
 
     override fun toString(): String {
-        return "StatChangeItemTemplate(consumeFlags=$consumeFlags, hP=$hP, mP=$mP, hPR=$hPR, mPR=$mPR, isNoCancelMouse=$isNoCancelMouse, pAD=$pAD, pDD=$pDD, mAD=$mAD, mDD=$mDD, aCC=$aCC, eVA=$eVA, craft=$craft, speed=$speed, jump=$jump, morph=$morph, time=$time)"
+        return "StatChangeItemTemplate(consumeFlags=$consumeFlags, hP=$HP, mP=$MP, hPR=$HPR, mPR=$MPR, isNoCancelMouse=$isNoCancelMouse, pAD=$PAD, pDD=$PDD, mAD=$MAD, mDD=$MDD, aCC=$ACC, eVA=$EVA, craft=$craft, speed=$speed, jump=$jump, morph=$morph, time=$time)"
     }
 }
