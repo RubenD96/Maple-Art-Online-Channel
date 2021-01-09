@@ -4,6 +4,7 @@ import client.inventory.item.templates.StatChangeItemTemplate
 import util.packet.PacketWriter
 import java.util.*
 import kotlin.collections.HashMap
+import kotlin.math.abs
 
 object TemporaryStatExtensions {
 
@@ -24,7 +25,6 @@ object TemporaryStatExtensions {
         return stats
     }
 
-    // todo
     fun Map<TemporaryStatType, TemporaryStat>.encodeMask(pw: PacketWriter) {
         val bits = BitSet(128)
 
@@ -32,15 +32,18 @@ object TemporaryStatExtensions {
             bits[it.type] = true
         }
 
-        pw.write(bits.toByteArray())
+        val bytes = bits.toByteArray()
+        for (i in 3 downTo 0) {
+            try {
+                pw.writeInt(abs(bytes[i].toInt()))
+            } catch (_: Exception) {
+                pw.writeInt(0)
+            }
+        }
     }
 
     fun Map<TemporaryStatType, TemporaryStat>.encodeLocal(pw: PacketWriter) {
-        //encodeMask(pw)
-        pw.writeInt(0)
-        pw.writeInt(0)
-        pw.writeInt(0)
-        pw.writeInt(128)
+        encodeMask(pw)
 
         val now = System.currentTimeMillis()
 
