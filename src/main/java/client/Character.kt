@@ -14,6 +14,7 @@ import client.messages.quest.PerformQuestRecordMessage
 import client.messages.quest.ResignQuestRecordMessage
 import client.party.Party
 import client.player.Job
+import client.player.Skill
 import client.player.StatType
 import client.player.friend.FriendList
 import client.player.key.KeyBinding
@@ -31,9 +32,11 @@ import kotlinx.coroutines.*
 import net.database.CharacterAPI.getKeyBindings
 import net.database.CharacterAPI.getMobKills
 import net.database.CharacterAPI.getOldPartyId
+import net.database.CharacterAPI.getSkills
 import net.database.CharacterAPI.saveCharacterStats
 import net.database.CharacterAPI.saveMobKills
 import net.database.CharacterAPI.updateKeyBindings
+import net.database.CharacterAPI.updateSkills
 import net.database.GuildAPI.getGuildId
 import net.database.GuildAPI.load
 import net.database.ItemAPI.saveInventories
@@ -77,6 +80,10 @@ class Character(val client: Client, override var name: String, val record: Recor
         }
     var ap: Int = record.getValue(Tables.CHARACTERS.AP)
     var sp: Int = record.getValue(Tables.CHARACTERS.SP)
+        set(value) {
+            field = value
+            updateSingleStat(StatType.SP)
+        }
     var fame: Int = record.getValue(Tables.CHARACTERS.FAME)
     var fieldId: Int = record.getValue(Tables.CHARACTERS.MAP)
     var spawnpoint: Int = record.getValue(Tables.CHARACTERS.SPAWNPOINT)
@@ -142,6 +149,7 @@ class Character(val client: Client, override var name: String, val record: Recor
     val killedMobs: MutableSet<Int> = HashSet()
 
     var keyBindings: MutableMap<Int, KeyBinding> = HashMap()
+    var skills: MutableMap<Int, Skill> = HashMap()
     var wishlist = IntArray(10)
 
     /**
@@ -155,6 +163,7 @@ class Character(val client: Client, override var name: String, val record: Recor
         portal = spawnpoint.toByte()
         resetQuickSlot()
         keyBindings = getKeyBindings(id)
+        skills = getSkills(id)
         friendList = FriendList(this)
     }
 
@@ -166,6 +175,7 @@ class Character(val client: Client, override var name: String, val record: Recor
     fun save() {
         saveCharacterStats(this)
         updateKeyBindings(this)
+        updateSkills(this)
         saveMobKills(this)
         saveInventories(this)
         saveInfo(this)

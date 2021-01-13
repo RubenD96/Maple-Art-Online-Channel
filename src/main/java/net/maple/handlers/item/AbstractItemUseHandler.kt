@@ -3,7 +3,7 @@ package net.maple.handlers.item
 import client.Client
 import client.inventory.ItemInventoryType
 import client.inventory.item.slots.ItemSlot
-import client.inventory.item.templates.ItemTemplate
+import client.inventory.item.templates.*
 import managers.ItemManager
 import net.maple.handlers.PacketHandler
 import util.packet.PacketReader

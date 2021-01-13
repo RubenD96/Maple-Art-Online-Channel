@@ -21,13 +21,6 @@ import java.util.*
 import java.util.stream.IntStream
 import kotlin.collections.HashSet
 
-/**
- * TODO CHECK:
-    1. player 1 loads existing item from db (so already has uuid etc)
-    2. player 1 drops item
-    3. player 2 picks it up
-    4. player 2 gets saved
- */
 object ItemAPI {
 
     /**

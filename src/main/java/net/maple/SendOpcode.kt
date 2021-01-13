@@ -10,6 +10,7 @@ enum class SendOpcode(override val value: Int) : IntegerValue {
     STAT_CHANGED(0x1E),
     TEMPORARY_STAT_SET(0x1F),
     TEMPORARY_STAT_RESET(0x20),
+    CHANGE_SKILL_RECORD_RESULT(0x23),
     GIVE_POPULARITY_RESULT(0x25),
     MESSAGE(0x26),
     GUILD_BBS(0x3B),

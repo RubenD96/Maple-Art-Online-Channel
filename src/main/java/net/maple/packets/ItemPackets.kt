@@ -5,6 +5,7 @@ import client.inventory.item.slots.ItemSlotBundle
 import client.inventory.item.slots.ItemSlotEquip
 import client.inventory.item.slots.ItemSlotPet
 import constants.ItemConstants.isRechargeableItem
+import constants.PacketConstants
 import util.packet.PacketWriter
 
 object ItemPackets {
@@ -35,7 +36,7 @@ object ItemPackets {
             pw.writeLong(cashItemSN)
         }
 
-        pw.writeLong(if (expire > 0) expire else 150842304000000000L)
+        pw.writeLong(if (expire > 0) expire else PacketConstants.permanent)
     }
 
     private fun ItemSlotEquip.encode(pw: PacketWriter) {

@@ -2,6 +2,7 @@ package net.database
 
 import client.Character
 import client.Client
+import client.player.Skill
 import client.player.key.KeyBinding
 import database.jooq.Tables.*
 import net.database.DatabaseCore.connection
@@ -125,6 +126,48 @@ object CharacterAPI {
                     .where(KEYBINDINGS.CID.eq(chr.id))
                     .and(KEYBINDINGS.KEY.eq(it.key))
                     .execute()
+        }
+    }
+
+    /**
+     * Get the current skills of the player
+     *
+     * @param cid character id
+     * @return map with Skills
+     */
+    fun getSkills(cid: Int): MutableMap<Int, Skill> {
+        val skills: MutableMap<Int, Skill> = HashMap()
+        val res = connection.select().from(SKILLS)
+            .where(SKILLS.CID.eq(cid))
+            .fetch()
+
+        res.forEach {
+            val skill = Skill(it.getValue(SKILLS.LEVEL))
+            skill.masterLevel = it.getValue(SKILLS.MASTER_LEVEL)
+            skill.expire = it.getValue(SKILLS.EXPIRE)
+            skills[it.getValue(SKILLS.SKILL)] = skill
+        }
+
+        return skills
+    }
+
+    /**
+     * Insert new skill record, except if skill was already leveled before
+     *
+     * @param chr character
+     */
+    fun updateSkills(chr: Character) {
+        val skills = chr.skills
+        skills.forEach {
+            connection.insertInto(SKILLS, SKILLS.CID, SKILLS.SKILL, SKILLS.LEVEL, SKILLS.MASTER_LEVEL, SKILLS.EXPIRE)
+                .values(chr.id, it.key, it.value.level, it.value.masterLevel, it.value.expire)
+                .onDuplicateKeyUpdate()
+                .set(SKILLS.LEVEL, it.value.level)
+                .set(SKILLS.MASTER_LEVEL, it.value.masterLevel)
+                .set(SKILLS.EXPIRE, it.value.expire)
+                .where(SKILLS.CID.eq(chr.id))
+                .and(SKILLS.SKILL.eq(it.key))
+                .execute()
         }
     }
 

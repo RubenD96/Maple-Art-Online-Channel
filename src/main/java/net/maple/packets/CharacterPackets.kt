@@ -16,9 +16,11 @@ import client.stats.ModifyTemporaryStatContext
 import client.stats.TemporaryStatExtensions.encodeLocal
 import client.stats.TemporaryStatExtensions.encodeMask
 import client.stats.TemporaryStatExtensions.encodeRemote
+import constants.PacketConstants
 import field.movement.MovePath
 import net.maple.SendOpcode
 import net.maple.packets.ItemPackets.encode
+import skill.ModifySkillContext
 import util.logging.LogType
 import util.logging.Logger.log
 import util.packet.Packet
@@ -70,24 +72,24 @@ object CharacterPackets {
         val inventory = getInventory(ItemInventoryType.EQUIP).items
 
         inventory.entries.stream().filter { it.key >= -100 && it.key < 0 }
-                .collect(toMap({ it.key }, { it.value }))
-                .encodeEquipInventory(pw) // equipped
+            .collect(toMap({ it.key }, { it.value }))
+            .encodeEquipInventory(pw) // equipped
 
         inventory.entries.stream().filter { it.key >= -1000 && it.key < -100 }
-                .collect(toMap({ it.key }, { it.value }))
-                .encodeEquipInventory(pw) // mask
+            .collect(toMap({ it.key }, { it.value }))
+            .encodeEquipInventory(pw) // mask
 
         inventory.entries.stream().filter { it.key >= 0 }
-                .collect(toMap({ it.key }, { it.value }))
-                .encodeEquipInventory(pw) // equip
+            .collect(toMap({ it.key }, { it.value }))
+            .encodeEquipInventory(pw) // equip
 
         inventory.entries.stream().filter { it.key >= -1100 && it.key < -1000 }
-                .collect(toMap({ it.key }, { it.value }))
-                .encodeEquipInventory(pw) // dragon
+            .collect(toMap({ it.key }, { it.value }))
+            .encodeEquipInventory(pw) // dragon
 
         inventory.entries.stream().filter { it.key >= -1200 && it.key < -1100 }
-                .collect(toMap({ it.key }, { it.value }))
-                .encodeEquipInventory(pw) // mech
+            .collect(toMap({ it.key }, { it.value }))
+            .encodeEquipInventory(pw) // mech
 
         getInventory(ItemInventoryType.CONSUME).items.encodeBundleInventory(pw)
         getInventory(ItemInventoryType.INSTALL).items.encodeBundleInventory(pw)
@@ -95,20 +97,30 @@ object CharacterPackets {
         getInventory(ItemInventoryType.CASH).items.encodeBundleInventory(pw)
 
         // skills
-        pw.writeShort(0) // count
+        pw.writeShort(skills.size) // count
+        skills.forEach {
+            pw.writeInt(it.key)
+            pw.writeInt(it.value.level)
+            pw.writeLong(if (it.value.expire > 0) it.value.expire else PacketConstants.permanent) // permanent
+
+            // todo only skills that actually have a master level need this data
+            if (false) pw.writeInt(it.value.masterLevel)
+        }
 
         // skill cooldowns
         pw.writeShort(0)
 
         // quests
-        val active: Collection<Quest> = this.quests.values.stream().filter { it.state === QuestState.PERFORM }.collect(Collectors.toList())
+        val active: Collection<Quest> =
+            this.quests.values.stream().filter { it.state === QuestState.PERFORM }.collect(Collectors.toList())
         pw.writeShort(active.size) // active count
         active.forEach {
             pw.writeShort(it.id)
             pw.writeMapleString(it.progress)
         }
 
-        val completed: Collection<Quest> = this.quests.values.stream().filter { it.state === QuestState.COMPLETE }.collect(Collectors.toList())
+        val completed: Collection<Quest> =
+            this.quests.values.stream().filter { it.state === QuestState.COMPLETE }.collect(Collectors.toList())
         pw.writeShort(completed.size) // completed count
         completed.forEach {
             pw.writeShort(it.id)
@@ -213,19 +225,19 @@ object CharacterPackets {
         val equips = this.getEquips().items
 
         val base = equips.entries.stream()
-                .filter { it.key >= -100 && it.key < 0 }
-                .collect(toMap({ it.key }, { it.value }))
+            .filter { it.key >= -100 && it.key < 0 }
+            .collect(toMap({ it.key }, { it.value }))
         val mask = HashMap<Short, ItemSlot>()
 
         equips.entries.stream()
-                .filter { it.key >= -1000 && it.key < -100 && it.key.toInt() != -111 }
-                .forEach {
-                    val pos = (it.key + 100).toShort()
-                    if (base.containsKey(pos)) {
-                        mask[pos] = it.value
-                    }
-                    base[pos] = it.value
+            .filter { it.key >= -1000 && it.key < -100 && it.key.toInt() != -111 }
+            .forEach {
+                val pos = (it.key + 100).toShort()
+                if (base.containsKey(pos)) {
+                    mask[pos] = it.value
                 }
+                base[pos] = it.value
+            }
 
         base.forEach { pw.write(abs(it.key.toInt())).writeInt(it.value.templateId) }
         pw.write(0xFF)
@@ -258,7 +270,11 @@ object CharacterPackets {
                 StatType.SKIN -> pw.write(this.skinColor)
                 StatType.FACE -> pw.writeInt(this.face)
                 StatType.HAIR -> pw.writeInt(this.hair)
-                StatType.PET, StatType.PET2, StatType.PET3, StatType.TEMP_EXP -> log(LogType.UNCODED, "Pets and tempexp is not implemented (yet)", this)
+                StatType.PET, StatType.PET2, StatType.PET3, StatType.TEMP_EXP -> log(
+                    LogType.UNCODED,
+                    "Pets and tempexp is not implemented (yet)",
+                    this
+                )
                 StatType.LEVEL -> pw.write(this.level)
                 StatType.JOB -> pw.writeShort(this.job)
                 StatType.STR -> pw.writeShort(this.strength)
@@ -286,6 +302,22 @@ object CharacterPackets {
         if (statTypes.stream().anyMatch { it === StatType.SKIN || it === StatType.FACE || it === StatType.HAIR }) {
             modifyAvatar()
         }
+    }
+
+    fun Character.modifySkills(consumer: Consumer<ModifySkillContext>) {
+        val context = ModifySkillContext(this)
+
+        consumer.accept(context)
+        validateStats()
+
+        val pw = PacketWriter(16)
+
+        pw.writeHeader(SendOpcode.CHANGE_SKILL_RECORD_RESULT)
+        pw.writeBool(true) // todo ?
+        context.encode(pw)
+        pw.writeBool(true) // todo ?
+
+        write(pw.createPacket())
     }
 
     fun Character.modifyTemporaryStats(consumer: Consumer<ModifyTemporaryStatContext>) {
@@ -358,7 +390,8 @@ object CharacterPackets {
 
         // equip check
         if (context.operations.stream().anyMatch { it.slot < 0 } ||
-                context.operations.stream().filter { it is MoveInventoryOperation }.anyMatch { (it as MoveInventoryOperation).toSlot < 0 }) {
+            context.operations.stream().filter { it is MoveInventoryOperation }
+                .anyMatch { (it as MoveInventoryOperation).toSlot < 0 }) {
             validateStats()
             modifyAvatar()
         }

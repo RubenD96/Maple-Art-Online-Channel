@@ -1,0 +1,46 @@
+package skill
+
+enum class SkillFlag(val value: Long) {
+    HP(0x01),
+    MP(0x02),
+    PAD(0x04),
+    PDD(0x08),
+    MAD(0x10),
+    MDD(0x20),
+    ACC(0x40),
+    EVA(0x80),
+    CRAFT(0x100),
+    SPEED(0x200),
+    JUMP(0x400),
+
+    MORPH(0x800),
+    HP_CON(0x1000),
+    MP_CON(0x2000),
+    MONEY_CON(0x4000),
+    ITEM_CON(0x8000),
+    ITEM_CON_NO(0x10000),
+    DAMAGE(0x20000),
+
+    FIX_DAMAGE(0x40000),
+    SELF_DESTRUCTION(0x80000),
+
+    TIME(0x100000),
+    SUB_PROP(0x200000),
+
+    ATTACK_COUNT(0x400000),
+    BULLET_COUNT(0x800000),
+    BULLET_CONSUME(0x1000000),
+    MASTERY(0x2000000),
+    MOB_COUNT(0x4000000),
+
+    X(0x8000000),
+    Y(0x10000000),
+    Z(0x20000000),
+
+    EMHP(0x40000000),
+    EMMP(0x80000000),
+    EPAD(0x100000000),
+    EMAD(0x200000000),
+    EPDD(0x400000000),
+    EMDD(0x800000000);
+}
