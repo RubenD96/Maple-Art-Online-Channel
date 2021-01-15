@@ -29,7 +29,6 @@ class ChannelServer(val channelId: Int, val port: Int, val IP: String) : Thread(
         ServerConstants.COMMAND_LIST.add(ArrayList())
         ServerConstants.COMMAND_LIST.add(ArrayList())
         ServerConstants.COMMAND_LIST.add(ArrayList())
-        UserChatHandler.refreshCommandList()
         GlobalScope.launch {
             withContext(NonCancellable) {
                 async { mobRespawnRoutine() }

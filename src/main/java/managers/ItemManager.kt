@@ -7,7 +7,7 @@ import util.logging.Logger.log
 
 object ItemManager : Loadable {
 
-    private const val fallback = 3990024
+    const val fallback = 3990024
 
     // assertion test to check if the fallback items exist:
     // (3990024, question mark)

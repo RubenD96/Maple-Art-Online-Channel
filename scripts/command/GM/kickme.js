@@ -1,5 +1,0 @@
-execute = () => {
-    cs.kickMe();
-}
-
-execute();

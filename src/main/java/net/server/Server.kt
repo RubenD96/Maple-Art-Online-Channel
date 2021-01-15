@@ -1,6 +1,7 @@
 package net.server
 
 import client.Character
+import client.command.CommandHandler
 import client.party.Party
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine
 import constants.ServerConstants
@@ -53,6 +54,7 @@ object Server {
             }
         }
         BeautyAPI.loadHairs()
+        CommandHandler.loadCommands()
         //benchmark()
     }
 

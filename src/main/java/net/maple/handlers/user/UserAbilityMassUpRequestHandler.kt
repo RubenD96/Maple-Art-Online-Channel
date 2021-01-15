@@ -13,7 +13,7 @@ class UserAbilityMassUpRequestHandler : PacketHandler {
     override fun handlePacket(reader: PacketReader, c: Client) {
         val chr = c.character
 
-        reader.readInteger() // ?
+        reader.readInteger() // timestamp
         val count = reader.readInteger()
 
         val inc: MutableMap<Int, Int> = HashMap()
@@ -30,30 +30,14 @@ class UserAbilityMassUpRequestHandler : PacketHandler {
             return
         }
 
-        val statTypes: MutableList<StatType> = ArrayList()
-        statTypes.add(StatType.AP)
-        chr.ap = chr.ap - total
+        chr.ap -= total
         inc.forEach {
             when (it.key) {
-                StatType.STR.stat -> {
-                    chr.strength = chr.strength + it.value
-                    statTypes.add(StatType.STR)
-                }
-                StatType.DEX.stat -> {
-                    chr.dexterity = chr.dexterity + it.value
-                    statTypes.add(StatType.DEX)
-                }
-                StatType.INT.stat -> {
-                    chr.intelligence = chr.intelligence + it.value
-                    statTypes.add(StatType.INT)
-                }
-                StatType.LUK.stat -> {
-                    chr.luck = chr.luck + it.value
-                    statTypes.add(StatType.LUK)
-                }
+                StatType.STR.stat -> chr.strength += it.value
+                StatType.DEX.stat -> chr.dexterity += it.value
+                StatType.INT.stat -> chr.intelligence += it.value
+                StatType.LUK.stat -> chr.luck += it.value
             }
         }
-
-        chr.updateStats(statTypes, true)
     }
 }

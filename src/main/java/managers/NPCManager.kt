@@ -6,7 +6,7 @@ import util.logging.Logger.log
 
 object NPCManager : Loadable {
 
-    private const val fallback = 22000
+    const val fallback = 22000
 
     // assertion test to check if the fallback mob (22000, shanks) exists
     init {

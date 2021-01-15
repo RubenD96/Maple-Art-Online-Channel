@@ -26,7 +26,7 @@ class UserSkillUpRequestHandler : PacketHandler {
         chr.skills[id]?.let {
             if (it.level >= template.maxLevel) {
                 chr.enableActions()
-                Logger.log(LogType.MISC_CONSOLE, "Attempt at leveling past max level: max=${template.maxLevel} id=$id", this)
+                Logger.log(LogType.MISC_CONSOLE, "Attempt at leveling past max level: max=${template.maxLevel} id=$id", this, c)
                 // don't kick, might be cause of lag
                 return
             }

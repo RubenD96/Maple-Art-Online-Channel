@@ -1,5 +1,0 @@
-execute = () => {
-    cs.reloadShops();
-};
-
-execute();

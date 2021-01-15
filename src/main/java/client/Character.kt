@@ -70,28 +70,64 @@ class Character(val client: Client, override var name: String, val record: Recor
             updateSingleStat(StatType.LEVEL)
         }
     override var face: Int = record.getValue(Tables.CHARACTERS.FACE)
+        set(value) {
+            field = value
+            updateSingleStat(StatType.FACE)
+        }
     override var hair: Int = record.getValue(Tables.CHARACTERS.HAIR)
+        set(value) {
+            field = value
+            updateSingleStat(StatType.HAIR)
+        }
     override var gender: Int = record.getValue(Tables.CHARACTERS.GENDER)
     override var skinColor: Int = record.getValue(Tables.CHARACTERS.SKIN)
+        set(value) {
+            field = value
+            updateSingleStat(StatType.SKIN)
+        }
     override var job: Job = Job.getById(record.getValue(Tables.CHARACTERS.JOB))
         set(value) {
             field = value
             updateSingleStat(StatType.JOB)
         }
     var ap: Int = record.getValue(Tables.CHARACTERS.AP)
+        set(value) {
+            field = value
+            updateSingleStat(StatType.AP)
+        }
     var sp: Int = record.getValue(Tables.CHARACTERS.SP)
         set(value) {
             field = value
             updateSingleStat(StatType.SP)
         }
     var fame: Int = record.getValue(Tables.CHARACTERS.FAME)
+        set(value) {
+            field = value
+            updateSingleStat(StatType.FAME)
+        }
     var fieldId: Int = record.getValue(Tables.CHARACTERS.MAP)
     var spawnpoint: Int = record.getValue(Tables.CHARACTERS.SPAWNPOINT)
 
     var strength: Int = record.getValue(Tables.CHARACTERS.STR)
+        set(value) {
+            field = value
+            updateSingleStat(StatType.STR)
+        }
     var dexterity: Int = record.getValue(Tables.CHARACTERS.DEX)
+        set(value) {
+            field = value
+            updateSingleStat(StatType.DEX)
+        }
     var intelligence: Int = record.getValue(Tables.CHARACTERS.INT)
+        set(value) {
+            field = value
+            updateSingleStat(StatType.INT)
+        }
     var luck: Int = record.getValue(Tables.CHARACTERS.LUK)
+        set(value) {
+            field = value
+            updateSingleStat(StatType.LUK)
+        }
 
     var health: Int = record.getValue(Tables.CHARACTERS.HP)
         set(value) {
@@ -100,15 +136,31 @@ class Character(val client: Client, override var name: String, val record: Recor
             updatePartyHP(false)
         }
     var maxHealth: Int = record.getValue(Tables.CHARACTERS.MAX_HP)
+        set(value) {
+            field = value
+            updateSingleStat(StatType.MAX_HP)
+        }
     var mana: Int = record.getValue(Tables.CHARACTERS.MP)
         set(value) {
             field = min(value, trueMaxMana)
             updateSingleStat(StatType.MP, false)
         }
     var maxMana: Int = record.getValue(Tables.CHARACTERS.MAX_MP)
+        set(value) {
+            field = value
+            updateSingleStat(StatType.MAX_MP)
+        }
 
     var exp: Int = record.getValue(Tables.CHARACTERS.EXP)
+        set(value) {
+            field = value
+            updateSingleStat(StatType.EXP)
+        }
     var meso: Int = record.getValue(Tables.CHARACTERS.MESO)
+        set(value) {
+            field = value
+            updateSingleStat(StatType.MESO)
+        }
     var totalDamage: Long = record.getValue(Tables.CHARACTERS.TOTAL_DAMAGE)
 
     /**
@@ -187,7 +239,6 @@ class Character(val client: Client, override var name: String, val record: Recor
 
     fun gainMeso(meso: Int, effect: Boolean = false) {
         this.meso += meso
-        updateSingleStat(StatType.MESO)
         if (effect) {
             message(IncMesoMessage(meso))
         }
@@ -254,14 +305,6 @@ class Character(val client: Client, override var name: String, val record: Recor
         ap += 5
         setTrueMaxStats()
         heal()
-        val statTypes: MutableList<StatType> = ArrayList()
-        statTypes.add(StatType.LEVEL)
-        statTypes.add(StatType.MAX_HP)
-        statTypes.add(StatType.MAX_MP)
-        statTypes.add(StatType.HP)
-        statTypes.add(StatType.MP)
-        statTypes.add(StatType.AP)
-        updateStats(statTypes, false)
     }
 
     fun gainExp(exp: Int) {
@@ -275,21 +318,10 @@ class Character(val client: Client, override var name: String, val record: Recor
                 gainExp(this.exp)
             }
         }
-        updateSingleStat(StatType.EXP)
     }
 
     fun setJob(jobId: Int) {
         this.job = Job.getById(jobId)
-    }
-
-    fun fame() {
-        fame++
-        updateSingleStat(StatType.FAME, false)
-    }
-
-    fun defame() {
-        fame--
-        updateSingleStat(StatType.FAME, false)
     }
 
     fun setTrueMaxStats() {
@@ -314,20 +346,17 @@ class Character(val client: Client, override var name: String, val record: Recor
     fun modifyHealth(health: Int) {
         this.health += health
         if (this.health < 0) this.health = 0
-        updateSingleStat(StatType.HP, false)
         updatePartyHP(false)
     }
 
     fun modifyMana(mana: Int) {
         this.mana += mana
         if (this.mana < 0) this.mana = 0
-        updateSingleStat(StatType.MP, false)
     }
 
     fun heal(update: Boolean = true) {
         health = trueMaxHealth
         mana = trueMaxMana
-        if (update) updateStats(ArrayList(listOf(StatType.HP, StatType.MP)), false)
     }
 
     fun modifyHPMP(health: Int, mana: Int) {
@@ -473,11 +502,11 @@ class Character(val client: Client, override var name: String, val record: Recor
         statUpdate(ArrayList(), true)
     }
 
-    fun updateStats(statTypes: MutableList<StatType>, enableActions: Boolean = true) {
+    private fun updateStats(statTypes: MutableList<StatType>, enableActions: Boolean = true) {
         statUpdate(statTypes, enableActions)
     }
 
-    fun updateSingleStat(statType: StatType, enableActions: Boolean = true) {
+    private fun updateSingleStat(statType: StatType, enableActions: Boolean = true) {
         updateStats(mutableListOf(statType), enableActions)
     }
 

@@ -21,16 +21,23 @@ class UserSelectNpcHandler : PacketHandler {
                 ?: return c.close(this, "Clicked un an non-existent npc noid: $npcObjectId mapid: ${chr.fieldId}")
 
         println("[UserSelectNpcHandler] ${npc.name} (${npc.npcId})")
-        val hasNpcScript = converse(c, npc.npcId)
-        if (!hasNpcScript) {
-            if (shops.contains(npc.npcId)) {
-                getShop(npc.npcId).open(chr)
-            } else {
-                c.write(ConversationPackets.getOkMessagePacket(npc.npcId, 0,
+        openNpc(c, npc)
+    }
+
+    companion object {
+
+        fun openNpc(c: Client, npc: FieldNPC) {
+            val hasNpcScript = converse(c, npc.npcId)
+            if (!hasNpcScript) {
+                if (shops.contains(npc.npcId)) {
+                    getShop(npc.npcId).open(c.character)
+                } else {
+                    c.write(ConversationPackets.getOkMessagePacket(npc.npcId, 0,
                         "This npc does not appear to have a script\r\n" +
                                 "Please report this to a staff member\r\n" +
                                 "ID: #r" + npc.npcId + "#k\r\n" +
-                                "Map: #r" + chr.fieldId))
+                                "Map: #r" + c.character.fieldId))
+                }
             }
         }
     }

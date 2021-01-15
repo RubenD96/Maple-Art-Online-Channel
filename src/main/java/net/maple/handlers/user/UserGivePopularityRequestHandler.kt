@@ -43,9 +43,9 @@ class UserGivePopularityRequestHandler : PacketHandler {
         }
 
         if (fame.toInt() == 0) {
-            receiver.defame()
+            receiver.fame--
         } else {
-            receiver.fame()
+            receiver.fame++
         }
 
         c.write(getSuccessPacket(receiver, fame.toInt()))
