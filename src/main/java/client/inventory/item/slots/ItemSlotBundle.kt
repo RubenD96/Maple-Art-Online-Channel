@@ -4,10 +4,10 @@ import java.util.*
 
 class ItemSlotBundle : ItemSlot() {
 
-    var number: Short = 0
-    var maxNumber: Short = 0
-    var attribute: Short = 0
-    var title = ""
+    var number by getObservableValue<Short>(0)
+    var maxNumber by getObservableValue<Short>(0)
+    var attribute by getObservableValue<Short>(0)
+    var title by getObservableValue("")
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

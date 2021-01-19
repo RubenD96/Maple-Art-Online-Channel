@@ -55,7 +55,8 @@ object ItemAPI {
             if (invType == ItemInventoryType.EQUIP) {
                 insertNewEquip(item as ItemSlotEquip)
             }
-        } else {
+        } else if (item.updated) {
+            println("Updating item ${item.templateId} on slot $slot for $chr")
             updateExistingItem(slot, item, storageType)
             if (invType == ItemInventoryType.EQUIP) {
                 updateExistingEquip(item as ItemSlotEquip)
@@ -266,6 +267,7 @@ object ItemAPI {
 
             bundle.uuid = it.getValue(INVENTORIES.ID)
             bundle.isNewItem = false
+            bundle.updated = false
             items[it.getValue(INVENTORIES.POSITION)] = bundle
         }
     }
@@ -302,6 +304,7 @@ object ItemAPI {
 
                 item.uuid = it.getValue(INVENTORIES.ID)
                 item.isNewItem = false
+                item.updated = false
                 c.storage.items[it.getValue(INVENTORIES.POSITION)] = item
             }
         }
@@ -371,6 +374,7 @@ object ItemAPI {
             )
             equip.uuid = rec.getValue(INVENTORIES.ID)
             equip.isNewItem = false
+            equip.updated = false
             equips[rec.getValue(INVENTORIES.POSITION)] = equip
         }
     }

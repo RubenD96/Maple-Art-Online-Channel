@@ -1,35 +1,35 @@
 package client.inventory.item.slots
 
 class ItemSlotEquip : ItemSlot() {
-    var ruc: Byte = 0
-    var cuc: Byte = 0
-    var str: Short = 0
-    var dex: Short = 0
-    var int: Short = 0
-    var luk: Short = 0
-    var maxHP: Short = 0
-    var maxMP: Short = 0
-    var pad: Short = 0
-    var mad: Short = 0
-    var pdd: Short = 0
-    var mdd: Short = 0
-    var acc: Short = 0
-    var eva: Short = 0
-    var craft: Short = 0
-    var speed: Short = 0
-    var jump: Short = 0
-    var attribute: Short = 0
-    var title = ""
-    var levelUpType: Byte = 0
-    var level: Byte = 0
-    var grade: Byte = 0
-    var chuc: Byte = 0
-    var exp = 0
-    var durability = 0
-    var iuc = 0
-    var option1: Short = 0
-    var option2: Short = 0
-    var option3: Short = 0
-    var socket1: Short = 0
-    var socket2: Short = 0
+    var ruc by getObservableValue<Byte>(0)
+    var cuc by getObservableValue<Byte>(0)
+    var str by getObservableValue<Short>(0)
+    var dex by getObservableValue<Short>(0)
+    var int by getObservableValue<Short>(0)
+    var luk by getObservableValue<Short>(0)
+    var maxHP by getObservableValue<Short>(0)
+    var maxMP by getObservableValue<Short>(0)
+    var pad by getObservableValue<Short>(0)
+    var mad by getObservableValue<Short>(0)
+    var pdd by getObservableValue<Short>(0)
+    var mdd by getObservableValue<Short>(0)
+    var acc by getObservableValue<Short>(0)
+    var eva by getObservableValue<Short>(0)
+    var craft by getObservableValue<Short>(0)
+    var speed by getObservableValue<Short>(0)
+    var jump by getObservableValue<Short>(0)
+    var attribute by getObservableValue<Short>(0)
+    var title by getObservableValue("")
+    var levelUpType by getObservableValue<Byte>(0)
+    var level by getObservableValue<Byte>(0)
+    var grade by getObservableValue<Byte>(0)
+    var chuc by getObservableValue<Byte>(0)
+    var exp by getObservableValue(0)
+    var durability by getObservableValue(0)
+    var iuc by getObservableValue(0)
+    var option1 by getObservableValue<Short>(0)
+    var option2 by getObservableValue<Short>(0)
+    var option3 by getObservableValue<Short>(0)
+    var socket1 by getObservableValue<Short>(0)
+    var socket2 by getObservableValue<Short>(0)
 }
