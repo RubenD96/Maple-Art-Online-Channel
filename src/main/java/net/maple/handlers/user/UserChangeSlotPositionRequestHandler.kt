@@ -26,6 +26,7 @@ class UserChangeSlotPositionRequestHandler : PacketHandler {
             chr.modifyInventory({
                 val inventory = chr.getInventory(type)
                 var item = inventory.items[from] ?: return@modifyInventory
+                item.updated = true
                 val uuid = item.uuid
 
                 if (!isTreatSingly(item.templateId)) {

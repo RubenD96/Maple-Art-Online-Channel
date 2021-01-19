@@ -14,7 +14,7 @@ abstract class ItemSlot {
     var expire: Long = 0
     var uuid: ByteArray? = null
     var isNewItem = true
-    var updated = false
+    var updated = true
 
     override fun toString(): String {
         return "ItemSlot{templateId=$templateId, cashItemSN=$cashItemSN, expire=$expire, uuid=${uuid?.contentToString()}}"

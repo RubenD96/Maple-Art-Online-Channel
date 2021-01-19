@@ -86,6 +86,7 @@ class ModifyInventoryContext : ModifyInventoryContextInterface {
 
     override fun set(slot: Short, item: ItemSlot) {
         inventory.items[slot] = item
+        item.updated = true
         operations.add(AddInventoryOperation(type, slot, item))
     }
 
@@ -167,6 +168,7 @@ class ModifyInventoryContext : ModifyInventoryContextInterface {
 
     override fun move(from: Short, to: Short) {
         val item = inventory.items[from] ?: return
+        item.updated = true
 
         if (item is ItemSlotBundle) {
             if (!isRechargeableItem(item.templateId) &&
@@ -204,6 +206,7 @@ class ModifyInventoryContext : ModifyInventoryContextInterface {
 
     override fun take(slot: Short, quantity: Short): ItemSlotBundle {
         val bundle = inventory.items[slot] as ItemSlotBundle
+        bundle.updated = true
         val newBundle = ItemSlotBundle()
 
         newBundle.templateId = bundle.templateId
