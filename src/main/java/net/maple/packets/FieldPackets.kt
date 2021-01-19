@@ -117,7 +117,7 @@ object FieldPackets {
         return pw.createPacket()
     }
 
-    fun AbstractFieldDrop.enterField(enterType: Byte): Packet {
+    fun AbstractFieldDrop.enterField(enterType: Byte, cursedObject: Int? = null): Packet {
         val pw = PacketWriter(32)
 
         //byte type = drop.getEnterType();
@@ -127,7 +127,7 @@ object FieldPackets {
         pw.write(enterType.toInt())
         pw.writeInt(this.id)
         pw.writeBool(this.isMeso)
-        pw.writeInt(this.info)
+        pw.writeInt(cursedObject ?: this.info)
         pw.writeInt( /*drop.getOwner()*/0)
         pw.write( /*type*/0x02) // own type
         pw.writePosition(this.position)

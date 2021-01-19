@@ -8,7 +8,6 @@ import net.maple.packets.FieldPackets.enterField
 import net.maple.packets.FieldPackets.leaveField
 import util.packet.Packet
 import world.guild.Guild
-import java.util.*
 
 abstract class Avatar : AbstractFieldLife() {
 
@@ -22,7 +21,7 @@ abstract class Avatar : AbstractFieldLife() {
 
     open val pets = arrayOfNulls<Pet>(3)
     protected open val inventories: Map<ItemInventoryType, ItemInventory> = mapOf(
-            ItemInventoryType.EQUIP to ItemInventory(24.toShort())
+        ItemInventoryType.EQUIP to ItemInventory(24.toShort())
     )
     var portableChair: Int? = null
     var guild: Guild? = null

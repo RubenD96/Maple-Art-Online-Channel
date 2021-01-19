@@ -10,8 +10,6 @@ import field.obj.FieldObject
 import field.obj.Foothold
 import field.obj.drop.AbstractFieldDrop
 import field.obj.drop.EnterType
-import field.obj.drop.ItemDrop
-import field.obj.drop.MesoDrop
 import field.obj.life.*
 import field.obj.portal.FieldPortal
 import field.obj.portal.PortalType
@@ -53,12 +51,14 @@ class Field(val template: FieldTemplate) {
 
     //CHARACTER, SUMMONED, MOB, NPC, DROP, TOWN_PORTAL, REACTOR, ETC, REPLAY
     val fieldObjects: Map<KClass<out FieldObject>, MutableSet<FieldObject>> =
-            mapOf(Character::class to mutableSetOf(),
-                    FieldMob::class to mutableSetOf(),
-                    AbstractFieldDrop::class to mutableSetOf(),
-                    FieldReactor::class to mutableSetOf(),
-                    Replay::class to mutableSetOf(),
-                    FieldNPC::class to mutableSetOf())
+        mapOf(
+            Character::class to mutableSetOf(),
+            FieldMob::class to mutableSetOf(),
+            AbstractFieldDrop::class to mutableSetOf(),
+            FieldReactor::class to mutableSetOf(),
+            Replay::class to mutableSetOf(),
+            FieldNPC::class to mutableSetOf()
+        )
 
     //val mobSpawnPoints: MutableList<FieldMobSpawnPoint> = ArrayList()
     private val toRespawn: MutableList<Respawn> = ArrayList()
@@ -80,8 +80,8 @@ class Field(val template: FieldTemplate) {
 
     fun broadcast(packet: Packet, source: Character? = null) {
         getObjects<Character>().stream()
-                .filter { it !== source }
-                .forEach { it.write(packet.clone()) }
+            .filter { it !== source }
+            .forEach { it.write(packet.clone()) }
     }
 
     fun enter(chr: Character, portalName: String) {
@@ -117,14 +117,14 @@ class Field(val template: FieldTemplate) {
                 synchronized(fieldObjects) {
                     fieldObjects.values.forEach { set ->
                         set.stream()
-                                .filter { it != obj }
-                                .forEach {
-                                    when (it) {
-                                        is AbstractFieldDrop -> enterItemDrop(it, it.enterFieldPacket)
-                                        is FieldMob -> obj.write(it.getEnterFieldPacket(MobSummonType.NORMAL))
-                                        else -> obj.write(it.enterFieldPacket)
-                                    }
+                            .filter { it != obj }
+                            .forEach {
+                                when (it) {
+                                    is AbstractFieldDrop -> enterItemDrop(it, it.enterFieldPacket, obj) // todo uuh
+                                    is FieldMob -> obj.write(it.getEnterFieldPacket(MobSummonType.NORMAL))
+                                    else -> obj.write(it.enterFieldPacket)
                                 }
+                            }
                     }
                 }
 
@@ -150,7 +150,11 @@ class Field(val template: FieldTemplate) {
         } else { // not a character object
             obj.id = runningObjectId.addAndGet(1)
             when (obj) {
-                is AbstractFieldDrop -> enterItemDrop(obj, obj.getEnterFieldPacket(EnterType.PARTY))
+                is AbstractFieldDrop -> enterItemDrop(
+                    obj,
+                    obj.getEnterFieldPacket(EnterType.PARTY),
+                    characters = getObjects<Character>().toTypedArray()
+                )
                 is Replay -> {
                     broadcast(obj.enterFieldPacket)
                     obj.start()
@@ -161,15 +165,20 @@ class Field(val template: FieldTemplate) {
         updateControlledObjects()
     }
 
-    private fun enterItemDrop(drop: AbstractFieldDrop, enterPacket: Packet) {
-        getObjects<Character>().forEach {
+    private fun enterItemDrop(drop: AbstractFieldDrop, enterPacket: Packet, vararg characters: Character) {
+        characters.forEach {
             if (drop.questId != 0) {
                 val quest = it.quests[drop.questId]
                 if (quest != null && quest.state !== QuestState.PERFORM) {
                     return@forEach
                 }
             }
-            it.write(enterPacket.clone())
+
+            it.cursed?.let { curse ->
+                it.write(drop.getEnterFieldPacket(EnterType.FFA, curse))
+            } ?: run {
+                it.write(enterPacket.clone())
+            }
         }
     }
 
@@ -252,24 +261,24 @@ class Field(val template: FieldTemplate) {
     @Synchronized
     fun updateControlledObjects() {
         val characters: List<Character> = getObjects<Character>().stream()
-                .sorted(Comparator.comparingInt { it.controlledObjects.size })
-                .collect(Collectors.toList())
+            .sorted(Comparator.comparingInt { it.controlledObjects.size })
+            .collect(Collectors.toList())
 
         val controlled: Set<FieldControlledObject> = getObjects<FieldNPC>() + getObjects<FieldMob>()
 
         controlled.stream()
-                .filter {
-                    it.controller == null || !characters.contains(it.controller)
-                }.forEach {
-                    it.controller = characters.stream().findFirst().orElse(null)
-                }
+            .filter {
+                it.controller == null || !characters.contains(it.controller)
+            }.forEach {
+                it.controller = characters.stream().findFirst().orElse(null)
+            }
     }
 
     fun getControlledObject(chr: Character, oid: Int): FieldControlledObject? {
         return (getObjects<FieldNPC>() + getObjects<FieldMob>()).stream()
-                .filter {
-                    it.controller == chr && it.id == oid
-                }.findAny().orElse(null)
+            .filter {
+                it.controller == chr && it.id == oid
+            }.findAny().orElse(null)
     }
 
     fun addObject(obj: FieldObject) {
@@ -281,7 +290,7 @@ class Field(val template: FieldTemplate) {
     fun removeObject(obj: FieldObject) {
         synchronized(fieldObjects) {
             fieldObjects[obj.kclass]?.remove(obj)
-                    ?: throw NullPointerException("[Field] Removal of field object failed.\n${toString()}")
+                ?: throw NullPointerException("[Field] Removal of field object failed.\n${toString()}")
         }
     }
 
@@ -296,7 +305,7 @@ class Field(val template: FieldTemplate) {
     inline fun <reified T : FieldObject> getObjects(): Set<T> {
         synchronized(fieldObjects) {
             return (fieldObjects[T::class]
-                    ?: error("Type ${T::class.simpleName} does not exist in field")).toSet() as Set<T>
+                ?: error("Type ${T::class.simpleName} does not exist in field")).toSet() as Set<T>
         }
     }
 
@@ -332,11 +341,11 @@ class Field(val template: FieldTemplate) {
 
     private fun getFhByPortal(portal: FieldPortal): Foothold {
         return template.footholds.values.stream()
-                .filter {
-                    it.x1 <= portal.position.getX() && it.x2 >= portal.position.getX()
-                }
-                .filter { it.x1 < it.x2 }
-                .findFirst().get()
+            .filter {
+                it.x1 <= portal.position.getX() && it.x2 >= portal.position.getX()
+            }
+            .filter { it.x1 < it.x2 }
+            .findFirst().get()
     }
 
     override fun toString(): String {
