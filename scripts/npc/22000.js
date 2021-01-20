@@ -25,26 +25,10 @@ function init() {
 
 //CHARACTER, SUMMONED, MOB, NPC, DROP, TOWN_PORTAL, REACTOR, ETC;
 function initializeCollections() {
-    let objects = field.getObjects();
-
-    let i = 0;
-    for (let objs of objects) {
-        i++;
-        switch (i) {
-            case 1:
-                characters = objs;
-                break;
-            case 3:
-                mobs = objs;
-                break;
-            case 4:
-                npcs = objs;
-                break;
-            case 5:
-                drops = objs;
-                break;
-        }
-    }
+    characters = cm.getCharacters();
+    mobs = cm.getMobs();
+    npcs = cm.getNpcs();
+    drops = cm.getDrops();
     portals = field.getPortals();
 }
 
@@ -71,12 +55,12 @@ function converse(m, s) {
             listObjects();
         } else if (status === 3) {
             if (type === 3) {
-                cm.getPlayer().setPhilId(field.getObject(s).getTemplate().getId());
-                cm.openNpcIn(1002000, 200);
+                cm.getPlayer().setPhilId(cm.getMobByObjId(s).getTemplate().getId());
+                cm.openNpcIn(1002000, 200, true);
             } else if (type === 9) {
                 cm.sendOk(portals.get(s).toString());
             } else {
-                cm.sendOk(field.getObject(s).toString());
+                cm.sendOk(field.getGenericObject(s).toString());
             }
             status = 0;
         }

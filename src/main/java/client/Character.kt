@@ -172,17 +172,17 @@ class Character(val client: Client, override var name: String, val record: Recor
     var trueMaxMana = 0
     var philId = 0
     var isInCashShop = false
-    var cursed: Int? = 4000000
+    var cursed: Int? = 4000524
 
     /**
      * Collections
      */
     override val inventories: Map<ItemInventoryType, ItemInventory> = mapOf(
-            ItemInventoryType.EQUIP to ItemInventory(24.toShort()),
-            ItemInventoryType.CONSUME to ItemInventory(24.toShort()),
-            ItemInventoryType.INSTALL to ItemInventory(24.toShort()),
-            ItemInventoryType.ETC to ItemInventory(24.toShort()),
-            ItemInventoryType.CASH to ItemInventory(24.toShort())
+            ItemInventoryType.EQUIP to ItemInventory(96.toShort()),
+            ItemInventoryType.CONSUME to ItemInventory(96.toShort()),
+            ItemInventoryType.INSTALL to ItemInventory(96.toShort()),
+            ItemInventoryType.ETC to ItemInventory(96.toShort()),
+            ItemInventoryType.CASH to ItemInventory(96.toShort())
     )
     val quickSlotKeys = IntArray(8)
     val controlledObjects: MutableList<FieldControlledObject> = ArrayList()
@@ -226,6 +226,7 @@ class Character(val client: Client, override var name: String, val record: Recor
     }
 
     fun save() {
+        val start = System.currentTimeMillis()
         saveCharacterStats(this)
         updateKeyBindings(this)
         updateSkills(this)
@@ -233,6 +234,7 @@ class Character(val client: Client, override var name: String, val record: Recor
         saveInventories(this)
         saveInfo(this)
         save(this)
+        println("Total save in ${(System.currentTimeMillis() - start)}ms")
     }
 
     val isGM: Boolean

@@ -61,7 +61,7 @@ object CharacterAPI {
      * @param chr character to save
      */
     fun saveCharacterStats(chr: Character) {
-        println("start saving " + chr.name)
+        //println("start saving " + chr.name)
         connection.update(CHARACTERS)
                 .set(CHARACTERS.LEVEL, chr.level)
                 .set(CHARACTERS.FACE, chr.face)
@@ -88,7 +88,7 @@ object CharacterAPI {
                 .set(CHARACTERS.TOTAL_DAMAGE, chr.totalDamage)
                 .where(CHARACTERS.ID.eq(chr.id))
                 .execute()
-        println("finished saving " + chr.name)
+        //println("finished saving " + chr.name)
     }
 
     /**

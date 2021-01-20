@@ -1,6 +1,7 @@
 package client.command
 
 import client.Character
+import constants.ServerConstants
 import util.logging.LogType
 import util.logging.Logger
 
@@ -34,11 +35,15 @@ object CommandHandler {
             Logger.log(LogType.COMMAND, str, this, chr.client)
             synchronized(commands) {
                 try {
-                    it.loadParams(str.substringAfter(" ").getParams())
+                    val params = if (str.contains(" ")) str.substringAfter(" ").getParams() else mapOf()
+                    it.loadParams(params)
                     it.execute(chr)
                 } catch (e: Exception) {
                     with(it) {
                         chr.displaySyntax()
+                    }
+                    if (ServerConstants.DEBUG) {
+                        e.printStackTrace()
                     }
                 }
             }
@@ -53,10 +58,8 @@ object CommandHandler {
      */
     private fun String.getParams(): Map<Int, String> {
         val params = HashMap<Int, String>()
-        if (contains(" ")) {
-            split(" ").forEach {
-                params[split(" ").indexOf(it)] = it
-            }
+        split(" ").forEach {
+            params[split(" ").indexOf(it)] = it
         }
         return params
     }

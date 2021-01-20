@@ -36,6 +36,7 @@ class GMCommands {
         override val description: String = "!drop [id:int] <quantity:int>"
 
         override fun loadParams(params: Map<Int, String>) {
+            println(params)
             id = params[0]!!.toInt()
             quantity = params[1]?.toInt() ?: 1
         }
@@ -55,6 +56,9 @@ class GMCommands {
             }
             val drop = ItemDrop(chr.id, chr, it, 0)
             drop.position = chr.position
+            drop.field = chr.field
+            it.expire = Long.MAX_VALUE // never expire
+
             chr.field.enter(drop)
         }
     }

@@ -179,6 +179,7 @@ class ModifyInventoryContext : ModifyInventoryContextInterface {
                 if (item == existing) {
                     val quantity = item.number + existing.number
                     val max = existing.maxNumber.toInt()
+                    existing.updated = true
 
                     if (quantity > max) {
                         val left = quantity - max
@@ -198,6 +199,7 @@ class ModifyInventoryContext : ModifyInventoryContextInterface {
         inventory.items.remove(from)
         inventory.items[to]?.let {
             inventory.items[from] = it
+            it.updated = true
         }
 
         inventory.items[to] = item

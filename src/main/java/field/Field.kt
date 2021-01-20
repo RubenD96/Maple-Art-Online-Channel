@@ -10,6 +10,8 @@ import field.obj.FieldObject
 import field.obj.Foothold
 import field.obj.drop.AbstractFieldDrop
 import field.obj.drop.EnterType
+import field.obj.drop.ItemDrop
+import field.obj.drop.MesoDrop
 import field.obj.life.*
 import field.obj.portal.FieldPortal
 import field.obj.portal.PortalType
@@ -120,7 +122,7 @@ class Field(val template: FieldTemplate) {
                             .filter { it != obj }
                             .forEach {
                                 when (it) {
-                                    is AbstractFieldDrop -> enterItemDrop(it, it.enterFieldPacket, obj) // todo uuh
+                                    is AbstractFieldDrop -> enterItemDrop(it, it.enterFieldPacket, EnterType.FFA, obj) // todo uuh
                                     is FieldMob -> obj.write(it.getEnterFieldPacket(MobSummonType.NORMAL))
                                     else -> obj.write(it.enterFieldPacket)
                                 }
@@ -153,6 +155,7 @@ class Field(val template: FieldTemplate) {
                 is AbstractFieldDrop -> enterItemDrop(
                     obj,
                     obj.getEnterFieldPacket(EnterType.PARTY),
+                    EnterType.PARTY,
                     characters = getObjects<Character>().toTypedArray()
                 )
                 is Replay -> {
@@ -165,7 +168,7 @@ class Field(val template: FieldTemplate) {
         updateControlledObjects()
     }
 
-    private fun enterItemDrop(drop: AbstractFieldDrop, enterPacket: Packet, vararg characters: Character) {
+    private fun enterItemDrop(drop: AbstractFieldDrop, enterPacket: Packet, type: Byte, vararg characters: Character) {
         characters.forEach {
             if (drop.questId != 0) {
                 val quest = it.quests[drop.questId]
@@ -175,7 +178,7 @@ class Field(val template: FieldTemplate) {
             }
 
             it.cursed?.let { curse ->
-                it.write(drop.getEnterFieldPacket(EnterType.FFA, curse))
+                it.write(drop.getEnterFieldPacket(type, curse))
             } ?: run {
                 it.write(enterPacket.clone())
             }
@@ -313,6 +316,20 @@ class Field(val template: FieldTemplate) {
         synchronized(fieldObjects) {
             return fieldObjects[T::class]?.firstOrNull { it.id == id } as? T
         }
+    }
+
+    @Deprecated(message = "Use the one that uses generics: getObject<FieldObject>(Int)")
+    fun getGenericObject(id: Int): FieldObject? {
+        synchronized(fieldObjects) {
+            fieldObjects.forEach {
+                it.value.forEach { obj ->
+                    if (obj.id == id) {
+                        return obj
+                    }
+                }
+            }
+        }
+        return null
     }
 
     fun isEmpty(): Boolean {

@@ -13,8 +13,10 @@ import client.messages.broadcast.types.NoticeWithoutPrefixMessage
 import client.messages.broadcast.types.UtilDlgExMessage
 import client.player.quest.Quest
 import field.Field
+import field.obj.drop.AbstractFieldDrop
 import field.obj.life.FieldMob
 import field.obj.life.FieldMobTemplate
+import field.obj.life.FieldNPC
 import managers.ItemManager
 import managers.MobManager
 import net.maple.packets.CharacterPackets.localEffect
@@ -203,5 +205,25 @@ abstract class AbstractPlayerInteraction(val c: Client) {
 
     fun getServer(): Server {
         return Server
+    }
+
+    fun getCharacters(): List<Character> {
+        return player.field.getObjects<Character>().toList()
+    }
+
+    fun getMobs(): List<FieldMob> {
+        return player.field.getObjects<FieldMob>().toList()
+    }
+
+    fun getNpcs(): List<FieldNPC> {
+        return player.field.getObjects<FieldNPC>().toList()
+    }
+
+    fun getDrops(): List<AbstractFieldDrop> {
+        return player.field.getObjects<AbstractFieldDrop>().toList()
+    }
+
+    fun getMobByObjId(id: Int): FieldMob? {
+        return player.field.getObject(id)
     }
 }

@@ -31,22 +31,26 @@ object ItemAPI {
      * @param chr The player to save
      */
     fun saveInventories(chr: Character) {
+        var start = System.currentTimeMillis()
         val uuids = deleteOldItems(chr)
+        println("Old removed in ${(System.currentTimeMillis() - start)}ms")
 
         // inventories
-        IntStream.range(0, 5).forEach {
-            val type = ItemInventoryType.values()[it]
-            val inv = chr.getInventory(type).items
-            inv.forEach { (slot: Short, item: ItemSlot) ->
+        start = System.currentTimeMillis()
+        chr.allInventories.forEach { (type, inv) ->
+            inv.items.forEach { (slot: Short, item: ItemSlot) ->
                 updateItem(chr, item, uuids, slot, type, 1)
             }
         }
+        println("Inventories updated in ${(System.currentTimeMillis() - start)}ms")
 
         // storage
+        start = System.currentTimeMillis()
         updateStorageStats(chr.client)
         chr.client.storage.items.forEach { (slot: Short, item: ItemSlot) ->
             updateItem(chr, item, uuids, slot, ItemInventoryType.values()[item.templateId / 1000000 - 1], 2)
         }
+        println("Storage save in ${(System.currentTimeMillis() - start)}ms")
     }
 
     private fun updateItem(chr: Character, item: ItemSlot, uuids: Set<ByteArray>, slot: Short, invType: ItemInventoryType, storageType: Int) {
