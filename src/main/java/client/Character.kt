@@ -173,6 +173,7 @@ class Character(val client: Client, override var name: String, val record: Recor
     var philId = 0
     var isInCashShop = false
     var cursed: Int? = 4000524
+    var prevRand: Int = 0
 
     /**
      * Collections

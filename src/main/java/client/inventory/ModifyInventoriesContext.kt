@@ -9,7 +9,7 @@ import java.util.*
 
 class ModifyInventoriesContext(inventories: Map<ItemInventoryType, ItemInventory>) {
 
-    private val inventories: MutableMap<ItemInventoryType, ModifyInventoryContext> = EnumMap(client.inventory.ItemInventoryType::class.java)
+    private val inventories: MutableMap<ItemInventoryType, ModifyInventoryContext> = EnumMap(ItemInventoryType::class.java)
 
     val operations: List<AbstractModifyInventoryOperation>
         get() {

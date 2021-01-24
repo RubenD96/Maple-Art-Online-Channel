@@ -44,6 +44,7 @@ object PacketProcessor {
         handlers[RecvOpcode.USER_STORAGE_REQUEST] = UserStorageRequestHandler()
         handlers[RecvOpcode.USER_CHANGE_SLOT_POSITION_REQUEST] = UserChangeSlotPositionRequestHandler()
         handlers[RecvOpcode.USER_STAT_CHANGE_ITEM_USE_REQUEST] = UserStatChangeItemUseRequestHandler()
+        handlers[RecvOpcode.USER_UPGRADE_ITEM_USE_REQUEST] = UserUpgradeItemUseRequestHandler()
         handlers[RecvOpcode.USER_ABILITY_UP_REQUEST] = UserAbilityUpRequestHandler()
         handlers[RecvOpcode.USER_ABILITY_MASS_UP_REQUEST] = UserAbilityMassUpRequestHandler()
         handlers[RecvOpcode.USER_CHANGE_STAT_REQUEST] = UserChangeStatRequestHandler()

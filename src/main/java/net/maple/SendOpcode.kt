@@ -29,6 +29,7 @@ enum class SendOpcode(override val value: Int) : IntegerValue {
     USER_ENTER_FIELD(0xB3),
     USER_LEAVE_FIELD(0xB4),
     USER_CHAT(0xB5),
+    USER_ITEM_UPGRADE_EFFECT(0xBA),
     USER_MOVE(0xD2),
     USER_MELEE_ATTACK(0xD3),
     USER_SHOOT_ATTACK(0xD4),

@@ -16,6 +16,7 @@ import managers.NPCManager
 import managers.NPCShopManager
 import net.database.ShopAPI
 import net.maple.handlers.user.UserSelectNpcHandler
+import net.maple.handlers.user.UserUpgradeItemUseRequestHandler
 import net.maple.packets.CharacterPackets.message
 import net.maple.packets.CharacterPackets.modifyInventory
 import net.maple.packets.FieldPackets.fieldEffect
@@ -504,4 +505,42 @@ class GMCommands {
     }
 
     object MapId : Command by WhereAmI
+
+    object Scroll : Command {
+
+        private var success: Boolean = false
+        private var cursed: Boolean = false
+        private var whiteScroll: Boolean = false
+        private var v6: Byte = 0
+
+        private var enchantSkill: Boolean = false
+        private var enchantCategory: Int = 0
+
+        override val description: String =
+            "!scroll [success:boolean] <cursed:boolean> <v5:byte> <v6:byte> <enchantSkill:boolean> <enchantCategory:int>"
+
+        override fun loadParams(params: Map<Int, String>) {
+            success = params[0]!!.toInt() == 1
+            cursed = params[1]?.toInt() == 1
+            whiteScroll = params[2]?.toInt() == 1
+            v6 = params[3]?.toByte() ?: 0
+
+            enchantSkill = params[4]?.toInt() == 1
+            enchantCategory = params[5]?.toInt() ?: 0
+        }
+
+        override fun execute(chr: Character) {
+            chr.field.broadcast(
+                UserUpgradeItemUseRequestHandler.getShowItemUpgradeEffectPacket(
+                    chr.id,
+                    success,
+                    cursed,
+                    enchantSkill,
+                    enchantCategory,
+                    whiteScroll,
+                    v6
+                )
+            )
+        }
+    }
 }
