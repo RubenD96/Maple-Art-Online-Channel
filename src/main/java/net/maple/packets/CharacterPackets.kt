@@ -64,7 +64,7 @@ object CharacterPackets {
                     DbChar.QUEST_COMPLETE or
                     DbChar.SKILL_COOLTIME
         )
-        pw.writeLong(50175) // flags
+        //pw.writeLong(50175) // flags
         //pw.writeLong(-1); // all flags
         pw.write(0)
         pw.write(0)
