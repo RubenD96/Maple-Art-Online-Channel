@@ -75,6 +75,10 @@ abstract class Writer {
         return writeInt(java.lang.Float.floatToIntBits(f))
     }
 
+    fun writeLong(i: Int): Writer {
+        return writeLong(i.toLong())
+    }
+
     fun writeLong(l: Long): Writer {
         return write(l and 0xFF).write(l ushr 8)
                 .write(l ushr 16).write(l ushr 24)

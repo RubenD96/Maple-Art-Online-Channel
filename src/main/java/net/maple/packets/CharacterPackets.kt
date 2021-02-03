@@ -9,6 +9,7 @@ import client.inventory.item.slots.ItemSlot
 import client.inventory.operations.MoveInventoryOperation
 import client.messages.Message
 import client.messages.broadcast.BroadcastMessage
+import client.player.DbChar
 import client.player.StatType
 import client.player.quest.Quest
 import client.player.quest.QuestState
@@ -23,6 +24,7 @@ import net.maple.packets.ItemPackets.encode
 import skill.ModifySkillContext
 import util.logging.LogType
 import util.logging.Logger.log
+import util.packet.IntegerValue.Companion.or
 import util.packet.Packet
 import util.packet.PacketWriter
 import java.util.function.Consumer
@@ -48,6 +50,20 @@ object CharacterPackets {
      * @param pw  packet
      */
     fun Character.encodeData(pw: PacketWriter) {
+        pw.writeLong(
+            DbChar.CHARACTER or
+                    DbChar.MONEY or
+                    DbChar.ITEM_SLOT_EQUIP or
+                    DbChar.ITEM_SLOT_CONSUME or
+                    DbChar.ITEM_SLOT_INSTALL or
+                    DbChar.ITEM_SLOT_ETC or
+                    DbChar.ITEM_SLOT_CASH or
+                    DbChar.INVENTORY_SIZE or
+                    DbChar.SKILL_RECORD or
+                    DbChar.QUEST_RECORD or
+                    DbChar.QUEST_COMPLETE or
+                    DbChar.SKILL_COOLTIME
+        )
         pw.writeLong(50175) // flags
         //pw.writeLong(-1); // all flags
         pw.write(0)

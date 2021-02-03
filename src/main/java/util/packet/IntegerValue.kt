@@ -28,9 +28,20 @@ package util.packet
 interface IntegerValue {
 
     /**
-     * Sets the value associated with this integer value.
-     *
-     * @param value the value.
+     * The value associated with this integer value.
      */
     val value: Int
+
+    /**
+     * Makes it possible to use bit operations with this class
+     */
+    infix fun or(other: IntegerValue): Int {
+        return this.value or other.value
+    }
+
+    companion object {
+        infix fun Int.or(other: IntegerValue): Int {
+            return this or other.value
+        }
+    }
 }

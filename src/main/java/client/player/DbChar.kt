@@ -1,6 +1,8 @@
 package client.player
 
-enum class DbChar(val value: Int) {
+import util.packet.IntegerValue
+
+enum class DbChar(override val value: Int): IntegerValue {
 
     CHARACTER(0x1),
     MONEY(0x2),
