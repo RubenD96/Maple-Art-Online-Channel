@@ -3,9 +3,9 @@ package client.inventory.item.templates
 import client.inventory.item.flags.StatFlag
 import util.packet.PacketReader
 
-class StatChangeItemTemplate(id: Int, r: PacketReader) : ItemBundleTemplate(id, r) {
+class StatChangeItemTemplate constructor(id: Int) : ItemBundleTemplate(id) {
 
-    val consumeFlags: Int
+    private var consumeFlags: Int = 0
     var HP = 0
     var MP = 0
     var HPR = 0
@@ -23,7 +23,7 @@ class StatChangeItemTemplate(id: Int, r: PacketReader) : ItemBundleTemplate(id, 
     var morph: Short = 0
     var time = 0
 
-    init {
+    fun decode(r: PacketReader): StatChangeItemTemplate {
         consumeFlags = r.readInteger()
         if (containsFlag(StatFlag.HP)) HP = r.readInteger()
         if (containsFlag(StatFlag.MP)) MP = r.readInteger()
@@ -41,6 +41,8 @@ class StatChangeItemTemplate(id: Int, r: PacketReader) : ItemBundleTemplate(id, 
         if (containsFlag(StatFlag.JUMP)) jump = r.readShort()
         if (containsFlag(StatFlag.MORPH)) morph = r.readShort()
         if (containsFlag(StatFlag.TIME)) time = r.readInteger()
+
+        return this
     }
 
     fun containsFlag(flag: StatFlag): Boolean {
