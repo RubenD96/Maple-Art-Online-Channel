@@ -543,4 +543,19 @@ class GMCommands {
             )
         }
     }
+
+    object Job : Command {
+
+        private var id: Int = 0
+
+        override val description: String = "!job [id:int]"
+
+        override fun loadParams(params: Map<Int, String>) {
+            id = params[0]!!.toInt()
+        }
+
+        override fun execute(chr: Character) {
+            chr.setJob(id)
+        }
+    }
 }

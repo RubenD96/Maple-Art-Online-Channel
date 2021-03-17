@@ -6,16 +6,23 @@ import client.inventory.item.variation.ItemVariation
 import client.inventory.item.variation.ItemVariationType
 import util.packet.PacketReader
 
-class ItemEquipTemplate(id: Int, r: PacketReader) : ItemTemplate(id, r) {
+class ItemEquipTemplate(id: Int) : ItemTemplate(id) {
 
-    val equipFlags: Int
-    val reqSTR: Short
-    val reqDEX: Short
-    val reqINT: Short
-    val reqLUK: Short
-    val reqFAME: Short
-    val reqJob: Short
-    val reqLevel: Byte
+    private var equipFlags: Int = 0
+    var reqSTR: Short = 0
+        private set
+    var reqDEX: Short = 0
+        private set
+    var reqINT: Short = 0
+        private set
+    var reqLUK: Short = 0
+        private set
+    var reqFAME: Short = 0
+        private set
+    var reqJob: Short = 0
+        private set
+    var reqLevel: Byte = 0
+        private set
     var tUC: Byte = 0
     var incSTR: Short = 0
     var incDEX: Short = 0
@@ -42,7 +49,9 @@ class ItemEquipTemplate(id: Int, r: PacketReader) : ItemTemplate(id, r) {
     var setItemId = 0
     var durability = -1
 
-    init {
+    override fun decode(r: PacketReader): ItemEquipTemplate {
+        super.decode(r)
+
         equipFlags = r.readInteger()
         reqSTR = r.readShort()
         reqDEX = r.readShort()
@@ -76,6 +85,8 @@ class ItemEquipTemplate(id: Int, r: PacketReader) : ItemTemplate(id, r) {
         if (containsFlag(EquipFlag.APPLIABLE_KARMA_TYPE)) appliableKarmaType = r.readByte()
         if (containsFlag(EquipFlag.SET_ITEM_ID)) setItemId = r.readInteger()
         if (containsFlag(EquipFlag.DURABILITY)) durability = r.readInteger()
+
+        return this
     }
 
     fun containsFlag(flag: EquipFlag): Boolean {
@@ -83,10 +94,10 @@ class ItemEquipTemplate(id: Int, r: PacketReader) : ItemTemplate(id, r) {
     }
 
     fun fromDbToSlot(
-            TUC: Byte,
-            str: Short, dex: Short, int_: Short, luk: Short, hp: Short, mp: Short,
-            pad: Short, mad: Short, pdd: Short, mdd: Short, acc: Short, eva: Short,
-            speed: Short, jump: Short, craft: Short, durability: Int
+        TUC: Byte,
+        str: Short, dex: Short, int_: Short, luk: Short, hp: Short, mp: Short,
+        pad: Short, mad: Short, pdd: Short, mdd: Short, acc: Short, eva: Short,
+        speed: Short, jump: Short, craft: Short, durability: Int
     ): ItemSlotEquip {
         val equip = ItemSlotEquip()
         equip.templateId = id

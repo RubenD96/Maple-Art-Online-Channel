@@ -5,9 +5,9 @@ import client.inventory.item.slots.ItemSlot
 import client.inventory.item.variation.ItemVariationType
 import util.packet.PacketReader
 
-open class ItemTemplate(val id: Int, val r: PacketReader) {
+open class ItemTemplate(val id: Int) {
 
-    var flags: Int protected set
+    private var flags: Int = 0
     var sellPrice = 0
     var isTimeLimited = false
     var isQuest = false
@@ -20,7 +20,7 @@ open class ItemTemplate(val id: Int, val r: PacketReader) {
     var isAccountSharable = false
     var isCash = false
 
-    init {
+    open fun decode(r: PacketReader): ItemTemplate {
         flags = r.readInteger()
         if (containsFlag(ItemFlag.PRICE)) sellPrice = r.readInteger()
         if (containsFlag(ItemFlag.TIME_LIMITED)) isTimeLimited = r.readBool()
@@ -33,6 +33,8 @@ open class ItemTemplate(val id: Int, val r: PacketReader) {
         if (containsFlag(ItemFlag.EXPIRE_ON_LOGOUT)) isExpireOnLogout = r.readBool()
         if (containsFlag(ItemFlag.ACCOUNT_SHARE)) isAccountSharable = r.readBool()
         if (containsFlag(ItemFlag.CASH)) isCash = r.readBool()
+
+        return this
     }
 
     fun containsFlag(flag: ItemFlag): Boolean {

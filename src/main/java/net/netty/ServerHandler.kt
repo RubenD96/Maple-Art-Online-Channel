@@ -94,6 +94,7 @@ class ServerHandler : ChannelInboundHandlerAdapter() {
         val c = ch.attr(CLIENT_KEY).get() as Client
         //c.disconnect();
         //System.out.println(cause);
+        System.err.println("[exceptionCaught]")
         cause.printStackTrace()
         //chc.close();
     }

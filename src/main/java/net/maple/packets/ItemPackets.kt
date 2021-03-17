@@ -42,8 +42,8 @@ object ItemPackets {
     private fun ItemSlotEquip.encode(pw: PacketWriter) {
         pw.write(ENCODE_EQUIP)
         encodeBase(pw)
-        pw.write(ruc.toInt())
-        pw.write(cuc.toInt())
+        pw.writeByte(ruc)
+        pw.writeByte(cuc)
 
         pw.writeShort(str)
         pw.writeShort(dex)
@@ -64,21 +64,21 @@ object ItemPackets {
         pw.writeMapleString(title)
         pw.writeShort(attribute)
 
-        pw.write(levelUpType.toInt())
-        pw.write(level.toInt())
+        pw.writeByte(levelUpType)
+        pw.writeByte(level)
         pw.writeInt(exp)
         pw.writeInt(durability)
 
         pw.writeInt(iuc)
 
-        pw.write(grade.toInt())
-        pw.write(chuc.toInt())
+        pw.writeByte(grade)
+        pw.writeByte(chuc)
 
         pw.writeShort(option1)
         pw.writeShort(option2)
         pw.writeShort(option3)
-        pw.writeShort(socket1)
-        pw.writeShort(socket2)
+        pw.writeShort(0) // socket1
+        pw.writeShort(0) // socket2
 
         if (cashItemSN == 0L) pw.writeLong(0)
         pw.writeLong(0)
@@ -103,9 +103,9 @@ object ItemPackets {
         encodeBase(pw)
 
         pw.writeFixedString(petName, 13)
-        pw.write(level.toInt())
+        pw.writeByte(level)
         pw.writeShort(tameness)
-        pw.write(repleteness.toInt())
+        pw.writeByte(repleteness)
         pw.writeLong(dateDead)
 
         pw.writeShort(petAttribute)

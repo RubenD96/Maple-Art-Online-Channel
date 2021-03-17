@@ -3,12 +3,17 @@ package client.inventory.item.templates
 import client.inventory.item.slots.ItemSlotPet
 import util.packet.PacketReader
 
-class PetItemTemplate(id: Int, r: PacketReader) : ItemTemplate(id, r) {
+class PetItemTemplate(id: Int) : ItemTemplate(id) {
 
-    val life: Int
+    var life: Int = 0
+        private set
 
-    init {
+    override fun decode(r: PacketReader): PetItemTemplate {
+        super.decode(r)
+
         life = r.readShort().toInt()
+
+        return this
     }
 
     override fun toItemSlot(): ItemSlotPet {

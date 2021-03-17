@@ -1,7 +1,9 @@
 package client.command
 
 import client.Character
+import client.messages.broadcast.types.NoticeWithoutPrefixMessage
 import constants.ServerConstants
+import net.maple.packets.CharacterPackets.message
 import util.logging.LogType
 import util.logging.Logger
 
@@ -48,7 +50,7 @@ object CommandHandler {
                 }
             }
         } ?: run {
-            println("Command ${str.substringBefore(" ")} does not exist")
+            chr.message(NoticeWithoutPrefixMessage("Command ${str.substringBefore(" ")} does not exist"))
         }
     }
 

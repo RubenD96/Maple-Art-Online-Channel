@@ -436,17 +436,17 @@ object CharacterPackets {
 
         pw.writeHeader(SendOpcode.USER_HIT)
         pw.writeInt(this.id)
-        pw.write(type.toInt())
+        pw.writeByte(type)
         pw.writeInt(dmg)
         if (type > -2) {
             pw.writeInt(mobId)
-            pw.write(left.toInt())
+            pw.writeByte(left)
             val v22: Byte = 0
-            pw.write(v22.toInt()) // stance?
+            pw.writeByte(v22) // stance?
             if (v22 > 0) {
-                pw.write(0) // bPowerGuard
+                pw.writeByte(0) // bPowerGuard
                 pw.writeInt(0) // ptHit.x
-                pw.write(0) // nHitAction
+                pw.writeByte(0) // nHitAction
                 pw.writeShort(0) // ptHit.x
                 pw.writeShort(0) // ptHit.y
             } /* else {
@@ -454,7 +454,7 @@ object CharacterPackets {
                 pw.writeShort(0);
                 pw.writeShort(0);
             }*/
-            pw.write(0) // bGuard
+            pw.writeByte(0) // bGuard
             pw.writeBool(false) // v36, flag of 1 or 2
         }
         pw.writeInt(dmg) // nDelta

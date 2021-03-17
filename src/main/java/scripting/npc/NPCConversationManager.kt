@@ -232,7 +232,9 @@ open class NPCConversationManager(c: Client, val npcId: Int) : AbstractPlayerInt
         val random = map["random"]
         val items = map["items"] as AbstractMap<*, *>?
         val readableItemMap: MutableMap<Int, Int> = LinkedHashMap()
-        items!!.values.forEach(Consumer { pair: Any -> readableItemMap[(pair as AbstractMap<*, *>)["0"] as Int] = pair["1"] as Int })
+        items!!.values.forEach(Consumer { pair: Any ->
+            readableItemMap[(pair as AbstractMap<*, *>)["0"] as Int] = pair["1"] as Int
+        })
         println(readableItemMap)
     }
 
@@ -240,21 +242,25 @@ open class NPCConversationManager(c: Client, val npcId: Int) : AbstractPlayerInt
 
     fun getEnabledHairs(gender: Int): List<Beauty> {
         return BeautyManager.hairs.values.stream()
-                .filter(Beauty::isEnabled)
-                .filter { it.gender == gender }
-                .collect(Collectors.toList())
+            .filter(Beauty::isEnabled)
+            .filter { it.gender == gender }
+            .collect(Collectors.toList())
     }
 
     fun getDisabledHairs(gender: Int): List<Beauty> {
         return BeautyManager.hairs.values.stream()
-                .filter { !it.isEnabled }
-                .filter { it.gender == gender }
-                .collect(Collectors.toList())
+            .filter { !it.isEnabled }
+            .filter { it.gender == gender }
+            .collect(Collectors.toList())
     }
 
     fun updateHair(id: Int) {
         val b = BeautyManager.hairs[id] ?: return
         b.isEnabled = !b.isEnabled
         BeautyAPI.updateHair(id)
+    }
+
+    fun setHardcore(enable: Boolean) {
+        c.character.hardcore = enable
     }
 }

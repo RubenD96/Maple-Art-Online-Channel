@@ -120,10 +120,10 @@ abstract class AbstractPlayerInteraction(val c: Client) {
         return template.toItemSlot() as ItemSlotEquip?
     }
 
-    fun gainStatItem(id: Int, obj: Any) {
-        val stats: AbstractMap<String, Int> = obj as AbstractMap<String, Int>
+    fun gainStatItem(id: Int, stats: Map<String, Int>) {
         val equip = getEquipById(id)
         val template = ItemManager.getItem(id) as ItemEquipTemplate
+
         if (equip != null) {
             equip.str = stats["STR"]?.toShort() ?: template.incSTR
             equip.dex = stats["DEX"]?.toShort() ?: template.incDEX
@@ -139,7 +139,20 @@ abstract class AbstractPlayerInteraction(val c: Client) {
             equip.mdd = stats["MDD"]?.toShort() ?: template.incMDD
             equip.maxHP = stats["HP"]?.toShort() ?: template.incMaxHP.toShort()
             equip.maxMP = stats["MP"]?.toShort() ?: template.incMaxMP.toShort()
+
             equip.ruc = stats["SLOTS"]?.toByte() ?: 7
+            equip.cuc = stats["UPGRADED"]?.toByte() ?: 0
+            equip.chuc = stats["STARS"]?.toByte() ?: 0
+            equip.grade = stats["GRADE"]?.toByte() ?: 0
+
+            equip.levelUpType = stats["LVLUPTYPE"]?.toByte() ?: 0
+            equip.level = stats["LEVEL"]?.toByte() ?: 0
+            equip.exp = stats["EXP"] ?: 0
+            equip.durability = stats["DURABILITY"] ?: 0
+
+            equip.option1 = stats["OPT1"]?.toShort() ?: 0
+            equip.option2 = stats["OPT2"]?.toShort() ?: 0
+            equip.option3 = stats["OPT3"]?.toShort() ?: 0
             player.modifyInventory({ it.add(equip) })
         }
     }

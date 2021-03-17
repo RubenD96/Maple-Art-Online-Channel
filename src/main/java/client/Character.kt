@@ -22,6 +22,7 @@ import client.player.quest.Quest
 import client.replay.MoveCollection
 import client.stats.TemporaryStat
 import client.stats.TemporaryStatType
+import com.sun.source.tree.BinaryTree
 import constants.UserConstants
 import constants.UserConstants.expTable
 import database.jooq.Tables
@@ -162,6 +163,7 @@ class Character(val client: Client, override var name: String, val record: Recor
             updateSingleStat(StatType.MESO)
         }
     var totalDamage: Long = record.getValue(Tables.CHARACTERS.TOTAL_DAMAGE)
+    var hardcore: Boolean = record.getValue(Tables.CHARACTERS.HARDCORE) == 1.toByte()
 
     /**
      * End constructor fields

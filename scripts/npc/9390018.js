@@ -11,6 +11,13 @@ let tempsel2;
 let hardcore = false;
 let skipDispose = false;
 let field;
+let types = [
+    "1H Sword and Shield",
+    "2H Sword",
+    "1H Mace and Shield",
+    "Spear",
+    "Daggers",
+];
 
 function init() {
     field = cm.getPlayer().getFieldId();
@@ -61,11 +68,7 @@ function explanation(m, s) { // map 0
                 cm.sendNext("Every single mob you will battle has been modified in one way or the other.\r\n" +
                     "There are also many custom maps and a few reworked maps from the original maple.");
             } else if (tempsel === 3) { // Skip tutorial
-                cm.sendSimple("Which class would you like to be?\r\n" +
-                    "#b#L1#Tank#l\r\n" +
-                    "#L2#Swordsman#l\r\n" +
-                    "#L3#Spearman#l\r\n\r\n" +
-                    "#L4##rPermanent Rookie#k#l");
+                weaponChoice();
             }
         } else if (status === 5) {
             if (tempsel === 1) { // I am new to MapleStory
@@ -73,10 +76,9 @@ function explanation(m, s) { // map 0
                     "Playing on this server can not get you banned on any Nexon/Wizet game.");
             } else if (tempsel === 2) { // I am new to Maple Art Online
                 cm.sendNext("Furthermore none of the standard classes from the original maple are playable.\r\n" +
-                    "You can currently choose between 3 classes;\r\n" +
-                    "#b1.#k Tank\r\n" +
-                    "#b2.#k Swordsman\r\n" +
-                    "#b3.#k Spearman");
+                    "In Maple Art Online you can #bswitch between classes by equipping different weapon types#k.\r\n" +
+                    "When you switch ur weapon type, your skills will change!\r\n" +
+                    "Progress in a specific weapon type is not lost upon switching.");
             } else if (tempsel === 3) { // I am not new to either
                 tempsel2 = s;
                 cm.sendYesNo("Do you wish to make a hardcore character?");
@@ -85,18 +87,12 @@ function explanation(m, s) { // map 0
             if (tempsel === 1) { // I am new to MapleStory
                 cm.sendNext("Use the arrow keys to move around and alt to jump, if you wish to change certain keys you can open your key configuration by pressing backslash when this chat window is gone.");
             } else if (tempsel === 2) { // I am new to Maple Art Online
-                cm.sendNext("The beginner skillbook has been reworked to show your masteries.\r\n" +
-                    "Masteries are skills that all jobs have in common, a few examples on masteries are #rAgility#k and #bDivination#k.\r\n\r\n" +
+                cm.sendNext("The beginner skillbook has been reworked to show your #rmasteries#k and #rlifeskills#k.\r\n" +
+                    "Masteries are linked to your weapon type level, you can train multiple weapon types at the same time\r\n" +
+                    "Lifeskills are skills that all jobs have in common, a few examples on lifeskills are #rAgility#k and #bDivination#k.\r\n\r\n" +
                     "They will be shortly explained on the next page so you get a better understanding of masteries in general");
             } else if (tempsel === 3) { // I am not new to either
-                skipDispose = false;
-                let job = tempsel2 === 1 ? "Tank" : (tempsel2 === 2 ? "Swordsman" : "Spearman");
-                if (tempsel2 === 4) {
-                    job = "Permanent Rookie";
-                }
-                cm.sendYesNo("Are you sure you wish to progress with these settings?\r\n\r\n" +
-                    "Job: #e#b" + job + "#k#n\r\n" +
-                    "Hardcore: #e" + (hardcore ? "#gOn" : "#rOff"));
+                overview(tempsel2);
             }
         } else if (status === 7) {
             if (tempsel === 1) { // I am new to MapleStory
@@ -109,14 +105,17 @@ function explanation(m, s) { // map 0
                     "#b#eDivination#n#k\r\n" +
                     "Divination is another active mastery skill that can show you what any kind of monster is hiding from you, given your divination level is high enough.\r\n" +
                     "With a high enough divination level, one might see what kind of loot the monster is able to drop and all sorts of other stats like hp and mp.\r\n" +
-                    "You can level divination through picking up monster souls, they are dropped from every mob as soon as you learn divination.");
+                    "You can level divination through picking up monster souls, they are dropped from every mob as soon as you learn divination.\r\n\r\n" +
+                    "#eBut there is even more!#n\r\n" +
+                    "You'll also be able to train:\r\n" +
+                    "x #bBrewing#k\r\n" +
+                    "x #bCrafting");
             } else if (tempsel === 3) { // I am not new to either
                 starter(tempsel2);
-                cm.dispose();
             }
         } else if (status === 8) { // I am new to Maple Art Online
             cm.sendOk("All this information is just the start of your new journey through the maple world!\r\n" +
-                "Go towards the portal to learn about all the classes available more in-depth. You will be able to test all 3 Rookie classes!");
+                "Go towards the portal to learn about all the classes available more in-depth. You will be able to test all weapon types!");
             cm.dispose();
         }
     }
@@ -139,25 +138,14 @@ function decision(m, s) { // map 2
                 "There are currently no benefits to be had from playing hardcore. However, hardcores do have a separate ranking.\r\n" +
                 "You are able to turn your hardcore character into a regular character at any time if you so desire, however this decision can #enot#n be reversed.");
         } else if (status === 3) {
-            cm.sendSimple("Which class would you like to be?\r\n" +
-                "#b#L1#Tank#l\r\n" +
-                "#L2#Swordsman#l\r\n" +
-                "#L3#Spearman#l\r\n\r\n" +
-                "#L4##rPermanent Rookie#k#l");
+            weaponChoice();
         } else if (status === 4) {
             tempsel = s;
             cm.sendYesNo("Do you wish to make a hardcore character?");
         } else if (status === 5) {
-            skipDispose = false;
-            let job = tempsel === 1 ? "Tank" : (tempsel === 2 ? "Swordsman" : "Spearman");
-            if (tempsel === 4) {
-                job = "Permanent Rookie";
-            }
-            cm.sendYesNo("Are you sure you wish to progress with these settings?\r\n\r\n" +
-                "Job: #e#b" + job + "#k#n\r\n" +
-                "Hardcore: #e" + (hardcore ? "#gOn" : "#rOff"));
+            overview(tempsel);
         } else if (status === 6) {
-            if (cm.haveItemWithId(1303000, true)) {
+            /*if (cm.haveItemWithId(1303000, true)) {
                 cm.removeAll(1303000);
             }
             if (cm.haveItemWithId(1099010, true)) {
@@ -171,20 +159,35 @@ function decision(m, s) { // map 2
             }
             cm.getPlayer().resetAllSkills();
             cm.cancelTutorialStats();
-            cm.changeJobById(100);
+            cm.changeJobById(100);*/
             starter(tempsel);
-            dispose();
         }
     }
 }
 
 function starter(s) {
-    //cm.getPlayer().setHardcore(hardcore);
-    cm.gainItem(2000013, 5); // 5 red pots
+    cm.getPlayer().setHardcore(hardcore);
+    cm.gainItem(2000013, 10); // 10 red pots
     cm.gainMeso(100);
     /*if (cm.getPlayer().getRemainingSp() !== 0) {
         cm.getPlayer().gainSp(-cm.getPlayer().getRemainingSp());
     }*/
     cm.getPlayer().heal();
     cm.getPlayer().changeField(1000);
+    dispose();
+}
+
+function weaponChoice() {
+    let str = "Which weapon would you like to start out with?#b";
+    for (let i = 0; i < types.length; i++) {
+        str += `\r\n#L${i}#${types[i]}#l`;
+    }
+    cm.sendSimple(str);
+}
+
+function overview(type) {
+    skipDispose = false;
+    cm.sendYesNo("Are you sure you wish to progress with these settings?\r\n\r\n" +
+        "Starter weapon: #e#b" + types[type] + "#k#n\r\n" +
+        "Hardcore: #e" + (hardcore ? "#gOn" : "#rOff"));
 }

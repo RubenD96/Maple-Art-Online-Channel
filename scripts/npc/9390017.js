@@ -1,10 +1,11 @@
 /**
- * Created by Ruben on 7/14/2020.
+ * ...
+ * Asuna, multiple functions
+ * Maple Art Online
+ * @author Chronos
  */
 
-let field;
-
 function converse(m, s) {
-    cm.sendOk("Asuna-chaaan~~~");
+    cm.sendOk("#e#rTODO: give weapons to try out");
     cm.dispose();
 }

@@ -36,10 +36,10 @@ function converse(m, s) {
             }
 
             let str = "Selected equip: #i" + id + "# #r#z" + id + "# #k(#b" + id + "#k)\r\n";
+            str += "#L100##r#eCreate item!#l\r\n\r\n#k";
             for (let i = 0; i < keys.length; i++) {
                 str += "#L" + i + "#" + keys[i] + ": #r" + stats[keys[i]] + "#k#l\r\n";
             }
-            str += "\r\n#L100##r#eCreate item!#l";
             cm.sendSimple(str);
         } else if (status === 3) {
             if (s !== 100) {
@@ -60,21 +60,31 @@ function converse(m, s) {
 
 function initStats(equip) {
     stats = {
-        "STR": equip.getSTR(),
-        "DEX": equip.getDEX(),
-        "LUK": equip.getLUK(),
-        "INT": equip.getINT(),
-        "PAD": equip.getPAD(),
-        "MAD": equip.getMAD(),
-        "ACC": equip.getACC(),
-        "EVA": equip.getEVA(),
+        "STR": equip.getStr(),
+        "DEX": equip.getDex(),
+        "LUK": equip.getLuk(),
+        "INT": equip.getInt(),
+        "PAD": equip.getPad(),
+        "MAD": equip.getMad(),
+        "ACC": equip.getAcc(),
+        "EVA": equip.getEva(),
         "JUMP": equip.getJump(),
         "SPEED": equip.getSpeed(),
-        "PDD": equip.getPDD(),
-        "MDD": equip.getMDD(),
+        "PDD": equip.getPdd(),
+        "MDD": equip.getMdd(),
         "HP": equip.getMaxHP(),
         "MP": equip.getMaxMP(),
-        "SLOTS": equip.getRUC()
+        "SLOTS": equip.getRuc(),
+        "UPGRADED": 0,
+        "STARS": 0,
+        "GRADE": 0,
+        "LVLUPTYPE": 0,
+        "LEVEL": 0,
+        "EXP": 0,
+        "DURABILITY": 0,
+        "OPT1": 0,
+        "OPT2": 0,
+        "OPT3": 0
     };
     keys = Object.keys(stats);
 }

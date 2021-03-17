@@ -3,10 +3,12 @@ package client.inventory.item.templates
 import client.inventory.item.slots.ItemSlotBundle
 import util.packet.PacketReader
 
-open class ItemBundleTemplate(id: Int, r: PacketReader) : ItemTemplate(id, r) {
+open class ItemBundleTemplate(id: Int) : ItemTemplate(id) {
 
-    val unitPrice: Double
-    var maxPerSlot: Short
+    var unitPrice: Double = 0.0
+        private set
+    var maxPerSlot: Short = 0
+        private set
 
     override fun toItemSlot(): ItemSlotBundle {
         val item = ItemSlotBundle()
@@ -16,11 +18,15 @@ open class ItemBundleTemplate(id: Int, r: PacketReader) : ItemTemplate(id, r) {
         return item
     }
 
-    init {
+    override fun decode(r: PacketReader): ItemBundleTemplate {
+        super.decode(r)
+
         unitPrice = r.readDouble()
         maxPerSlot = r.readShort()
         if (maxPerSlot.toInt() == 0) {
             maxPerSlot = 100
         }
+
+        return this
     }
 }

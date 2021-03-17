@@ -118,13 +118,6 @@ abstract class Writer {
         return write(if (b) 1 else 0)
     }
 
-    fun fill(value: Int, num: Int): Writer {
-        for (i in 0 until num) {
-            write(value)
-        }
-        return this
-    }
-
     fun writePosition(p: Point): Writer {
         return writeShort(p.x).writeShort(p.y)
     }

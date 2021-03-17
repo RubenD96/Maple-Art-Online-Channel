@@ -39,19 +39,19 @@ object ItemManager : Loadable {
                         }
 
                 item = when (type) {
-                    ItemInventoryType.EQUIP -> ItemEquipTemplate(id, data)
+                    ItemInventoryType.EQUIP -> ItemEquipTemplate(id).decode(data)
                     ItemInventoryType.CONSUME -> when (subType) {
                         0, 1, 2, 5, 21, 36, 38, 45 -> StatChangeItemTemplate(id).decode(data)
-                        3 -> PortalScrollItemTemplate(id, data)
-                        4 -> UpgradeScrollItemTemplate(id, data)
-                        10 -> MobSummonItemTemplate(id, data)
-                        else -> ItemBundleTemplate(id, data)
+                        3 -> PortalScrollItemTemplate(id).decode(data)
+                        4 -> UpgradeScrollItemTemplate(id).decode(data)
+                        10 -> MobSummonItemTemplate(id).decode(data)
+                        else -> ItemBundleTemplate(id).decode(data)
                     }
                     ItemInventoryType.INSTALL,
                     ItemInventoryType.ETC,
                     ItemInventoryType.CASH -> {
                         if (type != ItemInventoryType.CASH || subType != 0) {
-                            ItemBundleTemplate(id, data)
+                            ItemBundleTemplate(id).decode(data)
                         } else { // todo pets
                             log(LogType.INVALID, "Pets are not implemented yet", this)
                             getItem(fallback)

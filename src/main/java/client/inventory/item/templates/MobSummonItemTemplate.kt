@@ -3,15 +3,19 @@ package client.inventory.item.templates
 import util.packet.PacketReader
 import java.util.*
 
-class MobSummonItemTemplate(id: Int, r: PacketReader) : ItemBundleTemplate(id, r) {
+class MobSummonItemTemplate(id: Int) : ItemBundleTemplate(id) {
 
     private val mobs: MutableList<MobSummonItemEntry> = ArrayList()
 
-    init {
+    override fun decode(r: PacketReader): MobSummonItemTemplate {
+        super.decode(r)
+
         val size = r.readShort().toInt()
         for (i in 0 until size) {
             mobs.add(MobSummonItemEntry(r))
         }
+
+        return this
     }
 
     class MobSummonItemEntry(r: PacketReader) {

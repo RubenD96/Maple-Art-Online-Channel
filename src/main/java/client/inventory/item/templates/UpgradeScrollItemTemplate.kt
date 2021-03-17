@@ -3,9 +3,9 @@ package client.inventory.item.templates
 import client.inventory.item.flags.ScrollFlag
 import util.packet.PacketReader
 
-class UpgradeScrollItemTemplate(id: Int, r: PacketReader) : ItemBundleTemplate(id, r) {
+class UpgradeScrollItemTemplate(id: Int) : ItemBundleTemplate(id) {
 
-    val scrollFlags: Int
+    private var scrollFlags: Int = 0
 
     var mhp = 0
     var mmp = 0
@@ -29,7 +29,9 @@ class UpgradeScrollItemTemplate(id: Int, r: PacketReader) : ItemBundleTemplate(i
     var success: Byte = 0
     var cursed: Byte = 0
 
-    init {
+    override fun decode(r: PacketReader): UpgradeScrollItemTemplate {
+        super.decode(r)
+
         scrollFlags = r.readInteger()
         if (containsFlag(ScrollFlag.INC_MHP)) mhp = r.readInteger()
         if (containsFlag(ScrollFlag.INC_MMP)) mmp = r.readInteger()
@@ -52,6 +54,8 @@ class UpgradeScrollItemTemplate(id: Int, r: PacketReader) : ItemBundleTemplate(i
         if (containsFlag(ScrollFlag.ENCHANT_CATEGORY)) category = r.readByte()
         if (containsFlag(ScrollFlag.SUCCESS)) success = r.readByte()
         if (containsFlag(ScrollFlag.CURSED)) cursed = r.readByte()
+
+        return this
     }
 
     fun containsFlag(flag: ScrollFlag): Boolean {

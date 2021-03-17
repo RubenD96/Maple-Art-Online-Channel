@@ -36,7 +36,7 @@ object Server {
         CharacterAPI.resetParties()
         shops = ShopAPI.shops
         for (i in 0 until ServerConstants.CHANNELS) {
-            val channel = ChannelServer(i, 7575 + i, ServerConstants.IP)
+            val channel = ChannelServer(i, 7575 + i, /*ServerConstants.IP*/ "63.251.217.1")
             channel.start()
             channels.add(channel)
             val loginConnector = LoginConnector(this, channel)

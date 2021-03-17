@@ -61,13 +61,10 @@ class UserUpgradeItemUseRequestHandler : PacketHandler {
 
             chr.field.broadcast(
                 getShowItemUpgradeEffectPacket(
-                    chr.id,
-                    success,
-                    cursed,
-                    enchantSkill,
-                    0,
-                    whiteScroll,
-                    0
+                    cid = chr.id,
+                    success = success,
+                    cursed = cursed,
+                    whiteScroll = whiteScroll
                 )
             )
         }
@@ -82,7 +79,7 @@ class UserUpgradeItemUseRequestHandler : PacketHandler {
             enchantSkill: Boolean = false,
             enchantCategory: Int = 0,
             whiteScroll: Boolean,
-            v6: Byte
+            v6: Byte = 0
         ): Packet {
             val pw = PacketWriter(15)
 
