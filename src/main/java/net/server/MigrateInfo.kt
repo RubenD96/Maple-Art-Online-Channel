@@ -1,11 +1,15 @@
 package net.server
 
-class MigrateInfo(val aid: Int, var channel: Int, val ip: String) {
+class MigrateInfo(
+    val aid: Int,
+    var port: Int,
+    val ip: String
+) {
 
-    val cid: Int = 0 // actually unused, not really needed either
+    var channelId: Int = -1
     var cashShop = false
 
     override fun toString(): String {
-        return "MigrateInfo(aid=$aid, channel=$channel, ip='$ip', cid=$cid, cashShop=$cashShop)"
+        return "MigrateInfo(aid=$aid, channel=$channelId, ip='$ip', cashShop=$cashShop)"
     }
 }

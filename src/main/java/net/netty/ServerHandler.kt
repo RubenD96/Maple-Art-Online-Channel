@@ -12,7 +12,7 @@ import net.netty.NettyClient.Companion.CRYPTO_KEY
 import util.crypto.MapleAESOFB
 import util.packet.Packet
 
-class ServerHandler : ChannelInboundHandlerAdapter() {
+class ServerHandler(val port: Int) : ChannelInboundHandlerAdapter() {
 
     private var processor = PacketProcessor
     private var ignoreOps = intArrayOf(
@@ -38,7 +38,7 @@ class ServerHandler : ChannelInboundHandlerAdapter() {
         channel.attr(CLIENT_KEY).set(client)
         channel.attr(CRYPTO_KEY).set(MapleAESOFB())
 
-        System.out.printf("Opened session with %s%n", client.ip)
+        System.out.printf("Opened session on port $port with %s%n", client.ip)
 
         client.startPing()
     }
@@ -80,12 +80,13 @@ class ServerHandler : ChannelInboundHandlerAdapter() {
         val ch = chc.channel()
         val c = ch.attr(CLIENT_KEY).get() as Client
 
-        c.disconnect() // todo npe on character? (lateinit, dc before init)
-        //c.softDisconnect(c.isLoggedIn()); // handle this is we don't soft disconnect through handler
+        if (c.isInitialized()) {
+            c.disconnect()
+        }
         c.cancelPingTask()
 
         // remove after debug stage
-        System.out.printf("[Debug] Closed session with %s.%n", c.ip)
+        System.out.printf("[Debug] Closed session on port $port with %s.%n", c.ip)
     }
 
     override fun exceptionCaught(chc: ChannelHandlerContext, cause: Throwable) {

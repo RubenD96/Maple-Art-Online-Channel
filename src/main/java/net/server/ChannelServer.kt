@@ -12,23 +12,21 @@ import io.netty.channel.EventLoopGroup
 import io.netty.channel.nio.NioEventLoopGroup
 import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.NioServerSocketChannel
+import io.netty.util.AttributeKey
 import kotlinx.coroutines.*
 import managers.FieldManager
-import net.maple.handlers.user.UserChatHandler
 import net.netty.PacketDecoder
 import net.netty.PacketEncoder
 import net.netty.ServerHandler
+import util.packet.Packet
 import java.util.*
 
 class ChannelServer(val channelId: Int, val port: Int, val IP: String) : Thread() {
 
     var fieldManager: FieldManager = FieldManager()
-    lateinit var loginConnector: LoginConnector
+    lateinit var centralListener: CentralListener
 
     fun init() {
-        ServerConstants.COMMAND_LIST.add(ArrayList())
-        ServerConstants.COMMAND_LIST.add(ArrayList())
-        ServerConstants.COMMAND_LIST.add(ArrayList())
         GlobalScope.launch {
             withContext(NonCancellable) {
                 async { mobRespawnRoutine() }
@@ -60,19 +58,19 @@ class ChannelServer(val channelId: Int, val port: Int, val IP: String) : Thread(
         try {
             val b = ServerBootstrap()
             b.group(bossGroup, workerGroup)
-                    .channel(NioServerSocketChannel::class.java)
-                    .childHandler(object : ChannelInitializer<SocketChannel>() {
-                        public override fun initChannel(ch: SocketChannel) {
-                            ch.pipeline().addLast(
-                                    PacketDecoder(),
-                                    PacketEncoder(),
-                                    ServerHandler()
-                            )
-                        }
-                    })
-                    .option(ChannelOption.SO_BACKLOG, 128)
-                    .childOption(ChannelOption.TCP_NODELAY, true)
-                    .childOption(ChannelOption.SO_KEEPALIVE, true)
+                .channel(NioServerSocketChannel::class.java)
+                .childHandler(object : ChannelInitializer<SocketChannel>() {
+                    public override fun initChannel(ch: SocketChannel) {
+                        ch.pipeline().addLast(
+                            PacketDecoder(),
+                            PacketEncoder(),
+                            ServerHandler(port)
+                        )
+                    }
+                })
+                .option(ChannelOption.SO_BACKLOG, 128)
+                .childOption(ChannelOption.TCP_NODELAY, true)
+                .childOption(ChannelOption.SO_KEEPALIVE, true)
 
             // Bind and start to accept incoming connections.
             val f: ChannelFuture = b.bind(port).sync()
@@ -88,5 +86,13 @@ class ChannelServer(val channelId: Int, val port: Int, val IP: String) : Thread(
 
     override fun toString(): String {
         return "ChannelServer(channelId=$channelId, port=$port, IP='$IP')"
+    }
+
+    fun write(packet: Packet) {
+        centralListener.channel.writeAndFlush(packet)
+    }
+
+    companion object {
+        val CHANNEL_KEY: AttributeKey<ChannelServer> = AttributeKey.valueOf("C")
     }
 }

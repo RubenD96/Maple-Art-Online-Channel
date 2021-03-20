@@ -12,6 +12,7 @@ import net.maple.packets.GuildPackets.notifyLoginLogout
 import net.maple.packets.PartyPackets.getTransferLeaderMessagePacket
 import net.maple.packets.PartyPackets.updateParty
 import net.netty.NettyClient
+import net.netty.central.CentralPackets
 import net.server.ChannelServer
 import net.server.MigrateInfo
 import net.server.Server
@@ -58,8 +59,8 @@ class Client(c: Channel, siv: ByteArray, riv: ByteArray) : NettyClient(c, siv, r
         isBanned = data.getValue(Tables.ACCOUNTS.BANNED) == 1.toByte()
         isAdmin = data.getValue(Tables.ACCOUNTS.ADMIN) == 1.toByte()
         pic = data.getValue(Tables.ACCOUNTS.PIC)
-        worldChannel = Server.channels[mi.channel]
-        worldChannel.loginConnector.messageLogin("1:$accId")
+        worldChannel = Server.channels[mi.channelId]
+        worldChannel.write(CentralPackets.getAddOnlinePlayerPacket(mi.channelId, accId))
         isLoggedIn = true
     }
 
@@ -85,7 +86,7 @@ class Client(c: Channel, siv: ByteArray, riv: ByteArray) : NettyClient(c, siv, r
         println("disconnecting")
         if (!isDisconnecting) {
             isDisconnecting = true
-            worldChannel.loginConnector.messageLogin("2:$accId")
+            worldChannel.write(CentralPackets.getRemoveOnlinePlayerPacket(worldChannel.channelId, accId))
 
             if (ch.isOpen) {
                 close(this, "Disconnect function called")
@@ -114,7 +115,7 @@ class Client(c: Channel, siv: ByteArray, riv: ByteArray) : NettyClient(c, siv, r
 
     fun migrate() {
         Server.clients[accId]?.let {
-            it.channel = worldChannel.channelId
+            it.channelId = worldChannel.channelId
             write(worldChannel.getChangeChannelPacket())
         } ?: close(this, "No MigrateInfo on migrate method")
     }
@@ -159,5 +160,9 @@ class Client(c: Channel, siv: ByteArray, riv: ByteArray) : NettyClient(c, siv, r
                 }
             }
         }
+    }
+
+    fun isInitialized(): Boolean {
+        return this::worldChannel.isInitialized
     }
 }

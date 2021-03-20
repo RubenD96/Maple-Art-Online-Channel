@@ -8,6 +8,7 @@ import java.io.PrintWriter
 import java.net.Socket
 import java.util.*
 
+@Deprecated("Use netty instead")
 class LoginConnector(private val server: Server, private val channel: ChannelServer) : Thread() {
 
     private lateinit var wt: WriteThread

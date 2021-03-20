@@ -18,5 +18,6 @@ enum class LogType(val console: Boolean, val bulk: Boolean = false) {
     // info
     PARTY(false, true),
     GUILD(false, true),
-    COMMAND(false, true)
+    COMMAND(false, true),
+    CENTRAL(true, false)
 }

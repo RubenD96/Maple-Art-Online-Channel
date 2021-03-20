@@ -15,9 +15,6 @@ object ServerConstants {
     const val DB_PASS = ""
     const val DB_URL = "jdbc:mysql://localhost:3306/mao?serverTimezone=UTC"
 
-    val COMMAND_LIST: ArrayList<ArrayList<String>> = ArrayList()
-    val COMMAND_FILE_LIST = HashMap<String, String>()
-
     const val RANKING_TIMER: Long = 10 /*minutes*/ * 60 * 1000
     const val RESPAWN_TIMER: Long = 5 /*seconds*/ * 1000
     const val DROP_CLEAR_TIMER: Long = 10 /*seconds*/ * 1000
