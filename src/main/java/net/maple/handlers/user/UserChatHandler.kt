@@ -1,9 +1,12 @@
 package net.maple.handlers.user
 
+import client.Avatar
 import client.Character
 import client.Client
 import client.command.CommandHandler
+import client.replay.MoveCollection
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine
+import constants.FieldConstants
 import net.maple.SendOpcode
 import net.maple.handlers.PacketHandler
 import util.packet.Packet
@@ -27,16 +30,20 @@ class UserChatHandler : PacketHandler {
             return
         }
 
-        chr.field.broadcast(sendMessage(chr, msg, textBox), null)
+        chr.field.broadcast(chr.sendMessage(msg, textBox, chr.isGM), null)
+
+        if (FieldConstants.JQ_FIELDS.contains(chr.fieldId)) {
+            chr.moveCollections[chr.fieldId]?.chats?.add(MoveCollection.Chat(System.currentTimeMillis(), msg))
+        }
     }
 
     companion object {
-        private fun sendMessage(chr: Character, msg: String, textBox: Boolean): Packet {
+        fun Avatar.sendMessage(msg: String, textBox: Boolean, isGM: Boolean): Packet {
             val pw = PacketWriter(16)
 
             pw.writeHeader(SendOpcode.USER_CHAT)
-            pw.writeInt(chr.id)
-            pw.writeBool(chr.isGM)
+            pw.writeInt(id)
+            pw.writeBool(isGM)
             pw.writeMapleString(msg)
             pw.writeBool(!textBox)
 

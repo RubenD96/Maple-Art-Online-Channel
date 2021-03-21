@@ -60,7 +60,7 @@ class Client(c: Channel, siv: ByteArray, riv: ByteArray) : NettyClient(c, siv, r
         isAdmin = data.getValue(Tables.ACCOUNTS.ADMIN) == 1.toByte()
         pic = data.getValue(Tables.ACCOUNTS.PIC)
         worldChannel = Server.channels[mi.channelId]
-        worldChannel.write(CentralPackets.getAddOnlinePlayerPacket(mi.channelId, accId))
+        worldChannel.write(CentralPackets.getAddOnlinePlayerPacket(mi.port, accId))
         isLoggedIn = true
     }
 
@@ -86,7 +86,7 @@ class Client(c: Channel, siv: ByteArray, riv: ByteArray) : NettyClient(c, siv, r
         println("disconnecting")
         if (!isDisconnecting) {
             isDisconnecting = true
-            worldChannel.write(CentralPackets.getRemoveOnlinePlayerPacket(worldChannel.channelId, accId))
+            worldChannel.write(CentralPackets.getRemoveOnlinePlayerPacket(worldChannel.port, accId))
 
             if (ch.isOpen) {
                 close(this, "Disconnect function called")

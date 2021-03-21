@@ -558,4 +558,13 @@ class GMCommands {
             chr.setJob(id)
         }
     }
+
+    object RestartReplay : Command {
+
+        override val description: String = "!restartreplay"
+
+        override fun execute(chr: Character) {
+            chr.field.startReplay()
+        }
+    }
 }

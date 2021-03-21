@@ -12,6 +12,7 @@ import managers.FieldManager
 import managers.ItemManager
 import managers.Loadable
 import net.maple.handlers.user.UserEmotionHandler.Companion.sendEmotion
+import net.maple.handlers.user.UserChatHandler.Companion.sendMessage
 import net.maple.packets.CharacterPackets.move
 import util.logging.LogType
 import util.logging.Logger
@@ -31,6 +32,7 @@ class Replay : Avatar(), Loadable {
 
     private val movements = ArrayList<ReplayMovement>()
     private val emotes = ArrayList<ReplayEmote>()
+    private val chats = ArrayList<ReplayChat>()
     private var coroutine: kotlinx.coroutines.Job? = null
 
     fun load(field: Field): Replay? {
@@ -70,6 +72,13 @@ class Replay : Avatar(), Loadable {
             emotes.add(ReplayEmote(timestamp.toLong(), emote))
         }
 
+        repeat(reader.readShort().toInt()) {
+            val timestamp = reader.readInteger()
+            val message = reader.readMapleString()
+
+            chats.add(ReplayChat(timestamp.toLong(), message))
+        }
+
         return this
     }
 
@@ -95,6 +104,9 @@ class Replay : Avatar(), Loadable {
             emotes.forEach {
                 async { showEmote(it) }
             }
+            chats.forEach {
+                async { talk(it) }
+            }
             async {
                 delay(movements[movements.size - 1].timestamp + 1000)
                 if (!(FieldManager.isInstanced(field.template.id) && field.isEmpty())) {
@@ -114,6 +126,11 @@ class Replay : Avatar(), Loadable {
         field.broadcast(sendEmotion(this, emote.emote, -1, false))
     }
 
+    private suspend fun talk(chat: ReplayChat) {
+        delay(chat.timestamp)
+        field.broadcast(sendMessage(chat.message, false, isGM = false))
+    }
+
     fun stop() {
         coroutine?.cancel()
         field.leave(this)
@@ -121,4 +138,5 @@ class Replay : Avatar(), Loadable {
 
     private class ReplayMovement(val timestamp: Long, val path: MovePath)
     private class ReplayEmote(val timestamp: Long, val emote: Int)
+    private class ReplayChat(val timestamp: Long, val message: String)
 }
