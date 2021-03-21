@@ -5,6 +5,8 @@ import client.replay.MoveCollection.Movement
 import constants.FieldConstants.JQ_FIELDS
 import net.maple.handlers.PacketHandler
 import net.maple.packets.CharacterPackets.move
+import util.logging.LogType
+import util.logging.Logger
 import util.packet.PacketReader
 
 class UserMoveHandler : PacketHandler {
@@ -13,7 +15,13 @@ class UserMoveHandler : PacketHandler {
         val chr = c.character
 
         reader.readLong()
-        reader.read()
+        val fieldKey = reader.readByte()
+        if (fieldKey != chr.fieldKey) {
+            return run {
+                Logger.log(LogType.FIELD_KEY, "FieldKey mismatch", this, c)
+                c.close(this, "FieldKey mismatch")
+            }
+        }
         reader.readLong()
         reader.readInteger()
         reader.readInteger()

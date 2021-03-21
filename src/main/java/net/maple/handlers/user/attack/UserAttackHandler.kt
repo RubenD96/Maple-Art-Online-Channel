@@ -4,6 +4,8 @@ import client.Character
 import client.Client
 import net.maple.SendOpcode
 import net.maple.handlers.PacketHandler
+import util.logging.LogType
+import util.logging.Logger
 import util.packet.Packet
 import util.packet.PacketReader
 import util.packet.PacketWriter
@@ -13,6 +15,13 @@ class UserAttackHandler(private val type: AttackType) : PacketHandler {
 
     override fun handlePacket(reader: PacketReader, c: Client) {
         val chr = c.character
+        val fieldKey = reader.readByte()
+        if (fieldKey != chr.fieldKey) {
+            return run {
+                Logger.log(LogType.FIELD_KEY, "FieldKey mismatch", this, c)
+            }
+        }
+
         val info = AttackInfo(type, chr, reader)
         info.decode()
 

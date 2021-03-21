@@ -19,7 +19,6 @@ class AttackInfo(val type: AttackType, val chr: Character, val r: PacketReader) 
     var damageInfo: MutableList<DamageInfo> = ArrayList()
 
     fun decode() {
-        val fieldKey = r.readByte()
         r.readInteger() // pDrInfo.dr0
         r.readInteger() // pDrInfo.dr1
 
