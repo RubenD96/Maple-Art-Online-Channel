@@ -12,12 +12,17 @@ import net.netty.central.CentralPacketDecoder
 import net.netty.central.CentralPacketEncoder
 import net.netty.central.CentralServerHandler
 import net.server.ChannelServer.Companion.CHANNEL_KEY
+import java.net.ConnectException
 
-class CentralListener(val server: ChannelServer) : Thread() {
+class CentralListener(val server: ChannelServer, val restart: Boolean = false) : Thread() {
 
     lateinit var channel: Channel
 
     override fun run() {
+        launch()
+    }
+
+    private fun launch() {
         val group: EventLoopGroup = NioEventLoopGroup()
         try {
             val bootstrap = Bootstrap()
@@ -35,6 +40,8 @@ class CentralListener(val server: ChannelServer) : Thread() {
             channel = bootstrap.connect(ServerConstants.IP, 8888).sync().channel()
             channel.attr(CHANNEL_KEY).set(server)
             channel.closeFuture().sync()
+        } catch (ce: ConnectException) {
+            launch()
         } catch (e: Exception) {
             e.printStackTrace()
         } finally {

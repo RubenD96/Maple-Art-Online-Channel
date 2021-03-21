@@ -1,6 +1,5 @@
 package net.netty.central
 
-import net.maple.SendOpcode
 import util.packet.IntegerValue
 
 enum class CentralSendOpcode(override val value: Int) : IntegerValue {
