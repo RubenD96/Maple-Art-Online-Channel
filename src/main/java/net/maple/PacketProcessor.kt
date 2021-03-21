@@ -55,6 +55,7 @@ object PacketProcessor {
         handlers[RecvOpcode.USER_GIVE_POPULARITY_REQUEST] = UserGivePopularityRequestHandler()
         handlers[RecvOpcode.USER_CHARACTER_INFO_REQUEST] = UserCharacterInfoRequestHandler()
         handlers[RecvOpcode.USER_PORTAL_SCRIPT_REQUEST] = UserPortalScriptRequestHandler()
+        handlers[RecvOpcode.USER_PORTAL_TELEPORT_REQUEST] = UserPortalTeleportRequestHandler()
         handlers[RecvOpcode.USER_QUEST_REQUEST] = UserQuestRequestHandler()
         handlers[RecvOpcode.GROUP_MESSAGE] = GroupMessageHandler()
         handlers[RecvOpcode.PARTY_REQUEST] = PartyRequestHandler()

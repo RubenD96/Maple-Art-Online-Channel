@@ -12,26 +12,28 @@ import net.maple.packets.CharacterPackets.encodeData
 import net.maple.packets.CharacterPackets.encodeLooks
 import util.packet.Packet
 import util.packet.PacketWriter
+import kotlin.math.ceil
 
 object FieldPackets {
 
     fun Character.setField(): Packet {
         val isInstantiated = false
-        val pw = PacketWriter(32) // impossible to know exactly
+        val pw = PacketWriter(32)
 
         pw.writeHeader(SendOpcode.SET_FIELD)
         pw.writeShort(0)
         pw.writeInt(this.getChannel().channelId)
         pw.writeInt(0) // world
 
-        pw.writeBool(true)
+        fieldKey = ceil(Math.random() * 255).toInt().toByte()
+        pw.writeByte(fieldKey)
         pw.writeBool(!isInstantiated) // instantiated
-        pw.writeShort(0)
+        pw.writeShort(0) // chatblock?
 
         if (!isInstantiated) {
-            pw.writeInt(0)
-            pw.writeInt(0)
-            pw.writeInt(0)
+            pw.writeInt(0) // calc seed
+            pw.writeInt(0) // calc seed
+            pw.writeInt(0) // chatblock?
 
             encodeData(pw)
 

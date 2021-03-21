@@ -7,10 +7,12 @@ import net.maple.packets.CharacterPackets.message
 import scripting.portal.PortalScriptManager
 import util.logging.LogType
 import util.logging.Logger.log
+import java.awt.Rectangle
 
 class FieldPortal : AbstractFieldPortal(), Portal {
-    
+
     lateinit var field: Field
+    val rect: Rectangle get() = Rectangle(position.x - 30, position.y - 30, 60, 60)
 
     override fun enter(chr: Character) {
         if (targetMap != 999999999) {
@@ -42,9 +44,13 @@ class FieldPortal : AbstractFieldPortal(), Portal {
 
     private fun error(chr: Character) {
         chr.enableActions()
-        chr.message(AlertMessage("There is a problem with the portal!" +
-                "\r\nID: " + id +
-                "\r\nTargetname: " + targetName))
+        chr.message(
+            AlertMessage(
+                "There is a problem with the portal!" +
+                        "\r\nID: " + id +
+                        "\r\nTargetname: " + targetName
+            )
+        )
         log(LogType.NULL, "target portal does not exist " + toString(), this, chr.client)
     }
 }
