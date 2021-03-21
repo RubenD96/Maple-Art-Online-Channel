@@ -23,7 +23,7 @@ class UserAttackHandler(private val type: AttackType) : PacketHandler {
     private fun showAttack(chr: Character, info: AttackInfo): Packet {
         val pw = PacketWriter(32)
 
-        pw.writeHeader((SendOpcode.USER_MELEE_ATTACK.value + type.type).toShort())
+        pw.writeMapleHeader((SendOpcode.USER_MELEE_ATTACK.value + type.type).toShort())
         pw.writeInt(chr.id)
         pw.write(info.damagePerMob or 16 * info.mobCount)
         pw.write(chr.level)

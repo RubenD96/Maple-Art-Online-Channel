@@ -19,7 +19,7 @@ package util.packet
 
 import constants.ServerConstants
 import net.maple.SendOpcode
-import net.maple.SendOpcode.Companion.getStringByCode
+import net.netty.central.CentralSendOpcode
 import util.HexTool.toHex
 
 /**
@@ -55,15 +55,26 @@ class PacketWriter(size: Int) : Writer() {
         return this
     }
 
-    fun writeHeader(i: Short): Writer {
+    fun writeMapleHeader(i: Short): Writer {
         val hex = Integer.toHexString(i.toInt())
-        if (ServerConstants.LOG && !ignoreOps.contains(i.toInt())/*Arrays.stream(ignoreOps).noneMatch { it == i.toInt() }*/)
-            println("[SEND] packet " + i + " (" + (if (hex.length == 1) "0x0" else "0x") + hex.toUpperCase() + ") - " + getStringByCode(i.toInt()))
+        if (ServerConstants.LOG && !ignoreOps.contains(i.toInt()))
+            println("[MAPLE][SEND] packet " + i + " (" + (if (hex.length == 1) "0x0" else "0x") + hex.toUpperCase() + ") - " + SendOpcode.getStringByCode(i.toInt()))
         return writeShort(i)
     }
 
-    fun writeHeader(i: IntegerValue): Writer {
-        return writeHeader(i.value.toShort())
+    private fun writeCentralHeader(i: Short): Writer {
+        val hex = Integer.toHexString(i.toInt())
+        if (ServerConstants.LOG)
+            println("[CENTRAL][SEND] packet " + i + " (" + (if (hex.length == 1) "0x0" else "0x") + hex.toUpperCase() + ") - " + CentralSendOpcode.getStringByCode(i.toInt()))
+        return writeShort(i)
+    }
+
+    fun writeHeader(op: SendOpcode): Writer {
+        return writeMapleHeader(op.value.toShort())
+    }
+
+    fun writeHeader(op: CentralSendOpcode): Writer {
+        return writeCentralHeader(op.value.toShort())
     }
 
     fun writeShort(s: IntegerValue): Writer {
