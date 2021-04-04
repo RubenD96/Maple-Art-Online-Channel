@@ -6,6 +6,7 @@ import managers.NPCShopManager.getShop
 import net.maple.handlers.PacketHandler
 import net.maple.packets.ConversationPackets
 import net.server.Server.shops
+import scripting.ScriptManager
 import scripting.npc.NPCScriptManager.converse
 import util.packet.PacketReader
 
@@ -27,8 +28,9 @@ class UserSelectNpcHandler : PacketHandler {
     companion object {
 
         fun openNpc(c: Client, npc: FieldNPC) {
-            val hasNpcScript = converse(c, npc.npcId)
-            if (!hasNpcScript) {
+            ScriptManager.npcScripts[npc.npcId]?.let {
+                it.start(c)
+            } ?: run {
                 if (shops.contains(npc.npcId)) {
                     getShop(npc.npcId).open(c.character)
                 } else {
@@ -39,6 +41,18 @@ class UserSelectNpcHandler : PacketHandler {
                                 "Map: #r" + c.character.fieldId))
                 }
             }
+            /*val hasNpcScript = converse(c, npc.npcId)
+            if (!hasNpcScript) {
+                if (shops.contains(npc.npcId)) {
+                    getShop(npc.npcId).open(c.character)
+                } else {
+                    c.write(ConversationPackets.getOkMessagePacket(npc.npcId, 0,
+                        "This npc does not appear to have a script\r\n" +
+                                "Please report this to a staff member\r\n" +
+                                "ID: #r" + npc.npcId + "#k\r\n" +
+                                "Map: #r" + c.character.fieldId))
+                }
+            }*/
         }
     }
 }

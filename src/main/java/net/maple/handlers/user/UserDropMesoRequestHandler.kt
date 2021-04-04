@@ -10,7 +10,7 @@ class UserDropMesoRequestHandler : PacketHandler {
     override fun handlePacket(reader: PacketReader, c: Client) {
         val chr = c.character
 
-        reader.readInteger() // ??
+        reader.readInteger() // timestamp
         val meso = reader.readInteger()
 
         if (meso <= chr.meso && meso > 9 && meso < 50001) {

@@ -11,6 +11,7 @@ import managers.*
 import net.database.BeautyAPI
 import net.database.CharacterAPI
 import net.database.ShopAPI
+import scripting.ScriptManager
 import util.crypto.MapleAESOFB
 import util.logging.Logger
 import world.guild.Guild
@@ -57,6 +58,7 @@ object Server {
         }
         BeautyAPI.loadHairs()
         CommandHandler.loadCommands()
+        ScriptManager.loadScripts()
         //benchmark()
     }
 
