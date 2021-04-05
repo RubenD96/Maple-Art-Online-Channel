@@ -10,11 +10,12 @@ abstract class NPCScript : Script {
 
     fun execute(c: Client, consumer: Consumer<DialogContext>) {
         val context = DialogContext(this, c, id)
+        c.script = context
         consumer.accept(context)
     }
 
-    open fun onEnd() {
-        println("cm.dispose();")
+    open fun DialogContext.onEnd() {
+        clearStates()
     }
 
     fun onError() {

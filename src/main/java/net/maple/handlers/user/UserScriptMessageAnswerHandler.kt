@@ -19,7 +19,17 @@ class UserScriptMessageAnswerHandler : PacketHandler {
         val type = reader.readByte()
         val action = reader.readByte() // 1 = continue, 255 = end chat
 
-        val cm = cms[c] ?: qms[c] ?: return
+        c.script?.let {
+            with(it.script) {
+                when (action.toInt()) {
+                    -1 -> it.negative?.run() ?: it.onEnd()
+                    0 -> it.neutral?.run() ?: it.onEnd()
+                    1 -> it.positive?.run() ?: it.onEnd()
+                }
+            }
+        }
+
+        /*val cm = cms[c] ?: qms[c] ?: return
 
         var selection = -1
         if (type.toInt() == ConversationType.ASK_MENU.value || type.toInt() == ConversationType.ASK_NUMBER.value) {
@@ -34,6 +44,6 @@ class UserScriptMessageAnswerHandler : PacketHandler {
             QuestScriptManager.converse(c, action.toInt(), selection)
         } else {
             NPCScriptManager.converse(c, action.toInt(), selection)
-        }
+        }*/
     }
 }

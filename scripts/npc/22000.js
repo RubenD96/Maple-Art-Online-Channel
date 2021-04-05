@@ -11,7 +11,10 @@ let chr, field;
 /* COLLECTIONS */
 let npcs, mobs, drops, characters, portals;
 
-function init() {
+/**
+ * @param {{AbstractPlayerInteraction}} cm
+ */
+function init(cm) {
     if (!cm.getC().isAdmin()) {
         cm.sendOk("Bye :)");
         cm.sendOk("Bye :)");

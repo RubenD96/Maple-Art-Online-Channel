@@ -18,7 +18,6 @@ import util.HexTool
 import util.logging.LogType
 import util.logging.Logger.log
 import java.util.*
-import java.util.stream.IntStream
 import kotlin.collections.HashSet
 
 object ItemAPI {
@@ -53,8 +52,17 @@ object ItemAPI {
         println("Storage save in ${(System.currentTimeMillis() - start)}ms")
     }
 
-    private fun updateItem(chr: Character, item: ItemSlot, uuids: Set<ByteArray>, slot: Short, invType: ItemInventoryType, storageType: Int) {
-        if (item.uuid == null || item.isNewItem && uuids.stream().noneMatch { uuid -> Arrays.equals(item.uuid, uuid) }) { // item is new, insert new entry
+    private fun updateItem(
+        chr: Character,
+        item: ItemSlot,
+        uuids: Set<ByteArray>,
+        slot: Short,
+        invType: ItemInventoryType,
+        storageType: Int
+    ) {
+        if (item.uuid == null || item.isNewItem && uuids.stream()
+                .noneMatch { uuid -> Arrays.equals(item.uuid, uuid) }
+        ) { // item is new, insert new entry
             insertNewItem(chr, storageType, invType.type, slot, item, null)
             if (invType == ItemInventoryType.EQUIP) {
                 insertNewEquip(item as ItemSlotEquip)
@@ -76,10 +84,10 @@ object ItemAPI {
     private fun updateStorageStats(c: Client) {
         val storage = c.storage
         connection.update(STORAGES)
-                .set(STORAGES.SIZE, storage.slotMax)
-                .set(STORAGES.MESO, storage.meso)
-                .where(STORAGES.AID.eq(c.accId))
-                .execute()
+            .set(STORAGES.SIZE, storage.slotMax)
+            .set(STORAGES.MESO, storage.meso)
+            .where(STORAGES.AID.eq(c.accId))
+            .execute()
     }
 
     /**
@@ -91,9 +99,9 @@ object ItemAPI {
         val toDelete: MutableSet<ByteArray> = HashSet()
         val keep: MutableSet<ByteArray> = HashSet()
         val res = connection.select(INVENTORIES.ID)
-                .from(INVENTORIES)
-                .where(INVENTORIES.CID.eq(chr.id))
-                .fetch()
+            .from(INVENTORIES)
+            .where(INVENTORIES.CID.eq(chr.id))
+            .fetch()
 
         res.forEach { rec ->
             val uuid = rec.getValue(INVENTORIES.ID)
@@ -112,7 +120,9 @@ object ItemAPI {
                 toDelete.remove(uuid)
             }
 
-            if (chr.client.storage.items.values.stream().anyMatch { item: ItemSlot -> Arrays.equals(item.uuid, uuid) }) {
+            if (chr.client.storage.items.values.stream()
+                    .anyMatch { item: ItemSlot -> Arrays.equals(item.uuid, uuid) }
+            ) {
                 keep.add(uuid)
                 toDelete.remove(uuid)
             }
@@ -123,48 +133,63 @@ object ItemAPI {
 
     fun deleteItemByUUID(uuid: ByteArray?) {
         connection.deleteFrom(INVENTORIES)
-                .where(INVENTORIES.ID.eq(uuid))
-                .execute()
+            .where(INVENTORIES.ID.eq(uuid))
+            .execute()
     }
 
     private fun updateExistingItem(slot: Short, item: ItemSlot, storageType: Int) {
         val quantity = if (item is ItemSlotBundle) item.number.toInt() else 1
         connection.update(INVENTORIES)
-                .set(INVENTORIES.STORAGE_TYPE, storageType)
-                .set(INVENTORIES.POSITION, slot)
-                .set(INVENTORIES.QUANTITY, quantity)
-                .where(INVENTORIES.ID.eq(item.uuid))
-                .execute()
+            .set(INVENTORIES.STORAGE_TYPE, storageType)
+            .set(INVENTORIES.POSITION, slot)
+            .set(INVENTORIES.QUANTITY, quantity)
+            .where(INVENTORIES.ID.eq(item.uuid))
+            .execute()
     }
 
     private fun updateExistingEquip(equip: ItemSlotEquip) {
         connection.update(EQUIPS)
-                .set(EQUIPS.SLOTS, equip.ruc)
-                .set(EQUIPS.STR, equip.str)
-                .set(EQUIPS.DEX, equip.dex)
-                .set(EQUIPS.INT, equip.int)
-                .set(EQUIPS.LUK, equip.luk)
-                .set(EQUIPS.HP, equip.maxHP)
-                .set(EQUIPS.MP, equip.maxMP)
-                .set(EQUIPS.PAD, equip.pad)
-                .set(EQUIPS.MAD, equip.mad)
-                .set(EQUIPS.PDD, equip.pdd)
-                .set(EQUIPS.MDD, equip.mdd)
-                .set(EQUIPS.ACC, equip.acc)
-                .set(EQUIPS.EVA, equip.eva)
-                .set(EQUIPS.SPEED, equip.speed)
-                .set(EQUIPS.JUMP, equip.jump)
-                .set(EQUIPS.CRAFT, equip.craft)
-                .set(EQUIPS.DURABILITY, equip.durability)
-                .where(EQUIPS.ITEMID.eq(equip.uuid))
-                .execute()
+            .set(EQUIPS.SLOTS, equip.ruc)
+            .set(EQUIPS.STR, equip.str)
+            .set(EQUIPS.DEX, equip.dex)
+            .set(EQUIPS.INT, equip.int)
+            .set(EQUIPS.LUK, equip.luk)
+            .set(EQUIPS.HP, equip.maxHP)
+            .set(EQUIPS.MP, equip.maxMP)
+            .set(EQUIPS.PAD, equip.pad)
+            .set(EQUIPS.MAD, equip.mad)
+            .set(EQUIPS.PDD, equip.pdd)
+            .set(EQUIPS.MDD, equip.mdd)
+            .set(EQUIPS.ACC, equip.acc)
+            .set(EQUIPS.EVA, equip.eva)
+            .set(EQUIPS.SPEED, equip.speed)
+            .set(EQUIPS.JUMP, equip.jump)
+            .set(EQUIPS.CRAFT, equip.craft)
+            .set(EQUIPS.DURABILITY, equip.durability)
+            .where(EQUIPS.ITEMID.eq(equip.uuid))
+            .execute()
     }
 
-    private fun insertNewItem(chr: Character, storageType: Int, type: Int, slot: Short, item: ItemSlot, giftFrom: String?) {
+    private fun insertNewItem(
+        chr: Character,
+        storageType: Int,
+        type: Int,
+        slot: Short,
+        item: ItemSlot,
+        giftFrom: String?
+    ) {
         insertNewItem(chr.id, chr.client.accId, storageType, type, slot, item, giftFrom)
     }
 
-    private fun insertNewItem(cid: Int, aid: Int, storageType: Int, type: Int, slot: Short, item: ItemSlot, giftFrom: String?) {
+    private fun insertNewItem(
+        cid: Int,
+        aid: Int,
+        storageType: Int,
+        type: Int,
+        slot: Short,
+        item: ItemSlot,
+        giftFrom: String?
+    ) {
         try {
             item.uuid ?: run {
                 val uuid = HexTool.toBytes(UUID.randomUUID().toString().replace("-", ""))
@@ -172,28 +197,32 @@ object ItemAPI {
             }
 
             val quantity = if (item is ItemSlotBundle) item.number.toInt() else 1
-            connection.insertInto(INVENTORIES,
-                    INVENTORIES.ID,
-                    INVENTORIES.CID,
-                    INVENTORIES.STORAGE_TYPE,
-                    INVENTORIES.AID,
-                    INVENTORIES.ITEMID,
-                    INVENTORIES.INVENTORY_TYPE,
-                    INVENTORIES.POSITION,
-                    INVENTORIES.QUANTITY,
-                    INVENTORIES.OWNER,
-                    INVENTORIES.GIFTFROM)
-                    .values(item.uuid,
-                            cid,
-                            storageType,
-                            aid,
-                            item.templateId,
-                            type,
-                            slot,
-                            quantity,
-                            null,
-                            giftFrom)
-                    .execute()
+            connection.insertInto(
+                INVENTORIES,
+                INVENTORIES.ID,
+                INVENTORIES.CID,
+                INVENTORIES.STORAGE_TYPE,
+                INVENTORIES.AID,
+                INVENTORIES.ITEMID,
+                INVENTORIES.INVENTORY_TYPE,
+                INVENTORIES.POSITION,
+                INVENTORIES.QUANTITY,
+                INVENTORIES.OWNER,
+                INVENTORIES.GIFTFROM
+            )
+                .values(
+                    item.uuid,
+                    cid,
+                    storageType,
+                    aid,
+                    item.templateId,
+                    type,
+                    slot,
+                    quantity,
+                    null,
+                    giftFrom
+                )
+                .execute()
         } catch (dae: DataAccessException) {
             log(LogType.HACK, "Duplicate UUID for $cid on $item", this)
             dae.printStackTrace()
@@ -201,46 +230,50 @@ object ItemAPI {
     }
 
     private fun insertNewEquip(equip: ItemSlotEquip) {
-        connection.insertInto(EQUIPS,
-                EQUIPS.ITEMID,
-                EQUIPS.SLOTS,
-                EQUIPS.LEVEL,
-                EQUIPS.STR,
-                EQUIPS.DEX,
-                EQUIPS.INT,
-                EQUIPS.LUK,
-                EQUIPS.HP,
-                EQUIPS.MP,
-                EQUIPS.PAD,
-                EQUIPS.MAD,
-                EQUIPS.PDD,
-                EQUIPS.MDD,
-                EQUIPS.ACC,
-                EQUIPS.EVA,
-                EQUIPS.SPEED,
-                EQUIPS.JUMP,
-                EQUIPS.CRAFT,
-                EQUIPS.DURABILITY)
-                .values(equip.uuid,
-                        equip.ruc,
-                        equip.level,
-                        equip.str,
-                        equip.dex,
-                        equip.int,
-                        equip.luk,
-                        equip.maxHP,
-                        equip.maxMP,
-                        equip.pad,
-                        equip.mad,
-                        equip.pdd,
-                        equip.mdd,
-                        equip.acc,
-                        equip.eva,
-                        equip.speed,
-                        equip.jump,
-                        equip.craft,
-                        equip.durability)
-                .execute()
+        connection.insertInto(
+            EQUIPS,
+            EQUIPS.ITEMID,
+            EQUIPS.SLOTS,
+            EQUIPS.LEVEL,
+            EQUIPS.STR,
+            EQUIPS.DEX,
+            EQUIPS.INT,
+            EQUIPS.LUK,
+            EQUIPS.HP,
+            EQUIPS.MP,
+            EQUIPS.PAD,
+            EQUIPS.MAD,
+            EQUIPS.PDD,
+            EQUIPS.MDD,
+            EQUIPS.ACC,
+            EQUIPS.EVA,
+            EQUIPS.SPEED,
+            EQUIPS.JUMP,
+            EQUIPS.CRAFT,
+            EQUIPS.DURABILITY
+        )
+            .values(
+                equip.uuid,
+                equip.ruc,
+                equip.level,
+                equip.str,
+                equip.dex,
+                equip.int,
+                equip.luk,
+                equip.maxHP,
+                equip.maxMP,
+                equip.pad,
+                equip.mad,
+                equip.pdd,
+                equip.mdd,
+                equip.acc,
+                equip.eva,
+                equip.speed,
+                equip.jump,
+                equip.craft,
+                equip.durability
+            )
+            .execute()
     }
 
     /**
@@ -254,12 +287,12 @@ object ItemAPI {
         loadLocker(chr.client)
         loadStorage(chr.client)
         val itemData = connection
-                .select()
-                .from(INVENTORIES)
-                .where(INVENTORIES.STORAGE_TYPE.eq(1))
-                .and(INVENTORIES.INVENTORY_TYPE.notEqual(1)) // equip inv
-                .and(INVENTORIES.CID.eq(chr.id))
-                .fetch()
+            .select()
+            .from(INVENTORIES)
+            .where(INVENTORIES.STORAGE_TYPE.eq(1))
+            .and(INVENTORIES.INVENTORY_TYPE.notEqual(1)) // equip inv
+            .and(INVENTORIES.CID.eq(chr.id))
+            .fetch()
         itemData.forEach {
             val items = chr.getInventory(it.getValue(INVENTORIES.INVENTORY_TYPE) - 1).items
             val template = ItemManager.getItem(it.getValue(INVENTORIES.ITEMID)) as ItemBundleTemplate
@@ -278,25 +311,25 @@ object ItemAPI {
 
     private fun loadStorage(c: Client) {
         val itemStorage = connection.select()
-                .from(STORAGES)
-                .where(STORAGES.AID.eq(c.accId))
-                .fetchOne()?.let {
-                    ItemStorage(it.getValue(STORAGES.SIZE), it.getValue(STORAGES.MESO))
-                }
-                ?: run {
-                    connection.insertInto(STORAGES, STORAGES.AID)
-                            .values(c.accId)
-                            .execute()
-                    ItemStorage(4.toShort(), 0)
-                }
+            .from(STORAGES)
+            .where(STORAGES.AID.eq(c.accId))
+            .fetchOne()?.let {
+                ItemStorage(it.getValue(STORAGES.SIZE), it.getValue(STORAGES.MESO))
+            }
+            ?: run {
+                connection.insertInto(STORAGES, STORAGES.AID)
+                    .values(c.accId)
+                    .execute()
+                ItemStorage(4.toShort(), 0)
+            }
 
         c.storage = itemStorage
 
         val itemData = connection.select()
-                .from(INVENTORIES)
-                .where(INVENTORIES.STORAGE_TYPE.eq(2))
-                .and(INVENTORIES.AID.eq(c.accId))
-                .fetch()
+            .from(INVENTORIES)
+            .where(INVENTORIES.STORAGE_TYPE.eq(2))
+            .and(INVENTORIES.AID.eq(c.accId))
+            .fetch()
 
         itemData.forEach {
             ItemManager.getItem(it.getValue(INVENTORIES.ITEMID)).let { template ->
@@ -322,20 +355,20 @@ object ItemAPI {
      */
     private fun deleteBrokenEquips(chr: Character) {
         val itemData = connection.select()
-                .from(INVENTORIES)
-                .where(INVENTORIES.INVENTORY_TYPE.eq(1)) // equip inv
-                .and(INVENTORIES.CID.eq(chr.id))
-                .fetch()
+            .from(INVENTORIES)
+            .where(INVENTORIES.INVENTORY_TYPE.eq(1)) // equip inv
+            .and(INVENTORIES.CID.eq(chr.id))
+            .fetch()
 
         itemData.forEach {
             connection.select()
-                    .from(EQUIPS)
-                    .where(EQUIPS.ITEMID.eq(it.getValue(INVENTORIES.ID)))
-                    .fetchOne()
-                    ?: run {
-                        log(LogType.INVALID, "Broken equip found (${it.getValue(INVENTORIES.ITEMID)})", this, chr.client)
-                        deleteItemByUUID(it.getValue(INVENTORIES.ID))
-                    }
+                .from(EQUIPS)
+                .where(EQUIPS.ITEMID.eq(it.getValue(INVENTORIES.ID)))
+                .fetchOne()
+                ?: run {
+                    log(LogType.INVALID, "Broken equip found (${it.getValue(INVENTORIES.ITEMID)})", this, chr.client)
+                    deleteItemByUUID(it.getValue(INVENTORIES.ID))
+                }
         }
     }
 
@@ -347,34 +380,34 @@ object ItemAPI {
     private fun loadEquips(chr: Character) {
         val equips = chr.getInventory(ItemInventoryType.EQUIP).items
         val equipData = connection.select()
-                .from(EQUIPS)
-                .join(INVENTORIES)
-                .onKey()
-                .where(INVENTORIES.STORAGE_TYPE.eq(1))
-                .and(INVENTORIES.INVENTORY_TYPE.eq(1)) // equip inv
-                .and(INVENTORIES.CID.eq(chr.id))
-                .fetch()
+            .from(EQUIPS)
+            .join(INVENTORIES)
+            .onKey()
+            .where(INVENTORIES.STORAGE_TYPE.eq(1))
+            .and(INVENTORIES.INVENTORY_TYPE.eq(1)) // equip inv
+            .and(INVENTORIES.CID.eq(chr.id))
+            .fetch()
 
         for (rec in equipData) {
             val template = ItemManager.getItem(rec.getValue(INVENTORIES.ITEMID)) as ItemEquipTemplate
             val equip = template.fromDbToSlot(
-                    rec.getValue(EQUIPS.SLOTS),
-                    rec.getValue(EQUIPS.STR),
-                    rec.getValue(EQUIPS.DEX),
-                    rec.getValue(EQUIPS.INT),
-                    rec.getValue(EQUIPS.LUK),
-                    rec.getValue(EQUIPS.HP),
-                    rec.getValue(EQUIPS.MP),
-                    rec.getValue(EQUIPS.PAD),
-                    rec.getValue(EQUIPS.MAD),
-                    rec.getValue(EQUIPS.PDD),
-                    rec.getValue(EQUIPS.MDD),
-                    rec.getValue(EQUIPS.ACC),
-                    rec.getValue(EQUIPS.EVA),
-                    rec.getValue(EQUIPS.SPEED),
-                    rec.getValue(EQUIPS.JUMP),
-                    rec.getValue(EQUIPS.CRAFT),
-                    rec.getValue(EQUIPS.DURABILITY)
+                rec.getValue(EQUIPS.SLOTS),
+                rec.getValue(EQUIPS.STR),
+                rec.getValue(EQUIPS.DEX),
+                rec.getValue(EQUIPS.INT),
+                rec.getValue(EQUIPS.LUK),
+                rec.getValue(EQUIPS.HP),
+                rec.getValue(EQUIPS.MP),
+                rec.getValue(EQUIPS.PAD),
+                rec.getValue(EQUIPS.MAD),
+                rec.getValue(EQUIPS.PDD),
+                rec.getValue(EQUIPS.MDD),
+                rec.getValue(EQUIPS.ACC),
+                rec.getValue(EQUIPS.EVA),
+                rec.getValue(EQUIPS.SPEED),
+                rec.getValue(EQUIPS.JUMP),
+                rec.getValue(EQUIPS.CRAFT),
+                rec.getValue(EQUIPS.DURABILITY)
             )
             equip.uuid = rec.getValue(INVENTORIES.ID)
             equip.isNewItem = false
@@ -391,23 +424,24 @@ object ItemAPI {
      */
     fun getLockerSize(aid: Int): Int {
         return connection.fetchCount(
-                connection.select().from(INVENTORIES)
-                        .where(INVENTORIES.STORAGE_TYPE.eq(3))
-                        .and(INVENTORIES.AID.eq(aid)))
+            connection.select().from(INVENTORIES)
+                .where(INVENTORIES.STORAGE_TYPE.eq(3))
+                .and(INVENTORIES.AID.eq(aid))
+        )
     }
 
     private fun getAvailableLockerSlot(aid: Int): Int {
         var highest = 1
         connection.select().from(INVENTORIES)
-                .where(INVENTORIES.STORAGE_TYPE.eq(3))
-                .and(INVENTORIES.AID.eq(aid))
-                .fetch()
-                .forEach {
-                    val slot = it.getValue(INVENTORIES.POSITION)
-                    if (highest < slot) {
-                        highest = slot + 1
-                    }
+            .where(INVENTORIES.STORAGE_TYPE.eq(3))
+            .and(INVENTORIES.AID.eq(aid))
+            .fetch()
+            .forEach {
+                val slot = it.getValue(INVENTORIES.POSITION)
+                if (highest < slot) {
+                    highest = slot + 1
                 }
+            }
         return highest
     }
 
@@ -418,10 +452,10 @@ object ItemAPI {
      */
     private fun loadLocker(c: Client) {
         val locker = connection
-                .select().from(INVENTORIES)
-                .where(INVENTORIES.STORAGE_TYPE.eq(3))
-                .and(INVENTORIES.AID.eq(c.accId))
-                .fetch()
+            .select().from(INVENTORIES)
+            .where(INVENTORIES.STORAGE_TYPE.eq(3))
+            .and(INVENTORIES.AID.eq(c.accId))
+            .fetch()
 
         val toAdd: MutableMap<Short, ItemSlotLocker> = TreeMap()
 
@@ -460,9 +494,9 @@ object ItemAPI {
 
     fun moveLockerToStorage(item: ItemSlotLocker, slot: Short) {
         connection.update(INVENTORIES)
-                .set(INVENTORIES.STORAGE_TYPE, 1)
-                .set(INVENTORIES.POSITION, slot)
-                .where(INVENTORIES.ID.eq(item.item.uuid))
-                .execute()
+            .set(INVENTORIES.STORAGE_TYPE, 1)
+            .set(INVENTORIES.POSITION, slot)
+            .where(INVENTORIES.ID.eq(item.item.uuid))
+            .execute()
     }
 }

@@ -3,20 +3,11 @@ package scripting.npc
 import client.Client
 import net.maple.packets.ConversationPackets
 
-class DialogContext(private val script: NPCScript, private val c: Client, private val id: Int) {
-
-    fun example() {
-        sendMessage(
-            "Test",
-            ok = { },
-            speaker = (SpeakerType.NoESC or SpeakerType.NpcReplacedByUser)
-        )
-    }
+class DialogContext(val script: NPCScript, private val c: Client, private val id: Int) {
 
     var positive: Runnable? = null
     var neutral: Runnable? = null
     var negative: Runnable? = null
-    var finish = false
 
     fun sendMessage(
         text: String,
@@ -25,6 +16,8 @@ class DialogContext(private val script: NPCScript, private val c: Client, privat
         prev: Runnable? = null,
         accept: Runnable? = null,
         decline: Runnable? = null,
+        yes: Runnable? = null,
+        no: Runnable? = null,
         end: Runnable? = null,
         speaker: Int = 0 // use SpeakerType object flags!
     ) {
@@ -50,6 +43,10 @@ class DialogContext(private val script: NPCScript, private val c: Client, privat
             c.write(ConversationPackets.getAcceptMessagePacket(id, speaker, text))
             positive = accept
             neutral = decline
+        } ?: yes?.let {
+            c.write(ConversationPackets.getYesNoMessagePacket(id, speaker, text))
+            positive = yes
+            neutral = no
         }
 
         // if theres no esc, send end chat handler as null
@@ -62,5 +59,17 @@ class DialogContext(private val script: NPCScript, private val c: Client, privat
         this.positive = positive
         this.neutral = neutral
         this.negative = negative
+    }
+
+    fun endMessage(text: String, speaker: Int = 0) {
+        c.write(ConversationPackets.getOkMessagePacket(id, speaker, text))
+        clearStates()
+    }
+
+    fun clearStates() {
+        positive = null
+        neutral = null
+        negative = null
+        c.script = null
     }
 }

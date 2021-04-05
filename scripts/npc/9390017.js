@@ -6,6 +6,6 @@
  */
 
 function converse(m, s) {
-    cm.sendOk("#e#rTODO: give weapons to try out");
+    cm.sendOk("#g-lmao\r\n-another lmao");
     cm.dispose();
 }

@@ -18,6 +18,8 @@ import net.server.MigrateInfo
 import net.server.Server
 import net.server.Server.removeCharacter
 import org.jooq.Record
+import scripting.npc.DialogContext
+import scripting.npc.NPCScript
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.script.ScriptEngine
@@ -53,6 +55,7 @@ class Client(c: Channel, siv: ByteArray, riv: ByteArray) : NettyClient(c, siv, r
         private set
     val locker: MutableList<ItemSlotLocker> = ArrayList()
     lateinit var storage: ItemStorage
+    var script: DialogContext? = null
 
     fun login(data: Record, mi: MigrateInfo) {
         accId = data.getValue(Tables.ACCOUNTS.ID)

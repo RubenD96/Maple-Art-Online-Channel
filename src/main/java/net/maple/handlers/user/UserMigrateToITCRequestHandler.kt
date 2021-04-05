@@ -9,8 +9,8 @@ import util.packet.PacketReader
 class UserMigrateToITCRequestHandler : PacketHandler {
 
     override fun handlePacket(reader: PacketReader, c: Client) {
-        NPCScriptManager.converse(c, 1032102)
-        ScriptManager.npcScripts[1032102]?.start()
+        //NPCScriptManager.converse(c, 1032102)
+        ScriptManager.npcScripts[1032102]?.start(c)
         c.character.enableActions()
     }
 }
