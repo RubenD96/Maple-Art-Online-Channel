@@ -22,6 +22,7 @@ import net.maple.packets.CharacterPackets.modifyInventory
 import net.maple.packets.FieldPackets.fieldEffect
 import net.server.Server
 import net.server.Server.getCharacter
+import scripting.ScriptManager
 import java.util.*
 import javax.script.ScriptEngine
 import javax.script.ScriptException
@@ -565,6 +566,15 @@ class GMCommands {
 
         override fun execute(chr: Character) {
             chr.field.startReplay()
+        }
+    }
+
+    object ReloadScripts : Command {
+
+        override val description: String = "This actually doesn't do anything fyi"
+
+        override fun execute(chr: Character) {
+            ScriptManager.loadScripts()
         }
     }
 }

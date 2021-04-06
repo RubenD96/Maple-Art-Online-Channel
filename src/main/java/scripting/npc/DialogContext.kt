@@ -3,7 +3,13 @@ package scripting.npc
 import client.Client
 import net.maple.packets.ConversationPackets
 
-class DialogContext(val script: NPCScript, private val c: Client, private val id: Int) {
+class DialogContext(
+    val script: NPCScript,
+    private val c: Client,
+    private val id: Int
+) {
+
+    lateinit var holder: StateHolder
 
     var positive: (() -> Unit)? = null
     var neutral: (() -> Unit)? = null

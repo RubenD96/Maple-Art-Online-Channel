@@ -10,6 +10,7 @@ object ScriptManager {
     val npcScripts: MutableMap<Int, NPCScript> = HashMap()
 
     fun loadScripts() {
+        npcScripts.clear()
         val reflections = Reflections(ServerConstants.SCRIPTS_ROOT)
         val annotated: Set<Class<*>> = reflections.getTypesAnnotatedWith(Npc::class.java)
         annotated.forEach {

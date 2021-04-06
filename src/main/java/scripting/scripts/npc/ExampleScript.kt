@@ -9,19 +9,29 @@ import scripting.npc.DialogUtils.purple
 import scripting.npc.DialogUtils.red
 import scripting.npc.NPCScript
 import scripting.npc.Npc
+import scripting.npc.StateHolder
 
 @Npc([22000])
 class ExampleScript : NPCScript() {
 
+    var i: Int = 0
+
+    class Data : StateHolder() {
+        var input = "TODO"
+    }
+
     override fun start(c: Client) {
         execute(c) {
+            it.holder = Data()
             it.okDialog()
         }
     }
 
     private fun DialogContext.okDialog() {
+        i++
+        holder.intData["test"] = 3
         sendMessage(
-            "Hello!".bold().green(),
+            "Hello!\r\n${(holder as Data).input}\r\nYou've been here $i times".bold().green(),
             ok = { yesNoDialog() }
         )
     }
@@ -81,6 +91,7 @@ class ExampleScript : NPCScript() {
             20,
             "Hello?",
             positive = {
+                (holder as Data).input = it
                 sendMessage(
                     "Your input was: ${it.red()}",
                     ok = { okDialog() }
