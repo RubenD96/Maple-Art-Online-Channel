@@ -64,7 +64,7 @@ class PacketWriter(size: Int) : Writer() {
 
     private fun writeCentralHeader(i: Short): Writer {
         val hex = Integer.toHexString(i.toInt())
-        if (ServerConstants.LOG)
+        if (ServerConstants.LOG && i.toInt() != CentralSendOpcode.PING.value)
             println("[CENTRAL][SEND] packet " + i + " (" + (if (hex.length == 1) "0x0" else "0x") + hex.toUpperCase() + ") - " + CentralSendOpcode.getStringByCode(i.toInt()))
         return writeShort(i)
     }

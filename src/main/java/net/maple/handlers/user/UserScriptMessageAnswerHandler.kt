@@ -3,12 +3,9 @@ package net.maple.handlers.user
 import client.Client
 import net.maple.handlers.PacketHandler
 import scripting.npc.ConversationType
-import scripting.npc.NPCScriptManager
-import scripting.npc.NPCScriptManager.cms
-import scripting.quest.QuestConversationManager
-import scripting.quest.QuestScriptManager
-import scripting.quest.QuestScriptManager.qms
 import util.HexTool.toHex
+import util.logging.LogType
+import util.logging.Logger
 import util.packet.PacketReader
 
 class UserScriptMessageAnswerHandler : PacketHandler {
@@ -17,33 +14,65 @@ class UserScriptMessageAnswerHandler : PacketHandler {
         println("[UserScriptMessageAnswerHandler] " + toHex(reader.data))
 
         val type = reader.readByte()
-        val action = reader.readByte() // 1 = continue, 255 = end chat
+        val action = reader.readByte()
 
         c.script?.let {
             with(it.script) {
-                when (action.toInt()) {
-                    -1 -> it.negative?.run() ?: it.onEnd()
-                    0 -> it.neutral?.run() ?: it.onEnd()
-                    1 -> it.positive?.run() ?: it.onEnd()
+                when {
+                    type.toInt() == ConversationType.ASK_MENU.value -> {
+                        val selection = reader.readInteger()
+
+                        try {
+                            when (action.toInt()) {
+                                0 -> it.neutral?.invoke() ?: it.onEnd()
+                                1 -> it.selections?.get(selection)?.invoke(selection) ?: it.onEnd()
+                                else -> it.clearStates()
+                            }
+                        } catch (_: ArrayIndexOutOfBoundsException) {
+                            return run {
+                                c.close()
+                                Logger.log(LogType.INVALID, "Selection $selection does not exist on $id", this, c)
+                            }
+                        }
+                    }
+                    type.toInt() == ConversationType.ASK_NUMBER.value -> {
+                        val input = reader.readInteger()
+                        if (input < it.min || input > it.max) {
+                            return run {
+                                c.close()
+                                Logger.log(LogType.INVALID, "Input $input not allowed on $id", this, c)
+                            }
+                        }
+                        when (action.toInt()) {
+                            0 -> it.neutral?.invoke() ?: it.onEnd()
+                            1 -> it.positiveWithNumber?.invoke(input) ?: it.onEnd()
+                            else -> it.clearStates()
+                        }
+                    }
+                    type.toInt() == ConversationType.ASK_TEXT.value || type.toInt() == ConversationType.ASK_BOX_TEXT.value -> {
+                        val text = reader.readMapleString()
+                        if (text.length < it.min || text.length > it.max) {
+                            return run {
+                                c.close()
+                                Logger.log(LogType.INVALID, "Text size ${text.length} not allowed on $id", this, c)
+                            }
+                        }
+                        when (action.toInt()) {
+                            0 -> it.neutral?.invoke() ?: it.onEnd()
+                            1 -> it.positiveWithText?.invoke(text) ?: it.onEnd()
+                            else -> it.clearStates()
+                        }
+                    }
+                    else -> {
+                        when (action.toInt()) {
+                            -1 -> it.negative?.invoke() ?: it.onEnd()
+                            0 -> it.neutral?.invoke() ?: it.onEnd()
+                            1 -> it.positive?.invoke() ?: it.onEnd()
+                            else -> it.clearStates()
+                        }
+                    }
                 }
             }
         }
-
-        /*val cm = cms[c] ?: qms[c] ?: return
-
-        var selection = -1
-        if (type.toInt() == ConversationType.ASK_MENU.value || type.toInt() == ConversationType.ASK_NUMBER.value) {
-            selection = reader.readInteger()
-        }
-
-        if ((type.toInt() == ConversationType.ASK_TEXT.value || type.toInt() == ConversationType.ASK_BOX_TEXT.value) && action.toInt() == 1) {
-            cm.text = reader.readMapleString()
-        }
-
-        if (cm is QuestConversationManager) {
-            QuestScriptManager.converse(c, action.toInt(), selection)
-        } else {
-            NPCScriptManager.converse(c, action.toInt(), selection)
-        }*/
     }
 }

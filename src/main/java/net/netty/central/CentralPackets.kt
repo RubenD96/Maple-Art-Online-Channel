@@ -24,4 +24,12 @@ object CentralPackets {
 
         return pw.createPacket()
     }
+
+    fun getPingPacket(): Packet {
+        val pw = PacketWriter(2)
+
+        pw.writeHeader(CentralSendOpcode.PING)
+
+        return pw.createPacket()
+    }
 }
