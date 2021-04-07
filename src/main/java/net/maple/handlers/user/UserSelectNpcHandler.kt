@@ -16,6 +16,7 @@ class UserSelectNpcHandler : PacketHandler {
         val chr = c.character
         val npcObjectId = reader.readInteger()
 
+        c.script = null
         val npc: FieldNPC = chr.field.getObjects<FieldNPC>().stream()
                 .filter { it.id == npcObjectId }
                 .findFirst().orElse(null)

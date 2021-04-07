@@ -29,7 +29,7 @@ class ExampleScript : NPCScript() {
 
     private fun DialogContext.okDialog() {
         i++
-        holder.intData["test"] = 3
+        holder.numberData["test"] = 3
         sendMessage(
             "Hello!\r\n${(holder as Data).input}\r\nYou've been here $i times".bold().green(),
             ok = { yesNoDialog() }

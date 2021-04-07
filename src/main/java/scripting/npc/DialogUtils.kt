@@ -45,6 +45,30 @@ object DialogUtils {
         return "#e$this#n"
     }
 
+    fun Number.blue(): String {
+        return "#b$this#k"
+    }
+
+    fun Number.red(): String {
+        return "#r$this#k"
+    }
+
+    fun Number.green(): String {
+        return "#g$this#k"
+    }
+
+    fun Number.purple(): String {
+        return "#d$this#k"
+    }
+
+    fun Number.black(): String {
+        return "#k$this#k"
+    }
+
+    fun Number.bold(): String {
+        return "#e$this#n"
+    }
+
     fun Int.itemName(): String {
         return "#t$this#"
     }
@@ -54,11 +78,11 @@ object DialogUtils {
     }
 
     fun Int.itemImage(): String {
-        return "#i$this#k"
+        return "#i$this#"
     }
 
     fun Int.itemDetails(): String {
-        return "#z$this#k"
+        return "#z$this#"
     }
 
     fun String.wzImage(): String {
@@ -72,23 +96,23 @@ object DialogUtils {
     }
 
     fun Int.mobName(): String {
-        return "#o$this#k"
+        return "#o$this#"
     }
 
     fun Int.npcName(): String {
-        return "#p$this#k"
+        return "#p$this#"
     }
 
     fun Int.skillName(): String {
-        return "#q$this#k"
+        return "#q$this#"
     }
 
     fun Int.skillImage(): String {
-        return "#s$this#k"
+        return "#s$this#"
     }
 
     fun Int.toProgressBar(): String {
-        return "#B$this#k"
+        return "#B$this#"
     }
 
     val newLine get() = "\r\n"
