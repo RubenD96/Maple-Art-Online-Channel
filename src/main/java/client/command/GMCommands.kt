@@ -426,7 +426,7 @@ class GMCommands {
         override val description: String = "!sense"
 
         override fun execute(chr: Character) {
-            UserSelectNpcHandler.openNpc(chr.client, NPCManager.getNPC(22000))
+            UserSelectNpcHandler.openNpc(chr.client, NPCManager.getNPC(1002002))
         }
     }
 

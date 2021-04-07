@@ -16,7 +16,6 @@ class UserSelectNpcHandler : PacketHandler {
         val chr = c.character
         val npcObjectId = reader.readInteger()
 
-        c.script = null
         val npc: FieldNPC = chr.field.getObjects<FieldNPC>().stream()
                 .filter { it.id == npcObjectId }
                 .findFirst().orElse(null)
@@ -29,6 +28,7 @@ class UserSelectNpcHandler : PacketHandler {
     companion object {
 
         fun openNpc(c: Client, npc: FieldNPC) {
+            c.script = null
             ScriptManager.npcScripts[npc.npcId]?.let {
                 it.start(c)
             } ?: run {

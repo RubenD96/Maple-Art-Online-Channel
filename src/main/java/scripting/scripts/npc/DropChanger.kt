@@ -96,6 +96,7 @@ class DropChanger : NPCScript() {
             9999999,
             positive = {
                 holder.numberData["mobid"] = it
+                c.character.philId = it
                 sendStartMenu()
             }
         )

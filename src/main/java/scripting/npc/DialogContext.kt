@@ -5,7 +5,7 @@ import net.maple.packets.ConversationPackets
 
 class DialogContext(
     val script: NPCScript,
-    private val c: Client,
+    val c: Client,
     private val id: Int
 ) {
 
@@ -14,7 +14,7 @@ class DialogContext(
     var positive: (() -> Unit)? = null
     var neutral: (() -> Unit)? = null
     var negative: (() -> Unit)? = null
-    var selections: List<((Int) -> Unit)>? = null
+    var selections: MutableMap<Int, ((Int) -> Unit)> = HashMap()
 
     var min: Int = 0
     var max: Int = 0
@@ -72,7 +72,7 @@ class DialogContext(
         this.positive = positive
         this.neutral = neutral
         this.negative = negative
-        this.selections = null
+        this.selections.clear()
         this.positiveWithNumber = null
         this.positiveWithText = null
     }
@@ -82,19 +82,29 @@ class DialogContext(
         appendText: String = "",
         selections: LinkedHashMap<String, ((Int) -> Unit)>,
         end: (() -> Unit)? = null,
-        speaker: Int = 0
+        speaker: Int = 0,
+        indexes: List<Int>? = null
     ) {
         positive = null
         neutral = end
         negative = null
         positiveWithNumber = null
         positiveWithText = null
-        this.selections = selections.values.toList()
 
         val npcText = StringBuilder(text)
-        selections.keys.forEachIndexed { i, str ->
-            npcText.append("\r\n#L$i#$str#l")
+
+        indexes?.let {
+            selections.entries.forEachIndexed { i, entry ->
+                npcText.append("\r\n#L${indexes[i]}#${entry.key}#l")
+                this.selections[indexes[i]] = entry.value
+            }
+        } ?: run {
+            selections.entries.forEachIndexed { i, entry ->
+                npcText.append("\r\n#L$i#${entry.key}#l")
+                this.selections[i] = entry.value
+            }
         }
+
         npcText.append("\r\n\r\n$appendText")
 
         c.write(ConversationPackets.getSimpleMessagePacket(id, speaker, npcText.toString()))
@@ -111,7 +121,7 @@ class DialogContext(
     ) {
         this.positive = null
         negative = null
-        selections = null
+        selections.clear()
         positiveWithText = null
 
         positiveWithNumber = positive
@@ -133,7 +143,7 @@ class DialogContext(
     ) {
         this.positive = null
         negative = null
-        selections = null
+        selections.clear()
         positiveWithNumber = null
 
         positiveWithText = positive
@@ -153,7 +163,7 @@ class DialogContext(
         positive = null
         neutral = null
         negative = null
-        selections = null
+        selections.clear()
         c.script = null
     }
 }

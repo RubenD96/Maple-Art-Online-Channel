@@ -22,17 +22,10 @@ class UserScriptMessageAnswerHandler : PacketHandler {
                     type.toInt() == ConversationType.ASK_MENU.value -> {
                         val selection = reader.readInteger()
 
-                        try {
-                            when (action.toInt()) {
-                                0 -> it.neutral?.invoke() ?: it.onEnd()
-                                1 -> it.selections?.get(selection)?.invoke(selection) ?: it.onEnd()
-                                else -> it.clearStates()
-                            }
-                        } catch (_: ArrayIndexOutOfBoundsException) {
-                            return run {
-                                c.close()
-                                Logger.log(LogType.INVALID, "Selection $selection does not exist on $id", this, c)
-                            }
+                        when (action.toInt()) {
+                            0 -> it.neutral?.invoke() ?: it.onEnd()
+                            1 -> it.selections[selection]?.invoke(selection) ?: it.onEnd()
+                            else -> it.clearStates()
                         }
                     }
                     type.toInt() == ConversationType.ASK_NUMBER.value -> {
