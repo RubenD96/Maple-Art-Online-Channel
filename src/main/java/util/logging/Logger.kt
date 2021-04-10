@@ -58,7 +58,7 @@ object Logger {
             }
         }
 
-        if (type.console || ServerConstants.LOG) {
+        if (type.console/* || ServerConstants.LOG*/) {
             System.err.println("[LOGGER] ${cl.javaClass.name} - ${getAccInfo(client)}")
             System.err.println(message)
         }
@@ -93,6 +93,7 @@ object Logger {
                     ioe.printStackTrace()
                 }
             }
+            bulkAdder.clear()
         }
         dumpBulk()
     }

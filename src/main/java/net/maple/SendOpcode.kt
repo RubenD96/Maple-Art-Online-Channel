@@ -24,6 +24,7 @@ enum class SendOpcode(override val value: Int) : IntegerValue {
     SET_CASH_SHOP(0x8F),
     TRANSFER_CHANNEL_REQ_IGNORED(0x94),
     GROUP_MESSAGE(0x96),
+    WHISPER(0x97),
     FIELD_EFFECT(0x9A),
     QUICKSLOT_MAPPED_INIT(0xAF),
     USER_ENTER_FIELD(0xB3),
