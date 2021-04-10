@@ -19,7 +19,7 @@ class UserMoveHandler : PacketHandler {
         if (fieldKey != chr.fieldKey) {
             return run {
                 Logger.log(LogType.FIELD_KEY, "FieldKey mismatch", this, c)
-                c.close(this, "FieldKey mismatch")
+                //c.close(this, "FieldKey mismatch")
             }
         }
         reader.readLong()

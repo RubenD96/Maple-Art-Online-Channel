@@ -91,6 +91,7 @@ class DialogContext(
         positiveWithNumber = null
         positiveWithText = null
 
+        this.selections.clear()
         val npcText = StringBuilder(text)
 
         indexes?.let {

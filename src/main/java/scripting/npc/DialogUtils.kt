@@ -129,7 +129,7 @@ object DialogUtils {
         return str.toString()
     }
 
-    private fun convert(input: Char): Int {
+    fun convert(input: Char): Int {
         val upper = 3991000
         val lower = 3991026
         var output = if (isUpperCase(input)) upper else lower
@@ -160,6 +160,19 @@ object DialogUtils {
             'x' -> output += 23
             'y' -> output += 24
             'z' -> output += 25
+            '1' -> output -= 990
+            '2' -> output -= 989
+            '3' -> output -= 988
+            '4' -> output -= 987
+            '5' -> output -= 986
+            '6' -> output -= 985
+            '7' -> output -= 984
+            '8' -> output -= 983
+            '9' -> output -= 982
+            '0' -> output -= 981
+            '+' -> output -= 978
+            '-' -> output -= 977
+            else -> output = -1
         }
         return output
     }

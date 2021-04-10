@@ -16,8 +16,8 @@ class UserDropMesoRequestHandler : PacketHandler {
         if (meso <= chr.meso && meso > 9 && meso < 50001) {
             chr.gainMeso(-meso)
             val drop = MesoDrop(chr.id, chr, meso, 0)
-            drop.position = chr.position
             drop.field = chr.field
+            drop.position = chr.position
             chr.field.enter(drop)
         } else {
             c.close(this, "Invalid meso drop amount ($meso)")

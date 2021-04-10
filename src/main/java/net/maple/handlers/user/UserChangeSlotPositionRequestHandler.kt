@@ -41,9 +41,9 @@ class UserChangeSlotPositionRequestHandler : PacketHandler {
                 }
 
                 val drop = ItemDrop(chr.id, chr, item, 0)
+                drop.field = chr.field
                 drop.position = chr.position
                 drop.expire = System.currentTimeMillis() + 600000
-                drop.field = chr.field
                 chr.field.enter(drop)
             }, true)
         } else {

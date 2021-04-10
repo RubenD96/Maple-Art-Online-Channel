@@ -6,6 +6,7 @@ import field.obj.FieldObject
 import field.obj.drop.AbstractFieldDrop
 import field.obj.life.FieldMob
 import field.obj.life.FieldNPC
+import managers.ItemManager
 import managers.NPCManager
 import net.maple.handlers.user.UserSelectNpcHandler
 import scripting.npc.DialogContext
@@ -13,6 +14,7 @@ import scripting.npc.DialogUtils.blue
 import scripting.npc.DialogUtils.bold
 import scripting.npc.DialogUtils.green
 import scripting.npc.DialogUtils.itemDetails
+import scripting.npc.DialogUtils.itemImage
 import scripting.npc.DialogUtils.mobName
 import scripting.npc.DialogUtils.red
 import scripting.npc.NPCScript

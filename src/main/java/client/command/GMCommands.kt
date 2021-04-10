@@ -23,6 +23,7 @@ import net.maple.packets.FieldPackets.fieldEffect
 import net.server.Server
 import net.server.Server.getCharacter
 import scripting.ScriptManager
+import scripting.npc.DialogUtils
 import java.util.*
 import javax.script.ScriptEngine
 import javax.script.ScriptException
@@ -57,8 +58,8 @@ class GMCommands {
                 it.title = chr.name
             }
             val drop = ItemDrop(chr.id, chr, it, 0)
-            drop.position = chr.position
             drop.field = chr.field
+            drop.position = chr.position
             it.expire = Long.MAX_VALUE // never expire
 
             chr.field.enter(drop)
@@ -575,6 +576,39 @@ class GMCommands {
 
         override fun execute(chr: Character) {
             ScriptManager.loadScripts()
+        }
+    }
+
+    object Letters : Command {
+
+        private var letters: String = ""
+
+        override val description: String = "!letters [letters:string]"
+
+        override fun loadParams(params: Map<Int, String>) {
+            letters = params.values.joinToString(" ")
+        }
+
+        override fun execute(chr: Character) {
+            val left = chr.moveAction % 2 == 1
+            if (left) {
+                letters = letters.reversed()
+            }
+
+            val pos = chr.position
+            letters.forEach {
+                if (left) pos.x -= 30
+                else pos.x += 30
+
+                val letter = DialogUtils.convert(it)
+                if (letter != -1) {
+                    val drop = ItemDrop(chr.id, chr, ItemManager.getItem(letter).toItemSlot(), 0)
+                    drop.field = chr.field
+                    drop.position = pos
+                    drop.expire = System.currentTimeMillis() + 300000
+                    chr.field.enter(drop)
+                }
+            }
         }
     }
 }

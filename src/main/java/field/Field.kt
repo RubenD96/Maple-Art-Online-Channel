@@ -7,16 +7,14 @@ import client.replay.MoveCollection
 import client.replay.Replay
 import constants.FieldConstants.JQ_FIELDS
 import field.obj.FieldObject
-import field.obj.Foothold
 import field.obj.drop.AbstractFieldDrop
 import field.obj.drop.EnterType
-import field.obj.drop.ItemDrop
-import field.obj.drop.MesoDrop
 import field.obj.life.*
 import field.obj.portal.FieldPortal
 import field.obj.portal.PortalType
 import field.obj.reactor.FieldReactor
 import managers.MobManager
+import moe.maple.miho.foothold.Foothold
 import net.maple.packets.FieldPackets.setField
 import net.maple.packets.PartyPackets.updateParty
 import net.server.Server.getCharacter
@@ -111,7 +109,8 @@ class Field(val template: FieldTemplate) {
                 obj.fieldId = id
                 obj.moveCollections[id] = MoveCollection(obj, id)
                 obj.position = portal.position
-                obj.foothold = (if (portal.type != PortalType.START_POINT) getFhByPortal(portal).id else 0).toShort()
+                obj.foothold =
+                    (if (portal.type != PortalType.START_POINT) getFhByPortal(portal).id() else 0).toShort()
                 obj.write(obj.setField())
                 broadcast(obj.enterFieldPacket, obj)
 
@@ -357,12 +356,7 @@ class Field(val template: FieldTemplate) {
     }
 
     private fun getFhByPortal(portal: FieldPortal): Foothold {
-        return template.footholds.values.stream()
-            .filter {
-                it.x1 <= portal.position.getX() && it.x2 >= portal.position.getX()
-            }
-            .filter { it.x1 < it.x2 }
-            .findFirst().get()
+        return template.footholds.getFootholdUnderneath(portal.position.x, portal.position.y)
     }
 
     override fun toString(): String {

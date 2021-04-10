@@ -139,6 +139,7 @@ class FieldMob(val template: FieldMobTemplate, left: Boolean) : AbstractFieldCon
 
         val bounds = field.template.mapArea
         drops.forEach {
+            it.field = field
             var x = position.x + (drops.indexOf(it) - (drops.size - 1) / 2) * 28
             val y = position.y
             x = min(bounds.maxX - 10, x.toDouble()).toInt()
@@ -148,7 +149,6 @@ class FieldMob(val template: FieldMobTemplate, left: Boolean) : AbstractFieldCon
         }
 
         drops.forEach {
-            it.field = field
             field.enter(it)
         }
     }

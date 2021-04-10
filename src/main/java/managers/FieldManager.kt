@@ -2,7 +2,6 @@ package managers
 
 import field.Field
 import field.FieldTemplate
-import field.obj.Foothold
 import field.obj.life.AbstractFieldControlledLife
 import field.obj.life.FieldLifeSpawnPoint
 import field.obj.life.FieldMob
@@ -11,6 +10,10 @@ import field.obj.portal.FieldPortal
 import field.obj.reactor.FieldReactor
 import field.obj.reactor.FieldReactorSpawnPoint
 import managers.flag.FieldFlag
+import moe.maple.miho.foothold.Foothold
+import moe.maple.miho.line.Line
+import moe.maple.miho.space.PhysicalSpace2D
+import moe.maple.miho.space.bst.MoeBstFootholdTree
 import util.logging.LogType
 import util.logging.Logger.log
 import java.awt.Point
@@ -96,15 +99,25 @@ class FieldManager : Loadable {
             var mapArea = Rectangle()
             if (containsFlag(flags, FieldFlag.MAP_AREA)) mapArea = r.readRectangle()
 
-            val footholds = HashMap<Int, Foothold>()
+            val footholds = ArrayList<Foothold>()
             if (containsFlag(flags, FieldFlag.FOOTHOLDS)) {
                 val size = r.readShort()
                 repeat(size.toInt()) {
-                    val fh = Foothold()
-                    fh.decode(r)
-                    footholds[fh.id] = fh
+                    val id = r.readInteger()
+                    val layer = r.readShort()
+                    val group = r.readShort()
+                    val x1 = r.readShort().toInt()
+                    val y1 = r.readShort().toInt()
+                    val x2 = r.readShort().toInt()
+                    val y2 = r.readShort().toInt()
+                    val prev = r.readInteger()
+                    val next = r.readInteger()
+                    footholds.add(Foothold.of(id, layer.toInt(), group.toInt(), prev, next, x1, y1, x2, y2))
                 }
             }
+            val low = Line.min(footholds)
+            val high = Line.max(footholds)
+            val bst: PhysicalSpace2D = MoeBstFootholdTree(low, high, footholds.toTypedArray())
 
             val forcedReturnMap = if (containsFlag(flags, FieldFlag.FORCED_RETURN)) r.readInteger() else fieldId
 
@@ -199,7 +212,7 @@ class FieldManager : Loadable {
                     id = fieldId,
                     returnMap = returnMap,
                     mapArea = mapArea,
-                    footholds = footholds,
+                    footholds = bst,
                     forcedReturnMap = forcedReturnMap,
                     fieldLimit = fieldLimit,
                     name = name,

@@ -190,6 +190,11 @@
             <artifactId>reflections</artifactId>
             <version>0.9.12</version>
         </dependency>
+        <dependency>
+            <groupId>moe.maple</groupId>
+            <artifactId>miho</artifactId>
+            <version>1.2.0</version>
+        </dependency>
     </dependencies>
 
     <properties>
