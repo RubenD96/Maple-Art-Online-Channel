@@ -20,8 +20,6 @@ abstract class Avatar : AbstractFieldLife() {
     abstract var name: String
     abstract var job: Job
 
-    override var position = Point()
-
     open val pets = arrayOfNulls<Pet>(3)
     protected open val inventories: Map<ItemInventoryType, ItemInventory> = mapOf(
         ItemInventoryType.EQUIP to ItemInventory(24.toShort())

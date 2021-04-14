@@ -34,32 +34,32 @@ class UserTransferFieldRequestHandler : PacketHandler {
             }
 
             val fieldId = reader.readInteger()
+            val portalName = reader.readMapleString()
             if (fieldId != -1) {
                 if (c.isAdmin) {
+                    val point = if (portalName.isNotEmpty()) {
+                        reader.readPoint()
+                    } else {
+                        Point(0, 0)
+                    }
+                    println("point: $point")
+                    val townPortal = reader.readByte()
+                    val premium = reader.readBool()
+                    val chase = reader.readBool()
+                    if (chase) {
+                        chr.chasing = true
+                        chr.position = Point(reader.readInteger(), reader.readInteger())
+                        println("pos: ${chr.position}")
+                    }
+
                     chr.changeField(fieldId)
                 } else {
-                    c.close(this, "Using /m without admin acc")
+                    c.close(this, "Using /m or /c without admin acc")
                 }
             } else {
-                val portalName = reader.readMapleString()
                 val portal = chr.field.getPortalByName(portalName) ?: return run {
                     chr.enableActions()
                     chr.message(AlertMessage("There is a problem with the portal!\r\nName: $portalName"))
-                }
-
-                val point = if (portalName.isNotEmpty()) {
-                    reader.readPoint()
-                } else {
-                    Point(0, 0)
-                }
-                println("point: $point")
-                val townPortal = reader.readByte()
-                val premium = reader.readBool()
-                val chase = reader.readBool() && chr.isGM
-                if (chase) {
-                    chr.chasing = true
-                    chr.position = Point(reader.readInteger(), reader.readInteger())
-                    println("pos: ${chr.position}")
                 }
 
                 portal.enter(chr)
