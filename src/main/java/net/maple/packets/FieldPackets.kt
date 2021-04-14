@@ -17,7 +17,6 @@ import kotlin.math.ceil
 object FieldPackets {
 
     fun Character.setField(): Packet {
-        val isInstantiated = false
         val pw = PacketWriter(32)
 
         pw.writeHeader(SendOpcode.SET_FIELD)
@@ -27,10 +26,11 @@ object FieldPackets {
 
         fieldKey = ceil(Math.random() * 255).toInt().toByte()
         pw.writeByte(fieldKey)
-        pw.writeBool(!isInstantiated) // instantiated
+        pw.writeBool(migrating)
         pw.writeShort(0) // chatblock?
 
-        if (!isInstantiated) {
+        if (migrating) {
+            migrating = false
             pw.writeInt(0) // calc seed
             pw.writeInt(0) // calc seed
             pw.writeInt(0) // chatblock?
@@ -42,7 +42,18 @@ object FieldPackets {
             pw.writeInt(0)
             pw.writeInt(0)
         } else {
-            System.err.println("[SetField] uuuh?")
+            pw.writeByte(0)
+            pw.writeInt(fieldId)
+            pw.writeByte(portal)
+            pw.writeInt(health)
+
+            println(chasing)
+            pw.writeBool(chasing)
+            if (chasing) {
+                chasing = false
+                pw.writeInt(position.x)
+                pw.writeInt(position.y)
+            }
         }
 
         pw.writeLong(System.currentTimeMillis() * 10000 + 116444592000000000L)

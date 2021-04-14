@@ -108,9 +108,8 @@ class Field(val template: FieldTemplate) {
                 obj.id = obj.id
                 obj.fieldId = id
                 obj.moveCollections[id] = MoveCollection(obj, id)
-                obj.position = portal.position
-                obj.foothold =
-                    (if (portal.type != PortalType.START_POINT) getFhByPortal(portal).id() else 0).toShort()
+                if (!obj.chasing) obj.position = portal.position
+                obj.foothold = (if (portal.type != PortalType.START_POINT) getFhByPortal(portal).id() else 0).toShort()
                 obj.write(obj.setField())
                 broadcast(obj.enterFieldPacket, obj)
 

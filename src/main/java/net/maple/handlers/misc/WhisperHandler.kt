@@ -1,5 +1,6 @@
 package net.maple.handlers.misc
 
+import client.Character
 import client.Client
 import net.maple.SendOpcode
 import net.maple.handlers.PacketHandler
@@ -21,13 +22,13 @@ class WhisperHandler : PacketHandler {
             if (mode == 5.toByte()) { // /find | /c
                 when {
                     it.isInCashShop -> {
-                        c.write(getFindResult(target, FindResultType.CASHSHOP))
+                        c.write(getFindResult(it, FindResultType.CASHSHOP))
                     }
                     it.getChannel() == c.worldChannel -> {
-                        c.write(getFindResult(target, FindResultType.SAME_CHANNEL, it.fieldId))
+                        c.write(getFindResult(it, FindResultType.SAME_CHANNEL, it.fieldId))
                     }
                     else -> {
-                        c.write(getFindResult(target, FindResultType.DIFFERENT_CHANNEL, it.getChannel().channelId))
+                        c.write(getFindResult(it, FindResultType.DIFFERENT_CHANNEL, it.getChannel().channelId))
                     }
                 }
             } else if (mode == 6.toByte()) {
@@ -68,22 +69,18 @@ class WhisperHandler : PacketHandler {
             return pw.createPacket()
         }
 
-        private fun getFindResult(target: String, type: Byte, fieldOrChannel: Int = -1): Packet {
+        private fun getFindResult(target: Character, type: Byte, fieldOrChannel: Int = -1): Packet {
             val pw = PacketWriter(8)
 
             pw.writeHeader(SendOpcode.WHISPER)
             pw.write(WhisperFlag.LOCATION or WhisperFlag.RESULT)
-            pw.writeMapleString(target)
+            pw.writeMapleString(target.name)
             pw.writeByte(type)
+            pw.writeInt(fieldOrChannel)
 
-            when (type) {
-                FindResultType.ITC,
-                FindResultType.CASHSHOP -> pw.writeInt(-1)
-                FindResultType.SAME_CHANNEL -> pw.writeInt(fieldOrChannel).writeLong(0)
-                FindResultType.DIFFERENT_CHANNEL -> {
-                    if (fieldOrChannel > 20) pw.writeInt(0)
-                    else pw.writeInt(fieldOrChannel)
-                }
+            if (type == FindResultType.SAME_CHANNEL) {
+                pw.writeInt(target.position.x)
+                pw.writeInt(target.position.y)
             }
 
             return pw.createPacket()

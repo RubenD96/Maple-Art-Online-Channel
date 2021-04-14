@@ -177,6 +177,8 @@ class Character(val client: Client, override var name: String, val record: Recor
     var cursed: Int? = 4000524
     var prevRand: Int = 0
     var fieldKey: Byte = 0
+    var migrating = true
+    var chasing = false
 
     /**
      * Collections

@@ -8,6 +8,7 @@ import net.maple.packets.FieldPackets.enterField
 import net.maple.packets.FieldPackets.leaveField
 import util.packet.Packet
 import world.guild.Guild
+import java.awt.Point
 
 abstract class Avatar : AbstractFieldLife() {
 
@@ -18,6 +19,8 @@ abstract class Avatar : AbstractFieldLife() {
     abstract var level: Int
     abstract var name: String
     abstract var job: Job
+
+    override var position = Point()
 
     open val pets = arrayOfNulls<Pet>(3)
     protected open val inventories: Map<ItemInventoryType, ItemInventory> = mapOf(
