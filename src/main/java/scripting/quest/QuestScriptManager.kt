@@ -4,6 +4,7 @@ import client.Client
 import scripting.AbstractScriptManager
 import javax.script.Invocable
 
+@Deprecated("Switched to stateless")
 object QuestScriptManager : AbstractScriptManager() {
 
     val qms: MutableMap<Client, QuestConversationManager> = HashMap()

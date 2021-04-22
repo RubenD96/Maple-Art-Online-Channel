@@ -19,6 +19,7 @@ import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
 import kotlin.collections.set
 
+@Deprecated("Switched to stateless")
 open class NPCConversationManager(c: Client, val npcId: Int) : AbstractPlayerInteraction(c) {
 
     var text = ""

@@ -1,6 +1,9 @@
 package scripting.npc
 
 import client.Client
+import client.messages.broadcast.types.AlertMessage
+import net.maple.handlers.user.UserChatHandler.Companion.sendMessage
+import net.maple.packets.CharacterPackets.message
 import net.maple.packets.ConversationPackets
 
 class DialogContext(
@@ -10,6 +13,7 @@ class DialogContext(
 ) {
 
     lateinit var holder: StateHolder
+    var npcId = id
 
     var positive: (() -> Unit)? = null
     var neutral: (() -> Unit)? = null
@@ -39,25 +43,25 @@ class DialogContext(
         var negative: (() -> Unit)? = null
 
         ok?.let {
-            c.write(ConversationPackets.getOkMessagePacket(id, speaker, text))
+            c.write(ConversationPackets.getOkMessagePacket(npcId, speaker, text))
             positive = ok
         } ?: next?.let {
             prev?.let {
-                c.write(ConversationPackets.getNextPrevMessagePacket(id, speaker, text))
+                c.write(ConversationPackets.getNextPrevMessagePacket(npcId, speaker, text))
                 neutral = prev
             } ?: run {
-                c.write(ConversationPackets.getNextMessagePacket(id, speaker, text))
+                c.write(ConversationPackets.getNextMessagePacket(npcId, speaker, text))
             }
             positive = next
         } ?: prev?.let {
-            c.write(ConversationPackets.getPrevMessagePacket(id, speaker, text))
+            c.write(ConversationPackets.getPrevMessagePacket(npcId, speaker, text))
             neutral = prev
         } ?: accept?.let {
-            c.write(ConversationPackets.getAcceptMessagePacket(id, speaker, text))
+            c.write(ConversationPackets.getAcceptMessagePacket(npcId, speaker, text))
             positive = accept
             neutral = decline
         } ?: yes?.let {
-            c.write(ConversationPackets.getYesNoMessagePacket(id, speaker, text))
+            c.write(ConversationPackets.getYesNoMessagePacket(npcId, speaker, text))
             positive = yes
             neutral = no
         }
@@ -108,7 +112,7 @@ class DialogContext(
 
         npcText.append("\r\n\r\n$appendText")
 
-        c.write(ConversationPackets.getSimpleMessagePacket(id, speaker, npcText.toString()))
+        c.write(ConversationPackets.getSimpleMessagePacket(npcId, speaker, npcText.toString()))
     }
 
     fun sendGetNumber(
@@ -130,7 +134,7 @@ class DialogContext(
         this.min = min
         this.max = max
 
-        c.write(ConversationPackets.getNumberMessagePacket(id, speaker, text, def, min, max))
+        c.write(ConversationPackets.getNumberMessagePacket(npcId, speaker, text, def, min, max))
     }
 
     fun sendGetText(
@@ -152,11 +156,11 @@ class DialogContext(
         this.min = min
         this.max = max
 
-        c.write(ConversationPackets.getTextMessagePacket(id, speaker, text, def, min, max))
+        c.write(ConversationPackets.getTextMessagePacket(npcId, speaker, text, def, min, max))
     }
 
     fun endMessage(text: String, speaker: Int = SpeakerType.NoESC) {
-        c.write(ConversationPackets.getOkMessagePacket(id, speaker, text))
+        c.write(ConversationPackets.getOkMessagePacket(npcId, speaker, text))
         clearStates()
     }
 
@@ -166,5 +170,23 @@ class DialogContext(
         negative = null
         selections.clear()
         c.script = null
+    }
+
+    /**
+     * WARNING: do not use default values OUTSIDE QuestScript extended classes!!
+     */
+    fun startQuest(qid: Int = id, npc: Int = npcId) {
+        if (qid != npc) {
+            c.character.startQuest(qid, npc)
+        } else {
+            c.character.message(AlertMessage("You should be fired :)"))
+        }
+    }
+
+    /**
+     * WARNING: do not use default values OUTSIDE QuestScript extended classes!!
+     */
+    fun finishQuest(qid: Int = id) {
+        c.character.completeQuest(qid)
     }
 }

@@ -3,6 +3,7 @@ package scripting.quest
 import client.Client
 import scripting.npc.NPCConversationManager
 
+@Deprecated("Switched to stateless")
 class QuestConversationManager(c: Client, npcId: Int, val id: Int, val isStart: Boolean) : NPCConversationManager(c, npcId) {
 
     override fun dispose() {

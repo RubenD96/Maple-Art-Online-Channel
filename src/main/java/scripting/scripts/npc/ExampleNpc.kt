@@ -12,7 +12,7 @@ import scripting.npc.Npc
 import scripting.npc.StateHolder
 
 @Npc([22000])
-class ExampleScript : NPCScript() {
+class ExampleNpc : NPCScript() {
 
     var i: Int = 0
 

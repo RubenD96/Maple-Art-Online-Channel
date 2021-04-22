@@ -8,8 +8,8 @@ abstract class NPCScript : Script {
 
     var id: Int = 0
 
-    fun execute(c: Client, consumer: Consumer<DialogContext>) {
-        val context = DialogContext(this, c, id)
+    open fun execute(c: Client, npc: Int = id, consumer: Consumer<DialogContext>) {
+        val context = DialogContext(this, c, npc)
         c.script = context
         consumer.accept(context)
     }
