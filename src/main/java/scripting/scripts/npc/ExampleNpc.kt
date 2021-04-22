@@ -1,15 +1,15 @@
 package scripting.scripts.npc
 
 import client.Client
-import scripting.npc.DialogContext
-import scripting.npc.DialogUtils.blue
-import scripting.npc.DialogUtils.bold
-import scripting.npc.DialogUtils.green
-import scripting.npc.DialogUtils.purple
-import scripting.npc.DialogUtils.red
-import scripting.npc.NPCScript
-import scripting.npc.Npc
-import scripting.npc.StateHolder
+import scripting.dialog.DialogContext
+import scripting.dialog.DialogUtils.blue
+import scripting.dialog.DialogUtils.bold
+import scripting.dialog.DialogUtils.green
+import scripting.dialog.DialogUtils.purple
+import scripting.dialog.DialogUtils.red
+import scripting.dialog.StateHolder
+import scripting.dialog.npc.NPCScript
+import scripting.dialog.npc.Npc
 
 @Npc([22000])
 class ExampleNpc : NPCScript() {
@@ -25,6 +25,21 @@ class ExampleNpc : NPCScript() {
             it.holder = Data()
             it.okDialog()
         }
+    }
+
+    private fun DialogContext.yikes() {
+        sendMessage(
+            "Hello",
+            ok = {
+                sendMessage(
+                    "Hello",
+                    next = {
+                        sendMessage(
+                            "Hello",
+                            prev = { sendMessage("Hello", ok = { sendMessage("bye", ok = { onEnd() }) }) })
+                    })
+            }
+        )
     }
 
     private fun DialogContext.okDialog() {

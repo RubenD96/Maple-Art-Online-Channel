@@ -1,4 +1,4 @@
-package scripting.npc
+package scripting.dialog
 
 import client.Character
 import client.Client

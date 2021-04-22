@@ -27,6 +27,7 @@ import net.maple.packets.GuildPackets
 import net.maple.packets.GuildPackets.getLoadGuildPacket
 import net.server.Server
 import org.graalvm.collections.Pair
+import scripting.dialog.DialogUtils
 import scripting.npc.NPCScriptManager
 import world.guild.Guild
 import world.ranking.RankingKeeper
@@ -34,6 +35,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.function.Function
 
+@Deprecated(message = "Old")
 abstract class AbstractPlayerInteraction(val c: Client) {
 
     val player: Character get() = c.character

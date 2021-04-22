@@ -1,7 +1,7 @@
 package net.maple.packets
 
 import net.maple.SendOpcode
-import scripting.npc.ConversationType
+import scripting.dialog.ConversationType
 import util.packet.Packet
 import util.packet.PacketWriter
 

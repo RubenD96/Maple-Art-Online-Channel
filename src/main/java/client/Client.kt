@@ -18,8 +18,7 @@ import net.server.MigrateInfo
 import net.server.Server
 import net.server.Server.removeCharacter
 import org.jooq.Record
-import scripting.npc.DialogContext
-import scripting.npc.NPCScript
+import scripting.dialog.DialogContext
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.script.ScriptEngine
@@ -163,6 +162,19 @@ class Client(c: Channel, siv: ByteArray, riv: ByteArray) : NettyClient(c, siv, r
                 }
             }
         }
+        var character: Character? = null
+
+
+        character?.let { chr ->
+            chr.party?.let party@ { party ->
+                val pq = party.partyQuest ?: return@party
+                pq.endTime = System.currentTimeMillis()
+            } ?: run {
+                println("The player is not in a party")
+                println("2 plus 2 is 4, quick maths")
+            }
+            chr.heal()
+        } ?: println("The player was not found")
     }
 
     fun isInitialized(): Boolean {

@@ -1,11 +1,10 @@
 package scripting.scripts.quest
 
 import client.Client
-import scripting.npc.DialogContext
-import scripting.npc.DialogUtils
-import scripting.npc.DialogUtils.blue
-import scripting.quest.Quest
-import scripting.quest.QuestScript
+import scripting.dialog.DialogContext
+import scripting.dialog.DialogUtils.blue
+import scripting.dialog.quest.Quest
+import scripting.dialog.quest.QuestScript
 
 /**
  * For more examples regarding npc dialogues, check out ExampleNpc
@@ -33,7 +32,7 @@ class ExampleQuest : QuestScript() {
 
     private fun DialogContext.helloThere() {
         sendMessage(
-            "Hello there ${DialogUtils.playerName.blue()}!",
+            "Hello there ${scripting.dialog.DialogUtils.playerName.blue()}!",
             ok = {
                 startQuest()
                 onEnd()

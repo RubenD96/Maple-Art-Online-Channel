@@ -1,13 +1,13 @@
-package scripting.npc
+package scripting.dialog
 
 import client.Client
 import client.messages.broadcast.types.AlertMessage
-import net.maple.handlers.user.UserChatHandler.Companion.sendMessage
 import net.maple.packets.CharacterPackets.message
 import net.maple.packets.ConversationPackets
+import scripting.DialogScript
 
 class DialogContext(
-    val script: NPCScript,
+    val script: DialogScript,
     val c: Client,
     private val id: Int
 ) {

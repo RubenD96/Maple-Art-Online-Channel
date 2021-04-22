@@ -2,10 +2,10 @@ package scripting
 
 import constants.ServerConstants
 import org.reflections.Reflections
-import scripting.npc.NPCScript
-import scripting.npc.Npc
-import scripting.quest.Quest
-import scripting.quest.QuestScript
+import scripting.dialog.npc.NPCScript
+import scripting.dialog.npc.Npc
+import scripting.dialog.quest.Quest
+import scripting.dialog.quest.QuestScript
 
 object ScriptManager {
 

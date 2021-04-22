@@ -1,4 +1,4 @@
-package scripting.npc
+package scripting.dialog
 
 object SpeakerType {
     const val NoESC = 0x1

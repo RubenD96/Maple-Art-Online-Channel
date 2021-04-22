@@ -2,17 +2,19 @@ package scripting.scripts.npc
 
 import client.Client
 import field.obj.drop.DropEntry
-import scripting.npc.*
-import scripting.npc.DialogUtils.blue
-import scripting.npc.DialogUtils.bold
-import scripting.npc.DialogUtils.green
-import scripting.npc.DialogUtils.itemDetails
-import scripting.npc.DialogUtils.itemImage
-import scripting.npc.DialogUtils.itemName
-import scripting.npc.DialogUtils.letters
-import scripting.npc.DialogUtils.mobName
-import scripting.npc.DialogUtils.purple
-import scripting.npc.DialogUtils.red
+import scripting.dialog.*
+import scripting.dialog.DialogUtils.blue
+import scripting.dialog.DialogUtils.bold
+import scripting.dialog.DialogUtils.green
+import scripting.dialog.DialogUtils.itemDetails
+import scripting.dialog.DialogUtils.itemImage
+import scripting.dialog.DialogUtils.itemName
+import scripting.dialog.DialogUtils.letters
+import scripting.dialog.DialogUtils.mobName
+import scripting.dialog.DialogUtils.purple
+import scripting.dialog.DialogUtils.red
+import scripting.dialog.npc.NPCScript
+import scripting.dialog.npc.Npc
 
 @Npc([1002000])
 class DropChanger : NPCScript() {
@@ -103,7 +105,7 @@ class DropChanger : NPCScript() {
     }
 
     private fun DialogContext.sendItemList() {
-        (holder as Data).drops = DialogUtils.getMobDrops(mobid).filter { it.id != 0 }
+        (holder as Data).drops = scripting.dialog.DialogUtils.getMobDrops(mobid).filter { it.id != 0 }
         val base = "Manage Drops".letters() +
                 "\r\nAll items $mobStats drops:"
 
@@ -178,7 +180,7 @@ class DropChanger : NPCScript() {
     }
 
     private fun DialogContext.updateDropChance(chance: Double) {
-        DialogUtils.editDropChance(mobid, item.id, chance)
+        scripting.dialog.DialogUtils.editDropChance(mobid, item.id, chance)
         sendMessage(
             "Success".letters() +
                     "\r\n\r\n${item.id.itemImage()} dop chance is changed to " +
@@ -188,7 +190,7 @@ class DropChanger : NPCScript() {
     }
 
     private fun DialogContext.deleteDrop() {
-        DialogUtils.removeDrop(mobid, item.id)
+        scripting.dialog.DialogUtils.removeDrop(mobid, item.id)
         sendMessage(
             "Deleted".letters() +
                     "\r\n$itemStats has been removed!",
@@ -259,7 +261,7 @@ class DropChanger : NPCScript() {
     private fun DialogContext.sendAddItemPrompt() {
         newItem?.let { item ->
             newChance?.let { chance ->
-                DialogUtils.addMobDrop(mobid, item, chance)
+                scripting.dialog.DialogUtils.addMobDrop(mobid, item, chance)
                 sendMessage(
                     "Success".letters() +
                             "\r\n${item.itemImage()} ${item.itemName().blue()} has been added to " +
@@ -275,7 +277,7 @@ class DropChanger : NPCScript() {
     }
 
     private fun DialogContext.setMesoValues() {
-        val meso = DialogUtils.getMobDrops(mobid).find { it.id == 0 }
+        val meso = scripting.dialog.DialogUtils.getMobDrops(mobid).find { it.id == 0 }
         meso?.let {
             holder.numberData["mesoMin"] = it.min
             holder.numberData["mesoMax"] = it.max
@@ -353,10 +355,10 @@ class DropChanger : NPCScript() {
 
                 mesoChance?.let { chance ->
                     val append: String = if (mesoUpdate) {
-                        DialogUtils.editMinMaxChance(mobid, 0, min, max, chance)
+                        scripting.dialog.DialogUtils.editMinMaxChance(mobid, 0, min, max, chance)
                         "changed for"
                     } else {
-                        DialogUtils.addMobDrop(mobid, 0, min, max, 0, chance)
+                        scripting.dialog.DialogUtils.addMobDrop(mobid, 0, min, max, 0, chance)
                         "added to"
                     }
                     sendMessage(

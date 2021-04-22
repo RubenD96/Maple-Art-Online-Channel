@@ -23,7 +23,7 @@ import net.maple.packets.FieldPackets.fieldEffect
 import net.server.Server
 import net.server.Server.getCharacter
 import scripting.ScriptManager
-import scripting.npc.DialogUtils
+import scripting.dialog.DialogUtils
 import java.util.*
 import javax.script.ScriptEngine
 import javax.script.ScriptException

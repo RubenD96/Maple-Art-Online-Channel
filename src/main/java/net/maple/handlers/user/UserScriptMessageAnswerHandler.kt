@@ -2,7 +2,7 @@ package net.maple.handlers.user
 
 import client.Client
 import net.maple.handlers.PacketHandler
-import scripting.npc.ConversationType
+import scripting.dialog.ConversationType
 import util.HexTool.toHex
 import util.logging.LogType
 import util.logging.Logger

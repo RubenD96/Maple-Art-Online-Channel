@@ -1,4 +1,4 @@
-package scripting.npc
+package scripting.dialog
 
 enum class ConversationType(val value: Int) {
     SAY(0x00),

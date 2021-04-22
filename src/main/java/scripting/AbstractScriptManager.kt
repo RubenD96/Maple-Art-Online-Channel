@@ -9,6 +9,7 @@ import javax.script.Invocable
 import javax.script.ScriptEngine
 import javax.script.ScriptException
 
+@Deprecated("Old")
 abstract class AbstractScriptManager {
 
     protected var engine: ScriptEngine? = null
