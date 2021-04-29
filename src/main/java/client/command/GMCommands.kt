@@ -229,12 +229,14 @@ class GMCommands {
                     if (target == "all") {
                         chr.field.getObjects<Character>().forEach {
                             if (!it.isGM) {
+                                it.safeDeath = true
                                 it.health = 0
                                 it.mana = 0
                             }
                         }
                     } else {
                         getCharacter(target)?.let {
+                            it.safeDeath = true
                             it.health = 0
                             it.mana = 0
                         } ?: run {
@@ -567,15 +569,6 @@ class GMCommands {
 
         override fun execute(chr: Character) {
             chr.field.startReplay()
-        }
-    }
-
-    object ReloadScripts : Command {
-
-        override val description: String = "This actually doesn't do anything fyi"
-
-        override fun execute(chr: Character) {
-            NPCScriptManager.loadScripts()
         }
     }
 

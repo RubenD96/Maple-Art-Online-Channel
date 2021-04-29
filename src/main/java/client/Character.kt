@@ -22,7 +22,6 @@ import client.player.quest.Quest
 import client.replay.MoveCollection
 import client.stats.TemporaryStat
 import client.stats.TemporaryStatType
-import com.sun.source.tree.BinaryTree
 import constants.UserConstants
 import constants.UserConstants.expTable
 import database.jooq.Tables
@@ -179,16 +178,17 @@ class Character(val client: Client, override var name: String, val record: Recor
     var fieldKey: Byte = 0
     var migrating = true
     var chasing = false
+    var safeDeath = false
 
     /**
      * Collections
      */
     override val inventories: Map<ItemInventoryType, ItemInventory> = mapOf(
-            ItemInventoryType.EQUIP to ItemInventory(96.toShort()),
-            ItemInventoryType.CONSUME to ItemInventory(96.toShort()),
-            ItemInventoryType.INSTALL to ItemInventory(96.toShort()),
-            ItemInventoryType.ETC to ItemInventory(96.toShort()),
-            ItemInventoryType.CASH to ItemInventory(96.toShort())
+        ItemInventoryType.EQUIP to ItemInventory(96.toShort()),
+        ItemInventoryType.CONSUME to ItemInventory(96.toShort()),
+        ItemInventoryType.INSTALL to ItemInventory(96.toShort()),
+        ItemInventoryType.ETC to ItemInventory(96.toShort()),
+        ItemInventoryType.CASH to ItemInventory(96.toShort())
     )
     val quickSlotKeys = IntArray(8)
     val controlledObjects: MutableList<FieldControlledObject> = ArrayList()
@@ -463,14 +463,14 @@ class Character(val client: Client, override var name: String, val record: Recor
 
         var quantity = 0
         inventory.items.values.stream()
-                .filter { it.templateId == item }
-                .forEach {
-                    if (it is ItemSlotBundle) {
-                        quantity += it.number.toInt()
-                    } else {
-                        quantity++
-                    }
+            .filter { it.templateId == item }
+            .forEach {
+                if (it is ItemSlotBundle) {
+                    quantity += it.number.toInt()
+                } else {
+                    quantity++
                 }
+            }
         return quantity
     }
 
@@ -489,9 +489,9 @@ class Character(val client: Client, override var name: String, val record: Recor
     fun getAvailableSlots(type: ItemInventoryType): Int {
         val inv = getInventory(type)
         val used = inv.items.keys.stream()
-                .filter { it > 0 }
-                .filter { it <= inv.slotMax }
-                .count().toShort()
+            .filter { it > 0 }
+            .filter { it <= inv.slotMax }
+            .count().toShort()
         return inv.slotMax - used
     }
 
@@ -525,6 +525,10 @@ class Character(val client: Client, override var name: String, val record: Recor
 
     fun removeMe() {
         field.removeObject(this)
+    }
+
+    fun isAlive(): Boolean {
+        return health > 0
     }
 
     override fun toString(): String {

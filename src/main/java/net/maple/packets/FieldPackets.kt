@@ -47,7 +47,6 @@ object FieldPackets {
             pw.writeByte(portal)
             pw.writeInt(health)
 
-            println(chasing)
             pw.writeBool(chasing)
             if (chasing) {
                 chasing = false

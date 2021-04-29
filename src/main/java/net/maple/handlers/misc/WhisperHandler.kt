@@ -19,27 +19,37 @@ class WhisperHandler : PacketHandler {
         val target = reader.readMapleString()
 
         Server.getCharacter(target)?.let {
-            if (mode == 5.toByte()) { // /find | /c
-                when {
-                    it.isInCashShop -> {
-                        c.write(getFindResult(it, FindResultType.CASHSHOP))
-                    }
-                    it.getChannel() == c.worldChannel -> {
-                        c.write(getFindResult(it, FindResultType.SAME_CHANNEL, it.fieldId))
-                    }
-                    else -> {
-                        c.write(getFindResult(it, FindResultType.DIFFERENT_CHANNEL, it.getChannel().channelId))
-                    }
+            when {
+                mode.toInt() == WhisperFlag.LOCATION or WhisperFlag.REQUEST -> { // /find | /c
+                    handleFind(c, it)
                 }
-            } else if (mode == 6.toByte()) {
-                val msg = reader.readMapleString()
-                if (msg.length > 75) return Logger.log(LogType.HACK, "Message $msg too long", this, c)
+                mode.toInt() == WhisperFlag.WHISPER or WhisperFlag.REQUEST -> {
+                    val msg = reader.readMapleString()
+                    if (msg.length > 75) return Logger.log(LogType.HACK, "Message $msg too long", this, c)
 
-                it.write(getWhisperMessagePacket(c.character.name, c.worldChannel.channelId, c.isAdmin, msg))
-                c.write(getWhisperSuccessPacket(target, true))
+                    it.write(getWhisperMessagePacket(c.character.name, c.worldChannel.channelId, c.isAdmin, msg))
+                    c.write(getWhisperSuccessPacket(target, true))
+                }
+                mode.toInt() == WhisperFlag.LOCATION_FRIEND or WhisperFlag.REQUEST -> {
+                    handleFind(c, it, WhisperFlag.LOCATION_FRIEND)
+                }
             }
         } ?: run {
             c.write(getWhisperSuccessPacket(target, false))
+        }
+    }
+
+    private fun handleFind(c: Client, chr: Character, flag: Int = WhisperFlag.LOCATION) {
+        when {
+            chr.isInCashShop -> {
+                c.write(getFindResult(chr, FindResultType.CASHSHOP, flag = flag))
+            }
+            chr.getChannel() == c.worldChannel -> {
+                c.write(getFindResult(chr, FindResultType.SAME_CHANNEL, chr.fieldId, flag = flag))
+            }
+            else -> {
+                c.write(getFindResult(chr, FindResultType.DIFFERENT_CHANNEL, chr.getChannel().channelId, flag = flag))
+            }
         }
     }
 
@@ -69,11 +79,11 @@ class WhisperHandler : PacketHandler {
             return pw.createPacket()
         }
 
-        private fun getFindResult(target: Character, type: Byte, fieldOrChannel: Int = -1): Packet {
+        private fun getFindResult(target: Character, type: Byte, fieldOrChannel: Int = -1, flag: Int): Packet {
             val pw = PacketWriter(8)
 
             pw.writeHeader(SendOpcode.WHISPER)
-            pw.write(WhisperFlag.LOCATION or WhisperFlag.RESULT)
+            pw.write(flag or WhisperFlag.RESULT)
             pw.writeMapleString(target.name)
             pw.writeByte(type)
             pw.writeInt(fieldOrChannel)
@@ -100,7 +110,7 @@ class WhisperHandler : PacketHandler {
             const val RESULT = 0x08
             const val RECIEVE = 0x10
             const val BLOCKED = 0x20
-            const val LOCATION_F = 0x40
+            const val LOCATION_FRIEND = 0x40
             const val MANAGER = 0x80
         }
     }

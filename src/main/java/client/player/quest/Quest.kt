@@ -39,8 +39,8 @@ class Quest(val id: Int, val character: Character) {
             return false
         }
 
-        val qcm = QuestScriptManager.qms[character.client] ?: return false
-        if (reqs.npc != 0 && qcm.npcId != reqs.npc) {
+        val context = character.client.script ?: return false
+        if (reqs.npc != 0 && context.npcId != reqs.npc) {
             return false
         }
 

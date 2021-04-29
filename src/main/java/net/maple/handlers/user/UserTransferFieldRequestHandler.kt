@@ -2,6 +2,8 @@ package net.maple.handlers.user
 
 import client.Client
 import client.messages.broadcast.types.AlertMessage
+import constants.FieldConstants
+import constants.FieldConstants.isSafeMap
 import net.maple.handlers.PacketHandler
 import net.maple.packets.CharacterPackets.message
 import util.HexTool
@@ -36,25 +38,33 @@ class UserTransferFieldRequestHandler : PacketHandler {
             val fieldId = reader.readInteger()
             val portalName = reader.readMapleString()
             if (fieldId != -1) {
-                if (c.isAdmin) {
-                    val point = if (portalName.isNotEmpty()) {
-                        reader.readPoint()
-                    } else {
-                        Point(0, 0)
-                    }
-                    println("point: $point")
-                    val townPortal = reader.readByte()
-                    val premium = reader.readBool()
+                val point = if (portalName.isNotEmpty()) {
+                    reader.readPoint()
+                } else {
+                    Point(0, 0)
+                }
+
+                val townPortal = reader.readByte()
+                val premium = reader.readBool()
+
+                if (c.isAdmin && chr.isAlive()) {
                     val chase = reader.readBool()
                     if (chase) {
                         chr.chasing = true
                         chr.position = Point(reader.readInteger(), reader.readInteger())
-                        println("pos: ${chr.position}")
                     }
-
                     chr.changeField(fieldId)
+                } else if (!chr.isAlive()) {
+                    chr.health = 50
+                    if (chr.hardcore && !chr.field.template.isSafeMap() && !chr.safeDeath) {
+                        chr.changeField(FieldConstants.HARDCORE_DEATHMAP)
+                    } else {
+                        chr.changeField(chr.field.template.returnMap)
+                        chr.safeDeath = false
+                    }
                 } else {
-                    c.close(this, "Using /m or /c without admin acc")
+                    Logger.log(LogType.HACK, "Using /m or /c without admin acc", this, c)
+                    c.close()
                 }
             } else {
                 val portal = chr.field.getPortalByName(portalName) ?: return run {

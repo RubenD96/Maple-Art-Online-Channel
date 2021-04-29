@@ -93,7 +93,7 @@ object Logger {
                     ioe.printStackTrace()
                 }
             }
-            bulkAdder.clear()
+            bulkAdder.values.forEach { it.clear() }
         }
         dumpBulk()
     }

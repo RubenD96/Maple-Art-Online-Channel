@@ -92,7 +92,7 @@ object DialogUtils {
     val playerName get() = "#h #"
 
     fun Int.mapName(): String {
-        return "#m$this#k"
+        return "#m$this#"
     }
 
     fun Int.mobName(): String {

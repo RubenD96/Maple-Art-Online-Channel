@@ -79,7 +79,7 @@ class Field(val template: FieldTemplate) {
     }
 
     fun broadcast(packet: Packet, source: Character? = null) {
-        getObjects<Character>().stream()
+        getObjects<Character>()
             .filter { it !== source }
             .forEach { it.write(packet.clone()) }
     }
@@ -120,7 +120,12 @@ class Field(val template: FieldTemplate) {
                             .filter { it != obj }
                             .forEach {
                                 when (it) {
-                                    is AbstractFieldDrop -> enterItemDrop(it, it.enterFieldPacket, EnterType.FFA, obj) // todo uuh
+                                    is AbstractFieldDrop -> enterItemDrop(
+                                        it,
+                                        it.enterFieldPacket,
+                                        EnterType.FFA,
+                                        obj
+                                    ) // todo uuh
                                     is FieldMob -> obj.write(it.getEnterFieldPacket(MobSummonType.NORMAL))
                                     else -> obj.write(it.enterFieldPacket)
                                 }

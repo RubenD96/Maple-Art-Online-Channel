@@ -20,7 +20,7 @@ function start(m, s) {
     } else {
         status++;
         if (status === 1) {
-            cm.sendAcceptDecline("I want to make a beautiful necklace but I am missing something...\\nMaybe you can give me some boar teeth for the necklace? I'll reward you afterwards!");
+            cm.sendAcceptDecline("I want to make a beautiful necklace but I am missing something...\nMaybe you can give me some boar teeth for the necklace? I'll reward you afterwards!");
         } else if (status === 2) {
             cm.sendNext("Wow thanks for doing this, I can't tell you how grateful I am. Please do it quick though, I'm in a hurry!");
             cm.startQuest();

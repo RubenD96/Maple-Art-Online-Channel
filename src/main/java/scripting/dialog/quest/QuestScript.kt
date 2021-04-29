@@ -8,7 +8,8 @@ import java.util.function.Consumer
 abstract class QuestScript : DialogScript() {
 
     fun execute(c: Client, npc: Int, consumer: Consumer<DialogContext>) {
-        val context = DialogContext(this, c, npc)
+        val context = DialogContext(this, c, id)
+        context.npcId = npc
         c.script = context
         consumer.accept(context)
     }
