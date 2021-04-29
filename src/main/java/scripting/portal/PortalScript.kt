@@ -4,9 +4,10 @@ import client.Client
 import field.obj.portal.FieldPortal
 import scripting.Script
 
-abstract class PortalScript : Script {
+abstract class PortalScript : Script<String> {
 
-    var name: String = ""
+    override var value: String = ""
+    val name get() = value
 
     override fun start(c: Client) {
         PortalScriptManager.portalError(name)

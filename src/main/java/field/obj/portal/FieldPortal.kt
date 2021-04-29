@@ -6,6 +6,7 @@ import field.Field
 import net.maple.packets.CharacterPackets.message
 import scripting.portal.PortalScriptManager
 import util.logging.LogType
+import util.logging.Logger
 import util.logging.Logger.log
 import java.awt.Rectangle
 
@@ -18,7 +19,7 @@ class FieldPortal : AbstractFieldPortal(), Portal {
         if (targetMap != 999999999) {
             if (script != "") {
                 PortalScriptManager[script]?.start(chr.client, this) ?: run {
-                    PortalScriptManager.portalError(script)
+                    log(LogType.MISSING, "Missing proper portal script $script", this)
                     chr.message(AlertMessage("Portal script $script does not exist"))
                 }
                 chr.enableActions()

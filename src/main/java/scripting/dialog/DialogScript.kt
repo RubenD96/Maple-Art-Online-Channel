@@ -2,9 +2,10 @@ package scripting.dialog
 
 import scripting.Script
 
-abstract class DialogScript : Script {
+abstract class DialogScript : Script<Int> {
 
-    var id: Int = 0
+    override var value = 0
+    val id get() = value
 
     open fun DialogContext.onEnd() {
         clearStates()

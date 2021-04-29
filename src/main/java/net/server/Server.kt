@@ -12,8 +12,10 @@ import net.database.BeautyAPI
 import net.database.CharacterAPI
 import net.database.ShopAPI
 import scripting.dialog.npc.NPCScriptManager
+import scripting.dialog.npc.Npc
 import scripting.dialog.quest.QuestScriptManager
 import scripting.dialog.quest.Quest
+import scripting.portal.Portal
 import scripting.portal.PortalScriptManager
 import util.crypto.MapleAESOFB
 import util.logging.Logger
@@ -66,9 +68,9 @@ object Server {
     }
 
     private fun loadAllScripts() {
-        NPCScriptManager.loadScripts()
-        QuestScriptManager.loadScripts()
-        PortalScriptManager.loadScripts()
+        NPCScriptManager.loadScripts<Npc>()
+        QuestScriptManager.loadScripts<Quest>()
+        PortalScriptManager.loadScripts<Portal>()
     }
 
     private suspend fun rankingRoutine() {

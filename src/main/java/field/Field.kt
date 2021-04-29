@@ -18,7 +18,6 @@ import moe.maple.miho.foothold.Foothold
 import net.maple.packets.FieldPackets.setField
 import net.maple.packets.PartyPackets.updateParty
 import net.server.Server.getCharacter
-import scripting.field.FieldScriptManager.execute
 import util.logging.LogType
 import util.logging.Logger
 import util.packet.Packet
