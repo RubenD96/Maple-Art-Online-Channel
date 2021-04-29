@@ -15,6 +15,8 @@ import scripting.dialog.npc.NPCScriptManager
 import scripting.dialog.npc.Npc
 import scripting.dialog.quest.QuestScriptManager
 import scripting.dialog.quest.Quest
+import scripting.field.Field
+import scripting.field.FieldScriptManager
 import scripting.portal.Portal
 import scripting.portal.PortalScriptManager
 import util.crypto.MapleAESOFB
@@ -71,6 +73,7 @@ object Server {
         NPCScriptManager.loadScripts<Npc>()
         QuestScriptManager.loadScripts<Quest>()
         PortalScriptManager.loadScripts<Portal>()
+        FieldScriptManager.loadScripts<Field>()
     }
 
     private suspend fun rankingRoutine() {

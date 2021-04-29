@@ -18,6 +18,7 @@ import moe.maple.miho.foothold.Foothold
 import net.maple.packets.FieldPackets.setField
 import net.maple.packets.PartyPackets.updateParty
 import net.server.Server.getCharacter
+import scripting.field.FieldScriptManager
 import util.logging.LogType
 import util.logging.Logger
 import util.packet.Packet
@@ -144,7 +145,7 @@ class Field(val template: FieldTemplate) {
                 }
             }
             if (template.script.isNotEmpty()) { // never happens as we set script to mapid when onEnter is not present
-                execute(obj.client, this, template.script)
+                FieldScriptManager[template.script]?.start(obj.client) ?: error("TODO") //todo
             }
         } else { // not a character object
             obj.id = runningObjectId.addAndGet(1)

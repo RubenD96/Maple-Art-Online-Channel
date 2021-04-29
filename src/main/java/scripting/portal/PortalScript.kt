@@ -10,7 +10,7 @@ abstract class PortalScript : Script<String> {
     val name get() = value
 
     override fun start(c: Client) {
-        PortalScriptManager.portalError(name)
+        error("wtf r u doin")
     }
 
     abstract fun start(c: Client, portal: FieldPortal)
