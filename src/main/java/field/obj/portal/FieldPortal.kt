@@ -17,7 +17,10 @@ class FieldPortal : AbstractFieldPortal(), Portal {
     override fun enter(chr: Character) {
         if (targetMap != 999999999) {
             if (script != "") {
-                PortalScriptManager.execute(chr.client, this, script)
+                PortalScriptManager[script]?.start(chr.client, this) ?: run {
+                    PortalScriptManager.portalError(script)
+                    chr.message(AlertMessage("Portal script $script does not exist"))
+                }
                 chr.enableActions()
                 return
             }

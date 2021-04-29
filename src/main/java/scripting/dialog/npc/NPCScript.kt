@@ -1,7 +1,7 @@
 package scripting.dialog.npc
 
 import client.Client
-import scripting.DialogScript
+import scripting.dialog.DialogScript
 import scripting.dialog.DialogContext
 import java.util.function.Consumer
 

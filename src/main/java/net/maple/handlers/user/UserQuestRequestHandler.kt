@@ -4,7 +4,7 @@ import client.Client
 import client.player.quest.QuestRequest
 import net.maple.handlers.PacketHandler
 import net.maple.packets.ConversationPackets
-import scripting.ScriptManager
+import scripting.dialog.quest.QuestScriptManager
 import util.HexTool.toHex
 import util.packet.PacketReader
 
@@ -42,7 +42,7 @@ class UserQuestRequestHandler : PacketHandler {
 
         fun openQuest(c: Client, qid: Int, npc: Int, start: Boolean = true) {
             c.script = null
-            ScriptManager.questScripts[qid]?.let {
+            QuestScriptManager[qid]?.let {
                 if (start) {
                     it.start(c)
                 } else {

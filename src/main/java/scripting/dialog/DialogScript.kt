@@ -1,6 +1,6 @@
-package scripting
+package scripting.dialog
 
-import scripting.dialog.DialogContext
+import scripting.Script
 
 abstract class DialogScript : Script {
 

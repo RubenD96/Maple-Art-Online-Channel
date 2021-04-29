@@ -11,7 +11,10 @@ import managers.*
 import net.database.BeautyAPI
 import net.database.CharacterAPI
 import net.database.ShopAPI
-import scripting.ScriptManager
+import scripting.dialog.npc.NPCScriptManager
+import scripting.dialog.quest.QuestScriptManager
+import scripting.dialog.quest.Quest
+import scripting.portal.PortalScriptManager
 import util.crypto.MapleAESOFB
 import util.logging.Logger
 import world.guild.Guild
@@ -58,8 +61,14 @@ object Server {
         }
         BeautyAPI.loadHairs()
         CommandHandler.loadCommands()
-        ScriptManager.loadScripts()
+        loadAllScripts()
         //benchmark()
+    }
+
+    private fun loadAllScripts() {
+        NPCScriptManager.loadScripts()
+        QuestScriptManager.loadScripts()
+        PortalScriptManager.loadScripts()
     }
 
     private suspend fun rankingRoutine() {

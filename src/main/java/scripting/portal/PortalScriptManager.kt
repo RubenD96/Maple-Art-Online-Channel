@@ -1,30 +1,25 @@
 package scripting.portal
 
-import client.Client
-import client.messages.broadcast.types.AlertMessage
-import field.obj.portal.FieldPortal
-import net.maple.packets.CharacterPackets.message
-import scripting.AbstractScriptManager
+import scripting.ScriptManager
+import util.logging.LogType
+import util.logging.Logger
 
-object PortalScriptManager : AbstractScriptManager() {
+object PortalScriptManager : ScriptManager<String, PortalScript>() {
 
-    fun execute(c: Client, portal: FieldPortal, script: String) {
-        try {
-            val portalScriptMethods = PortalScriptMethods(c, portal)
-            val iv = getInvocable("portal/$script.js", c)
+    override fun loadScripts() {
+        super.loadScripts()
 
-            if (iv == null) {
-                c.character.message(AlertMessage("Portal script $script does not exist"))
-                println("Portal " + script + " is uncoded. (" + portal.id + ")")
-                return
+        val quests: Set<Class<*>> = reflections.getTypesAnnotatedWith(Portal::class.java)
+        quests.forEach {
+            it.getAnnotation(Portal::class.java).names.forEach { name ->
+                val script = it.getConstructor().newInstance() as PortalScript
+                script.name = name
+                scripts[name] = script
             }
-
-            engine?.run {
-                this.put("portal", portalScriptMethods)
-                iv.invokeFunction("execute")
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
+    }
+
+    fun portalError(name: String) {
+        Logger.log(LogType.MISSING, "Missing proper portal script $name", this)
     }
 }

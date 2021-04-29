@@ -4,7 +4,6 @@ import client.Client
 import client.messages.broadcast.types.AlertMessage
 import net.maple.packets.CharacterPackets.message
 import net.maple.packets.ConversationPackets
-import scripting.DialogScript
 
 class DialogContext(
     val script: DialogScript,

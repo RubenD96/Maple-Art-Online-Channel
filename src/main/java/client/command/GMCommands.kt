@@ -22,7 +22,7 @@ import net.maple.packets.CharacterPackets.modifyInventory
 import net.maple.packets.FieldPackets.fieldEffect
 import net.server.Server
 import net.server.Server.getCharacter
-import scripting.ScriptManager
+import scripting.dialog.npc.NPCScriptManager
 import scripting.dialog.DialogUtils
 import java.util.*
 import javax.script.ScriptEngine
@@ -575,7 +575,7 @@ class GMCommands {
         override val description: String = "This actually doesn't do anything fyi"
 
         override fun execute(chr: Character) {
-            ScriptManager.loadScripts()
+            NPCScriptManager.loadScripts()
         }
     }
 
