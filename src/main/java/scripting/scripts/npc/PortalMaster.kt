@@ -14,8 +14,8 @@ class PortalMaster : NPCScript() {
     private val DialogContext.destinations: List<Int>
         get() = c.character.towns.toList().filter { it != c.character.fieldId }
 
-    override fun start(c: Client) {
-        execute(c) {
+    override fun execute(c: Client) {
+        start(c) {
             with(it) {
                 val selections = LinkedHashMap<String, ((Int) -> Unit)>()
                 destinations.forEach { mid ->

@@ -7,7 +7,7 @@ import java.util.function.Consumer
 
 abstract class NPCScript : DialogScript() {
 
-    fun execute(c: Client, consumer: Consumer<DialogContext>) {
+    fun start(c: Client, consumer: Consumer<DialogContext>) {
         val context = DialogContext(this, c, id)
         c.script = context
         consumer.accept(context)

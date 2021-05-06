@@ -20,8 +20,8 @@ class ExampleNpc : NPCScript() {
         var input = "TODO"
     }
 
-    override fun start(c: Client) {
-        execute(c) {
+    override fun execute(c: Client) {
+        start(c) {
             it.holder = Data()
             it.okDialog()
         }

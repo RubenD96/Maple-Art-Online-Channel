@@ -44,7 +44,7 @@ class UserQuestRequestHandler : PacketHandler {
             c.script = null
             QuestScriptManager[qid]?.let {
                 if (start) {
-                    it.start(c)
+                    it.execute(c)
                 } else {
                     it.finish(c)
                 }

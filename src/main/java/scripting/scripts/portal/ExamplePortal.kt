@@ -8,7 +8,7 @@ import scripting.portal.PortalScript
 @Portal(["ExamplePortal"])
 class ExamplePortal : PortalScript() {
 
-    override fun start(c: Client, portal: FieldPortal) {
+    override fun onEnter(c: Client, portal: FieldPortal) {
         portal.enter(c.character)
     }
 }

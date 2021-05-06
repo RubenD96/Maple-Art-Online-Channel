@@ -8,7 +8,7 @@ import scripting.portal.PortalScript
 @Portal(["AgilityEnd"])
 class AgilityEnd : PortalScript() {
 
-    override fun start(c: Client, portal: FieldPortal) {
+    override fun onEnter(c: Client, portal: FieldPortal) {
         c.character.moveCollections[c.character.fieldId]!!.export()
         c.character.field.startReplay()
         portal.enter(c.character)

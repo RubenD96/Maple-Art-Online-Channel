@@ -10,7 +10,7 @@ import scripting.portal.PortalScript
 @Portal(["Channel"])
 class ChannelCheck : PortalScript() {
 
-    override fun start(c: Client, portal: FieldPortal) {
+    override fun onEnter(c: Client, portal: FieldPortal) {
         if (c.character.getChannel().channelId + 1 == 1) {
             portal.enter(c.character)
         } else {

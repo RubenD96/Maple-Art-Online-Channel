@@ -9,7 +9,7 @@ import scripting.field.FieldScript
 @Field(["FirstVisit"])
 class FirstVisit : FieldScript() {
 
-    override fun start(c: Client) {
+    override fun execute(c: Client) {
         val chr = c.character
         if (!chr.isTownUnlocked(chr.fieldId)) {
             chr.addTown(chr.fieldId)

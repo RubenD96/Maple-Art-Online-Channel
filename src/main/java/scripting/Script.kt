@@ -6,5 +6,5 @@ interface Script<T> {
 
     var value: T
 
-    fun start(c: Client)
+    fun execute(c: Client)
 }

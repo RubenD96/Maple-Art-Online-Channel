@@ -56,13 +56,13 @@ class DropChanger : NPCScript() {
         lateinit var item: DropEntry
     }
 
-    override fun start(c: Client) {
+    override fun execute(c: Client) {
         if (!c.isAdmin) {
             c.script = null
             return
         }
 
-        execute(c) {
+        start(c) {
             it.holder = Data()
             val mobid = c.character.philId
             it.holder.numberData["mobid"] = if (mobid == 0) 100100 else c.character.philId

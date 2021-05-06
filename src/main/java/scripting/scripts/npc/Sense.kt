@@ -29,13 +29,13 @@ class Sense : NPCScript() {
     private val DialogContext.drops get() = field.getObjects<AbstractFieldDrop>().toList()
     private val DialogContext.portals get() = field.portals.values
 
-    override fun start(c: Client) {
+    override fun execute(c: Client) {
         if (!c.isAdmin) {
             c.script = null
             return
         }
 
-        execute(c) {
+        start(c) {
             it.startMenu()
         }
     }

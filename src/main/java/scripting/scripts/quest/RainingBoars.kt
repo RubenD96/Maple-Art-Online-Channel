@@ -11,7 +11,7 @@ import scripting.dialog.quest.QuestScript
 @Quest([1000])
 class RainingBoars : QuestScript() {
 
-    override fun start(c: Client) {
+    override fun execute(c: Client) {
         execute(c, 12101) {
             it.sendMessage(
                 "I want to make a beautiful necklace but I am missing something...\r\n" +

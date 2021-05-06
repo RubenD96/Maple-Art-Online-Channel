@@ -15,7 +15,7 @@ class ExampleQuest : QuestScript() {
     /**
      * The basic check if a quest can be started is called in Character.startQuest()
      */
-    override fun start(c: Client) {
+    override fun execute(c: Client) {
         execute(c, 22000) {
             it.helloThere()
         }

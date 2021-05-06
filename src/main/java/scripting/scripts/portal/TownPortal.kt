@@ -10,7 +10,7 @@ import scripting.portal.PortalScript
 @Portal(["TownPortal"])
 class TownPortal : PortalScript() {
 
-    override fun start(c: Client, portal: FieldPortal) {
+    override fun onEnter(c: Client, portal: FieldPortal) {
         UserSelectNpcHandler.openNpc(c, NPCManager.getNPC(1032102))
     }
 }

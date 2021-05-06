@@ -29,7 +29,7 @@ class UserSelectNpcHandler : PacketHandler {
         fun openNpc(c: Client, npc: FieldNPC) {
             c.script = null
             NPCScriptManager[npc.npcId]?.let {
-                it.start(c)
+                it.execute(c)
             } ?: run {
                 if (shops.contains(npc.npcId)) {
                     getShop(npc.npcId).open(c.character)

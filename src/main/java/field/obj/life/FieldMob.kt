@@ -15,6 +15,7 @@ import net.maple.SendOpcode
 import net.maple.packets.CharacterPackets.message
 import net.server.Server
 import scripting.mob.MobScriptManager
+import scripting.mob.MobScriptManagerOld
 import util.packet.Packet
 import util.packet.PacketWriter
 import java.awt.Point
@@ -46,7 +47,7 @@ class FieldMob(val template: FieldMobTemplate, left: Boolean) : AbstractFieldCon
             if (hp <= 0) add = damage - hp
             addToDamageIndex(chr, add)
 
-            if (template.onHit) MobScriptManager.onHit(chr.client, this)
+            MobScriptManager[template.id]?.onHit(chr, this, damage)
         }
 
         var indicator = hp / template.maxHP.toFloat() * 100f
@@ -55,7 +56,7 @@ class FieldMob(val template: FieldMobTemplate, left: Boolean) : AbstractFieldCon
         chr.write(showHpBar(indicator))
 
         if (hp <= 0) {
-            kill(chr)
+            kill(chr, damage)
         }
     }
 
@@ -67,8 +68,8 @@ class FieldMob(val template: FieldMobTemplate, left: Boolean) : AbstractFieldCon
         }
     }
 
-    fun kill(chr: Character) {
-        if (template.onDeath) MobScriptManager.onDeath(chr.client, this)
+    fun kill(chr: Character, damage: Int = -1) {
+        MobScriptManager[template.id]?.onDeath(chr, this, damage)
 
         field.leave(this, leaveFieldPacket)
         chr.gainExp(template.exp) // todo share
