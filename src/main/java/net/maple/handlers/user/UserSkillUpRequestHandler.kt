@@ -16,7 +16,7 @@ class UserSkillUpRequestHandler : PacketHandler {
 
         val timestamp = reader.readInteger()
         val id = reader.readInteger()
-        val template = SkillManager.getSkill(id) ?: return run { c.close(this, "Invalid skillid levelup") }
+        /*val template = SkillManager.getSkill(id) ?: return run { c.close(this, "Invalid skillid levelup") }
 
         template.maxLevel = 30
 
@@ -30,7 +30,7 @@ class UserSkillUpRequestHandler : PacketHandler {
                 // don't kick, might be cause of lag
                 return
             }
-        }/* ?: run {
+        } ?: run {
             chr.modifySkills { it.add(id) } // thonk kotlin magic
             return
         }*/

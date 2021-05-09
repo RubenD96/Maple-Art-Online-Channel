@@ -12,7 +12,7 @@ class ChannelCheck : PortalScript() {
 
     override fun onEnter(c: Client, portal: FieldPortal) {
         if (c.character.getChannel().channelId + 1 == 1) {
-            portal.enter(c.character)
+            portal.forceEnter(c.character)
         } else {
             c.character.message(AlertMessage(("You can only enter this map in channel 1!")))
         }

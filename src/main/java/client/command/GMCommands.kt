@@ -7,6 +7,7 @@ import client.inventory.item.slots.ItemSlotBundle
 import client.messages.broadcast.types.AlertMessage
 import client.messages.broadcast.types.NoticeMessage
 import client.messages.broadcast.types.NoticeWithoutPrefixMessage
+import client.player.Job
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine
 import field.obj.drop.ItemDrop
 import field.obj.life.FieldMob
@@ -601,6 +602,45 @@ class GMCommands {
                     drop.expire = System.currentTimeMillis() + 300000
                     chr.field.enter(drop)
                 }
+            }
+        }
+    }
+
+    object Stat : Command {
+
+        private var type: String = ""
+        private var value: Int = 0
+
+        override val description: String = "!stat [type:string] [value:int]"
+
+        override fun loadParams(params: Map<Int, String>) {
+            type = params[0]!!
+            value = params[1]!!.toInt()
+        }
+
+        override fun execute(chr: Character) {
+            when (type.toLowerCase()) {
+                "level" -> chr.level = value
+                "face" -> chr.face = value
+                "hair" -> chr.hair = value
+                "gender" -> chr.gender = value
+                "skin" -> chr.skinColor = value
+                "job" -> chr.job = client.player.Job.getById(value)
+                "ap" -> chr.ap = value
+                "sp" -> chr.sp = value
+                "fame" -> chr.fame = value
+                "str" -> chr.strength = value
+                "dex" -> chr.dexterity = value
+                "int" -> chr.intelligence = value
+                "luk" -> chr.luck = value
+                "hp" -> chr.health = value
+                "mhp" -> chr.maxHealth = value
+                "mp" -> chr.mana = value
+                "mmp" -> chr.maxMana = value
+                "exp" -> chr.exp = value
+                "meso" -> chr.meso = value
+                else -> chr.message(NoticeWithoutPrefixMessage("Invalid type \"$type\", correct types: " +
+                        "level | face | hair | gender | skin | job | ap | sp | fame | str | dex | int | luk | hp | mhp | mp | mmp | exp | meso)"))
             }
         }
     }

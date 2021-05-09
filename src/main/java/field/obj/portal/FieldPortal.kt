@@ -14,6 +14,9 @@ class FieldPortal : AbstractFieldPortal(), Portal {
     lateinit var field: Field
     val rect: Rectangle get() = Rectangle(position.x - 30, position.y - 30, 60, 60)
 
+    /**
+     * !! DO NOT USE THIS METHOD INSIDE PORTAL SCRIPTS !!
+     */
     override fun enter(chr: Character) {
         if (targetMap != 999999999) {
             if (script != "") {

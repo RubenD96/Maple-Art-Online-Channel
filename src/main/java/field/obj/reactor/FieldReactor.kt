@@ -57,7 +57,8 @@ class FieldReactor(val template: ReactorTemplate) : AbstractFieldObject() {
     private fun changeState() {
         sendChangeStatePacket()
 
-        if (state >= template.events.size) {
+        // dont uncomment without fixing
+        /*if (state >= template.events.size) {
             val reactor = this
             GlobalScope.launch {
                 //field.leave(reactor, leaveFieldPacket)
@@ -65,7 +66,7 @@ class FieldReactor(val template: ReactorTemplate) : AbstractFieldObject() {
                 state = 0
                 field.enter(reactor)
             }
-        }
+        }*/
     }
 
     private fun sendChangeStatePacket() {

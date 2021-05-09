@@ -15,6 +15,7 @@ class AttackInfo(val type: AttackType, val chr: Character, val r: PacketReader) 
     var option: Byte = 0
     var attackActionType: Byte = 0
     var attackSpeed: Byte = 0
+    var actionAndDir: Short = 0
     var isLeft = false
     var damageInfo: MutableList<DamageInfo> = ArrayList()
 
@@ -56,8 +57,6 @@ class AttackInfo(val type: AttackType, val chr: Character, val r: PacketReader) 
         }
         val crc = r.readInteger()
 
-        println("$rand & $crc")
-
         r.readInteger()
         r.readInteger()
         // r.readInteger(); // keydown
@@ -67,19 +66,17 @@ class AttackInfo(val type: AttackType, val chr: Character, val r: PacketReader) 
             r.readByte()
         }
 
-        val v17 = r.readShort()
-        isLeft = v17.toInt() shr 15 and 1 != 0
-        action = v17.toInt() and 0xFFF
-        //println(action)
+        actionAndDir = r.readShort()
+        isLeft = (actionAndDir.toInt() shr 15) and 1 != 0
+        action = actionAndDir.toInt() and 0x7FFF
 
-        r.readInteger()
+        r.readInteger() // crc
 
         attackActionType = r.readByte()
-        //println(attackActionType)
         attackSpeed = r.readByte()
         attackTime = r.readInteger()
 
-        r.readInteger()
+        r.readInteger() // bmage?
 
         if (type == AttackType.SHOOT) {
             r.readShort()

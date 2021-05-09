@@ -11,6 +11,6 @@ class AgilityEnd : PortalScript() {
     override fun onEnter(c: Client, portal: FieldPortal) {
         c.character.moveCollections[c.character.fieldId]!!.export()
         c.character.field.startReplay()
-        portal.enter(c.character)
+        portal.forceEnter(c.character)
     }
 }

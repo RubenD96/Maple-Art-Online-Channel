@@ -9,6 +9,6 @@ import scripting.portal.PortalScript
 class ExamplePortal : PortalScript() {
 
     override fun onEnter(c: Client, portal: FieldPortal) {
-        portal.enter(c.character)
+        portal.forceEnter(c.character)
     }
 }

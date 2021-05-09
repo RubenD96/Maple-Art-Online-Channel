@@ -14,8 +14,8 @@ class DamageInfo(val type: AttackType, val chr: Character) {
     var calcDamageStatIndex = 0
     var hitAction: Byte = 0
     var frameIdx: Byte = 0
-    var isLeft = false
-    var isDoomed = false
+    //var isLeft = false
+    //var isDoomed = false
     var delay: Short = 0
 
     lateinit var hitPosition: Point
@@ -25,20 +25,20 @@ class DamageInfo(val type: AttackType, val chr: Character) {
     fun decode(r: PacketReader, damagePerMob: Int) {
         mobId = r.readInteger()
         hitAction = r.readByte()
-        val v37 = r.readByte()
-        foreAction = v37.toInt() and 0x7F
-        isLeft = v37.toInt() shr 7 and 1 != 0
+        foreAction = r.readByte().toInt()
+        //foreAction = v37.toInt() and 0x7F
+        //isLeft = v37.toInt() shr 7 and 1 != 0
         frameIdx = r.readByte()
-        val v38 = r.readByte()
-        calcDamageStatIndex = v38.toInt() and 0x7F
-        isDoomed = v37.toInt() shr 7 and 1 != 0
+        calcDamageStatIndex = r.readByte().toInt()
+        //calcDamageStatIndex = v38.toInt() and 0x7F
+        //isDoomed = v37.toInt() shr 7 and 1 != 0
         hitPosition = r.readPoint()
         prevPosition = r.readPoint()
 
         delay = r.readShort()
         damage = IntArray(damagePerMob)
-        IntStream.range(0, damagePerMob).forEach { damage[it] = r.readInteger() }
-        r.readInteger()
+        repeat(damagePerMob) { damage[it] = r.readInteger() }
+        r.readInteger() // crc
     }
 
     fun apply() {

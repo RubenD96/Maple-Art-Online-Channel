@@ -38,19 +38,20 @@ class UserAttackHandler(private val type: AttackType) : PacketHandler {
         pw.write(chr.level)
 
         if (info.skillId > 0) {
-            pw.write(0) // todo
+            pw.write(chr.skills[info.skillId]?.level ?: 0)
             pw.writeInt(info.skillId)
         } else {
             pw.write(0)
         }
 
-        pw.write(0x20)
-        pw.writeShort(info.action and 0x7FFF or (if (info.isLeft) 1 else 0) shl 15)
+        pw.writeByte(info.option)
+        pw.writeShort(info.actionAndDir)
+        //pw.writeShort(info.action and 0x7FFF or (if (info.isLeft) 1 else 0) shl 15)
 
         if (info.action <= 0x110) {
-            pw.write(0)
-            pw.write(0)
-            pw.writeInt(2070000)
+            pw.write(0) // nActionSpeed
+            pw.write(0) // nMastery
+            pw.writeInt(0) // nBulletItemID
             info.damageInfo.forEach {
                 pw.writeInt(it.mobId)
 
@@ -58,7 +59,7 @@ class UserAttackHandler(private val type: AttackType) : PacketHandler {
 
                 pw.write(it.hitAction.toInt())
                 Arrays.stream(it.damage).forEach { damage: Int ->
-                    pw.writeBool(false)
+                    pw.writeBool(false) // abCritical
                     pw.writeInt(damage)
                 }
             }
