@@ -7,6 +7,7 @@ import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine
 import constants.ServerConstants
 import constants.ServerConstants.RANKING_TIMER
 import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Semaphore
 import managers.*
 import net.database.BeautyAPI
 import net.database.CharacterAPI
@@ -24,6 +25,8 @@ import util.logging.Logger
 import world.guild.Guild
 import world.ranking.RankingKeeper
 import java.io.File
+import java.util.concurrent.locks.Lock
+import java.util.concurrent.locks.ReentrantLock
 
 fun main() {
     Server
@@ -48,10 +51,6 @@ object Server {
             val channel = ChannelServer(i, 7575 + i, /*ServerConstants.IP*/ "63.251.217.1")
             channel.start()
             channels.add(channel)
-
-            val centralListener = CentralListener(channel)
-            centralListener.start()
-            channel.centralListener = centralListener
         }
 
         // the first script engine takes a few sec to load, all subsequent engines are hella fast

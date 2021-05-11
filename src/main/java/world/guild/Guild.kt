@@ -1,11 +1,13 @@
 package world.guild
 
 import client.Character
+import net.database.GuildAPI
 import util.HexTool
 import util.logging.LogType
 import util.logging.Logger.log
 import util.packet.Packet
 import util.packet.PacketWriter
+import world.guild.bbs.GuildBBS
 import java.util.*
 import kotlin.collections.LinkedHashMap
 
@@ -19,6 +21,7 @@ class Guild(val id: Int) {
     val members: HashMap<Int, GuildMember> = LinkedHashMap()
     val skills: HashMap<Int, GuildSkill> = LinkedHashMap()
     var mark: GuildMark? = null
+    val bbs = GuildBBS(id).also { GuildAPI.loadFullBBS(id, it) }
 
     fun encode(pw: PacketWriter) {
         pw.writeInt(id)

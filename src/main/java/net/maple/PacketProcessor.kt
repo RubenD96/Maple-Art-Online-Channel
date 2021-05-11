@@ -68,6 +68,7 @@ object PacketProcessor {
         handlers[RecvOpcode.FRIEND_REQUEST] = FriendRequestHandler()
         handlers[RecvOpcode.USER_MIGRATE_TO_ITC_REQUEST] = UserMigrateToITCRequestHandler()
         handlers[RecvOpcode.FUNC_KEY_MAPPED_MODIFIED] = FuncKeyMappedModifiedHandler()
+        handlers[RecvOpcode.GUILD_BBS] = GuildBBSHandler()
         handlers[RecvOpcode.QUICKSLOT_KEY_MAPPED_MODIFIED] = QuickSlotKeyMappedModifiedHandler()
         handlers[RecvOpcode.MOB_MOVE] = MobMoveHandler()
         handlers[RecvOpcode.MOB_APPLY_CTRL] = MobApplyCtrlHandler()

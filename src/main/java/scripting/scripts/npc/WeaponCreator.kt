@@ -17,12 +17,12 @@ class WeaponCreator : NPCScript() {
             holder.numberData["mobid"] = value
         }
 
-    override fun start(c: Client) {
-        execute(c) {
+    override fun execute(c: Client) {
+        start(c) {
             with(it) {
                 if (!c.isAdmin) {
                     onEnd()
-                    return@execute
+                    return@start
                 }
 
                 sendGetNumber(

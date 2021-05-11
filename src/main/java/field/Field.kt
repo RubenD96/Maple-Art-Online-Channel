@@ -149,9 +149,9 @@ class Field(val template: FieldTemplate) {
                     }
                 }
             }
-            if (template.script.isNotEmpty()) { // never happens as we set script to mapid when onEnter is not present
-                FieldScriptManager[template.script]?.execute(obj.client) ?: error("TODO") //todo
-            }
+            //if (template.script.isNotEmpty()) { // never happens as we set script to mapid when onEnter is not present
+            FieldScriptManager[template.script]?.execute(obj.client)
+            //}
         } else { // not a character object
             obj.id = runningObjectId.addAndGet(1)
             when (obj) {

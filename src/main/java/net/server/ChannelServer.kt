@@ -1,7 +1,6 @@
 package net.server
 
 import client.Character
-import constants.ServerConstants
 import constants.ServerConstants.DROP_CLEAR_TIMER
 import constants.ServerConstants.RESPAWN_TIMER
 import io.netty.bootstrap.ServerBootstrap
@@ -19,12 +18,14 @@ import net.netty.PacketDecoder
 import net.netty.PacketEncoder
 import net.netty.ServerHandler
 import util.packet.Packet
-import java.util.*
+import java.net.BindException
 
-class ChannelServer(val channelId: Int, val port: Int, val IP: String) : Thread() {
+class ChannelServer(val channelId: Int, var port: Int, val IP: String) : Thread() {
 
     var fieldManager: FieldManager = FieldManager()
     lateinit var centralListener: CentralListener
+    private lateinit var bossGroup: EventLoopGroup
+    private lateinit var workerGroup: EventLoopGroup
 
     fun init() {
         GlobalScope.launch {
@@ -51,10 +52,9 @@ class ChannelServer(val channelId: Int, val port: Int, val IP: String) : Thread(
         itemClearRoutine()
     }
 
-    override fun run() {
-        init()
-        val bossGroup: EventLoopGroup = NioEventLoopGroup()
-        val workerGroup: EventLoopGroup = NioEventLoopGroup()
+    private fun startChannelServer() {
+        bossGroup = NioEventLoopGroup()
+        workerGroup = NioEventLoopGroup()
         try {
             val b = ServerBootstrap()
             b.group(bossGroup, workerGroup)
@@ -75,13 +75,28 @@ class ChannelServer(val channelId: Int, val port: Int, val IP: String) : Thread(
             // Bind and start to accept incoming connections.
             val f: ChannelFuture = b.bind(port).sync()
             println("Channel server started on $port")
+            startCentralListener()
             f.channel().closeFuture().sync()
+        } catch (be: BindException) {
+            System.err.println("Port $port already in use, retrying with ${port + 1}")
+            port++
+            startChannelServer()
         } catch (ie: InterruptedException) {
             ie.printStackTrace()
         } finally {
             workerGroup.shutdownGracefully()
             bossGroup.shutdownGracefully()
         }
+    }
+
+    override fun run() {
+        init()
+        startChannelServer()
+    }
+
+    private fun startCentralListener() {
+        centralListener = CentralListener(this)
+        centralListener.start()
     }
 
     override fun toString(): String {

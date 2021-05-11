@@ -7,6 +7,9 @@ import net.server.Server
 import world.guild.Guild
 import world.guild.GuildMark
 import world.guild.GuildMember
+import world.guild.bbs.BBSComment
+import world.guild.bbs.BBSItem
+import world.guild.bbs.GuildBBS
 
 object GuildAPI {
 
@@ -19,9 +22,9 @@ object GuildAPI {
      */
     fun create(guild: Guild, leader: Character): Int {
         val id = connection.insertInto(GUILDS, GUILDS.NAME, GUILDS.LEADER)
-                .values(guild.name, leader.id)
-                .returningResult(GUILDS.ID)
-                .fetchOne().value1()
+            .values(guild.name, leader.id)
+            .returningResult(GUILDS.ID)
+            .fetchOne().value1()
         addMember(guild, leader, true)
         return id
     }
@@ -35,8 +38,8 @@ object GuildAPI {
      */
     fun addMember(guild: Guild, member: Character, leader: Boolean) {
         connection.insertInto(GUILDMEMBERS, GUILDMEMBERS.GID, GUILDMEMBERS.CID, GUILDMEMBERS.GRADE)
-                .values(guild.id, member.id, (if (leader) 1 else 5).toByte())
-                .execute()
+            .values(guild.id, member.id, (if (leader) 1 else 5).toByte())
+            .execute()
     }
 
     /**
@@ -47,9 +50,9 @@ object GuildAPI {
      */
     fun expel(guild: Guild, cid: Int) {
         connection.deleteFrom(GUILDMEMBERS)
-                .where(GUILDMEMBERS.GID.eq(guild.id))
-                .and(GUILDMEMBERS.CID.eq(cid))
-                .execute()
+            .where(GUILDMEMBERS.GID.eq(guild.id))
+            .and(GUILDMEMBERS.CID.eq(cid))
+            .execute()
     }
 
     /**
@@ -96,8 +99,8 @@ object GuildAPI {
      */
     fun disband(guild: Guild) {
         connection.deleteFrom(GUILDS)
-                .where(GUILDS.ID.eq(guild.id))
-                .execute()
+            .where(GUILDS.ID.eq(guild.id))
+            .execute()
     }
 
     /**
@@ -106,22 +109,24 @@ object GuildAPI {
      * @param guild Guild to update
      */
     fun updateInfo(guild: Guild) {
-        connection.update(GUILDS)
-                .set(GUILDS.NOTICE, guild.notice)
-                .set(GUILDS.RANK1, guild.ranks[0])
-                .set(GUILDS.RANK2, guild.ranks[1])
-                .set(GUILDS.RANK3, guild.ranks[2])
-                .set(GUILDS.RANK4, guild.ranks[3])
-                .set(GUILDS.RANK5, guild.ranks[4])
-                .set(GUILDS.LEADER, guild.leader)
+        with(GUILDS) {
+            connection.update(this)
+                .set(NOTICE, guild.notice)
+                .set(RANK1, guild.ranks[0])
+                .set(RANK2, guild.ranks[1])
+                .set(RANK3, guild.ranks[2])
+                .set(RANK4, guild.ranks[3])
+                .set(RANK5, guild.ranks[4])
+                .set(LEADER, guild.leader)
                 .execute()
+        }
     }
 
     fun updateMemberGrade(cid: Int, grade: Byte) {
         connection.update(GUILDMEMBERS)
-                .set(GUILDMEMBERS.GRADE, grade)
-                .where(GUILDMEMBERS.CID.eq(cid))
-                .execute()
+            .set(GUILDMEMBERS.GRADE, grade)
+            .where(GUILDMEMBERS.CID.eq(cid))
+            .execute()
     }
 
     /**
@@ -130,8 +135,120 @@ object GuildAPI {
      */
     fun getGuildId(chr: Character): Int {
         val rec = connection.select(GUILDMEMBERS.GID).from(GUILDMEMBERS)
-                .where(GUILDMEMBERS.CID.eq(chr.id))
-                .fetchOne()
+            .where(GUILDMEMBERS.CID.eq(chr.id))
+            .fetchOne()
         return if (rec == null) -1 else rec.value1()
+    }
+
+    /**
+     * Loads all data, threads and comments, for a specific guild.
+     * Should only be used once upon loading the guild
+     *
+     * @param gid The guildId to load
+     * @param bbs The bbs to ref
+     */
+    fun loadFullBBS(gid: Int, bbs: GuildBBS) {
+        val itemRes = connection.select().from(BBSITEMS)
+            .where(BBSITEMS.GUILDID.eq(gid))
+            .fetch()
+
+        val items = ArrayList<BBSItem>()
+        var high = -1
+        itemRes.forEach {
+            val itemId = it.getValue(BBSITEMS.ITEMID)
+            val cid = it.getValue(BBSITEMS.CID)
+            val title = it.getValue(BBSITEMS.TITLE)
+            val content = it.getValue(BBSITEMS.CONTENT)
+            val date = it.getValue(BBSITEMS.DATE)
+            val emote = it.getValue(BBSITEMS.EMOTE)
+
+            val commentRes = connection.select().from(BBSCOMMENTS)
+                .where(BBSCOMMENTS.GUILDID.eq(gid))
+                .and(BBSCOMMENTS.ITEMID.eq(itemId))
+                .fetch()
+
+            val comments = ArrayList<BBSComment>()
+            var commentHigh = -1
+            commentRes.forEach { rec ->
+                val commentId = rec.getValue(BBSCOMMENTS.COMMENTID)
+                val commentCid = rec.getValue(BBSCOMMENTS.CID)
+                val commentDate = rec.getValue(BBSCOMMENTS.DATE)
+                val commentContent = rec.getValue(BBSCOMMENTS.CONTENT)
+
+                comments.add(BBSComment(commentId, commentCid, commentDate, commentContent))
+                if (commentId > commentHigh) commentHigh = commentId
+            }
+
+            val item = BBSItem(itemId, cid, title, content, date, emote, comments)
+            items.add(item)
+            item.high = commentHigh
+
+            if (itemId > high) high = itemId
+        }
+        bbs.setItems(items)
+        bbs.high = high
+    }
+
+    /**
+     * Adds a new BBS thread
+     */
+    fun addBBSItem(gid: Int, item: BBSItem) {
+        with(BBSITEMS) {
+            connection.insertInto(this, GUILDID, ITEMID, CID, TITLE, CONTENT, DATE, EMOTE)
+                .values(gid, item.id, item.cid, item.title, item.content, item.date, item.emote)
+                .execute()
+        }
+    }
+
+    /**
+     * Updates an existing BBS thread
+     */
+    fun updateBBSItem(gid: Int, item: BBSItem) {
+        with(BBSITEMS) {
+            connection.update(this)
+                .set(TITLE, item.title)
+                .set(CONTENT, item.content)
+                .set(DATE, item.date)
+                .set(EMOTE, item.emote)
+                .where(GUILDID.eq(gid))
+                .and(ITEMID.eq(item.id))
+                .execute()
+        }
+    }
+
+    /**
+     * Deletes an existing BBS thread
+     */
+    fun deleteBBSItem(gid: Int, item: BBSItem) {
+        with(BBSITEMS) {
+            connection.deleteFrom(this)
+                .where(GUILDID.eq(gid))
+                .and(ITEMID.eq(item.id))
+                .execute()
+        }
+    }
+
+    /**
+     * Adds a new BBS comment on a BBS thread
+     */
+    fun addBBSComment(gid: Int, iid: Int, comment: BBSComment) {
+        with(BBSCOMMENTS) {
+            connection.insertInto(this, GUILDID, ITEMID, COMMENTID, CID, DATE, CONTENT)
+                .values(gid, iid, comment.id, comment.cid, comment.date, comment.content)
+                .execute()
+        }
+    }
+
+    /**
+     * Deletes an existing BBS comment on a BBS thread
+     */
+    fun deleteBBSComment(gid: Int, iid: Int, comment: BBSComment) {
+        with(BBSCOMMENTS) {
+            connection.deleteFrom(this)
+                .where(GUILDID.eq(gid))
+                .and(ITEMID.eq(iid))
+                .and(COMMENTID.eq(comment.id))
+                .execute()
+        }
     }
 }

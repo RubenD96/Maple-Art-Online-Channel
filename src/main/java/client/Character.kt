@@ -173,7 +173,7 @@ class Character(val client: Client, override var name: String, val record: Recor
     var trueMaxMana = 0
     var philId = 0
     var isInCashShop = false
-    var cursed: Int? = 4000524
+    var cursed: Int? = null // ItemConstants.DARK_TOKEN
     var prevRand: Int = 0
     var fieldKey: Byte = 0
     var migrating = true

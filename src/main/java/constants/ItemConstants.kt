@@ -2,6 +2,7 @@ package constants
 
 object ItemConstants {
 
+    const val DARK_TOKEN = 4000524
     const val PERMANENT = 150841440000000000L
     const val BASE_EMOTE = 5160000
 
