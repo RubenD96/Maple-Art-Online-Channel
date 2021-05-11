@@ -51,10 +51,10 @@ class AttackInfo(val type: AttackType, val chr: Character, val r: PacketReader) 
             COutPacket::Encode4(&oPacket, v245);
          */
         val rand = r.readInteger()
-        if (rand == chr.prevRand) {
+        /*if (rand == chr.prevRand) {
             chr.client.close(this, "Same consecutive rand in dmg check")
             return
-        }
+        }*/
         val crc = r.readInteger()
 
         r.readInteger()
