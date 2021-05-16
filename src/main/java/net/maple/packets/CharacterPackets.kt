@@ -74,11 +74,11 @@ object CharacterPackets {
         pw.writeInt(this.meso)
 
         // inv slots
-        pw.write(this.getInventory(ItemInventoryType.EQUIP).slotMax.toInt()) // equips
-        pw.write(this.getInventory(ItemInventoryType.CONSUME).slotMax.toInt()) // consumes
-        pw.write(this.getInventory(ItemInventoryType.INSTALL).slotMax.toInt()) // install
-        pw.write(this.getInventory(ItemInventoryType.ETC).slotMax.toInt()) // etc
-        pw.write(this.getInventory(ItemInventoryType.CASH).slotMax.toInt()) // cash
+        pw.writeByte(this.getInventory(ItemInventoryType.EQUIP).slotMax) // equips
+        pw.writeByte(this.getInventory(ItemInventoryType.CONSUME).slotMax) // consumes
+        pw.writeByte(this.getInventory(ItemInventoryType.INSTALL).slotMax) // install
+        pw.writeByte(this.getInventory(ItemInventoryType.ETC).slotMax) // etc
+        pw.writeByte(this.getInventory(ItemInventoryType.CASH).slotMax) // cash
 
         // admin shop
         /*pw.writeInt(0);

@@ -5,7 +5,7 @@ import client.inventory.ItemInventoryType
 import client.inventory.item.slots.ItemSlotBundle
 import constants.ItemConstants.isTreatSingly
 import field.obj.drop.ItemDrop
-import net.database.ItemAPI.deleteItemByUUID
+import net.database.ItemAPI
 import net.maple.handlers.PacketHandler
 import net.maple.packets.CharacterPackets.modifyInventory
 import util.packet.PacketReader
@@ -35,7 +35,8 @@ class UserChangeSlotPositionRequestHandler : PacketHandler {
 
                     item = it.getInventoryContext(type).take(from, number)
                     item.uuid = uuid
-                    deleteItemByUUID(uuid) // clear db entry
+
+                    uuid?.run { ItemAPI.deleteItemByUUID(this) } // clear db entry
                 } else {
                     it.getInventoryContext(type).remove(item)
                 }

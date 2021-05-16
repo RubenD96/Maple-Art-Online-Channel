@@ -32,8 +32,8 @@ class UserScriptMessageAnswerHandler : PacketHandler {
                         val input = reader.readInteger()
                         if (input < it.min || input > it.max) {
                             return run {
-                                c.close()
                                 Logger.log(LogType.INVALID, "Input $input not allowed on $id", this, c)
+                                it.onEnd()
                             }
                         }
                         when (action.toInt()) {
@@ -46,8 +46,8 @@ class UserScriptMessageAnswerHandler : PacketHandler {
                         val text = reader.readMapleString()
                         if (text.length < it.min || text.length > it.max) {
                             return run {
-                                c.close()
                                 Logger.log(LogType.INVALID, "Text size ${text.length} not allowed on $id", this, c)
+                                it.onEnd()
                             }
                         }
                         when (action.toInt()) {

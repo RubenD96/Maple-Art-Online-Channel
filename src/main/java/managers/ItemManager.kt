@@ -53,8 +53,9 @@ object ItemManager : Loadable {
                         if (type != ItemInventoryType.CASH || subType != 0) {
                             ItemBundleTemplate(id).decode(data)
                         } else { // todo pets
-                            log(LogType.INVALID, "Pets are not implemented yet", this)
-                            getItem(fallback)
+                            PetItemTemplate(id).decode(data)
+                            /*log(LogType.INVALID, "Pets are not implemented yet", this)
+                            getItem(fallback)*/
                         }
                     }
                 }

@@ -7,15 +7,14 @@ import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine
 import constants.ServerConstants
 import constants.ServerConstants.RANKING_TIMER
 import kotlinx.coroutines.*
-import kotlinx.coroutines.sync.Semaphore
 import managers.*
 import net.database.BeautyAPI
 import net.database.CharacterAPI
 import net.database.ShopAPI
 import scripting.dialog.npc.NPCScriptManager
 import scripting.dialog.npc.Npc
-import scripting.dialog.quest.QuestScriptManager
 import scripting.dialog.quest.Quest
+import scripting.dialog.quest.QuestScriptManager
 import scripting.field.Field
 import scripting.field.FieldScriptManager
 import scripting.portal.Portal
@@ -25,8 +24,6 @@ import util.logging.Logger
 import world.guild.Guild
 import world.ranking.RankingKeeper
 import java.io.File
-import java.util.concurrent.locks.Lock
-import java.util.concurrent.locks.ReentrantLock
 
 fun main() {
     Server
@@ -83,7 +80,10 @@ object Server {
 
     fun getCharacter(name: String): Character? {
         synchronized(characters) {
-            return characters.values.stream().filter { it.name == name }.findFirst().orElse(null)
+            return characters.values.stream()
+                .filter { it.name.equals(name, ignoreCase = true) }
+                .findFirst()
+                .orElse(null)
         }
     }
 

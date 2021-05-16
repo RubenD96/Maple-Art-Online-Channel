@@ -64,7 +64,7 @@ object ItemPackets {
         pw.writeMapleString(title)
         pw.writeShort(attribute)
 
-        pw.writeByte(levelUpType)
+        pw.writeByte(0) // leveluptype
         pw.writeByte(level)
         pw.writeInt(exp)
         pw.writeInt(durability)

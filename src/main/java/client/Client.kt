@@ -3,6 +3,7 @@ package client
 import client.interaction.storage.ItemStorage
 import client.inventory.item.slots.ItemSlotLocker
 import database.jooq.Tables
+import database.jooq.Tables.ACCOUNTS
 import io.netty.channel.Channel
 import io.netty.util.concurrent.ScheduledFuture
 import net.maple.packets.ConnectionPackets
@@ -57,10 +58,11 @@ class Client(c: Channel, siv: ByteArray, riv: ByteArray) : NettyClient(c, siv, r
     var script: DialogContext? = null
 
     fun login(data: Record, mi: MigrateInfo) {
-        accId = data.getValue(Tables.ACCOUNTS.ID)
-        isBanned = data.getValue(Tables.ACCOUNTS.BANNED) == 1.toByte()
-        isAdmin = data.getValue(Tables.ACCOUNTS.ADMIN) == 1.toByte()
-        pic = data.getValue(Tables.ACCOUNTS.PIC)
+        accId = data.getValue(ACCOUNTS.ID)
+        isBanned = data.getValue(ACCOUNTS.BANNED) == 1.toByte()
+        isAdmin = data.getValue(ACCOUNTS.ADMIN) == 1.toByte()
+        pic = data.getValue(ACCOUNTS.PIC)
+        storage = ItemStorage(data.getValue(ACCOUNTS.STORAGESLOTS), data.getValue(ACCOUNTS.STOREDMESO))
         worldChannel = Server.channels[mi.channelId]
         worldChannel.write(CentralPackets.getAddOnlinePlayerPacket(mi.port, accId))
         isLoggedIn = true

@@ -15,7 +15,6 @@ import net.database.AccountAPI.getAccountInfoTemporary
 import net.database.CharacterAPI.getOfflineId
 import net.database.ItemAPI.addLockerItem
 import net.database.ItemAPI.getLockerSize
-import net.database.ItemAPI.moveLockerToStorage
 import net.maple.SendOpcode
 import net.maple.handlers.PacketHandler
 import net.maple.packets.CashShopPackets.sendCashData
@@ -41,7 +40,7 @@ class CashShopCashItemRequestHandler : PacketHandler {
                 sendOnBuyPacket(reader, c)
             }
             type.toInt() == CashItemRequest.GIFT.value -> {
-                sendGift(reader, c)
+                sendGiftDecode(reader, c)
             }
             type.toInt() == CashItemRequest.SET_WISH.value -> {
                 sendSetWish(reader, c)
@@ -60,7 +59,12 @@ class CashShopCashItemRequestHandler : PacketHandler {
                 // ignore...
             }
             else -> {
-                log(LogType.UNCODED, "[BUY] Unhandled cash item operation 0x${toHex(type)} ($type) ${toHex(reader.data)}", this, c)
+                log(
+                    LogType.UNCODED,
+                    "[BUY] Unhandled cash item operation 0x${toHex(type)} ($type) ${toHex(reader.data)}",
+                    this,
+                    c
+                )
             }
         }
     }
@@ -112,7 +116,7 @@ class CashShopCashItemRequestHandler : PacketHandler {
 
             c.locker.add(slot)
             c.write(getOnBuyPacket(slot, c))
-            addLockerItem(c, slot)
+            //addLockerItem(c, slot)
 
             c.cash = c.cash - price
             c.sendCashData()
@@ -194,7 +198,7 @@ class CashShopCashItemRequestHandler : PacketHandler {
             }
         }
 
-        private fun sendGift(reader: PacketReader, c: Client) {
+        private fun sendGiftDecode(reader: PacketReader, c: Client) {
             val spw = reader.readMapleString()
             val sn = reader.readInteger()
 
@@ -202,6 +206,14 @@ class CashShopCashItemRequestHandler : PacketHandler {
 
             val giftTo = reader.readMapleString()
             val text = reader.readMapleString()
+
+            giftTo.split(";").forEach {
+                println("gift to: $it")
+                sendGift(c, it, spw, text, sn)
+            }
+        }
+
+        private fun sendGift(c: Client, giftTo: String, spw: String, text: String, sn: Int) {
             val cid = getOfflineId(giftTo)
 
             if (!giftChecks(c, spw, text, cid)) return
@@ -220,11 +232,11 @@ class CashShopCashItemRequestHandler : PacketHandler {
             slot.commodityId = sn
 
             chr?.let {
-                c.locker.add(slot)
+                it.client.locker.add(slot)
                 if (chr.isInCashShop) { // todo test
-                    c.sendLockerData()
+                    it.client.sendLockerData()
                 }
-                addLockerItem(c, slot)
+                //addLockerItem(c, slot)
             } ?: addLockerItem(cid, aid, slot)
 
             c.write(getOnGiftDonePacket(giftTo, commodity))
@@ -251,8 +263,8 @@ class CashShopCashItemRequestHandler : PacketHandler {
             val pos = reader.readShort()
 
             val slot = c.locker.stream()
-                    .filter { it.item.cashItemSN == sn }
-                    .findFirst().orElse(null) ?: return run {
+                .filter { it.item.cashItemSN == sn }
+                .findFirst().orElse(null) ?: return run {
                 log(LogType.NULL, "[MOVE_L_TO_S] Slot is null", this, c)
                 failRequest(c, 2)
             }
@@ -264,7 +276,12 @@ class CashShopCashItemRequestHandler : PacketHandler {
             }
 
             if (slot.item.templateId / 1000000 != inv.toInt()) {
-                log(LogType.INVALID, "[MOVE_L_TO_S] Wrong inventory attempt: ${slot.item.templateId / 1000000} inv: $inv", this, c)
+                log(
+                    LogType.INVALID,
+                    "[MOVE_L_TO_S] Wrong inventory attempt: ${slot.item.templateId / 1000000} inv: $inv",
+                    this,
+                    c
+                )
                 failRequest(c, 2)
                 return
             }
@@ -283,7 +300,12 @@ class CashShopCashItemRequestHandler : PacketHandler {
             }
 
             if (inventory.slotMax < pos || pos < 0) {
-                log(LogType.HACK, "[MOVE_L_TO_S] Position too high/low: $inv pos: $pos slotmax: ${inventory.slotMax}", this, c)
+                log(
+                    LogType.HACK,
+                    "[MOVE_L_TO_S] Position too high/low: $inv pos: $pos slotmax: ${inventory.slotMax}",
+                    this,
+                    c
+                )
                 failRequest(c, 25)
                 return
             }
@@ -297,7 +319,7 @@ class CashShopCashItemRequestHandler : PacketHandler {
                 .filter(i -> i.getValue() == slot.getItem())
                 .findFirst().get().getKey();*/
             c.write(getOnMoveLtoSDonePacket(slot, pos))
-            moveLockerToStorage(slot, pos)
+            //moveLockerToStorage(slot, pos)
         }
 
         private fun getOnMoveLtoSDonePacket(slot: ItemSlotLocker, pos: Short): Packet {

@@ -22,7 +22,7 @@ abstract class Avatar : AbstractFieldLife() {
 
     open val pets = arrayOfNulls<Pet>(3)
     protected open val inventories: Map<ItemInventoryType, ItemInventory> = mapOf(
-        ItemInventoryType.EQUIP to ItemInventory(24.toShort())
+        ItemInventoryType.EQUIP to ItemInventory(24)
     )
     var portableChair: Int? = null
     var guild: Guild? = null

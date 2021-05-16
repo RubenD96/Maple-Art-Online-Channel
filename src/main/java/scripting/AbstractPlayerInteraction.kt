@@ -147,7 +147,6 @@ abstract class AbstractPlayerInteraction(val c: Client) {
             equip.chuc = stats["STARS"]?.toByte() ?: 0
             equip.grade = stats["GRADE"]?.toByte() ?: 0
 
-            equip.levelUpType = stats["LVLUPTYPE"]?.toByte() ?: 0
             equip.level = stats["LEVEL"]?.toByte() ?: 0
             equip.exp = stats["EXP"] ?: 0
             equip.durability = stats["DURABILITY"] ?: 0

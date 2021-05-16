@@ -8,7 +8,7 @@ import net.database.AccountAPI.getAccountInfoTemporary
 import net.database.CharacterAPI.getNewCharacter
 import net.database.FriendAPI.loadFriends
 import net.database.FriendAPI.loadPending
-import net.database.ItemAPI.loadInventories
+import net.database.ItemAPI.loadItemInventories
 import net.database.QuestAPI
 import net.database.TownsAPI
 import net.database.WishlistAPI
@@ -31,7 +31,7 @@ class MigrateInHandler : PacketHandler {
 
             val accInfo = getAccountInfoTemporary(cid)
             val mi = clients[accInfo.getValue(Tables.ACCOUNTS.ID)]
-                    ?: return c.close(this, "MI is null (Channel reset?)")
+                ?: return c.close(this, "MI is null (Channel reset?)")
 
             if (mi.ip == c.ip) {
                 //Server.getInstance().getClients().remove(accInfo.getValue(ACCOUNTS.ID));
@@ -40,7 +40,7 @@ class MigrateInHandler : PacketHandler {
                 Server.addCharacter(chr)
                 c.character = chr
 
-                loadInventories(chr)
+                loadItemInventories(chr)
                 chr.validateStats()
 
                 QuestAPI.loadAll(chr)

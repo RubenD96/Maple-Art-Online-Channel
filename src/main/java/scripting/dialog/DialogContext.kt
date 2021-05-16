@@ -11,7 +11,7 @@ class DialogContext(
     private val id: Int
 ) {
 
-    lateinit var holder: StateHolder
+    var holder: StateHolder = StateHolder()
     var npcId = id
 
     var positive: (() -> Unit)? = null

@@ -8,6 +8,7 @@ enum class Job(override val value: Int) : IntegerValue {
 
     WEAPONLESS(0),
     WARRIOR(100),
+    HERO(112),
     DARK_KNIGHT(132),
     MAGE(200);
 

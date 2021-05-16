@@ -29,7 +29,7 @@ class ItemSlotEquip : ItemSlot() {
     var attribute by getObservableValue<Short>(0) // a flag
     var title by getObservableValue("")
 
-    var levelUpType by getObservableValue<Byte>(0) // ?
+    //var levelUpType by getObservableValue<Byte>(0) // ?
     var level by getObservableValue<Byte>(0) // weapon level
     var exp by getObservableValue(0) // related to weapon level
     var durability by getObservableValue(0)

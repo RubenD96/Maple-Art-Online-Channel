@@ -11,6 +11,7 @@ class ItemSlotLocker(val item: ItemSlot) {
     var paybackRate = 0
     var discountRate = 0
     var buyCharacterName: String? = null
+    var position: Short = 0
 
     fun encode(c: Client, pw: PacketWriter) {
         pw.writeLong(item.cashItemSN)

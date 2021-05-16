@@ -3,10 +3,13 @@ package scripting.dialog
 import client.Character
 import client.Client
 import client.interaction.storage.ItemStorageInteraction
+import client.inventory.item.slots.ItemSlotEquip
+import client.inventory.item.templates.ItemEquipTemplate
 import client.player.Beauty
 import field.obj.drop.DropEntry
 import field.obj.life.FieldMobTemplate
 import managers.BeautyManager
+import managers.ItemManager
 import managers.MobManager
 import net.database.BeautyAPI
 import net.database.DropAPI
@@ -255,5 +258,10 @@ object DialogUtils {
 
     fun Character.setHardcore(enable: Boolean) {
         hardcore = enable
+    }
+
+    fun createEquip(id: Int): ItemSlotEquip? {
+        val template = ItemManager.getItem(id)
+        return template.toItemSlot() as? ItemSlotEquip
     }
 }

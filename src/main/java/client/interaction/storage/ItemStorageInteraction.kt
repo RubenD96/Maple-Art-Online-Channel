@@ -38,7 +38,7 @@ class ItemStorageInteraction(val npcId: Int, val storage: ItemStorage) : Interac
     }
 
     fun encodeItems(pw: PacketWriter, flags: DbChar = DbChar.ALL) {
-        pw.write(storage.slotMax.toInt())
+        pw.writeByte(storage.slotMax)
         pw.writeLong(flags.value.toLong())
 
         if (flags.containsFlag(DbChar.MONEY)) pw.writeInt(storage.meso)

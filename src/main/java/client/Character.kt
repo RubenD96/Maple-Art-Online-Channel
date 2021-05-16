@@ -24,7 +24,7 @@ import client.stats.TemporaryStat
 import client.stats.TemporaryStatType
 import constants.UserConstants
 import constants.UserConstants.expTable
-import database.jooq.Tables
+import database.jooq.Tables.CHARACTERS
 import field.Field
 import field.obj.life.FieldControlledObject
 import field.obj.life.FieldMobTemplate
@@ -39,7 +39,7 @@ import net.database.CharacterAPI.updateKeyBindings
 import net.database.CharacterAPI.updateSkills
 import net.database.GuildAPI.getGuildId
 import net.database.GuildAPI.load
-import net.database.ItemAPI.saveInventories
+import net.database.ItemAPI.saveItemInventories
 import net.database.QuestAPI.saveInfo
 import net.database.TownsAPI.add
 import net.database.WishlistAPI.save
@@ -62,107 +62,114 @@ import kotlin.math.min
 
 class Character(val client: Client, override var name: String, val record: Record) : Avatar() {
 
-    override var id: Int = record.getValue(Tables.CHARACTERS.ID)
-    var gmLevel: Int = record.getValue(Tables.CHARACTERS.GM_LEVEL)
-    override var level: Int = record.getValue(Tables.CHARACTERS.LEVEL)
+    override var id: Int = record.getValue(CHARACTERS.ID)
+    var gmLevel: Int = record.getValue(CHARACTERS.GM_LEVEL)
+    override var level: Int = record.getValue(CHARACTERS.LEVEL)
         set(value) {
             field = value
             updateSingleStat(StatType.LEVEL)
         }
-    override var face: Int = record.getValue(Tables.CHARACTERS.FACE)
+    override var face: Int = record.getValue(CHARACTERS.FACE)
         set(value) {
             field = value
             updateSingleStat(StatType.FACE)
         }
-    override var hair: Int = record.getValue(Tables.CHARACTERS.HAIR)
+    override var hair: Int = record.getValue(CHARACTERS.HAIR)
         set(value) {
             field = value
             updateSingleStat(StatType.HAIR)
         }
-    override var gender: Int = record.getValue(Tables.CHARACTERS.GENDER)
-    override var skinColor: Int = record.getValue(Tables.CHARACTERS.SKIN)
+    override var gender: Int = record.getValue(CHARACTERS.GENDER)
+    override var skinColor: Int = record.getValue(CHARACTERS.SKIN)
         set(value) {
             field = value
             updateSingleStat(StatType.SKIN)
         }
-    override var job: Job = Job.getById(record.getValue(Tables.CHARACTERS.JOB))
+    override var job: Job = Job.getById(record.getValue(CHARACTERS.JOB))
         set(value) {
             field = value
             updateSingleStat(StatType.JOB)
         }
-    var ap: Int = record.getValue(Tables.CHARACTERS.AP)
+    var ap: Int = record.getValue(CHARACTERS.AP)
         set(value) {
             field = value
             updateSingleStat(StatType.AP)
         }
-    var sp: Int = record.getValue(Tables.CHARACTERS.SP)
+    var sp: Int = record.getValue(CHARACTERS.SP)
         set(value) {
             field = value
             updateSingleStat(StatType.SP)
         }
-    var fame: Int = record.getValue(Tables.CHARACTERS.FAME)
+    var fame: Int = record.getValue(CHARACTERS.FAME)
         set(value) {
             field = value
             updateSingleStat(StatType.FAME)
         }
-    var fieldId: Int = record.getValue(Tables.CHARACTERS.MAP)
-    var spawnpoint: Int = record.getValue(Tables.CHARACTERS.SPAWNPOINT)
+    var fieldId: Int = record.getValue(CHARACTERS.MAP)
+    var spawnpoint: Int = record.getValue(CHARACTERS.SPAWNPOINT)
 
-    var strength: Int = record.getValue(Tables.CHARACTERS.STR)
+    var strength: Int = record.getValue(CHARACTERS.STR)
         set(value) {
             field = value
             updateSingleStat(StatType.STR)
         }
-    var dexterity: Int = record.getValue(Tables.CHARACTERS.DEX)
+    var dexterity: Int = record.getValue(CHARACTERS.DEX)
         set(value) {
             field = value
             updateSingleStat(StatType.DEX)
         }
-    var intelligence: Int = record.getValue(Tables.CHARACTERS.INT)
+    var intelligence: Int = record.getValue(CHARACTERS.INT)
         set(value) {
             field = value
             updateSingleStat(StatType.INT)
         }
-    var luck: Int = record.getValue(Tables.CHARACTERS.LUK)
+    var luck: Int = record.getValue(CHARACTERS.LUK)
         set(value) {
             field = value
             updateSingleStat(StatType.LUK)
         }
 
-    var health: Int = record.getValue(Tables.CHARACTERS.HP)
+    var health: Int = record.getValue(CHARACTERS.HP)
         set(value) {
             field = min(value, trueMaxHealth)
             updateSingleStat(StatType.HP, false)
             updatePartyHP(false)
         }
-    var maxHealth: Int = record.getValue(Tables.CHARACTERS.MAX_HP)
+    var maxHealth: Int = record.getValue(CHARACTERS.MAX_HP)
         set(value) {
             field = value
             updateSingleStat(StatType.MAX_HP)
         }
-    var mana: Int = record.getValue(Tables.CHARACTERS.MP)
+    var mana: Int = record.getValue(CHARACTERS.MP)
         set(value) {
             field = min(value, trueMaxMana)
             updateSingleStat(StatType.MP, false)
         }
-    var maxMana: Int = record.getValue(Tables.CHARACTERS.MAX_MP)
+    var maxMana: Int = record.getValue(CHARACTERS.MAX_MP)
         set(value) {
             field = value
             updateSingleStat(StatType.MAX_MP)
         }
 
-    var exp: Int = record.getValue(Tables.CHARACTERS.EXP)
+    var exp: Int = record.getValue(CHARACTERS.EXP)
         set(value) {
             field = value
             updateSingleStat(StatType.EXP)
         }
-    var meso: Int = record.getValue(Tables.CHARACTERS.MESO)
+    var meso: Int = record.getValue(CHARACTERS.MESO)
         set(value) {
             field = value
             updateSingleStat(StatType.MESO)
         }
-    var totalDamage: Long = record.getValue(Tables.CHARACTERS.TOTAL_DAMAGE)
-    var hardcore: Boolean = record.getValue(Tables.CHARACTERS.HARDCORE) == 1.toByte()
+    var totalDamage: Long = record.getValue(CHARACTERS.TOTAL_DAMAGE)
+    var hardcore: Boolean = record.getValue(CHARACTERS.HARDCORE) == 1.toByte()
+    override val inventories: Map<ItemInventoryType, ItemInventory> = mapOf(
+        ItemInventoryType.EQUIP to ItemInventory(record.getValue(CHARACTERS.EQUIP_SLOTS)),
+        ItemInventoryType.CONSUME to ItemInventory(record.getValue(CHARACTERS.CONSUME_SLOTS)),
+        ItemInventoryType.INSTALL to ItemInventory(record.getValue(CHARACTERS.INSTALL_SLOTS)),
+        ItemInventoryType.ETC to ItemInventory(record.getValue(CHARACTERS.ETC_SLOTS)),
+        ItemInventoryType.CASH to ItemInventory(record.getValue(CHARACTERS.CASH_SLOTS))
+    )
 
     /**
      * End constructor fields
@@ -183,13 +190,6 @@ class Character(val client: Client, override var name: String, val record: Recor
     /**
      * Collections
      */
-    override val inventories: Map<ItemInventoryType, ItemInventory> = mapOf(
-        ItemInventoryType.EQUIP to ItemInventory(96.toShort()),
-        ItemInventoryType.CONSUME to ItemInventory(96.toShort()),
-        ItemInventoryType.INSTALL to ItemInventory(96.toShort()),
-        ItemInventoryType.ETC to ItemInventory(96.toShort()),
-        ItemInventoryType.CASH to ItemInventory(96.toShort())
-    )
     val quickSlotKeys = IntArray(8)
     val controlledObjects: MutableList<FieldControlledObject> = ArrayList()
     val quests: MutableMap<Int, Quest> = HashMap()
@@ -237,7 +237,7 @@ class Character(val client: Client, override var name: String, val record: Recor
         updateKeyBindings(this)
         updateSkills(this)
         saveMobKills(this)
-        saveInventories(this)
+        saveItemInventories(this)
         saveInfo(this)
         save(this)
         println("Total save in ${(System.currentTimeMillis() - start)}ms")
