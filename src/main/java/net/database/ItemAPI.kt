@@ -6,16 +6,12 @@ import client.interaction.storage.ItemStorage
 import client.inventory.ItemInventory
 import client.inventory.ItemInventoryType
 import client.inventory.item.slots.*
-import client.inventory.item.templates.ItemBundleTemplate
-import client.inventory.item.templates.ItemEquipTemplate
+import client.pet.FieldUserPet
 import database.jooq.Tables.*
 import managers.ItemManager
 import net.database.DatabaseCore.connection
 import org.jooq.Record
-import org.jooq.exception.DataAccessException
 import util.HexTool
-import util.logging.LogType
-import util.logging.Logger.log
 import java.util.*
 import kotlin.collections.HashSet
 
@@ -36,7 +32,17 @@ object ItemAPI {
 
                 val items = chr.getInventory(item.templateId / 1000000 - 1).items
                 items[it.getValue(ITEMSLOTS.POSITION)] = item
+
+                if (item is ItemSlotPet) {
+                    if (item.equipSlot.toInt() != -1) {
+                        val pet = FieldUserPet(chr, item)
+                        pet.idx = item.equipSlot
+                        chr.pets.add(pet)
+                        item.updated = false
+                    }
+                }
             }
+            chr.pets.sortBy { it.idx }
         }
 
         with(ITEMSTORAGES) {
@@ -146,6 +152,7 @@ object ItemAPI {
             item.attribute = rec.getValue(ATTRIBUTE)
             item.dateDead = rec.getValue(DATEDEAD)
             item.remainLife = rec.getValue(REMAINLIFE)
+            item.equipSlot = rec.getValue(EQUIPSLOT)
         }
     }
 
@@ -201,7 +208,7 @@ object ItemAPI {
     }
 
     private fun updateItemSlot(item: ItemSlot, position: Short) {
-        println("Update me!! $item")
+        println("Update me!! $item | $position")
 
         with(ITEMSLOTS) {
             connection.update(this)
@@ -278,6 +285,7 @@ object ItemAPI {
                 .set(ATTRIBUTE, item.attribute)
                 .set(DATEDEAD, item.dateDead)
                 .set(REMAINLIFE, item.remainLife)
+                .set(EQUIPSLOT, item.equipSlot)
                 .where(SLOTID.eq(item.uuid))
                 .execute()
         }
@@ -303,7 +311,7 @@ object ItemAPI {
         position: Short,
         type: DBInventoryType
     ) {
-        println("Insert me!! $item")
+        println("Insert me!! $item | $position")
         item.uuid ?: run {
             val uuid = HexTool.toBytes(UUID.randomUUID().toString().replace("-", ""))
             item.uuid = uuid
@@ -433,7 +441,8 @@ object ItemAPI {
                 PETSKILL,
                 ATTRIBUTE,
                 DATEDEAD,
-                REMAINLIFE
+                REMAINLIFE,
+                EQUIPSLOT
             )
                 .values(
                     item.uuid,
@@ -445,7 +454,8 @@ object ItemAPI {
                     item.petSkill,
                     item.attribute,
                     item.dateDead,
-                    item.remainLife
+                    item.remainLife,
+                    item.equipSlot
                 )
                 .execute()
         }
@@ -525,11 +535,11 @@ object ItemAPI {
 
         toDeleteInv.forEach {
             when {
-                storageContains(chr.client.storage, it) ->
+                storageContains(chr.client.storage, it, toUpdate) ->
                     connection.insertInto(ITEMSTORAGES, ITEMSTORAGES.SLOTID, ITEMSTORAGES.AID)
                         .values(it, chr.client.accId)
                         .execute()
-                lockerContains(chr.client.locker, it) ->
+                lockerContains(chr.client.locker, it, toUpdate) ->
                     connection.insertInto(ITEMLOCKERS, ITEMLOCKERS.SLOTID, ITEMLOCKERS.AID)
                         .values(it, chr.client.accId)
                         .execute()
@@ -546,11 +556,11 @@ object ItemAPI {
 
         toDeleteStorage.forEach {
             when {
-                invContains(chr.allInventories.values, it) ->
+                invContains(chr.allInventories.values, it, toUpdate) ->
                     connection.insertInto(ITEMINVENTORIES, ITEMINVENTORIES.SLOTID, ITEMINVENTORIES.CID)
                         .values(it, chr.id)
                         .execute()
-                lockerContains(chr.client.locker, it) ->
+                lockerContains(chr.client.locker, it, toUpdate) ->
                     connection.insertInto(ITEMLOCKERS, ITEMLOCKERS.SLOTID, ITEMLOCKERS.AID)
                         .values(it, chr.client.accId)
                         .execute()
@@ -567,11 +577,11 @@ object ItemAPI {
 
         toDeleteLocker.forEach {
             when {
-                invContains(chr.allInventories.values, it) ->
+                invContains(chr.allInventories.values, it, toUpdate) ->
                     connection.insertInto(ITEMINVENTORIES, ITEMINVENTORIES.SLOTID, ITEMINVENTORIES.CID)
                         .values(it, chr.id)
                         .execute()
-                storageContains(chr.client.storage, it) ->
+                storageContains(chr.client.storage, it, toUpdate) ->
                     connection.insertInto(ITEMSTORAGES, ITEMSTORAGES.SLOTID, ITEMSTORAGES.AID)
                         .values(it, chr.client.accId)
                         .execute()
@@ -595,20 +605,29 @@ object ItemAPI {
             .execute()
     }
 
-    private fun invContains(inventories: Collection<ItemInventory>, uuid: ByteArray): Boolean {
+    private fun invContains(
+        inventories: Collection<ItemInventory>,
+        uuid: ByteArray,
+        toUpdate: MutableSet<ItemSlot>
+    ): Boolean {
         inventories.forEach { inv ->
             val item = inv.items.values.firstOrNull { it.uuid.contentEquals(uuid) }
-            if (item != null) return true
+            if (item != null) {
+                toUpdate.add(item)
+                return true
+            }
         }
         return false
     }
 
-    private fun storageContains(storage: ItemStorage, uuid: ByteArray): Boolean {
-        return storage.items.values.firstOrNull { it.uuid.contentEquals(uuid) } != null
+    private fun storageContains(storage: ItemStorage, uuid: ByteArray, toUpdate: MutableSet<ItemSlot>): Boolean {
+        val item = storage.items.values.firstOrNull { it.uuid.contentEquals(uuid) }?.also { toUpdate.add(it) }
+        return item != null
     }
 
-    private fun lockerContains(locker: List<ItemSlotLocker>, uuid: ByteArray): Boolean {
-        return locker.firstOrNull { it.item.uuid.contentEquals(uuid) } != null
+    private fun lockerContains(locker: List<ItemSlotLocker>, uuid: ByteArray, toUpdate: MutableSet<ItemSlot>): Boolean {
+        val item = locker.firstOrNull { it.item.uuid.contentEquals(uuid) }?.also { toUpdate.add(it.item) }
+        return item != null
     }
 
     /**

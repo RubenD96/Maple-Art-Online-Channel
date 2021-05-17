@@ -50,7 +50,6 @@ import net.server.ChannelServer
 import net.server.Server.getCharacter
 import net.server.Server.parties
 import org.jooq.Record
-import scripting.npc.NPCScriptManager.dispose
 import util.logging.LogType
 import util.logging.Logger.log
 import util.packet.Packet
@@ -507,7 +506,6 @@ class Character(val client: Client, override var name: String, val record: Recor
         get() = inventories
 
     fun enableActions() {
-        dispose(client)
         statUpdate(ArrayList(), true)
     }
 

@@ -2,13 +2,13 @@ package client
 
 import client.inventory.ItemInventory
 import client.inventory.ItemInventoryType
+import client.pet.FieldUserPet
 import client.player.Job
 import field.obj.life.AbstractFieldLife
 import net.maple.packets.FieldPackets.enterField
 import net.maple.packets.FieldPackets.leaveField
 import util.packet.Packet
 import world.guild.Guild
-import java.awt.Point
 
 abstract class Avatar : AbstractFieldLife() {
 
@@ -20,7 +20,7 @@ abstract class Avatar : AbstractFieldLife() {
     abstract var name: String
     abstract var job: Job
 
-    open val pets = arrayOfNulls<Pet>(3)
+    open val pets = ArrayList<FieldUserPet>()
     protected open val inventories: Map<ItemInventoryType, ItemInventory> = mapOf(
         ItemInventoryType.EQUIP to ItemInventory(24)
     )

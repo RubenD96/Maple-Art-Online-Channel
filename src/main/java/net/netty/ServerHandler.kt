@@ -23,7 +23,8 @@ class ServerHandler(val port: Int) : ChannelInboundHandlerAdapter() {
             RecvOpcode.USER_CHANGE_STAT_REQUEST.value,
             RecvOpcode.MOB_MOVE.value,
             RecvOpcode.MOB_APPLY_CTRL.value,
-            RecvOpcode.ADMIN.value
+            RecvOpcode.ADMIN.value,
+            RecvOpcode.PET_MOVE.value
     )
 
     override fun channelActive(chc: ChannelHandlerContext) {

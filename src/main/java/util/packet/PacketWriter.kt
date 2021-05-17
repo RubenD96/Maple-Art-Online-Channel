@@ -58,14 +58,22 @@ class PacketWriter(size: Int) : Writer() {
     fun writeMapleHeader(i: Short): Writer {
         val hex = Integer.toHexString(i.toInt())
         if (ServerConstants.LOG && !ignoreOps.contains(i.toInt()))
-            println("[MAPLE][SEND] packet " + i + " (" + (if (hex.length == 1) "0x0" else "0x") + hex.toUpperCase() + ") - " + SendOpcode.getStringByCode(i.toInt()))
+            println(
+                "[MAPLE][SEND] packet " + i + " (" + (if (hex.length == 1) "0x0" else "0x") + hex.toUpperCase() + ") - " + SendOpcode.getStringByCode(
+                    i.toInt()
+                )
+            )
         return writeShort(i)
     }
 
     private fun writeCentralHeader(i: Short): Writer {
         val hex = Integer.toHexString(i.toInt())
         if (ServerConstants.LOG && i.toInt() != CentralSendOpcode.PING.value)
-            println("[CENTRAL][SEND] packet " + i + " (" + (if (hex.length == 1) "0x0" else "0x") + hex.toUpperCase() + ") - " + CentralSendOpcode.getStringByCode(i.toInt()))
+            println(
+                "[CENTRAL][SEND] packet " + i + " (" + (if (hex.length == 1) "0x0" else "0x") + hex.toUpperCase() + ") - " + CentralSendOpcode.getStringByCode(
+                    i.toInt()
+                )
+            )
         return writeShort(i)
     }
 
@@ -106,15 +114,16 @@ class PacketWriter(size: Int) : Writer() {
 
     companion object {
         private val ignoreOps = intArrayOf(
-                SendOpcode.PING.value,
-                SendOpcode.USER_MOVE.value,
-                SendOpcode.NPC_CHANGE_CONTROLLER.value,
-                SendOpcode.NPC_ENTER_FIELD.value,
-                SendOpcode.NPC_MOVE.value,
-                SendOpcode.MOB_MOVE.value,
-                SendOpcode.MOB_CTRL_ACK.value,
-                SendOpcode.MOB_ENTER_FIELD.value,
-                SendOpcode.MOB_CHANGE_CONTROLLER.value
+            SendOpcode.PING.value,
+            SendOpcode.USER_MOVE.value,
+            SendOpcode.NPC_CHANGE_CONTROLLER.value,
+            SendOpcode.NPC_ENTER_FIELD.value,
+            SendOpcode.NPC_MOVE.value,
+            SendOpcode.MOB_MOVE.value,
+            SendOpcode.MOB_CTRL_ACK.value,
+            SendOpcode.MOB_ENTER_FIELD.value,
+            SendOpcode.MOB_CHANGE_CONTROLLER.value,
+            SendOpcode.PET_MOVE.value
         )
     }
 

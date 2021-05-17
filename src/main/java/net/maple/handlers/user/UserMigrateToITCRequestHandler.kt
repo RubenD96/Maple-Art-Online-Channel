@@ -6,8 +6,6 @@ import constants.FieldConstants.isTownMap
 import managers.NPCManager
 import net.maple.handlers.PacketHandler
 import net.maple.packets.CharacterPackets.message
-import scripting.ScriptManager
-import scripting.npc.NPCScriptManager
 import util.packet.PacketReader
 
 class UserMigrateToITCRequestHandler : PacketHandler {

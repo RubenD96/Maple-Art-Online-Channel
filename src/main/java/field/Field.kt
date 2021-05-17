@@ -111,6 +111,14 @@ class Field(val template: FieldTemplate) {
                 if (!obj.chasing) obj.position = portal.position
                 obj.foothold = (if (portal.type != PortalType.START_POINT) getFhByPortal(portal).id() else 0).toShort()
                 obj.write(obj.setField())
+
+                obj.pets.forEach {
+                    it.field = obj.field
+                    it.position = obj.position
+                    it.foothold = obj.foothold
+                    obj.write(it.enterFieldPacket)
+                }
+
                 broadcast(obj.enterFieldPacket, obj)
 
                 // Show the player what objects are present on the field
@@ -127,6 +135,12 @@ class Field(val template: FieldTemplate) {
                                         obj
                                     ) // todo uuh
                                     is FieldMob -> obj.write(it.getEnterFieldPacket(MobSummonType.NORMAL))
+                                    is Character -> {
+                                        obj.write(it.enterFieldPacket)
+                                        it.pets.forEach { pet ->
+                                            obj.write(pet.enterFieldPacket)
+                                        }
+                                    }
                                     else -> obj.write(it.enterFieldPacket)
                                 }
                             }

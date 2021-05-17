@@ -199,7 +199,9 @@ object CharacterPackets {
             pw.writeInt(face) // face
             pw.writeInt(hair) // hair
 
-            pets.forEach { pw.writeLong(it?.id?.toLong() ?: 0) }
+            repeat(3) {
+                pw.writeLong(if (pets.size > it) pets[it].item.cashItemSN else 0)
+            }
 
             pw.write(level) // 51
             pw.writeShort(job)
@@ -233,7 +235,9 @@ object CharacterPackets {
 
             encodeVisualEquips(pw)
 
-            pets.forEach { pw.writeInt(it?.item ?: 0) }
+            repeat(3) {
+                pw.writeInt(if (pets.size > it) pets[it].item.templateId else 0)
+            }
         }
     }
 
@@ -286,9 +290,12 @@ object CharacterPackets {
                 StatType.SKIN -> pw.write(this.skinColor)
                 StatType.FACE -> pw.writeInt(this.face)
                 StatType.HAIR -> pw.writeInt(this.hair)
-                StatType.PET, StatType.PET2, StatType.PET3, StatType.TEMP_EXP -> log(
+                StatType.PET -> pw.writeLong(if (pets.size > 0) pets[0].item.cashItemSN else 0)
+                StatType.PET2 -> pw.writeLong(if (pets.size > 1) pets[1].item.cashItemSN else 0)
+                StatType.PET3 -> pw.writeLong(if (pets.size > 2) pets[2].item.cashItemSN else 0)
+                StatType.TEMP_EXP -> log(
                     LogType.UNCODED,
-                    "Pets and tempexp is not implemented (yet)",
+                    "Tempexp is not implemented (yet)",
                     this
                 )
                 StatType.LEVEL -> pw.write(this.level)

@@ -124,7 +124,8 @@ class WeaponCreator : NPCScript() {
         c.character.modifyInventory({it.add(item)})
         sendMessage(
             "Swiggity swooty I'm coming for that booty!",
-            ok = { clearStates() }
+            ok = { clearStates() },
+            end = { clearStates() }
         )
     }
 

@@ -13,7 +13,7 @@ abstract class AbstractFieldDrop(val owner: Int, val source: FieldObject, val qu
     override var position: Point = Point()
         set(value) {
             val fh = this.field.template.footholds.getFootholdUnderneath(value.x, value.y - 10)
-            var ypos: Double = value.y.toDouble()
+            var ypos: Double = fh.y1().toDouble()
             if (fh.isSlope) {
                 val slope = (fh.y2() - fh.y1()).toDouble() / (fh.x2() - fh.x1()).toDouble()
                 ypos = slope * value.x.toDouble() - slope * fh.x1().toDouble() + fh.y1().toDouble()

@@ -101,7 +101,10 @@ object FieldPackets {
         pw.writeShort(this.foothold)
         pw.write(0) // ?
 
-        // pets here
+        pets.forEach {
+            pw.writeBool(true)
+            it.encodeData(pw)
+        }
 
         // a whole bunch of ?
         pw.writeBool(false)

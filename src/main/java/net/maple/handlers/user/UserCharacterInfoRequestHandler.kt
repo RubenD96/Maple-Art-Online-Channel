@@ -38,7 +38,22 @@ class UserCharacterInfoRequestHandler : PacketHandler {
                 pw.write(0) // pMedalInfo
 
                 // pets
-                pw.writeBool(false)
+                var petCount = pets.size
+                pw.writeBool(petCount > 0)
+                pets.sortBy { it.idx }
+                pets.forEach {
+                    with(it.item) {
+                        pw.writeInt(templateId)
+                        pw.writeMapleString(petName)
+                        pw.writeByte(level)
+                        pw.writeShort(tameness)
+                        pw.writeByte(repleteness)
+                        pw.writeShort(petSkill)
+                        pw.writeInt(0) // pet equips
+                        pw.writeBool(--petCount > 0)
+                    }
+                }
+
                 pw.write(0) // taming mob
 
                 val writeableWishlist = Arrays.stream(wishlist).filter { it != 0 }.toArray()
@@ -51,10 +66,10 @@ class UserCharacterInfoRequestHandler : PacketHandler {
 
                 // chairs
                 val chairs = getInventory(ItemInventoryType.INSTALL)
-                        .items
-                        .values.stream()
-                        .filter { it.templateId / 10000 == 301 }
-                        .collect(Collectors.toList())
+                    .items
+                    .values.stream()
+                    .filter { it.templateId / 10000 == 301 }
+                    .collect(Collectors.toList())
                 pw.writeInt(chairs.size)
                 chairs.forEach { pw.writeInt(it.templateId) }
             }

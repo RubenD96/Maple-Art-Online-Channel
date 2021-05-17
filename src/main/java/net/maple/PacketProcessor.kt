@@ -10,6 +10,9 @@ import net.maple.handlers.mob.MobMoveHandler
 import net.maple.handlers.net.ClientDumpLogHandler
 import net.maple.handlers.net.MigrateInHandler
 import net.maple.handlers.net.PongHandler
+import net.maple.handlers.pet.PetActionHandler
+import net.maple.handlers.pet.PetInteractionRequestHandler
+import net.maple.handlers.pet.PetMoveHandler
 import net.maple.handlers.user.*
 import net.maple.handlers.user.attack.AttackType
 import net.maple.handlers.user.attack.UserAttackHandler
@@ -21,8 +24,9 @@ object PacketProcessor {
 
     fun getHandler(packetId: Short): PacketHandler? {
         return handlers[Arrays.stream(
-                RecvOpcode.values()).filter { it.value == packetId.toInt() }
-                .findFirst().orElse(null)]
+            RecvOpcode.values()
+        ).filter { it.value == packetId.toInt() }
+            .findFirst().orElse(null)]
     }
 
     init {
@@ -44,6 +48,7 @@ object PacketProcessor {
         handlers[RecvOpcode.USER_STORAGE_REQUEST] = UserStorageRequestHandler()
         handlers[RecvOpcode.USER_CHANGE_SLOT_POSITION_REQUEST] = UserChangeSlotPositionRequestHandler()
         handlers[RecvOpcode.USER_STAT_CHANGE_ITEM_USE_REQUEST] = UserStatChangeItemUseRequestHandler()
+        handlers[RecvOpcode.USER_PET_FOOD_ITEM_USE_REQUEST] = UserPetFoodItemUseRequestHandler()
         handlers[RecvOpcode.USER_UPGRADE_ITEM_USE_REQUEST] = UserUpgradeItemUseRequestHandler()
         handlers[RecvOpcode.USER_ABILITY_UP_REQUEST] = UserAbilityUpRequestHandler()
         handlers[RecvOpcode.USER_ABILITY_MASS_UP_REQUEST] = UserAbilityMassUpRequestHandler()
@@ -54,6 +59,7 @@ object PacketProcessor {
         handlers[RecvOpcode.USER_DROP_MESO_REQUEST] = UserDropMesoRequestHandler()
         handlers[RecvOpcode.USER_GIVE_POPULARITY_REQUEST] = UserGivePopularityRequestHandler()
         handlers[RecvOpcode.USER_CHARACTER_INFO_REQUEST] = UserCharacterInfoRequestHandler()
+        handlers[RecvOpcode.USER_ACTIVATE_PET_REQUEST] = UserActivatePetRequestHandler()
         handlers[RecvOpcode.USER_PORTAL_SCRIPT_REQUEST] = UserPortalScriptRequestHandler()
         handlers[RecvOpcode.USER_PORTAL_TELEPORT_REQUEST] = UserPortalTeleportRequestHandler()
         handlers[RecvOpcode.USER_QUEST_REQUEST] = UserQuestRequestHandler()
@@ -69,6 +75,9 @@ object PacketProcessor {
         handlers[RecvOpcode.USER_MIGRATE_TO_ITC_REQUEST] = UserMigrateToITCRequestHandler()
         handlers[RecvOpcode.FUNC_KEY_MAPPED_MODIFIED] = FuncKeyMappedModifiedHandler()
         handlers[RecvOpcode.GUILD_BBS] = GuildBBSHandler()
+        handlers[RecvOpcode.PET_MOVE] = PetMoveHandler()
+        handlers[RecvOpcode.PET_ACTION] = PetActionHandler()
+        handlers[RecvOpcode.PET_INTERACTION_REQUEST] = PetInteractionRequestHandler()
         handlers[RecvOpcode.QUICKSLOT_KEY_MAPPED_MODIFIED] = QuickSlotKeyMappedModifiedHandler()
         handlers[RecvOpcode.MOB_MOVE] = MobMoveHandler()
         handlers[RecvOpcode.MOB_APPLY_CTRL] = MobApplyCtrlHandler()

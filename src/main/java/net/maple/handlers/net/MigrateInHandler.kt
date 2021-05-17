@@ -40,9 +40,6 @@ class MigrateInHandler : PacketHandler {
                 Server.addCharacter(chr)
                 c.character = chr
 
-                loadItemInventories(chr)
-                chr.validateStats()
-
                 QuestAPI.loadAll(chr)
                 WishlistAPI.load(chr)
                 TownsAPI.load(chr) // before entering field, in case of FirstVisit mapscript
@@ -55,8 +52,11 @@ class MigrateInHandler : PacketHandler {
                 chr.loadMobKills()
 
                 val field = c.worldChannel.fieldManager.getField(chr.fieldId)
-
                 chr.field = field
+
+                loadItemInventories(chr)
+                chr.validateStats()
+
                 field.enter(chr)
 
                 loadFriends(chr)

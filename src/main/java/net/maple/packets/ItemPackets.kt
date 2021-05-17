@@ -108,7 +108,7 @@ object ItemPackets {
         pw.writeByte(repleteness)
         pw.writeLong(dateDead)
 
-        pw.writeShort(petAttribute)
+        pw.writeShort(petAttribute) // 1 for run speed matching the owner
         pw.writeShort(petSkill)
         pw.writeInt(remainLife)
         pw.writeShort(attribute)

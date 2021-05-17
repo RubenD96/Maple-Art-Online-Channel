@@ -10,7 +10,6 @@ import net.database.QuestAPI.remove
 import net.database.QuestAPI.update
 import net.maple.SendOpcode
 import net.maple.packets.CharacterPackets.message
-import scripting.quest.QuestScriptManager
 import util.logging.LogType
 import util.logging.Logger.log
 import util.packet.Packet

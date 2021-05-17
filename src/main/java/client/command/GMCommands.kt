@@ -642,6 +642,8 @@ class GMCommands {
                 else -> chr.message(NoticeWithoutPrefixMessage("Invalid type \"$type\", correct types: " +
                         "level | face | hair | gender | skin | job | ap | sp | fame | str | dex | int | luk | hp | mhp | mp | mmp | exp | meso)"))
             }
+
+            chr.validateStats()
         }
     }
 }

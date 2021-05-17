@@ -27,8 +27,6 @@ import net.maple.packets.GuildPackets
 import net.maple.packets.GuildPackets.getLoadGuildPacket
 import net.server.Server
 import org.graalvm.collections.Pair
-import scripting.dialog.DialogUtils
-import scripting.npc.NPCScriptManager
 import world.guild.Guild
 import world.ranking.RankingKeeper
 import java.util.*
@@ -106,12 +104,6 @@ abstract class AbstractPlayerInteraction(val c: Client) {
         return player.quests[id]
     }
 
-    fun openNpc(id: Int) {
-        if (!NPCScriptManager.converse(c, id)) {
-            sendBlue("Npc does not have a script")
-        }
-    }
-
     fun isEquip(id: Int): Boolean {
         val template = ItemManager.getItem(id)
         return template is ItemEquipTemplate
@@ -160,16 +152,6 @@ abstract class AbstractPlayerInteraction(val c: Client) {
 
     fun tremble(heavy: Boolean, delay: Int) {
         player.field.fieldEffect(TrembleFieldEffect(heavy, delay))
-    }
-
-    fun openNpcIn(npc: Int, time: Int, dispose: Boolean = true) {
-        c.ch.eventLoop().schedule({
-            if (dispose) {
-                c.lastNpcClick = 0
-                NPCScriptManager.dispose(c)
-            }
-            NPCScriptManager.converse(c, npc)
-        }, time.toLong(), TimeUnit.MILLISECONDS)
     }
 
     fun executeAfter(func: Function<AbstractPlayerInteraction?, Void?>, after: Int) {
