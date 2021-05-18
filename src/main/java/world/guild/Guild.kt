@@ -7,6 +7,7 @@ import util.logging.LogType
 import util.logging.Logger.log
 import util.packet.Packet
 import util.packet.PacketWriter
+import world.alliance.Alliance
 import world.guild.bbs.GuildBBS
 import java.util.*
 import kotlin.collections.LinkedHashMap
@@ -22,6 +23,7 @@ class Guild(val id: Int) {
     val skills: HashMap<Int, GuildSkill> = LinkedHashMap()
     var mark: GuildMark? = null
     val bbs = GuildBBS(id).also { GuildAPI.loadFullBBS(id, it) }
+    var alliance: Alliance? = null
 
     fun encode(pw: PacketWriter) {
         pw.writeInt(id)
@@ -40,7 +42,7 @@ class Guild(val id: Int) {
         pw.writeMapleString(notice)
 
         pw.writeInt(0) // Point
-        pw.writeInt(0) // AllianceID
+        pw.writeInt(/*alliance?.id ?: 0*/ 1) // AllianceID
         pw.write(0) // Level?
 
         pw.writeShort(skills.size) // skills?
@@ -50,11 +52,7 @@ class Guild(val id: Int) {
         }
     }
 
-    fun broadcast(packet: Packet) {
-        broadcast(packet, null)
-    }
-
-    fun broadcast(packet: Packet, ignored: Character?) {
+    fun broadcast(packet: Packet, ignored: Character? = null) {
         synchronized(members) {
             log(LogType.GUILD, "[gid: $id] broadcast (${HexTool.toHex(packet.header.toByte())})", this, ignored?.client)
             members.values.stream()

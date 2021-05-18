@@ -53,6 +53,7 @@ import org.jooq.Record
 import util.logging.LogType
 import util.logging.Logger.log
 import util.packet.Packet
+import world.alliance.Alliance
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -216,6 +217,7 @@ class Character(val client: Client, override var name: String, val record: Recor
     var party: Party? = null
     var npcShop: NPCShop? = null
     var activeStorage: ItemStorageInteraction? = null
+    var alliance: Alliance? = null
 
     init {
         portal = spawnpoint.toByte()

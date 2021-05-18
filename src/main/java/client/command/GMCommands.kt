@@ -7,7 +7,6 @@ import client.inventory.item.slots.ItemSlotBundle
 import client.messages.broadcast.types.AlertMessage
 import client.messages.broadcast.types.NoticeMessage
 import client.messages.broadcast.types.NoticeWithoutPrefixMessage
-import client.player.Job
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine
 import field.obj.drop.ItemDrop
 import field.obj.life.FieldMob
@@ -18,13 +17,14 @@ import managers.NPCShopManager
 import net.database.ShopAPI
 import net.maple.handlers.user.UserSelectNpcHandler
 import net.maple.handlers.user.UserUpgradeItemUseRequestHandler
+import net.maple.packets.AlliancePackets
 import net.maple.packets.CharacterPackets.message
 import net.maple.packets.CharacterPackets.modifyInventory
 import net.maple.packets.FieldPackets.fieldEffect
 import net.server.Server
 import net.server.Server.getCharacter
-import scripting.dialog.npc.NPCScriptManager
 import scripting.dialog.DialogUtils
+import world.alliance.Alliance
 import java.util.*
 import javax.script.ScriptEngine
 import javax.script.ScriptException
@@ -639,11 +639,32 @@ class GMCommands {
                 "mmp" -> chr.maxMana = value
                 "exp" -> chr.exp = value
                 "meso" -> chr.meso = value
-                else -> chr.message(NoticeWithoutPrefixMessage("Invalid type \"$type\", correct types: " +
-                        "level | face | hair | gender | skin | job | ap | sp | fame | str | dex | int | luk | hp | mhp | mp | mmp | exp | meso)"))
+                else -> chr.message(
+                    NoticeWithoutPrefixMessage(
+                        "Invalid type \"$type\", correct types: " +
+                                "level | face | hair | gender | skin | job | ap | sp | fame | str | dex | int | luk | hp | mhp | mp | mmp | exp | meso)"
+                    )
+                )
             }
 
             chr.validateStats()
+        }
+    }
+
+    object CreateAlliance : Command {
+
+        override val description: String = "test"
+
+        override fun execute(chr: Character) {
+            val alliance = Alliance(1, "Test")
+            alliance.guilds.add(chr.guild!!.also { it.alliance = alliance })
+            val blaaa = getCharacter("blaaa")!!
+            alliance.guilds.add(blaaa.guild!!.also { it.alliance = alliance })
+
+            chr.alliance = alliance
+            blaaa.alliance = alliance
+
+            AlliancePackets.create(alliance)
         }
     }
 }
