@@ -56,6 +56,7 @@ class WeaponCreator : NPCScript() {
 
     private fun DialogContext.showStats(item: ItemSlotEquip) {
         val selections: LinkedHashMap<String, ((Int) -> Unit)> = linkedMapOf(
+            "Create Item\r\n".red().bold() to { createItem(item) },
             "RUC: ${item.ruc.red()}" to { editStatDialog("Upgrades Left", item.ruc, item) { item.ruc = it } },
             "CUC: ${item.cuc.red()}\r\n" to { editStatDialog("Upgrades Used", item.cuc, item) { item.cuc = it } },
             "STR: ${item.str.red()}" to { editStatDialog("Strength", item.str, item) { item.str = it } },
@@ -80,10 +81,9 @@ class WeaponCreator : NPCScript() {
             "IUC: ${item.iuc.red()}" to { editStatDialog("Hammers Applied", item.iuc, item) { item.iuc = it } },
             "GRADE: ${item.grade.red()}" to { editStatDialog("Grade", item.grade, item) { item.grade = it } },
             "CHUC: ${item.chuc.red()}\r\n" to { editStatDialog("Stars", item.chuc, item) { item.chuc = it } },
-            "OPT1: ${item.option1.red()}" to { editStatDialog("Potential 1", item.option1, item) { item.option1 = it } },
-            "OPT2: ${item.option2.red()}" to { editStatDialog("Potential 2", item.option2, item) { item.option2 = it } },
-            "OPT3: ${item.option3.red()}\r\n" to { editStatDialog("Potential 3", item.option3, item) { item.option3 = it } },
-            "Create Item".red().bold() to { createItem(item) }
+            "OPT1: ${item.option1.red()}" to { editStatDialog("Potential One", item.option1, item) { item.option1 = it } },
+            "OPT2: ${item.option2.red()}" to { editStatDialog("Potential Two", item.option2, item) { item.option2 = it } },
+            "OPT3: ${item.option3.red()}" to { editStatDialog("Potential Three", item.option3, item) { item.option3 = it } }
         )
 
         sendSimple(

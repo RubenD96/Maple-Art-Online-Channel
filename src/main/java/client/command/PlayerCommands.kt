@@ -12,7 +12,6 @@ class PlayerCommands {
 
         override fun execute(chr: Character) {
             chr.enableActions()
-            chr.client.engines.clear()
             chr.message(AlertMessage("You've been disposed!"))
         }
     }
