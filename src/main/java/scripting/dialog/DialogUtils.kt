@@ -175,7 +175,7 @@ object DialogUtils {
             '0' -> output -= 981
             '+' -> output -= 978
             '-' -> output -= 977
-            else -> output = -1
+            else -> output = 0
         }
         return output
     }

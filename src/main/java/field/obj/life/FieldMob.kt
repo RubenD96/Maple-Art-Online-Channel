@@ -15,7 +15,6 @@ import net.maple.SendOpcode
 import net.maple.packets.CharacterPackets.message
 import net.server.Server
 import scripting.mob.MobScriptManager
-import scripting.mob.MobScriptManagerOld
 import util.packet.Packet
 import util.packet.PacketWriter
 import java.awt.Point
