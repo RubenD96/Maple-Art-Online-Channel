@@ -10,11 +10,16 @@ import client.messages.broadcast.types.NoticeWithoutPrefixMessage
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine
 import field.obj.drop.ItemDrop
 import field.obj.life.FieldMob
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import managers.ItemManager
 import managers.MobManager
 import managers.NPCManager
 import managers.NPCShopManager
+import net.database.GuildAPI
 import net.database.ShopAPI
+import net.maple.SendOpcode
 import net.maple.handlers.user.UserSelectNpcHandler
 import net.maple.handlers.user.UserUpgradeItemUseRequestHandler
 import net.maple.packets.AlliancePackets
@@ -24,12 +29,14 @@ import net.maple.packets.FieldPackets.fieldEffect
 import net.server.Server
 import net.server.Server.getCharacter
 import scripting.dialog.DialogUtils
+import util.packet.PacketWriter
 import world.alliance.Alliance
 import java.util.*
 import javax.script.ScriptEngine
 import javax.script.ScriptException
 import kotlin.collections.ArrayList
 
+@Suppress("unused")
 class GMCommands {
 
     object Drop : Command {
@@ -315,7 +322,7 @@ class GMCommands {
             npc.hide = false
             npc.field = chr.field
 
-            chr.field.enter(npc);
+            chr.field.enter(npc)
         }
     }
 
@@ -658,13 +665,115 @@ class GMCommands {
         override fun execute(chr: Character) {
             val alliance = Alliance(1, "Test")
             alliance.guilds.add(chr.guild!!.also { it.alliance = alliance })
-            val blaaa = getCharacter("blaaa")!!
-            alliance.guilds.add(blaaa.guild!!.also { it.alliance = alliance })
-
             chr.alliance = alliance
-            blaaa.alliance = alliance
+
+            Server.guilds[2]?.let {
+                alliance.guilds.add(it)
+            } ?: run {
+                alliance.guilds.add(GuildAPI.load(2)!!)
+            }
 
             AlliancePackets.create(alliance)
+            GlobalScope.launch {
+                delay(1000)
+                AlliancePackets.load(chr, alliance)
+                delay(1000)
+                AlliancePackets.setGradeName(alliance)
+            }
         }
     }
+
+    object Yeet : Command {
+
+        override val description: String = "Yeet yo self"
+
+        override fun execute(chr: Character) {
+            val pw = PacketWriter(3)
+
+            pw.writeHeader(SendOpcode.USER_OPEN_UI)
+            pw.write(0x1F)
+
+            chr.write(pw.createPacket())
+            chr.message(NoticeWithoutPrefixMessage("Yeeted"))
+        }
+    }
+
+    object OpenUI : Command {
+
+        private enum class UI(val value: Byte) {
+            ITEM(0x00),
+            EQUIP(0x01),
+            STAT(0x02),
+            SKILL(0x03),
+            MINIMAP(0x04),
+            KEYCONFIG(0x05),
+            QUESTINFO(0x06),
+            USERLIST(0x07),
+            MESSENGER(0x08),
+            MONSTERBOOK(0x09),
+            USERINFO(0x0A),
+            SHORTCUT(0x0B),
+            MENU(0x0C),
+            QUESTALARM(0x0D),
+            PARTYHP(0x0E),
+            QUESTTIMER(0x0F),
+            QUESTTIMERACTION(0x10),
+            MONSTERCARNIVAL(0x11),
+            ITEMSEARCH(0x12),
+            ENERGYBAR(0x13),
+            GUILDBOARD(0x14),
+            PARTYSEARCH(0x15),
+            ITEMMAKE(0x16),
+            CONSULT(0x17),
+            CLASSCOMPETITION(0x18),
+            RANKING(0x19),
+            FAMILY(0x1A),
+            FAMILYCHART(0x1B),
+            OPERATORBOARD(0x1C),
+            OPERATORBOARDSTATE(0x1D),
+            MEDALQUESTINFO(0x1E),
+            WEBEVENT(0x1F),
+            SKILLEX(0x20),
+            REPAIRDURABILITY(0x21),
+            CHATWND(0x22),
+            BATTLERECORD(0x23),
+            GUILDMAKEMARK(0x24),
+            GUILDMAKE(0x25),
+            GUILDRANK(0x26),
+            GUILDBBS(0x27),
+            ACCOUNTMOREINFO(0x28),
+            FINDFRIEND(0x29),
+            DRAGONBOX(0x2A),
+            WNDNO(0x2B),
+            UNRELEASE(0x2C);
+
+            companion object {
+                fun findByName(name: String): UI? {
+                    return values().find { it.name.equals(name, ignoreCase = true) }
+                }
+            }
+        }
+
+        private var name: String? = null
+
+        override val description: String = "!openui [ui:string]"
+
+        override fun loadParams(params: Map<Int, String>) {
+            name = params[0]!!
+        }
+
+        override fun execute(chr: Character) {
+            UI.findByName(name!!)?.let {
+                val pw = PacketWriter(3)
+
+                pw.writeHeader(SendOpcode.USER_OPEN_UI)
+                pw.writeByte(it.value)
+
+                chr.write(pw.createPacket())
+                chr.message(NoticeWithoutPrefixMessage("[OpenUI] Attempted to open $name"))
+            } ?: chr.message(NoticeWithoutPrefixMessage("[OpenUI] Could not find UI: $name"))
+        }
+    }
+
+    object UI : Command by OpenUI
 }

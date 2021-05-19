@@ -55,6 +55,7 @@ enum class SendOpcode(override val value: Int) : IntegerValue {
     USER_SIT_RESULT(0xE7),
     USER_EFFECT_LOCAL(0xE9),
     USER_QUEST_RESULT(0xF2),
+    USER_OPEN_UI(0xFB),
     MOB_ENTER_FIELD(0x11C),
     MOB_LEAVE_FIELD(0x11D),
     MOB_CHANGE_CONTROLLER(0x11E),

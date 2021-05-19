@@ -57,17 +57,17 @@ class GuildMember {
 
         grade = rec.getValue(Tables.GUILDMEMBERS.GRADE).toInt()
         commitment = 0
-        allianceGrade = 0
+        allianceGrade = 1
     }
 
     fun encode(pw: PacketWriter) {
-        pw.writeFixedString(name, 13) // 13
-        pw.writeInt(job) // 17
-        pw.writeInt(level) // 21
-        pw.writeInt(grade) // 25
-        pw.writeInt(if (isOnline) 1 else 0) // 29
-        pw.writeInt(commitment) // 33
-        pw.writeInt(allianceGrade) // 37
+        pw.writeFixedString(name, 13)
+        pw.writeInt(job)
+        pw.writeInt(level)
+        pw.writeInt(grade)
+        pw.writeInt(if (isOnline) 1 else 0)
+        pw.writeInt(commitment)
+        pw.writeInt(allianceGrade)
     }
 
     /**

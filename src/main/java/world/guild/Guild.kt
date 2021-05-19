@@ -42,7 +42,7 @@ class Guild(val id: Int) {
         pw.writeMapleString(notice)
 
         pw.writeInt(0) // Point
-        pw.writeInt(/*alliance?.id ?: 0*/ 1) // AllianceID
+        pw.writeInt(alliance?.id ?: 0) // AllianceID
         pw.write(0) // Level?
 
         pw.writeShort(skills.size) // skills?
@@ -58,7 +58,10 @@ class Guild(val id: Int) {
             members.values.stream()
                     .filter { it.isOnline }
                     .filter { it.character !== ignored } // useless filter?
-                    .forEach { it.character?.write(packet.clone()) }
+                    .forEach {
+                        it.character?.write(packet.clone())
+                        println(it.character)
+                    }
         }
     }
 
