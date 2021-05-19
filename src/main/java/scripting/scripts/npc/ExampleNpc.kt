@@ -115,6 +115,22 @@ class ExampleNpc : NPCScript() {
         )
     }
 
+    private val dialogs get() = listOf("hello", "noob", "and u suck")
+
+    private fun DialogContext.loop(index: Int) {
+        sendMessage(
+            dialogs[index],
+            prev = if (index == 0) null else { { loop(index - 1) } },
+            next = {
+                if (index < dialogs.size) {
+                    loop(index + 1)
+                } else {
+                    endMessage("byeee")
+                }
+            }
+        )
+    }
+
     override fun DialogContext.onEnd() {
         endMessage("You clicked end, at any dialog".bold())
     }
