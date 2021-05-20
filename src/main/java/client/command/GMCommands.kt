@@ -658,27 +658,20 @@ class GMCommands {
         }
     }
 
-    object CreateAlliance : Command {
+    object Alliance : Command {
+
+        private var type: String = ""
 
         override val description: String = "test"
 
+        override fun loadParams(params: Map<Int, String>) {
+            type = params[0]!!
+        }
+
         override fun execute(chr: Character) {
-            val alliance = Alliance(1, "Test")
-            alliance.guilds.add(chr.guild!!.also { it.alliance = alliance })
-            chr.alliance = alliance
-
-            Server.guilds[2]?.let {
-                alliance.guilds.add(it)
-            } ?: run {
-                alliance.guilds.add(GuildAPI.load(2)!!)
-            }
-
-            AlliancePackets.create(alliance)
-            GlobalScope.launch {
-                delay(1000)
-                AlliancePackets.load(chr, alliance)
-                delay(1000)
-                AlliancePackets.setGradeName(alliance)
+            when (type) {
+                "load" -> AlliancePackets.load(chr, chr.guild?.alliance)
+                "create" -> AlliancePackets.create(chr.guild?.alliance!!)
             }
         }
     }

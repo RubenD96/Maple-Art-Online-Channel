@@ -4,6 +4,7 @@ import client.Character
 import database.jooq.Tables.*
 import net.database.DatabaseCore.connection
 import net.server.Server
+import world.alliance.Alliance
 import world.guild.Guild
 import world.guild.GuildMark
 import world.guild.GuildMember
@@ -37,7 +38,7 @@ object GuildAPI {
      * @param leader Whether this member is the leader (true for guild creation)
      */
     fun addMember(guild: Guild, member: Character, leader: Boolean) {
-        connection.insertInto(GUILDMEMBERS, GUILDMEMBERS.GID, GUILDMEMBERS.CID, GUILDMEMBERS.GRADE)
+        connection.insertInto(GUILDMEMBERS, GUILDMEMBERS.GID, GUILDMEMBERS.CID, GUILDMEMBERS.GUILDGRADE)
             .values(guild.id, member.id, (if (leader) 1 else 5).toByte())
             .execute()
     }
@@ -62,7 +63,7 @@ object GuildAPI {
      * @return Guild, null if not found
      */
     @Synchronized
-    fun load(id: Int): Guild? {
+    fun load(id: Int, alliance: Alliance? = null): Guild? {
         if (Server.guilds.containsKey(id)) return Server.guilds[id]
 
         val rec = connection.select().from(GUILDS).where(GUILDS.ID.eq(id)).fetchOne() ?: return null
@@ -77,6 +78,27 @@ object GuildAPI {
         guild.ranks[3] = rec.getValue(GUILDS.RANK4)
         guild.ranks[4] = rec.getValue(GUILDS.RANK5)
         guild.leader = rec.getValue(GUILDS.LEADER)
+
+        val allianceId = rec.getValue(GUILDS.ALLIANCEID)
+        alliance?.let {
+            guild.alliance = it
+        } ?: run {
+            allianceId?.let {
+                with(connection.select().from(ALLIANCES).where(ALLIANCES.ID.eq(allianceId)).fetchOne()) {
+                    if (this != null) {
+                        val newAlliance = Alliance(allianceId, getValue(ALLIANCES.NAME))
+                        newAlliance.notice = getValue(ALLIANCES.NOTICE)
+                        newAlliance.maxMemberNum = getValue(ALLIANCES.MAXMEMBERNUM)
+                        guild.alliance = newAlliance
+
+                        connection.select().from(GUILDS).where(GUILDS.ALLIANCEID.eq(allianceId))
+                            .and(GUILDS.ID.notEqual(id)).fetch().forEach {
+                            load(it.getValue(GUILDS.ID), newAlliance)
+                        }
+                    }
+                }
+            }
+        }
 
         val res = connection.select().from(GUILDMEMBERS).where(GUILDMEMBERS.GID.eq(id)).fetch()
         res.forEach {
@@ -124,7 +146,7 @@ object GuildAPI {
 
     fun updateMemberGrade(cid: Int, grade: Byte) {
         connection.update(GUILDMEMBERS)
-            .set(GUILDMEMBERS.GRADE, grade)
+            .set(GUILDMEMBERS.GUILDGRADE, grade)
             .where(GUILDMEMBERS.CID.eq(cid))
             .execute()
     }

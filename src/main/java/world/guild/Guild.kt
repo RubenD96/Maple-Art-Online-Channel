@@ -24,6 +24,10 @@ class Guild(val id: Int) {
     var mark: GuildMark? = null
     val bbs = GuildBBS(id).also { GuildAPI.loadFullBBS(id, it) }
     var alliance: Alliance? = null
+        set(value) {
+            field = value
+            value?.guilds?.add(this)
+        }
 
     fun encode(pw: PacketWriter) {
         pw.writeInt(id)
@@ -56,12 +60,12 @@ class Guild(val id: Int) {
         synchronized(members) {
             log(LogType.GUILD, "[gid: $id] broadcast (${HexTool.toHex(packet.header.toByte())})", this, ignored?.client)
             members.values.stream()
-                    .filter { it.isOnline }
-                    .filter { it.character !== ignored } // useless filter?
-                    .forEach {
-                        it.character?.write(packet.clone())
-                        println(it.character)
-                    }
+                .filter { it.isOnline }
+                .filter { it.character !== ignored } // useless filter?
+                .forEach {
+                    it.character?.write(packet.clone())
+                    println(it.character)
+                }
         }
     }
 

@@ -45,13 +45,23 @@ object AlliancePackets {
         alliance?.encode(pw)
 
         chr.write(pw.createPacket())
+        alliance?.loadGuilds(chr)
+    }
+
+    private fun Alliance.loadGuilds(chr: Character) {
+        val pw = baseAlliancePacket(AllianceRes.LOAD_GUILD_DONE)
+
+        pw.writeInt(guilds.size)
+        guilds.forEach { it.encode(pw) }
+
+        chr.write(pw.createPacket())
     }
 
     fun create(alliance: Alliance) {
         val pw = baseAlliancePacket(AllianceRes.CREATE_DONE)
 
         alliance.encode(pw)
-        alliance.guilds.forEach { guild -> guild.encode(pw) }
+        alliance.guilds.forEach { it.encode(pw) }
 
         alliance.broadcast(pw.createPacket())
     }

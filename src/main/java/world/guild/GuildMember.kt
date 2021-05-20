@@ -2,6 +2,8 @@ package world.guild
 
 import client.Character
 import database.jooq.Tables
+import database.jooq.Tables.CHARACTERS
+import database.jooq.Tables.GUILDMEMBERS
 import net.database.CharacterAPI.getCharacterInfo
 import net.server.Server
 import org.jooq.Record
@@ -38,7 +40,7 @@ class GuildMember {
      * @param rec SQL info
      */
     constructor(rec: Record) {
-        val id = rec.getValue(Tables.GUILDMEMBERS.CID)
+        val id = rec.getValue(GUILDMEMBERS.CID)
 
         val chr = Server.getCharacter(id)
         if (chr != null) {
@@ -49,15 +51,15 @@ class GuildMember {
             character = chr
         } else {
             val info = getCharacterInfo(id)
-            name = info.getValue(Tables.CHARACTERS.NAME)
-            job = info.getValue(Tables.CHARACTERS.JOB)
-            level = info.getValue(Tables.CHARACTERS.LEVEL)
+            name = info.getValue(CHARACTERS.NAME)
+            job = info.getValue(CHARACTERS.JOB)
+            level = info.getValue(CHARACTERS.LEVEL)
             isOnline = false
         }
 
-        grade = rec.getValue(Tables.GUILDMEMBERS.GRADE).toInt()
+        grade = rec.getValue(GUILDMEMBERS.GUILDGRADE).toInt()
         commitment = 0
-        allianceGrade = 1
+        allianceGrade = rec.getValue(GUILDMEMBERS.ALLIANCEGRADE).toInt()
     }
 
     fun encode(pw: PacketWriter) {
