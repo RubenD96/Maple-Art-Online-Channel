@@ -2,6 +2,7 @@ package net.maple.packets
 
 import client.Character
 import net.maple.SendOpcode
+import net.maple.packets.AlliancePackets.notifyLoginOrLogout
 import util.packet.Packet
 import util.packet.PacketWriter
 import world.guild.Guild
@@ -96,11 +97,12 @@ object GuildPackets {
 
         pw.writeHeader(SendOpcode.GUILD_RESULT)
         pw.write(GuildRes.NOTIFY_LOGIN_OR_LOGOUT.toInt())
-        pw.writeInt(this.id)
+        pw.writeInt(id)
         pw.writeInt(chr.id)
         pw.writeBool(online)
 
-        this.broadcast(pw.createPacket(), chr)
+        broadcast(pw.createPacket(), chr)
+        alliance?.notifyLoginOrLogout(chr, online)
     }
 
     fun Guild.leave(cid: Int, name: String, message: Byte) {

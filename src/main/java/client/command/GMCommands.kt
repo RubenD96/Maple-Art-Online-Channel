@@ -661,17 +661,22 @@ class GMCommands {
     object Alliance : Command {
 
         private var type: String = ""
+        private var extra1: Int? = 0
 
         override val description: String = "test"
 
         override fun loadParams(params: Map<Int, String>) {
             type = params[0]!!
+            extra1 = params[1]?.toInt()
         }
 
         override fun execute(chr: Character) {
-            when (type) {
-                "load" -> AlliancePackets.load(chr, chr.guild?.alliance)
-                "create" -> AlliancePackets.create(chr.guild?.alliance!!)
+            with(AlliancePackets) {
+                when (type) {
+                    "load" -> load(chr, chr.guild?.alliance)
+                    "create" -> chr.guild?.alliance!!.create()
+                    "notify" -> chr.guild?.alliance!!.notifyLoginOrLogout(getCharacter(extra1!!)!!)
+                }
             }
         }
     }

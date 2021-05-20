@@ -12,7 +12,7 @@ class AllianceRequestHandler : PacketHandler {
         const val LOAD: Byte = 0x01
         const val WITHDRAW: Byte = 0x02
         const val INVITE: Byte = 0x03
-        const val JOIN: Byte = 0x4
+        const val JOIN: Byte = 0x04
         const val UPDATE_MEMBER_COUNT_MAX: Byte = 0x05
         const val KICK: Byte = 0x06
         const val CHANGE_MASTER: Byte = 0x07

@@ -57,13 +57,24 @@ object AlliancePackets {
         chr.write(pw.createPacket())
     }
 
-    fun create(alliance: Alliance) {
+    fun Alliance.create() {
         val pw = baseAlliancePacket(AllianceRes.CREATE_DONE)
 
-        alliance.encode(pw)
-        alliance.guilds.forEach { it.encode(pw) }
+        encode(pw)
+        guilds.forEach { it.encode(pw) }
 
-        alliance.broadcast(pw.createPacket())
+        broadcast(pw.createPacket())
+    }
+
+    fun Alliance.notifyLoginOrLogout(chr: Character, online: Boolean) {
+        val pw = baseAlliancePacket(AllianceRes.NOTIFY_LOGIN_OR_LOGOUT)
+
+        pw.writeInt(id)
+        pw.writeInt(chr.guild!!.id)
+        pw.writeInt(chr.id)
+        pw.writeBool(online)
+
+        broadcast(pw.createPacket())
     }
 
     fun setGradeName(alliance: Alliance) {
