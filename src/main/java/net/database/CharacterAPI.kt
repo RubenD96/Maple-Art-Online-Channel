@@ -17,36 +17,36 @@ object CharacterAPI {
 
     fun getOfflineName(cid: Int): String {
         val rec: Record? = connection
-                .select(CHARACTERS.NAME).from(CHARACTERS)
-                .where(CHARACTERS.ID.eq(cid)).fetchOne()
+            .select(CHARACTERS.NAME).from(CHARACTERS)
+            .where(CHARACTERS.ID.eq(cid)).fetchOne()
 
         return rec?.getValue(CHARACTERS.NAME) ?: ""
     }
 
     fun getOfflineId(name: String): Int {
         val rec: Record? = connection
-                .select(CHARACTERS.ID).from(CHARACTERS)
-                .where(CHARACTERS.NAME.eq(name)).fetchOne()
+            .select(CHARACTERS.ID).from(CHARACTERS)
+            .where(CHARACTERS.NAME.eq(name)).fetchOne()
 
         return rec?.getValue(CHARACTERS.ID) ?: -1
     }
 
     fun getOfflineCharacter(cid: Int): Record {
         return connection.select().from(CHARACTERS)
-                .where(CHARACTERS.ID.eq(cid))
-                .fetchOne()
+            .where(CHARACTERS.ID.eq(cid))
+            .fetchOne()
     }
 
     fun resetParties() {
         connection.update(CHARACTERS)
-                .set(CHARACTERS.PARTY, 0)
-                .execute()
+            .set(CHARACTERS.PARTY, 0)
+            .execute()
     }
 
     fun getOldPartyId(cid: Int): Int {
         return connection.select(CHARACTERS.PARTY).from(CHARACTERS)
-                .where(CHARACTERS.ID.eq(cid)).fetchOne()
-                .getValue(CHARACTERS.PARTY)
+            .where(CHARACTERS.ID.eq(cid)).fetchOne()
+            .getValue(CHARACTERS.PARTY)
     }
 
     fun getNewCharacter(c: Client, id: Int): Character {
@@ -68,31 +68,31 @@ object CharacterAPI {
     fun saveCharacterStats(chr: Character) {
         //println("start saving " + chr.name)
         connection.update(CHARACTERS)
-                .set(CHARACTERS.LEVEL, chr.level)
-                .set(CHARACTERS.FACE, chr.face)
-                .set(CHARACTERS.HAIR, chr.hair)
-                .set(CHARACTERS.SKIN, chr.skinColor)
-                .set(CHARACTERS.JOB, chr.job.id)
-                .set(CHARACTERS.AP, chr.ap)
-                .set(CHARACTERS.SP, chr.sp)
-                .set(CHARACTERS.FAME, chr.fame)
-                .set(CHARACTERS.MAP, chr.field.template.forcedReturnMap)
-                .set(CHARACTERS.SPAWNPOINT, chr.field.getClosestSpawnpoint(chr.position).id)
-                .set(CHARACTERS.STR, chr.strength)
-                .set(CHARACTERS.DEX, chr.dexterity)
-                .set(CHARACTERS.INT, chr.intelligence)
-                .set(CHARACTERS.LUK, chr.luck)
-                .set(CHARACTERS.HP, chr.health)
-                .set(CHARACTERS.MAX_HP, chr.maxHealth)
-                .set(CHARACTERS.MP, chr.mana)
-                .set(CHARACTERS.MAX_MP, chr.maxMana)
-                .set(CHARACTERS.EXP, chr.exp)
-                .set(CHARACTERS.MESO, chr.meso)
-                .set(CHARACTERS.PARTY, chr.party?.id ?: 0)
-                .set(CHARACTERS.KILL_COUNT, chr.mobKills.values.sum())
-                .set(CHARACTERS.TOTAL_DAMAGE, chr.totalDamage)
-                .where(CHARACTERS.ID.eq(chr.id))
-                .execute()
+            .set(CHARACTERS.LEVEL, chr.level)
+            .set(CHARACTERS.FACE, chr.face)
+            .set(CHARACTERS.HAIR, chr.hair)
+            .set(CHARACTERS.SKIN, chr.skinColor)
+            .set(CHARACTERS.JOB, chr.job.id)
+            .set(CHARACTERS.AP, chr.ap)
+            .set(CHARACTERS.SP, chr.sp)
+            .set(CHARACTERS.FAME, chr.fame)
+            .set(CHARACTERS.MAP, chr.field.template.forcedReturnMap)
+            .set(CHARACTERS.SPAWNPOINT, chr.field.getClosestSpawnpoint(chr.position).id)
+            .set(CHARACTERS.STR, chr.strength)
+            .set(CHARACTERS.DEX, chr.dexterity)
+            .set(CHARACTERS.INT, chr.intelligence)
+            .set(CHARACTERS.LUK, chr.luck)
+            .set(CHARACTERS.HP, chr.health)
+            .set(CHARACTERS.MAX_HP, chr.maxHealth)
+            .set(CHARACTERS.MP, chr.mana)
+            .set(CHARACTERS.MAX_MP, chr.maxMana)
+            .set(CHARACTERS.EXP, chr.exp)
+            .set(CHARACTERS.MESO, chr.meso)
+            .set(CHARACTERS.PARTY, chr.party?.id ?: 0)
+            .set(CHARACTERS.KILL_COUNT, chr.mobKills.values.sum())
+            .set(CHARACTERS.TOTAL_DAMAGE, chr.totalDamage)
+            .where(CHARACTERS.ID.eq(chr.id))
+            .execute()
         //println("finished saving " + chr.name)
     }
 
@@ -105,11 +105,12 @@ object CharacterAPI {
     fun getKeyBindings(cid: Int): MutableMap<Int, KeyBinding> {
         val keyBindings: MutableMap<Int, KeyBinding> = HashMap()
         val res = connection.select().from(KEYBINDINGS)
-                .where(KEYBINDINGS.CID.eq(cid))
-                .fetch()
+            .where(KEYBINDINGS.CID.eq(cid))
+            .fetch()
 
         res.forEach {
-            keyBindings[it.getValue(KEYBINDINGS.KEY)] = KeyBinding(it.getValue(KEYBINDINGS.TYPE), it.getValue(KEYBINDINGS.ACTION))
+            keyBindings[it.getValue(KEYBINDINGS.KEY)] =
+                KeyBinding(it.getValue(KEYBINDINGS.TYPE), it.getValue(KEYBINDINGS.ACTION))
         }
 
         return keyBindings
@@ -124,13 +125,13 @@ object CharacterAPI {
         val keyBindings = chr.keyBindings
         keyBindings.forEach {
             connection.insertInto(KEYBINDINGS, KEYBINDINGS.CID, KEYBINDINGS.KEY, KEYBINDINGS.TYPE, KEYBINDINGS.ACTION)
-                    .values(chr.id, it.key, it.value.type, it.value.action)
-                    .onDuplicateKeyUpdate()
-                    .set(KEYBINDINGS.TYPE, it.value.type)
-                    .set(KEYBINDINGS.ACTION, it.value.action)
-                    .where(KEYBINDINGS.CID.eq(chr.id))
-                    .and(KEYBINDINGS.KEY.eq(it.key))
-                    .execute()
+                .values(chr.id, it.key, it.value.type, it.value.action)
+                .onDuplicateKeyUpdate()
+                .set(KEYBINDINGS.TYPE, it.value.type)
+                .set(KEYBINDINGS.ACTION, it.value.action)
+                .where(KEYBINDINGS.CID.eq(chr.id))
+                .and(KEYBINDINGS.KEY.eq(it.key))
+                .execute()
         }
     }
 
@@ -178,7 +179,7 @@ object CharacterAPI {
 
     fun getMacros(cid: Int): MutableMap<WeaponType, MutableList<Macro>> {
         val macros: MutableMap<WeaponType, MutableList<Macro>> = EnumMap(WeaponType::class.java)
-        with (MACROS) {
+        with(MACROS) {
             val res = connection.select().from(this)
                 .where(CID.eq(cid))
                 .orderBy(NUM)
@@ -203,11 +204,50 @@ object CharacterAPI {
         return macros
     }
 
+    fun updateMacros(chr: Character) {
+        val macros = chr.macros
+        with(MACROS) {
+            macros.forEach { (type, list) ->
+                list.filterIndexed { index, macro ->
+                    connection.insertInto(
+                        this,
+                        CID,
+                        TYPE,
+                        NUM,
+                        SHOUT,
+                        NAME,
+                        SKILL1,
+                        SKILL2,
+                        SKILL3,
+                    ).values(
+                        chr.id,
+                        type.type,
+                        index,
+                        macro.shout,
+                        macro.name,
+                        macro.skills[0],
+                        macro.skills[1],
+                        macro.skills[2]
+                    ).onDuplicateKeyUpdate()
+                        .set(SHOUT, macro.shout)
+                        .set(NAME, macro.name)
+                        .set(SKILL1, macro.skills[0])
+                        .set(SKILL2, macro.skills[1])
+                        .set(SKILL3, macro.skills[2])
+                        .where(CID.eq(chr.id))
+                        .and(TYPE.eq(type.type))
+                        .and(NUM.eq(index))
+                        .execute()
+                }
+            }
+        }
+    }
+
     fun getMobKills(cid: Int): MutableMap<Int, Int> {
         val mobKills: MutableMap<Int, Int> = HashMap()
         val res = connection.select().from(MOBKILLS)
-                .where(MOBKILLS.CID.eq(cid))
-                .fetch()
+            .where(MOBKILLS.CID.eq(cid))
+            .fetch()
 
         res.forEach {
             mobKills[it.getValue(MOBKILLS.MID)] = it.getValue(MOBKILLS.COUNT)
@@ -219,12 +259,12 @@ object CharacterAPI {
     fun saveMobKills(chr: Character) {
         chr.killedMobs.forEach {
             connection.insertInto(MOBKILLS, MOBKILLS.CID, MOBKILLS.MID, MOBKILLS.COUNT)
-                    .values(chr.id, it, chr.mobKills[it])
-                    .onDuplicateKeyUpdate()
-                    .set(MOBKILLS.COUNT, chr.mobKills[it])
-                    .where(MOBKILLS.CID.eq(chr.id))
-                    .and(MOBKILLS.MID.eq(it))
-                    .execute()
+                .values(chr.id, it, chr.mobKills[it])
+                .onDuplicateKeyUpdate()
+                .set(MOBKILLS.COUNT, chr.mobKills[it])
+                .where(MOBKILLS.CID.eq(chr.id))
+                .and(MOBKILLS.MID.eq(it))
+                .execute()
         }
     }
 

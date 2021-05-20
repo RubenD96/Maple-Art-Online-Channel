@@ -38,6 +38,7 @@ import net.database.CharacterAPI.getSkills
 import net.database.CharacterAPI.saveCharacterStats
 import net.database.CharacterAPI.saveMobKills
 import net.database.CharacterAPI.updateKeyBindings
+import net.database.CharacterAPI.updateMacros
 import net.database.CharacterAPI.updateSkills
 import net.database.GuildAPI.getGuildId
 import net.database.GuildAPI.load
@@ -242,6 +243,7 @@ class Character(val client: Client, override var name: String, val record: Recor
         saveCharacterStats(this)
         updateKeyBindings(this)
         updateSkills(this)
+        updateMacros(this)
         saveMobKills(this)
         saveItemInventories(this)
         saveInfo(this)
