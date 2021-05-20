@@ -6,6 +6,7 @@ class MigrateInfo(
     val ip: String
 ) {
 
+    var changingChannel = false
     var channelId: Int = -1
     var cashShop = false
 

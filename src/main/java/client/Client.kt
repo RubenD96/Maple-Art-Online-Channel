@@ -119,6 +119,7 @@ class Client(c: Channel, siv: ByteArray, riv: ByteArray) : NettyClient(c, siv, r
 
     fun migrate() {
         Server.clients[accId]?.let {
+            it.changingChannel = true
             it.channelId = worldChannel.channelId
             write(worldChannel.getChangeChannelPacket())
         } ?: close(this, "No MigrateInfo on migrate method")

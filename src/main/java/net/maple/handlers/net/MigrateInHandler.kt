@@ -67,7 +67,7 @@ class MigrateInHandler : PacketHandler {
 
                 chr.guild?.let {
                     c.write(it.getLoadGuildPacket())
-                    if (!mi.cashShop) {
+                    if (!mi.cashShop && !mi.changingChannel) {
                         it.notifyLoginLogout(chr, true)
                     }
                 }
