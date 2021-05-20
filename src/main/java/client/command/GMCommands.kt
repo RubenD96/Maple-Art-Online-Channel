@@ -675,7 +675,7 @@ class GMCommands {
                 when (type) {
                     "load" -> load(chr, chr.guild?.alliance)
                     "create" -> chr.guild?.alliance!!.create()
-                    "notify" -> chr.guild?.alliance!!.notifyLoginOrLogout(getCharacter(extra1!!)!!)
+                    "notify" -> chr.guild?.alliance!!.notifyLoginOrLogout(getCharacter(extra1!!)!!, true)
                 }
             }
         }

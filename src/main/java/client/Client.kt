@@ -127,11 +127,13 @@ class Client(c: Channel, siv: ByteArray, riv: ByteArray) : NettyClient(c, siv, r
 
     private fun notifyGuildLogout() {
         character.guild?.let {
-            val inCS = Server.clients[accId]?.cashShop ?: false
-            if (!inCS || character.isInCashShop) {
-                it.getMemberSecure(character.id).isOnline = false
-                it.broadcast(it.getLoadGuildPacket())
-                it.notifyLoginLogout(character, false)
+            if (!isCc) {
+                val inCS = Server.clients[accId]?.cashShop ?: false
+                if (!inCS || character.isInCashShop) {
+                    it.getMemberSecure(character.id).isOnline = false
+                    //it.broadcast(it.getLoadGuildPacket())
+                    it.notifyLoginLogout(character, false)
+                }
             }
         }
     }
