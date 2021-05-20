@@ -1,6 +1,7 @@
 package net.maple.packets
 
 import client.Character
+import net.database.GuildAPI
 import net.maple.SendOpcode
 import util.packet.PacketWriter
 import world.alliance.Alliance
@@ -57,15 +58,6 @@ object AlliancePackets {
         chr.write(pw.createPacket())
     }
 
-    fun Alliance.create() {
-        val pw = baseAlliancePacket(AllianceRes.CREATE_DONE)
-
-        encode(pw)
-        guilds.forEach { it.encode(pw) }
-
-        broadcast(pw.createPacket())
-    }
-
     fun Alliance.notifyLoginOrLogout(chr: Character, online: Boolean) {
         val pw = baseAlliancePacket(AllianceRes.NOTIFY_LOGIN_OR_LOGOUT)
 
@@ -77,12 +69,40 @@ object AlliancePackets {
         broadcast(pw.createPacket())
     }
 
-    fun setGradeName(alliance: Alliance) {
+    fun Alliance.create() {
+        val pw = baseAlliancePacket(AllianceRes.CREATE_DONE)
+
+        encode(pw)
+        guilds.forEach { it.encode(pw) }
+
+        broadcast(pw.createPacket())
+    }
+
+    fun Alliance.setGradeNames() {
         val pw = baseAlliancePacket(AllianceRes.SET_GRADE_NAME_DONE)
 
-        pw.writeInt(alliance.id)
-        alliance.ranks.forEach { pw.writeMapleString(it) }
+        pw.writeInt(id)
+        ranks.forEach { pw.writeMapleString(it) }
 
-        alliance.broadcast(pw.createPacket())
+        broadcast(pw.createPacket())
+    }
+
+    // todo this is not what you think it is
+    fun Alliance.changeGrade(name: String) {
+        if (name.length < 4 || name.length > 10) return
+        val pw = baseAlliancePacket(AllianceRes.CHANGE_GRADE_DONE)
+    }
+
+    fun Alliance.setNotice(content: String) {
+        if (content.length > 100) return
+        val pw = baseAlliancePacket(AllianceRes.SET_NOTICE_DONE)
+
+        pw.writeInt(id)
+        pw.writeMapleString(content)
+
+        notice = content
+        GuildAPI.updateInfo(this)
+
+        broadcast(pw.createPacket())
     }
 }

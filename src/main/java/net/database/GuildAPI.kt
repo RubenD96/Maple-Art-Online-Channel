@@ -144,6 +144,25 @@ object GuildAPI {
         }
     }
 
+    /**
+     * Update alliance info
+     *
+     * @param alliance Alliance to update
+     */
+    fun updateInfo(alliance: Alliance) {
+        with(ALLIANCES) {
+            connection.update(this)
+                .set(NOTICE, alliance.notice)
+                .set(MAXMEMBERNUM, alliance.maxMemberNum)
+                /*.set(RANK1, guild.ranks[0]) todo
+                .set(RANK2, guild.ranks[1])
+                .set(RANK3, guild.ranks[2])
+                .set(RANK4, guild.ranks[3])
+                .set(RANK5, guild.ranks[4])*/
+                .execute()
+        }
+    }
+
     fun updateMemberGrade(cid: Int, grade: Byte) {
         connection.update(GUILDMEMBERS)
             .set(GUILDMEMBERS.GUILDGRADE, grade)

@@ -3,10 +3,15 @@ package net.database
 import client.Character
 import client.Client
 import client.player.Skill
+import client.player.WeaponType
 import client.player.key.KeyBinding
 import database.jooq.Tables.*
 import net.database.DatabaseCore.connection
 import org.jooq.Record
+import skill.Macro
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 object CharacterAPI {
 
@@ -169,6 +174,33 @@ object CharacterAPI {
                 .and(SKILLS.SKILL.eq(it.key))
                 .execute()
         }
+    }
+
+    fun getMacros(cid: Int): MutableMap<WeaponType, MutableList<Macro>> {
+        val macros: MutableMap<WeaponType, MutableList<Macro>> = EnumMap(WeaponType::class.java)
+        with (MACROS) {
+            val res = connection.select().from(this)
+                .where(CID.eq(cid))
+                .orderBy(NUM)
+                .fetch()
+
+            res.forEach {
+                val macro = Macro(
+                    it.getValue(NAME),
+                    it.getValue(SHOUT) == 1.toByte(),
+                    intArrayOf(
+                        it.getValue(SKILL1),
+                        it.getValue(SKILL2),
+                        it.getValue(SKILL3)
+                    )
+                )
+
+                val type = WeaponType.getById(it.getValue(TYPE))
+                macros.computeIfAbsent(type) { ArrayList() }.add(macro)
+            }
+        }
+
+        return macros
     }
 
     fun getMobKills(cid: Int): MutableMap<Int, Int> {

@@ -63,6 +63,7 @@ object PacketProcessor {
         handlers[RecvOpcode.USER_PORTAL_SCRIPT_REQUEST] = UserPortalScriptRequestHandler()
         handlers[RecvOpcode.USER_PORTAL_TELEPORT_REQUEST] = UserPortalTeleportRequestHandler()
         handlers[RecvOpcode.USER_QUEST_REQUEST] = UserQuestRequestHandler()
+        handlers[RecvOpcode.USER_MACRO_SYS_DATA_MODIFIED] = UserMacroSysDataModifiedHandler()
         handlers[RecvOpcode.GROUP_MESSAGE] = GroupMessageHandler()
         handlers[RecvOpcode.WHISPER] = WhisperHandler()
         handlers[RecvOpcode.PARTY_REQUEST] = PartyRequestHandler()

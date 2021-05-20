@@ -1,8 +1,11 @@
 package net.maple.handlers.group
 
+import client.Character
 import client.Client
 import net.maple.handlers.PacketHandler
-import net.maple.packets.AlliancePackets
+import net.maple.packets.AlliancePackets.changeGrade
+import net.maple.packets.AlliancePackets.load
+import net.maple.packets.AlliancePackets.setNotice
 import util.packet.PacketReader
 
 class AllianceRequestHandler : PacketHandler {
@@ -25,9 +28,17 @@ class AllianceRequestHandler : PacketHandler {
     override fun handlePacket(reader: PacketReader, c: Client) {
         val chr = c.character
 
+        val alliance = chr.guild?.alliance
         when (val mode = reader.readByte()) {
-            LOAD -> AlliancePackets.load(chr, chr.guild?.alliance)
+            LOAD -> load(chr, alliance)
+            SET_GRADE_NAME -> if (chr.isAllowed(1)) alliance?.changeGrade(reader.readMapleString()) // todo
+            SET_NOTICE -> if (chr.isAllowed(2)) alliance?.setNotice(reader.readMapleString())
             else -> System.err.println("[AllianceRequestHandler] Unhandled op $mode")
         }
+    }
+
+    private fun Character.isAllowed(grade: Int): Boolean {
+        val member = guild?.getMemberSecure(id) ?: return false
+        return member.allianceGrade <= grade
     }
 }

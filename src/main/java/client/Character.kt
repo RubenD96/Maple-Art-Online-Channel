@@ -16,6 +16,7 @@ import client.party.Party
 import client.player.Job
 import client.player.Skill
 import client.player.StatType
+import client.player.WeaponType
 import client.player.friend.FriendList
 import client.player.key.KeyBinding
 import client.player.quest.Quest
@@ -30,6 +31,7 @@ import field.obj.life.FieldControlledObject
 import field.obj.life.FieldMobTemplate
 import kotlinx.coroutines.*
 import net.database.CharacterAPI.getKeyBindings
+import net.database.CharacterAPI.getMacros
 import net.database.CharacterAPI.getMobKills
 import net.database.CharacterAPI.getOldPartyId
 import net.database.CharacterAPI.getSkills
@@ -50,6 +52,7 @@ import net.server.ChannelServer
 import net.server.Server.getCharacter
 import net.server.Server.parties
 import org.jooq.Record
+import skill.Macro
 import util.logging.LogType
 import util.logging.Logger.log
 import util.packet.Packet
@@ -209,6 +212,7 @@ class Character(val client: Client, override var name: String, val record: Recor
 
     var keyBindings: MutableMap<Int, KeyBinding> = HashMap()
     var skills: MutableMap<Int, Skill> = HashMap()
+    var macros: MutableMap<WeaponType, MutableList<Macro>> = EnumMap(WeaponType::class.java)
     var wishlist = IntArray(10)
 
     /**
@@ -224,6 +228,7 @@ class Character(val client: Client, override var name: String, val record: Recor
         resetQuickSlot()
         keyBindings = getKeyBindings(id)
         skills = getSkills(id)
+        macros = getMacros(id)
         friendList = FriendList(this)
     }
 
