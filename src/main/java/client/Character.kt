@@ -48,6 +48,7 @@ import net.database.TownsAPI.add
 import net.database.WishlistAPI.save
 import net.maple.packets.CharacterPackets.message
 import net.maple.packets.CharacterPackets.statUpdate
+import net.maple.packets.CharacterPackets.updateMacroSettings
 import net.maple.packets.PartyPackets.getUpdatePartyHealthPacket
 import net.server.ChannelServer
 import net.server.Server.getCharacter
@@ -93,6 +94,7 @@ class Character(val client: Client, override var name: String, val record: Recor
         set(value) {
             field = value
             updateSingleStat(StatType.JOB)
+            updateMacroSettings()
         }
     var ap: Int = record.getValue(CHARACTERS.AP)
         set(value) {

@@ -21,6 +21,7 @@ enum class SendOpcode(override val value: Int) : IntegerValue {
     GUILD_RESULT(0x43),
     ALLIANCE_RESULT(0x44),
     BROADCAST_MSG(0x47),
+    MACRO_SYS_DATA_INIT(0x8C),
     SET_FIELD(0x8D),
     SET_CASH_SHOP(0x8F),
     TRANSFER_CHANNEL_REQ_IGNORED(0x94),

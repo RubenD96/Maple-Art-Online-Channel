@@ -295,7 +295,7 @@ object CharacterPackets {
                 StatType.PET3 -> pw.writeLong(if (pets.size > 2) pets[2].item.cashItemSN else 0)
                 StatType.TEMP_EXP -> log(
                     LogType.UNCODED,
-                    "Tempexp is not implemented (yet)",
+                    "Tempexp is not implemented",
                     this
                 )
                 StatType.LEVEL -> pw.write(this.level)
@@ -339,6 +339,19 @@ object CharacterPackets {
         pw.writeBool(true) // todo ?
         context.encode(pw)
         pw.writeBool(true) // todo ?
+
+        write(pw.createPacket())
+    }
+
+    fun Character.updateMacroSettings() {
+        val pw = PacketWriter(16)
+
+        pw.writeHeader(SendOpcode.MACRO_SYS_DATA_INIT)
+        val macros = macros[job.type]
+        pw.write(macros?.size ?: 0)
+        macros?.forEach {
+            it.encode(pw)
+        }
 
         write(pw.createPacket())
     }

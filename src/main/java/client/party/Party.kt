@@ -68,7 +68,9 @@ class Party(leader: Character) {
         synchronized(members) {
             for (member in getMembers()) {
                 if (member.isOnline) {
-                    getCharacter(member.cid)?.write(PartyPackets.updateParty(this, member.channel).clone()) // todo don't think clone is needed here
+                    getCharacter(member.cid)?.write(
+                        PartyPackets.updateParty(this, member.channel).clone()
+                    ) // todo don't think clone is needed here
                     getCharacter(member.cid)?.updatePartyHP(true)
                 }
             }
@@ -98,10 +100,8 @@ class Party(leader: Character) {
         get() {
             val members: MutableList<PartyMember> = ArrayList()
             synchronized(members) {
-                for (member in this.members) {
-                    if (member.isOnline) {
-                        members.add(member)
-                    }
+                this.members.filter { it.isOnline }.forEach {
+                    members.add(it)
                 }
             }
             return members

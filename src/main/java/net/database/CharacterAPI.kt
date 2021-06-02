@@ -208,7 +208,7 @@ object CharacterAPI {
         val macros = chr.macros
         with(MACROS) {
             macros.forEach { (type, list) ->
-                list.filterIndexed { index, macro ->
+                list.forEachIndexed() { index, macro ->
                     connection.insertInto(
                         this,
                         CID,
@@ -218,18 +218,18 @@ object CharacterAPI {
                         NAME,
                         SKILL1,
                         SKILL2,
-                        SKILL3,
+                        SKILL3
                     ).values(
                         chr.id,
                         type.type,
                         index,
-                        macro.shout,
+                        if (macro.shout) 1 else 0,
                         macro.name,
                         macro.skills[0],
                         macro.skills[1],
                         macro.skills[2]
                     ).onDuplicateKeyUpdate()
-                        .set(SHOUT, macro.shout)
+                        .set(SHOUT, if (macro.shout) 1 else 0)
                         .set(NAME, macro.name)
                         .set(SKILL1, macro.skills[0])
                         .set(SKILL2, macro.skills[1])

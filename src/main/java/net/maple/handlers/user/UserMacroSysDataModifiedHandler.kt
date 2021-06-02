@@ -8,11 +8,11 @@ import util.packet.PacketReader
 class UserMacroSysDataModifiedHandler : PacketHandler {
 
     override fun handlePacket(reader: PacketReader, c: Client) {
-        val macro = reader.readByte()
-        if (macro > 5) return
+        val count = reader.readByte()
+        if (count > 5) return
 
         val macros = ArrayList<Macro>()
-        repeat(macro.toInt()) {
+        repeat(count.toInt()) {
             val name = reader.readMapleString()
             if (name.length > 13) return
 

@@ -7,17 +7,14 @@ import client.inventory.item.slots.ItemSlotBundle
 import client.messages.broadcast.types.AlertMessage
 import client.messages.broadcast.types.NoticeMessage
 import client.messages.broadcast.types.NoticeWithoutPrefixMessage
+import client.player.StatType
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine
 import field.obj.drop.ItemDrop
 import field.obj.life.FieldMob
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import managers.ItemManager
 import managers.MobManager
 import managers.NPCManager
 import managers.NPCShopManager
-import net.database.GuildAPI
 import net.database.ShopAPI
 import net.maple.SendOpcode
 import net.maple.handlers.user.UserSelectNpcHandler
@@ -30,7 +27,6 @@ import net.server.Server
 import net.server.Server.getCharacter
 import scripting.dialog.DialogUtils
 import util.packet.PacketWriter
-import world.alliance.Alliance
 import java.util.*
 import javax.script.ScriptEngine
 import javax.script.ScriptException
@@ -774,4 +770,29 @@ class GMCommands {
     }
 
     object UI : Command by OpenUI
+
+    object ForceJob : Command {
+
+        private var id: Int = 0
+
+        override val description: String = "!forcejob [id:int]"
+
+        override fun loadParams(params: Map<Int, String>) {
+            id = params[0]!!.toInt()
+        }
+
+        override fun execute(chr: Character) {
+            val pw = PacketWriter(32)
+
+            pw.writeHeader(SendOpcode.STAT_CHANGED)
+            pw.writeBool(false)
+            pw.writeInt(StatType.JOB.stat)
+            pw.writeShort(id)
+
+            pw.writeBool(false)
+            pw.writeBool(false)
+
+            chr.write(pw.createPacket())
+        }
+    }
 }

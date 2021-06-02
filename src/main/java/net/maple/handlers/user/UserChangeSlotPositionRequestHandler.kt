@@ -3,6 +3,8 @@ package net.maple.handlers.user
 import client.Client
 import client.inventory.ItemInventoryType
 import client.inventory.item.slots.ItemSlotBundle
+import client.inventory.item.slots.ItemSlotEquip
+import client.player.Job
 import constants.ItemConstants.isTreatSingly
 import field.obj.drop.ItemDrop
 import net.database.ItemAPI
@@ -29,6 +31,10 @@ class UserChangeSlotPositionRequestHandler : PacketHandler {
                 item.updated = true
                 val uuid = item.uuid
 
+                if (from.toInt() == -11) {
+                    chr.job = Job.WEAPONLESS
+                }
+
                 if (!isTreatSingly(item.templateId)) {
                     if (item !is ItemSlotBundle) return@modifyInventory
                     if (item.number < number) return@modifyInventory
@@ -48,6 +54,22 @@ class UserChangeSlotPositionRequestHandler : PacketHandler {
                 chr.field.enter(drop)
             }, true)
         } else {
+            if (to.toInt() == -11) {
+                val inventory = chr.getInventory(type)
+                val item = inventory.items[from] as? ItemSlotEquip ?: return
+
+                val job = when (item.templateId / 10000) {
+                    130 -> Job.SWORD_1H4
+                    133 -> Job.DAGGER4
+                    140 -> Job.SWORD_2H4
+                    143 -> Job.SPEAR4
+                    148 -> Job.KNUCKLE4
+                    else -> Job.WEAPONLESS
+                }
+
+                if (job != chr.job) chr.job = job
+            }
+
             chr.modifyInventory({ it.getInventoryContext(type).move(from, to) }, true)
         }
     }

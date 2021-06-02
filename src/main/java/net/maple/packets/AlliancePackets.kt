@@ -1,10 +1,14 @@
 package net.maple.packets
 
 import client.Character
+import client.messages.broadcast.types.EventMessage
 import net.database.GuildAPI
 import net.maple.SendOpcode
+import net.maple.packets.CharacterPackets.message
+import net.server.Server
 import util.packet.PacketWriter
 import world.alliance.Alliance
+import world.guild.Guild
 
 object AlliancePackets {
 
@@ -76,6 +80,24 @@ object AlliancePackets {
         guilds.forEach { it.encode(pw) }
 
         broadcast(pw.createPacket())
+    }
+
+    fun Alliance.invite(guildName: String, inviter: Character) {
+        Server.guilds.values.firstOrNull { it.name == guildName }?.let { guild ->
+            Server.getCharacter(guild.leader)?.let {
+                val pw = baseAlliancePacket(AllianceRes.INVITE_DONE)
+
+                encode(pw)
+                pw.writeInt(guild.id)
+                guild.encode(pw)
+
+                it.write(pw.createPacket())
+            } ?: run {
+                inviter.message(EventMessage("[Alliance] Guild master is not online"))
+            }
+        } ?: run {
+            inviter.message(EventMessage("[Alliance] Guild $guildName was not found"))
+        }
     }
 
     fun Alliance.setGradeNames() {

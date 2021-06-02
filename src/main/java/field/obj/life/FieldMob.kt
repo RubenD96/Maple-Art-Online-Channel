@@ -77,7 +77,7 @@ class FieldMob(val template: FieldMobTemplate, left: Boolean) : AbstractFieldCon
             chr.party?.onlineMembers?.forEach {
                 if (it.field == field.template.id) { // same id
                     Server.getCharacter(it.cid)?.run {
-                        if (this.field == field) { // same instance
+                        if (this.field == field) { // same instance todo test "this" instance
                             this.updateMobKills(template)
                         }
                     }

@@ -14,6 +14,7 @@ import net.database.TownsAPI
 import net.database.WishlistAPI
 import net.maple.SendOpcode
 import net.maple.handlers.PacketHandler
+import net.maple.packets.CharacterPackets.updateMacroSettings
 import net.maple.packets.GuildPackets.getLoadGuildPacket
 import net.maple.packets.GuildPackets.notifyLoginLogout
 import net.server.Server
@@ -74,6 +75,7 @@ class MigrateInHandler : PacketHandler {
 
                 c.write(initFuncKey(chr))
                 c.write(initQuickslot(chr))
+                chr.updateMacroSettings()
 
                 mi.cashShop = false
             } else {

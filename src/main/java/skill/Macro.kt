@@ -1,10 +1,20 @@
 package skill
 
+import util.packet.PacketWriter
+
 data class Macro(
     val name: String,
     val shout: Boolean,
     val skills: IntArray
 ) {
+
+    fun encode(pw: PacketWriter) {
+        pw.writeMapleString(name)
+        pw.writeBool(shout)
+        pw.writeInt(skills[0])
+        pw.writeInt(skills[1])
+        pw.writeInt(skills[2])
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

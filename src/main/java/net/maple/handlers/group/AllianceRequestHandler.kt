@@ -4,8 +4,10 @@ import client.Character
 import client.Client
 import net.maple.handlers.PacketHandler
 import net.maple.packets.AlliancePackets.changeGrade
+import net.maple.packets.AlliancePackets.invite
 import net.maple.packets.AlliancePackets.load
 import net.maple.packets.AlliancePackets.setNotice
+import util.HexTool
 import util.packet.PacketReader
 
 class AllianceRequestHandler : PacketHandler {
@@ -31,9 +33,10 @@ class AllianceRequestHandler : PacketHandler {
         val alliance = chr.guild?.alliance
         when (val mode = reader.readByte()) {
             LOAD -> load(chr, alliance)
+            INVITE -> if (chr.isAllowed(1)) alliance?.invite(reader.readMapleString(), chr)
             SET_GRADE_NAME -> if (chr.isAllowed(1)) alliance?.changeGrade(reader.readMapleString()) // todo
             SET_NOTICE -> if (chr.isAllowed(2)) alliance?.setNotice(reader.readMapleString())
-            else -> System.err.println("[AllianceRequestHandler] Unhandled op $mode")
+            else -> System.err.println("[AllianceRequestHandler] Unhandled op $mode | ${HexTool.toHex(reader.data)}")
         }
     }
 

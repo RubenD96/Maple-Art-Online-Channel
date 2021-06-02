@@ -64,7 +64,6 @@ class Guild(val id: Int) {
                 .filter { it.character !== ignored } // useless filter?
                 .forEach {
                     it.character?.write(packet.clone())
-                    println(it.character)
                 }
         }
     }

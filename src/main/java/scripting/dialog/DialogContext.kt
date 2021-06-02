@@ -158,7 +158,7 @@ class DialogContext(
         c.write(ConversationPackets.getTextMessagePacket(npcId, speaker, text, def, min, max))
     }
 
-    fun endMessage(text: String, speaker: Int = SpeakerType.NoESC) {
+    fun endMessage(text: String, speaker: Int = 0) {
         c.write(ConversationPackets.getOkMessagePacket(npcId, speaker, text))
         clearStates()
     }
