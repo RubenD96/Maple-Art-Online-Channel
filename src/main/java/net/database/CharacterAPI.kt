@@ -123,7 +123,7 @@ object CharacterAPI {
      *
      * @param chr character to save
      */
-    fun saveWeaponSp(chr: Character) {
+    fun updateWeaponSp(chr: Character) {
         with(SKILLPOINTS) {
             val sp = EnumMap(chr.skillpoints)
             sp.forEach {
