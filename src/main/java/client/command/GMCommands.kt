@@ -630,7 +630,7 @@ class GMCommands {
                 "skin" -> chr.skinColor = value
                 "job" -> chr.job = client.player.Job.getById(value)
                 "ap" -> chr.ap = value
-                "sp" -> chr.sp = value
+                "sp" -> chr.curSp = value
                 "fame" -> chr.fame = value
                 "str" -> chr.strength = value
                 "dex" -> chr.dexterity = value

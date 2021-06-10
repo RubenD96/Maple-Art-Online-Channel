@@ -74,7 +74,7 @@ object CharacterAPI {
             .set(CHARACTERS.SKIN, chr.skinColor)
             .set(CHARACTERS.JOB, chr.job.id)
             .set(CHARACTERS.AP, chr.ap)
-            .set(CHARACTERS.SP, chr.sp)
+            //.set(CHARACTERS.SP, chr.curSp)
             .set(CHARACTERS.FAME, chr.fame)
             .set(CHARACTERS.MAP, chr.field.template.forcedReturnMap)
             .set(CHARACTERS.SPAWNPOINT, chr.field.getClosestSpawnpoint(chr.position).id)
@@ -94,6 +94,48 @@ object CharacterAPI {
             .where(CHARACTERS.ID.eq(chr.id))
             .execute()
         //println("finished saving " + chr.name)
+    }
+
+    /**
+     * Get weapon sp that were changed at least once before
+     *
+     * @param cid character id
+     * @return map with WeaponType and Integer amount
+     */
+    fun getWeaponSp(cid: Int): MutableMap<WeaponType, Int> {
+        val sp: MutableMap<WeaponType, Int> = EnumMap(WeaponType::class.java)
+
+        with(SKILLPOINTS) {
+            val res = connection.select().from(this)
+                .where(CID.eq(cid))
+                .fetch()
+
+            res.forEach {
+                sp[WeaponType.getById(it.getValue(TYPE))] = it.getValue(AMOUNT)
+            }
+        }
+
+        return sp
+    }
+
+    /**
+     * Updates the sp per weapon type
+     *
+     * @param chr character to save
+     */
+    fun saveWeaponSp(chr: Character) {
+        with(SKILLPOINTS) {
+            val sp = EnumMap(chr.skillpoints)
+            sp.forEach {
+                connection.insertInto(this, CID, TYPE, AMOUNT)
+                    .values(chr.id, it.key.type, it.value)
+                    .onDuplicateKeyUpdate()
+                    .set(AMOUNT, it.value)
+                    .where(CID.eq(chr.id))
+                    .and(TYPE.eq(it.key.type))
+                    .execute()
+            }
+        }
     }
 
     /**
@@ -122,7 +164,7 @@ object CharacterAPI {
      * @param chr character
      */
     fun updateKeyBindings(chr: Character) {
-        val keyBindings = chr.keyBindings
+        val keyBindings = HashMap(chr.keyBindings)
         keyBindings.forEach {
             connection.insertInto(KEYBINDINGS, KEYBINDINGS.CID, KEYBINDINGS.KEY, KEYBINDINGS.TYPE, KEYBINDINGS.ACTION)
                 .values(chr.id, it.key, it.value.type, it.value.action)

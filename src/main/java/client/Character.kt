@@ -35,6 +35,7 @@ import net.database.CharacterAPI.getMacros
 import net.database.CharacterAPI.getMobKills
 import net.database.CharacterAPI.getOldPartyId
 import net.database.CharacterAPI.getSkills
+import net.database.CharacterAPI.getWeaponSp
 import net.database.CharacterAPI.saveCharacterStats
 import net.database.CharacterAPI.saveMobKills
 import net.database.CharacterAPI.updateKeyBindings
@@ -95,16 +96,18 @@ class Character(val client: Client, override var name: String, val record: Recor
             field = value
             updateSingleStat(StatType.JOB)
             updateMacroSettings()
+            curSp = skillpoints[value.type] ?: 0
         }
     var ap: Int = record.getValue(CHARACTERS.AP)
         set(value) {
             field = value
             updateSingleStat(StatType.AP)
         }
-    var sp: Int = record.getValue(CHARACTERS.SP)
+    var curSp: Int = 0
         set(value) {
             field = value
             updateSingleStat(StatType.SP)
+            skillpoints[job.type] = value
         }
     var fame: Int = record.getValue(CHARACTERS.FAME)
         set(value) {
@@ -214,6 +217,7 @@ class Character(val client: Client, override var name: String, val record: Recor
     val killedMobs: MutableSet<Int> = HashSet()
 
     var keyBindings: MutableMap<Int, KeyBinding> = HashMap()
+    var skillpoints: MutableMap<WeaponType, Int> = EnumMap(WeaponType::class.java)
     var skills: MutableMap<Int, Skill> = HashMap()
     var macros: MutableMap<WeaponType, MutableList<Macro>> = EnumMap(WeaponType::class.java)
     var wishlist = IntArray(10)
@@ -224,12 +228,12 @@ class Character(val client: Client, override var name: String, val record: Recor
     var party: Party? = null
     var npcShop: NPCShop? = null
     var activeStorage: ItemStorageInteraction? = null
-    var alliance: Alliance? = null
 
     init {
         portal = spawnpoint.toByte()
         resetQuickSlot()
         keyBindings = getKeyBindings(id)
+        skillpoints = getWeaponSp(id)
         skills = getSkills(id)
         macros = getMacros(id)
         friendList = FriendList(this)

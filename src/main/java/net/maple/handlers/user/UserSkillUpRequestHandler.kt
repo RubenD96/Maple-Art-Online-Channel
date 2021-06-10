@@ -1,12 +1,8 @@
 package net.maple.handlers.user
 
 import client.Client
-import managers.SkillManager
 import net.maple.handlers.PacketHandler
 import net.maple.packets.CharacterPackets.modifySkills
-import skill.SkillTemplate
-import util.logging.LogType
-import util.logging.Logger
 import util.packet.PacketReader
 
 class UserSkillUpRequestHandler : PacketHandler {
@@ -20,7 +16,7 @@ class UserSkillUpRequestHandler : PacketHandler {
 
         template.maxLevel = 30
 
-        if (chr.sp <= 0) return
+        if (chr.curSp <= 0) return
 
         // return if skill exists and is above or equal to max level
         chr.skills[id]?.let {
@@ -35,7 +31,7 @@ class UserSkillUpRequestHandler : PacketHandler {
             return
         }*/
 
-        chr.sp--
+        chr.curSp--
         chr.modifySkills { it.add(id) }
     }
 }

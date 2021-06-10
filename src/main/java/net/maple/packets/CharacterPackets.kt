@@ -214,7 +214,7 @@ object CharacterPackets {
             pw.writeInt(mana)
             pw.writeInt(maxMana) // 77
             pw.writeShort(ap)
-            pw.writeShort(sp)
+            pw.writeShort(curSp)
             pw.writeInt(exp)
             pw.writeShort(fame) // 87
             pw.writeInt(69) // Gacha Exp (87-91)
@@ -309,7 +309,7 @@ object CharacterPackets {
                 StatType.MAX_MP -> pw.writeInt(this.maxMana)
                 StatType.MP -> pw.writeInt(this.mana)
                 StatType.AP -> pw.writeShort(this.ap)
-                StatType.SP -> pw.writeShort(this.sp)
+                StatType.SP -> pw.writeShort(this.curSp)
                 StatType.EXP -> pw.writeInt(this.exp)
                 StatType.FAME -> pw.writeShort(this.fame)
                 StatType.MESO -> pw.writeInt(this.meso)
