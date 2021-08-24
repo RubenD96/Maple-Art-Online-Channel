@@ -1,4 +1,4 @@
-package scripting.scripts.quest
+package scripting.scripts.quest.floor1
 
 import client.Client
 import scripting.dialog.DialogContext
@@ -61,7 +61,7 @@ class RainingBoars : QuestScript() {
             "Wow thanks a lot, you really made my day! I hope to see you around more often!",
             ok = {
                 // give rewards
-                completeQuest()
+                finishQuest()
             }
         )
     }
