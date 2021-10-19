@@ -49,19 +49,19 @@ class Field(val template: FieldTemplate) {
             Replay::class to mutableSetOf(),
             FieldNPC::class to mutableSetOf()
         )
-    val fieldIds: Map<KClass<out FieldObject>, AtomicInteger> =
-        mapOf(
-            FieldMob::class to AtomicInteger(0),
-            AbstractFieldDrop::class to AtomicInteger(0),
-            FieldReactor::class to AtomicInteger(0),
-            Replay::class to AtomicInteger(999999999),
-            FieldNPC::class to AtomicInteger(0)
-        )
 
     private val toRespawn: MutableList<Respawn> = ArrayList()
 
     companion object {
         //private val runningObjectId = AtomicInteger(1000000000)
+        val fieldIds: Map<KClass<out FieldObject>, AtomicInteger> =
+            mapOf(
+                FieldMob::class to AtomicInteger(0),
+                AbstractFieldDrop::class to AtomicInteger(0),
+                FieldReactor::class to AtomicInteger(0),
+                Replay::class to AtomicInteger(999999999),
+                FieldNPC::class to AtomicInteger(0)
+            )
     }
 
     fun startReplay() {
@@ -165,7 +165,7 @@ class Field(val template: FieldTemplate) {
             //}
         } else { // not a character object
             //obj.id = runningObjectId.addAndGet(1)
-            obj.id = fieldIds[obj::class]!!.addAndGet(1)
+            obj.id = fieldIds[obj.kclass]?.addAndGet(1) ?: error("Invalid field object for id | type: ${obj::class.simpleName}")
             when (obj) {
                 is AbstractFieldDrop -> enterItemDrop(
                     obj,
