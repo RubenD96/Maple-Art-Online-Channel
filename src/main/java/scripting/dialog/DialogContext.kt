@@ -186,6 +186,11 @@ class DialogContext(
      * WARNING: do not use default values OUTSIDE QuestScript extended classes!!
      */
     fun finishQuest(qid: Int = id) {
+        val quest = c.character.quests[qid]
+        if (quest == null || !quest.canFinish()) {
+            c.close(this, "Invalid quest finish requirements ($qid)")
+            return
+        }
         c.character.completeQuest(qid)
     }
 }

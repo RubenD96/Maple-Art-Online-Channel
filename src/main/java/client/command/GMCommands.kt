@@ -339,7 +339,7 @@ class GMCommands {
             channels.forEach {
                 chr.message(NoticeWithoutPrefixMessage("Channel ${it.key}:"))
                 it.value.forEach { player ->
-                    chr.message(NoticeWithoutPrefixMessage("-> ${player.name} - ${player.field.template.name} (${player.fieldId})"))
+                    chr.message(NoticeWithoutPrefixMessage("-> ${player.name} - ${player.field.template.mapName}, ${player.field.template.streetName} (${player.fieldId})"))
                 }
             }
         }
@@ -793,6 +793,17 @@ class GMCommands {
             pw.writeBool(false)
 
             chr.write(pw.createPacket())
+        }
+    }
+
+    object Commands : Command {
+
+        override val description: String = "Shows all the commands"
+
+        override fun execute(chr: Character) {
+            CommandHandler.getAllCommands(true).forEach {
+                chr.message(NoticeWithoutPrefixMessage(it))
+            }
         }
     }
 }

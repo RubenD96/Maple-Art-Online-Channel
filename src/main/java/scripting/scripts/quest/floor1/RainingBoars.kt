@@ -61,19 +61,22 @@ class RainingBoars : QuestScript() {
     }
 
     private fun DialogContext.completeQuest() {
+        finishQuest()
         sendMessage(
             "Wow thanks a lot, you really made my day! I hope to see you around more often!\r\n" +
                     postRewards(
                         listOf(
                             ExpQuestReward(100),
                             MesoQuestReward(200),
-                            ItemQuestReward(4000000, 10)
+                            ItemQuestReward(4000000, 10),
+                            ItemQuestReward(4000001, 10),
+                            ItemQuestReward(4000002, 10)
                         ),
                         chr = c.character,
                         giveRewards = true
                     ),
             ok = {
-                finishQuest()
+                onEnd()
             }
         )
     }

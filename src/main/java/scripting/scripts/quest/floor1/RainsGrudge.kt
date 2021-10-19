@@ -30,14 +30,14 @@ class RainsGrudge : QuestScript() {
 
     private fun DialogContext.onAccept() {
         startQuest()
-        sendMessage("Please take down ${25.red()} ${9700040.mobName()} so I can sleep better tonight!",
-        next = { postAcceptDialog() }
+        sendMessage("Please take down ${25.red()} wolves so I can sleep better tonight!",
+            next = { postAcceptDialog() }
         )
     }
 
     private fun DialogContext.postAcceptDialog() {
         sendMessage(
-            "After taking down ${25.red()} ${9700040.mobName()}, come back to me and I'll reward you.",
+            "After taking down ${25.red()} wolves, come back to me and I'll reward you.",
             ok = { onEnd() }
         )
     }
@@ -52,9 +52,8 @@ class RainsGrudge : QuestScript() {
     }
 
     private fun DialogContext.postFinishDialog() {
-
         sendMessage(
-            "Thanks a lot for taking down ${25.red()} ${9700040.mobName()}, I will sleep better tonight!",
+            "Thanks a lot for taking down ${25.red()} wolves, I will sleep better tonight!",
             ok = {
                 finishQuest()
             }

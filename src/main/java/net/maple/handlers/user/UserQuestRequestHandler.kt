@@ -22,11 +22,6 @@ class UserQuestRequestHandler : PacketHandler {
         if (action.toInt() == QuestRequest.OPENING_SCRIPT.value) {
             openQuest(c, questId.toInt(), npcId)
         } else if (action.toInt() == QuestRequest.COMPLETE_SCRIPT.value) {
-            val quest = c.character.quests[questId.toInt()]
-            if (quest == null || !quest.canFinish()) {
-                c.close(this, "Invalid quest finish requirements ($questId)")
-                return
-            }
             openQuest(c, questId.toInt(), npcId, false)
         } else if (action.toInt() == QuestRequest.RESIGN_QUEST.value) {
             c.character.forfeitQuest(questId.toInt())

@@ -9,10 +9,11 @@ enum class FieldFlag(override val value: Int) : IntegerValue {
     FOOTHOLDS(0x08),
     FORCED_RETURN(0x10),
     FIELD_LIMIT(0x20),
-    NAME(0x40),
-    ON_ENTER(0x80),
-    PORTALS(0x100),
-    AREAS(0x200),
-    LIFE(0x400),
-    REACTOR(0x800);
+    MAP_NAME(0x40),
+    STREET_NAME(0x80),
+    ON_ENTER(0x100),
+    PORTALS(0x200),
+    AREAS(0x400),
+    LIFE(0x800),
+    REACTOR(0x1000);
 }

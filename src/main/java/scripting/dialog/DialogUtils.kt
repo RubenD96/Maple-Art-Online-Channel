@@ -222,7 +222,7 @@ object DialogUtils {
     }
 
     fun postRewards(rewards: List<QuestReward>, chr: Character? = null, giveRewards: Boolean = false): String {
-        var message = "UI/UIWindow.img/QuestIcon/4/0".wzImage()
+        var message = "UI/UIWindow.img/QuestIcon/4/0".wzImage() + "\r\n"
         rewards.forEach {
             message += "\r\n${it.message}"
             if (giveRewards && chr != null) {
@@ -252,22 +252,6 @@ object DialogUtils {
         }
 
         return message
-    }
-
-    fun postRewards(rewards: Any) {
-        val map: AbstractMap<*, *> = rewards as AbstractMap<*, *>
-        val counter = 1
-        val isNull = false
-        val exp = map["exp"]
-        val mesos = map["mesos"]
-        val fame = map["fame"]
-        val random = map["random"]
-        val items = map["items"] as AbstractMap<*, *>?
-        val readableItemMap: MutableMap<Int, Int> = LinkedHashMap()
-        items!!.values.forEach(Consumer { pair: Any ->
-            readableItemMap[(pair as AbstractMap<*, *>)["0"] as Int] = pair["1"] as Int
-        })
-        println(readableItemMap)
     }
 
     val allHairs: List<Beauty> get() = ArrayList(BeautyManager.hairs.values)

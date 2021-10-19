@@ -27,21 +27,6 @@ class ExampleNpc : NPCScript() {
         }
     }
 
-    private fun DialogContext.yikes() {
-        sendMessage(
-            "Hello",
-            ok = {
-                sendMessage(
-                    "Hello",
-                    next = {
-                        sendMessage(
-                            "Hello",
-                            prev = { sendMessage("Hello", ok = { sendMessage("bye", ok = { onEnd() }) }) })
-                    })
-            }
-        )
-    }
-
     private fun DialogContext.okDialog() {
         i++
         holder.numberData["test"] = 3
@@ -111,22 +96,6 @@ class ExampleNpc : NPCScript() {
                     "Your input was: ${it.red()}",
                     ok = { okDialog() }
                 )
-            }
-        )
-    }
-
-    private val dialogs get() = listOf("hello", "noob", "and u suck")
-
-    private fun DialogContext.loop(index: Int) {
-        sendMessage(
-            dialogs[index],
-            prev = if (index == 0) null else { { loop(index - 1) } },
-            next = {
-                if (index < dialogs.size) {
-                    loop(index + 1)
-                } else {
-                    endMessage("byeee")
-                }
             }
         )
     }

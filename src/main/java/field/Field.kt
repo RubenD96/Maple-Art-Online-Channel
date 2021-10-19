@@ -376,7 +376,7 @@ class Field(val template: FieldTemplate) {
     }
 
     override fun toString(): String {
-        return "Field{id=${template.id}, name='${template.name}', objects=$fieldObjects}"
+        return "Field{id=${template.id}, name='${template.mapName}', objects=$fieldObjects}"
     }
 
     fun queueRespawn(mob: Int, cooldown: Int, time: Long) {

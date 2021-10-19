@@ -14,7 +14,8 @@ class UserMoveHandler : PacketHandler {
     override fun handlePacket(reader: PacketReader, c: Client) {
         val chr = c.character
 
-        reader.readLong()
+        reader.readInteger() // drInfo
+        reader.readInteger() // ~v27
         val fieldKey = reader.readByte()
         if (fieldKey != chr.fieldKey) {
             return run {
@@ -22,10 +23,14 @@ class UserMoveHandler : PacketHandler {
                 //c.close(this, "FieldKey mismatch")
             }
         }
-        reader.readLong()
-        reader.readInteger()
-        reader.readInteger()
-        reader.readInteger()
+        reader.readInteger() // ~v28
+        reader.readInteger() // ~v29
+
+        reader.readInteger() // crc
+        reader.readInteger() // dwKey
+        val crc32 = reader.readInteger() // crc32
+
+        //println(crc32)
 
         val path = chr.move(reader)
 

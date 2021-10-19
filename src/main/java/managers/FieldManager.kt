@@ -124,8 +124,11 @@ class FieldManager : Loadable {
             var fieldLimit = 0
             if (containsFlag(flags, FieldFlag.FIELD_LIMIT)) fieldLimit = r.readInteger()
 
-            var name = ""
-            if (containsFlag(flags, FieldFlag.NAME)) name = r.readMapleString()
+            var mapName = ""
+            if (containsFlag(flags, FieldFlag.MAP_NAME)) mapName = r.readMapleString()
+
+            var streetName = ""
+            if (containsFlag(flags, FieldFlag.STREET_NAME)) streetName = r.readMapleString()
 
             var script = ""
             if (containsFlag(flags, FieldFlag.ON_ENTER)) script = r.readMapleString()
@@ -215,7 +218,8 @@ class FieldManager : Loadable {
                     footholds = bst,
                     forcedReturnMap = forcedReturnMap,
                     fieldLimit = fieldLimit,
-                    name = name,
+                    mapName = mapName,
+                    streetName = streetName,
                     script = script,
                     portals = portals,
                     areas = areas,
