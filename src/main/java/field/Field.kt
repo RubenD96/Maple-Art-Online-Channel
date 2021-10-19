@@ -32,22 +32,12 @@ import kotlin.reflect.KClass
 
 class Field(val template: FieldTemplate) {
 
-    /*var returnMap = 0
-    var forcedReturnMap = 0
-    var fieldLimit = 0
-    lateinit var name: String
-    lateinit var script: String
-    lateinit var mapArea: Rectangle*/
-
     var replay: Replay? = null
     val portals: Map<Byte, FieldPortal> = HashMap(template.portals).also {
         it.values.forEach { portal ->
             portal.field = this
         }
     }
-
-    /*val portals: MutableMap<Byte, FieldPortal> = HashMap()
-    val footholds: MutableMap<Int, Foothold> = HashMap()*/
 
     //CHARACTER, SUMMONED, MOB, NPC, DROP, TOWN_PORTAL, REACTOR, ETC, REPLAY
     val fieldObjects: Map<KClass<out FieldObject>, MutableSet<FieldObject>> =
@@ -59,12 +49,19 @@ class Field(val template: FieldTemplate) {
             Replay::class to mutableSetOf(),
             FieldNPC::class to mutableSetOf()
         )
+    val fieldIds: Map<KClass<out FieldObject>, AtomicInteger> =
+        mapOf(
+            FieldMob::class to AtomicInteger(0),
+            AbstractFieldDrop::class to AtomicInteger(0),
+            FieldReactor::class to AtomicInteger(0),
+            Replay::class to AtomicInteger(999999999),
+            FieldNPC::class to AtomicInteger(0)
+        )
 
-    //val mobSpawnPoints: MutableList<FieldMobSpawnPoint> = ArrayList()
     private val toRespawn: MutableList<Respawn> = ArrayList()
 
     companion object {
-        private val runningObjectId = AtomicInteger(1000000000)
+        //private val runningObjectId = AtomicInteger(1000000000)
     }
 
     fun startReplay() {
@@ -167,7 +164,8 @@ class Field(val template: FieldTemplate) {
             FieldScriptManager[template.script]?.execute(obj.client)
             //}
         } else { // not a character object
-            obj.id = runningObjectId.addAndGet(1)
+            //obj.id = runningObjectId.addAndGet(1)
+            obj.id = fieldIds[obj::class]!!.addAndGet(1)
             when (obj) {
                 is AbstractFieldDrop -> enterItemDrop(
                     obj,
@@ -378,7 +376,7 @@ class Field(val template: FieldTemplate) {
     }
 
     override fun toString(): String {
-        return "Field{id=${template.id}, runningObjectId=$runningObjectId, name='${template.name}', objects=$fieldObjects}"
+        return "Field{id=${template.id}, name='${template.name}', objects=$fieldObjects}"
     }
 
     fun queueRespawn(mob: Int, cooldown: Int, time: Long) {
