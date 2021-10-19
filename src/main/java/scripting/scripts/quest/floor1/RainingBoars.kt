@@ -1,10 +1,14 @@
 package scripting.scripts.quest.floor1
 
 import client.Client
+import client.player.quest.reward.ExpQuestReward
+import client.player.quest.reward.ItemQuestReward
+import client.player.quest.reward.MesoQuestReward
 import scripting.dialog.DialogContext
 import scripting.dialog.DialogUtils.blue
 import scripting.dialog.DialogUtils.itemImage
 import scripting.dialog.DialogUtils.itemName
+import scripting.dialog.DialogUtils.postRewards
 import scripting.dialog.quest.Quest
 import scripting.dialog.quest.QuestScript
 
@@ -58,9 +62,17 @@ class RainingBoars : QuestScript() {
 
     private fun DialogContext.completeQuest() {
         sendMessage(
-            "Wow thanks a lot, you really made my day! I hope to see you around more often!",
+            "Wow thanks a lot, you really made my day! I hope to see you around more often!\r\n" +
+                    postRewards(
+                        listOf(
+                            ExpQuestReward(100),
+                            MesoQuestReward(200),
+                            ItemQuestReward(4000000, 10)
+                        ),
+                        chr = c.character,
+                        giveRewards = true
+                    ),
             ok = {
-                // give rewards
                 finishQuest()
             }
         )

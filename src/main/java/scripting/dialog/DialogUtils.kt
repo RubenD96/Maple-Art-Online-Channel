@@ -3,9 +3,13 @@ package scripting.dialog
 import client.Character
 import client.Client
 import client.interaction.storage.ItemStorageInteraction
+import client.inventory.ModifyInventoriesContext
 import client.inventory.item.slots.ItemSlotEquip
-import client.inventory.item.templates.ItemEquipTemplate
 import client.player.Beauty
+import client.player.quest.reward.ItemQuestReward
+import client.player.quest.reward.MasteryQuestReward
+import client.player.quest.reward.QuestReward
+import client.player.quest.reward.QuestRewardType
 import field.obj.drop.DropEntry
 import field.obj.life.FieldMobTemplate
 import managers.BeautyManager
@@ -13,13 +17,12 @@ import managers.ItemManager
 import managers.MobManager
 import net.database.BeautyAPI
 import net.database.DropAPI
+import net.maple.packets.CharacterPackets.modifyInventory
 import java.lang.Character.isUpperCase
 import java.lang.Character.toLowerCase
 import java.util.*
 import java.util.function.Consumer
 import java.util.stream.Collectors
-import kotlin.collections.ArrayList
-import kotlin.collections.LinkedHashMap
 import kotlin.collections.set
 
 object DialogUtils {
@@ -216,6 +219,39 @@ object DialogUtils {
 
     fun Client.openStorage() {
         ItemStorageInteraction(script!!.script.id, storage).open(character)
+    }
+
+    fun postRewards(rewards: List<QuestReward>, chr: Character? = null, giveRewards: Boolean = false): String {
+        var message = ""
+        rewards.forEach {
+            message += it.message
+            if (giveRewards && chr != null) {
+                when (it.type) {
+                    QuestRewardType.EXP -> chr.gainExp(it.value)
+                    QuestRewardType.MESOS -> chr.gainMeso(it.value)
+                    QuestRewardType.FAME -> chr.fame += it.value
+                    QuestRewardType.RANDOM -> TODO() // ???
+                    QuestRewardType.CLOSENESS -> TODO()
+                    QuestRewardType.ITEM -> {
+                        if (it is ItemQuestReward) {
+                            chr.modifyInventory({ i: ModifyInventoriesContext ->
+                                i.add(
+                                    ItemManager.getItem(it.value),
+                                    it.quantity
+                                )
+                            })
+                        }
+                    }
+                    QuestRewardType.MASTERY -> {
+                        if (it is MasteryQuestReward) {
+                            TODO()
+                        }
+                    }
+                }
+            }
+        }
+
+        return message
     }
 
     fun postRewards(rewards: Any) {
