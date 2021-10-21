@@ -3,10 +3,12 @@ package scripting.scripts.npc
 import client.Client
 import scripting.dialog.DialogContext
 import scripting.dialog.DialogUtils.blue
+import scripting.dialog.DialogUtils.bold
 import scripting.dialog.DialogUtils.mapName
 import scripting.dialog.DialogUtils.red
 import scripting.dialog.npc.NPCScript
 import scripting.dialog.npc.Npc
+import kotlin.math.floor
 
 @Npc([1032102])
 class PortalMaster : NPCScript() {
@@ -19,7 +21,8 @@ class PortalMaster : NPCScript() {
             with(it) {
                 val selections = LinkedHashMap<String, ((Int) -> Unit)>()
                 destinations.forEach { mid ->
-                    selections[mid.mapName().blue()] = { c.character.changeField(mid, "portal") }
+                    selections[getCorrectFloorForTown(mid).blue().bold() + mid.mapName().blue()] =
+                        { c.character.changeField(mid, "portal") }
                 }
 
                 sendSimple(
@@ -29,6 +32,13 @@ class PortalMaster : NPCScript() {
                     selections = selections
                 )
             }
+        }
+    }
+
+    private fun getCorrectFloorForTown(town: Int): String {
+        return when (town) {
+            100 -> ""
+            else -> "Floor ${town / 1000}. "
         }
     }
 }

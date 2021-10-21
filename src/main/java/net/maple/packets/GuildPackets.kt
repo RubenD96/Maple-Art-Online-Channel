@@ -1,6 +1,7 @@
 package net.maple.packets
 
 import client.Character
+import net.database.GuildAPI
 import net.maple.SendOpcode
 import net.maple.packets.AlliancePackets.notifyLoginOrLogout
 import util.packet.Packet
@@ -21,20 +22,13 @@ object GuildPackets {
         chr.field.broadcast(pw.createPacket(), chr)
     }
 
-    fun changeGuildMark(chr: Character, mark: GuildMark?) {
-        val pw = PacketWriter(8)
+    fun inputMark(chr: Character) {
+        val pw = PacketWriter(3)
 
-        pw.writeHeader(SendOpcode.USER_GUILD_MARK_CHANGED)
-        pw.writeInt(chr.id)
+        pw.writeHeader(SendOpcode.GUILD_RESULT)
+        pw.writeByte(GuildReq.INPUT_MARK)
 
-        mark?.let {
-            pw.writeShort(it.markBg)
-            pw.write(it.markBgColor.toInt())
-            pw.writeShort(it.mark)
-            pw.write(it.markColor.toInt())
-        } ?: pw.write(ByteArray(6))
-
-        chr.field.broadcast(pw.createPacket(), chr)
+        chr.write(pw.createPacket())
     }
 
     fun Guild.getLoadGuildPacket(): Packet {
@@ -132,10 +126,10 @@ object GuildPackets {
         val pw = PacketWriter(12)
 
         pw.writeHeader(SendOpcode.GUILD_RESULT)
-        pw.write(GuildRes.SET_MEMBER_GRADE_DONE.toInt())
+        pw.writeByte(GuildRes.SET_MEMBER_GRADE_DONE)
         pw.writeInt(this.id)
         pw.writeInt(cid)
-        pw.write(grade.toInt())
+        pw.writeByte(grade)
 
         this.broadcast(pw.createPacket())
     }
@@ -144,30 +138,74 @@ object GuildPackets {
         val pw = PacketWriter(16)
 
         pw.writeHeader(SendOpcode.GUILD_RESULT)
-        pw.write(GuildRes.SET_GRADE_NAME_DONE.toInt())
+        pw.writeByte(GuildRes.SET_GRADE_NAME_DONE)
         pw.writeInt(this.id)
         Arrays.stream(this.ranks).forEach { pw.writeMapleString(it ?: "") }
 
         this.broadcast(pw.createPacket())
     }
 
+    fun removeGuild(guild: Guild) {
+        val pw = PacketWriter(7)
+
+        pw.writeHeader(SendOpcode.GUILD_RESULT)
+        pw.writeByte(GuildRes.REMOVE_GUILD_DONE)
+        pw.writeInt(guild.id)
+
+        guild.broadcast(pw.createPacket())
+    }
+
+    fun Guild.increaseMemberSize(newSize: Byte) {
+        val pw = PacketWriter(8)
+
+        pw.writeHeader(SendOpcode.GUILD_RESULT)
+        pw.writeByte(GuildRes.INC_MAX_MEMBER_NUM_DONE)
+        pw.writeInt(id)
+        pw.writeByte(newSize)
+
+        broadcast(pw.createPacket())
+        GuildAPI.updateMemberSize(this)
+    }
+
+    fun Guild.setGuildMarkPacket(): Packet {
+        val pw = PacketWriter(13)
+
+        pw.writeHeader(SendOpcode.GUILD_RESULT)
+        pw.writeByte(GuildRes.SET_MARK_DONE)
+        pw.writeInt(id)
+        mark?.encode(pw) ?: pw.write(ByteArray(6))
+
+        return pw.createPacket()
+    }
+
+    fun changeGuildMarkRemote(chr: Character, mark: GuildMark?) {
+        val pw = PacketWriter(12)
+
+        pw.writeHeader(SendOpcode.USER_GUILD_MARK_CHANGED)
+        pw.writeInt(chr.id)
+
+        mark?.encode(pw) ?: pw.write(ByteArray(6))
+
+        chr.field.broadcast(pw.createPacket(), chr)
+    }
+
     object GuildReq {
-        const val LOAD_GUILD: Byte = 0x0
-        const val INPUT_GUILD_NAME: Byte = 0x1
-        const val CHECK_GUILD_NAME: Byte = 0x2
-        const val CREATE_GUILD_AGREE: Byte = 0x3
-        const val CREATE_NEW_GUILD: Byte = 0x4
-        const val INVITE_GUILD: Byte = 0x5
-        const val JOIN_GUILD: Byte = 0x6
-        const val WITHDRAW_GUILD: Byte = 0x7
-        const val KICK_GUILD: Byte = 0x8
-        const val REMOVE_GUILD: Byte = 0x9
-        const val INC_MAX_MEMBER_NUM: Byte = 0xA
-        const val CHANGE_LEVEL: Byte = 0xB
-        const val CHANGE_JOB: Byte = 0xC
-        const val SET_GRADE_NAME: Byte = 0xD
-        const val SET_MEMBER_GRADE: Byte = 0xE
-        const val SET_MARK: Byte = 0xF
+        const val LOAD_GUILD: Byte = 0x00
+        const val INPUT_GUILD_NAME: Byte = 0x01
+        const val CHECK_GUILD_NAME: Byte = 0x02
+        const val CREATE_GUILD_AGREE: Byte = 0x03
+        const val CREATE_NEW_GUILD: Byte = 0x04
+        const val INVITE_GUILD: Byte = 0x05
+        const val JOIN_GUILD: Byte = 0x06
+        const val WITHDRAW_GUILD: Byte = 0x07
+        const val KICK_GUILD: Byte = 0x08
+        const val REMOVE_GUILD: Byte = 0x09
+        const val INC_MAX_MEMBER_NUM: Byte = 0x0A
+        const val CHANGE_LEVEL: Byte = 0x0B
+        const val CHANGE_JOB: Byte = 0x0C
+        const val SET_GRADE_NAME: Byte = 0x0D
+        const val SET_MEMBER_GRADE: Byte = 0x0E
+        const val SET_MARK: Byte = 0x0F
         const val SET_NOTICE: Byte = 0x10
         const val INPUT_MARK: Byte = 0x11
         const val CHECK_QUEST_WAITING: Byte = 0x12

@@ -60,11 +60,7 @@ import skill.Macro
 import util.logging.LogType
 import util.logging.Logger.log
 import util.packet.Packet
-import world.alliance.Alliance
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
-import kotlin.collections.HashSet
 import kotlin.math.min
 
 class Character(val client: Client, override var name: String, val record: Record) : Avatar() {
@@ -425,14 +421,15 @@ class Character(val client: Client, override var name: String, val record: Recor
 
     fun loadGuild() {
         val gid = getGuildId(this)
+        if (gid != -1) loadGuildById(gid)
+    }
 
-        if (gid != -1) {
-            val guild = load(gid) ?: return client.close(this, "Guild is null after database retrieval gid: $gid")
+    fun loadGuildById(gid: Int) {
+        val guild = load(gid) ?: return client.close(this, "Guild is null after database retrieval gid: $gid")
 
-            guild.getMemberSecure(id).character = this
-            guild.getMemberSecure(id).isOnline = true
-            this.guild = guild
-        }
+        guild.getMemberSecure(id).character = this
+        guild.getMemberSecure(id).isOnline = true
+        this.guild = guild
     }
 
     fun loadMobKills() {

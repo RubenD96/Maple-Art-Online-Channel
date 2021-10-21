@@ -2,6 +2,9 @@ package world.guild
 
 import client.Character
 import net.database.GuildAPI
+import net.maple.packets.GuildPackets
+import net.maple.packets.GuildPackets.setGuildMarkPacket
+import net.server.Server
 import util.HexTool
 import util.logging.LogType
 import util.logging.Logger.log
@@ -10,7 +13,6 @@ import util.packet.PacketWriter
 import world.alliance.Alliance
 import world.guild.bbs.GuildBBS
 import java.util.*
-import kotlin.collections.LinkedHashMap
 
 class Guild(val id: Int) {
 
@@ -22,6 +24,17 @@ class Guild(val id: Int) {
     val members: HashMap<Int, GuildMember> = LinkedHashMap()
     val skills: HashMap<Int, GuildSkill> = LinkedHashMap()
     var mark: GuildMark? = null
+        set(value) {
+            field = value
+            GuildAPI.updateMark(this)
+
+            broadcast(setGuildMarkPacket())
+            synchronized(members) {
+                members.values
+                    .filter { it.isOnline }
+                    .forEach { it.character?.let { GuildPackets.changeGuildMarkRemote(it, value) } }
+            }
+        }
     val bbs = GuildBBS(id).also { GuildAPI.loadFullBBS(id, it) }
     var alliance: Alliance? = null
         set(value) {
@@ -77,5 +90,22 @@ class Guild(val id: Int) {
 
     fun getMemberSecure(id: Int): GuildMember {
         return members[id] ?: throw NullPointerException("getMemberSecure called on id that doesn't exist")
+    }
+
+    fun disband() {
+        GuildPackets.removeGuild(this)
+        GuildAPI.disband(this)
+
+        synchronized(members) {
+            members.values.stream()
+                .filter { it.isOnline }
+                .forEach {
+                    it.character?.guild = null
+                }
+        }
+
+        GuildAPI.guildNames.remove(name)
+        Server.guilds.remove(id)
+        members.clear()
     }
 }

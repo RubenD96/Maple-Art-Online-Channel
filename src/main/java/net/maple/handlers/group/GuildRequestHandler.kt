@@ -9,6 +9,7 @@ import net.database.GuildAPI.updateInfo
 import net.database.GuildAPI.updateMemberGrade
 import net.maple.handlers.PacketHandler
 import net.maple.packets.CharacterPackets.message
+import net.maple.packets.ConversationPackets
 import net.maple.packets.GuildPackets
 import net.maple.packets.GuildPackets.GuildReq
 import net.maple.packets.GuildPackets.GuildRes
@@ -21,10 +22,12 @@ import net.maple.packets.GuildPackets.setMemberGrade
 import net.maple.packets.GuildPackets.setNotice
 import net.server.Server.getCharacter
 import net.server.Server.guilds
+import scripting.scripts.npc.GuildEmblemCreator
 import util.HexTool.toHex
 import util.logging.LogType
 import util.logging.Logger.log
 import util.packet.PacketReader
+import world.guild.GuildMark
 
 class GuildRequestHandler : PacketHandler {
 
@@ -71,7 +74,7 @@ class GuildRequestHandler : PacketHandler {
 
                 guild.broadcast(guild.getJoinGuildPacket(chr), chr) // guild tab update for members
                 GuildPackets.changeGuildName(chr, guild.name) // visual character update (remote)
-                GuildPackets.changeGuildMark(chr, guild.mark) // visual character update (remote)
+                GuildPackets.changeGuildMarkRemote(chr, guild.mark) // visual character update (remote)
                 chr.write(guild.getLoadGuildPacket()) // guild tab update for new member
                 addMember(guild, chr, false)
             }
@@ -115,6 +118,19 @@ class GuildRequestHandler : PacketHandler {
                 }
                 guild.leave(cid, name, if (req == GuildReq.KICK_GUILD) GuildRes.KICK_GUILD_DONE else GuildRes.WITHDRAW_GUILD_DONE)
                 expel(guild, cid)
+            }
+            GuildReq.SET_MARK -> {
+                val guild = chr.guild ?: return
+                if (guild.leader != chr.id) return
+
+                if (chr.meso < GuildEmblemCreator.cost) {
+                    chr.write(ConversationPackets.getOkMessagePacket(2010008, 0, "You do not have the required funds!"))
+                    return
+                }
+                chr.gainMeso(-GuildEmblemCreator.cost, true)
+
+                val mark = GuildMark(reader)
+                guild.mark = mark
             }
             GuildReq.SET_NOTICE -> {
                 val guild = chr.guild ?: return

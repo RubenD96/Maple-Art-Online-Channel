@@ -10,6 +10,7 @@ import kotlinx.coroutines.*
 import managers.*
 import net.database.BeautyAPI
 import net.database.CharacterAPI
+import net.database.GuildAPI
 import net.database.ShopAPI
 import scripting.dialog.npc.NPCScriptManager
 import scripting.dialog.npc.Npc
@@ -62,6 +63,7 @@ object Server {
         BeautyAPI.loadHairs()
         CommandHandler.loadCommands()
         loadAllScripts()
+        GuildAPI.loadAllGuildNames()
         //benchmark()
     }
 

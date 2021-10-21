@@ -29,30 +29,34 @@ class UserScriptMessageAnswerHandler : PacketHandler {
                         }
                     }
                     type.toInt() == ConversationType.ASK_NUMBER.value -> {
-                        val input = reader.readInteger()
-                        if (input < it.min || input > it.max) {
-                            return run {
-                                Logger.log(LogType.INVALID, "Input $input not allowed on $id", this, c)
-                                it.onEnd()
-                            }
-                        }
                         when (action.toInt()) {
                             0 -> it.neutral?.invoke() ?: it.onEnd()
-                            1 -> it.positiveWithNumber?.invoke(input) ?: it.onEnd()
+                            1 -> {
+                                val input = reader.readInteger()
+                                if (input < it.min || input > it.max) {
+                                    return run {
+                                        Logger.log(LogType.INVALID, "Input $input not allowed on $id", this, c)
+                                        it.onEnd()
+                                    }
+                                }
+                                it.positiveWithNumber?.invoke(input) ?: it.onEnd()
+                            }
                             else -> it.clearStates()
                         }
                     }
                     type.toInt() == ConversationType.ASK_TEXT.value || type.toInt() == ConversationType.ASK_BOX_TEXT.value -> {
-                        val text = reader.readMapleString()
-                        if (text.length < it.min || text.length > it.max) {
-                            return run {
-                                Logger.log(LogType.INVALID, "Text size ${text.length} not allowed on $id", this, c)
-                                it.onEnd()
-                            }
-                        }
                         when (action.toInt()) {
                             0 -> it.neutral?.invoke() ?: it.onEnd()
-                            1 -> it.positiveWithText?.invoke(text) ?: it.onEnd()
+                            1 -> {
+                                val text = reader.readMapleString()
+                                if (text.length < it.min || text.length > it.max) {
+                                    return run {
+                                        Logger.log(LogType.INVALID, "Text size ${text.length} not allowed on $id", this, c)
+                                        it.onEnd()
+                                    }
+                                }
+                                it.positiveWithText?.invoke(text) ?: it.onEnd()
+                            }
                             else -> it.clearStates()
                         }
                     }

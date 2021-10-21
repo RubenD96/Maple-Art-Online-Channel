@@ -21,12 +21,14 @@ object GuildAPI {
      * @param leader Creator of the guild
      * @return Guild id
      */
-    fun create(guild: Guild, leader: Character): Int {
+    fun create(name: String, leader: Character): Int {
         val id = connection.insertInto(GUILDS, GUILDS.NAME, GUILDS.LEADER)
-            .values(guild.name, leader.id)
+            .values(name, leader.id)
             .returningResult(GUILDS.ID)
             .fetchOne().value1()
-        addMember(guild, leader, true)
+
+        addMember(Guild(id), leader, true)
+        guildNames.add(name)
         return id
     }
 
@@ -123,6 +125,26 @@ object GuildAPI {
         connection.deleteFrom(GUILDS)
             .where(GUILDS.ID.eq(guild.id))
             .execute()
+    }
+
+    fun updateMark(guild: Guild) {
+        with(GUILDMARK) {
+            guild.mark?.let {
+                connection.insertInto(this, GID, MARK, MARKCOLOR, MARKBG, MARKBGCOLOR)
+                    .values(guild.id, it.mark, it.markColor, it.markBg, it.markBgColor)
+                    .onDuplicateKeyUpdate()
+                    .set(MARK, it.mark)
+                    .set(MARKCOLOR, it.markColor)
+                    .set(MARKBG, it.markBg)
+                    .set(MARKBGCOLOR, it.markBgColor)
+                    .where(GID.eq(guild.id))
+                    .execute()
+            } ?: run {
+                connection.deleteFrom(this)
+                    .where(GID.eq(guild.id))
+                    .execute()
+            }
+        }
     }
 
     /**
@@ -290,6 +312,25 @@ object GuildAPI {
                 .and(ITEMID.eq(iid))
                 .and(COMMENTID.eq(comment.id))
                 .execute()
+        }
+    }
+
+    val guildNames: MutableSet<String> = HashSet()
+
+    /**
+     * Loads all guild names on startup and store in memory
+     */
+    fun loadAllGuildNames() {
+        with(GUILDS) {
+            connection.select(NAME).from(this).fetch().forEach {
+                guildNames.add(it.getValue(NAME))
+            }
+        }
+    }
+
+    fun updateMemberSize(guild: Guild) {
+        with(GUILDS) {
+            connection.update(this).set(SIZE, guild.maxSize).where(ID.eq(guild.id)).execute()
         }
     }
 }
