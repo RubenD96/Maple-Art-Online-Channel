@@ -8,18 +8,43 @@ import net.database.DatabaseCore.connection
 object BeautyAPI {
 
     fun loadHairs() {
-        connection.select().from(HAIRS).fetch()
+        with(HAIRS) {
+            connection.select().from(this).fetch()
                 .forEach {
-                    val id = it.getValue(HAIRS.ID)
-                    BeautyManager.hairs[id] = Beauty(id, it.getValue(HAIRS.GENDER).toInt(), it.getValue(HAIRS.ENABLED) == 1.toByte())
+                    BeautyManager.hairs[FLOOR]!!.add(
+                        Beauty(
+                            it.getValue(ID),
+                            it.getValue(GENDER).toInt(),
+                            it.getValue(ENABLED) == 1.toByte()
+                        )
+                    )
                 }
+        }
     }
 
+    // todo gotta rethink this shit
     fun updateHair(id: Int) {
-        val hair = BeautyManager.hairs[id] ?: return
-        connection.update(HAIRS)
-                .set(HAIRS.ENABLED, (if (hair.isEnabled) 1 else 0).toByte())
-                .where(HAIRS.ID.eq(id))
+        var hair: Beauty? = null
+        BeautyManager.hairs.values.forEach {
+            it.find { beauty ->
+                beauty.id == id
+            }?.let { beauty ->
+                hair = beauty
+                return@forEach
+            }
+        }
+
+        hair?.let {
+            updateHair(it)
+        }
+    }
+
+    fun updateHair(hair: Beauty) {
+        with(HAIRS) {
+            connection.update(this)
+                .set(ENABLED, (if (hair.isEnabled) 1 else 0).toByte())
+                .where(ID.eq(hair.id))
                 .execute()
+        }
     }
 }
