@@ -130,7 +130,7 @@ class GuildRequestHandler : PacketHandler {
                 chr.gainMeso(-GuildEmblemCreator.cost, true)
 
                 val mark = GuildMark(reader)
-                guild.mark = mark
+                guild.changeGuildMark(mark)
             }
             GuildReq.SET_NOTICE -> {
                 val guild = chr.guild ?: return

@@ -24,17 +24,6 @@ class Guild(val id: Int) {
     val members: HashMap<Int, GuildMember> = LinkedHashMap()
     val skills: HashMap<Int, GuildSkill> = LinkedHashMap()
     var mark: GuildMark? = null
-        set(value) {
-            field = value
-            GuildAPI.updateMark(this)
-
-            broadcast(setGuildMarkPacket())
-            synchronized(members) {
-                members.values
-                    .filter { it.isOnline }
-                    .forEach { it.character?.let { GuildPackets.changeGuildMarkRemote(it, value) } }
-            }
-        }
     val bbs = GuildBBS(id).also { GuildAPI.loadFullBBS(id, it) }
     var alliance: Alliance? = null
         set(value) {
@@ -107,5 +96,17 @@ class Guild(val id: Int) {
         GuildAPI.guildNames.remove(name)
         Server.guilds.remove(id)
         members.clear()
+    }
+
+    fun changeGuildMark(mark: GuildMark) {
+        this.mark = mark
+        GuildAPI.updateMark(this)
+
+        broadcast(setGuildMarkPacket())
+        synchronized(members) {
+            members.values
+                .filter { it.isOnline }
+                .forEach { member -> member.character?.let { GuildPackets.changeGuildMarkRemote(it, mark) } }
+        }
     }
 }

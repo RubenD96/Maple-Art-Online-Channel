@@ -254,27 +254,7 @@ object DialogUtils {
         return message
     }
 
-    val allHairs: List<Beauty> get() = ArrayList(BeautyManager.hairs.values)
-
-    fun getEnabledHairs(gender: Int): List<Beauty> {
-        return BeautyManager.hairs.values.stream()
-            .filter(Beauty::isEnabled)
-            .filter { it.gender == gender }
-            .collect(Collectors.toList())
-    }
-
-    fun getDisabledHairs(gender: Int): List<Beauty> {
-        return BeautyManager.hairs.values.stream()
-            .filter { !it.isEnabled }
-            .filter { it.gender == gender }
-            .collect(Collectors.toList())
-    }
-
-    fun updateHair(id: Int) {
-        val b = BeautyManager.hairs[id] ?: return
-        b.isEnabled = !b.isEnabled
-        BeautyAPI.updateHair(id)
-    }
+    val allHairs: List<Beauty> get() = BeautyManager.hairs.values.flatten()
 
     fun Character.setHardcore(enable: Boolean) {
         hardcore = enable

@@ -11,38 +11,20 @@ object BeautyAPI {
         with(HAIRS) {
             connection.select().from(this).fetch()
                 .forEach {
-                    BeautyManager.hairs[FLOOR]!!.add(
+                    BeautyManager.hairs[it.getValue(FLOOR)]!!.add(
                         Beauty(
                             it.getValue(ID),
-                            it.getValue(GENDER).toInt(),
-                            it.getValue(ENABLED) == 1.toByte()
+                            it.getValue(GENDER),
                         )
                     )
                 }
         }
     }
 
-    // todo gotta rethink this shit
-    fun updateHair(id: Int) {
-        var hair: Beauty? = null
-        BeautyManager.hairs.values.forEach {
-            it.find { beauty ->
-                beauty.id == id
-            }?.let { beauty ->
-                hair = beauty
-                return@forEach
-            }
-        }
-
-        hair?.let {
-            updateHair(it)
-        }
-    }
-
-    fun updateHair(hair: Beauty) {
+    fun updateHair(hair: Beauty, floor: Int) {
         with(HAIRS) {
             connection.update(this)
-                .set(ENABLED, (if (hair.isEnabled) 1 else 0).toByte())
+                .set(FLOOR, floor)
                 .where(ID.eq(hair.id))
                 .execute()
         }
