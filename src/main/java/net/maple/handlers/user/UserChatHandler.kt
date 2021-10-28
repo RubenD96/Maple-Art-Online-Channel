@@ -1,19 +1,15 @@
 package net.maple.handlers.user
 
 import client.Avatar
-import client.Character
 import client.Client
 import client.command.CommandHandler
 import client.replay.MoveCollection
-import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine
 import constants.FieldConstants
 import net.maple.SendOpcode
 import net.maple.handlers.PacketHandler
 import util.packet.Packet
 import util.packet.PacketReader
 import util.packet.PacketWriter
-import javax.script.ScriptEngine
-import javax.script.ScriptException
 
 class UserChatHandler : PacketHandler {
 

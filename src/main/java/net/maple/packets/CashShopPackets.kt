@@ -1,5 +1,7 @@
 package net.maple.packets
 
+import cashshop.misc.CsStock
+import cashshop.misc.NotSale
 import cashshop.types.CashItemResult
 import client.Client
 import database.jooq.tables.Accounts
@@ -9,6 +11,8 @@ import net.database.AccountAPI.getHighestLevelOnAccount
 import net.database.AccountAPI.loadNXCash
 import net.maple.SendOpcode
 import net.maple.packets.CharacterPackets.encodeData
+import net.server.Server.csStock
+import net.server.Server.notSales
 import util.packet.PacketWriter
 import java.util.*
 
@@ -24,17 +28,21 @@ object CashShopPackets {
         pw.writeBool(true) // m_bCashShopAuthorized
         pw.writeMapleString(getAccountInfo(this.accId).getValue(Accounts.ACCOUNTS.NAME)) // m_sNexonClubID
 
-        pw.writeInt(0) // notSales
+        pw.writeInt(notSales.size) // notSales
+        notSales.forEach { it.encode(pw) }
+
         pw.writeShort(0) // modified commodities
 
         pw.write(0) // discounts
-        for (i in 0..89) { // best
+        for (i in 0..89) { // best (1080 byte buffer)
             pw.writeInt(0) // category
             pw.writeInt(0) // gender
             pw.writeInt(0) // commoditySN
         }
 
-        pw.writeShort(0) // DecodeStack
+        pw.writeShort(csStock.size) // DecodeStack
+        csStock.values.forEach { it.encode(pw) }
+
         pw.writeShort(0) // DecodeLimitGoods
         pw.writeShort(0) // DecodeZeroGoods
 

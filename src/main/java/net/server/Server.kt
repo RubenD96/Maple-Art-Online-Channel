@@ -1,9 +1,10 @@
 package net.server
 
+import cashshop.misc.CsStock
+import cashshop.misc.NotSale
 import client.Character
 import client.command.CommandHandler
 import client.party.Party
-import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine
 import constants.ServerConstants
 import constants.ServerConstants.RANKING_TIMER
 import kotlinx.coroutines.*
@@ -39,6 +40,10 @@ object Server {
     val guilds: MutableMap<Int, Guild> = HashMap()
     var shops: List<Int>
 
+    //cs stuff
+    val notSales: MutableSet<NotSale> = HashSet()
+    val csStock: MutableMap<Int, CsStock> = HashMap()
+
     init {
         MapleAESOFB.initialize(ServerConstants.VERSION)
 
@@ -50,9 +55,6 @@ object Server {
             channel.start()
             channels.add(channel)
         }
-
-        // the first script engine takes a few sec to load, all subsequent engines are hella fast
-        GraalJSScriptEngine.create()
 
         GlobalScope.launch {
             withContext(NonCancellable) {

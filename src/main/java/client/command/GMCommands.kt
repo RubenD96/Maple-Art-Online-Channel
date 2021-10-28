@@ -1,5 +1,7 @@
 package client.command
 
+import cashshop.misc.CsStock
+import cashshop.misc.NotSale
 import client.Character
 import client.effects.field.TrembleFieldEffect
 import client.inventory.ModifyInventoriesContext
@@ -8,7 +10,6 @@ import client.messages.broadcast.types.AlertMessage
 import client.messages.broadcast.types.NoticeMessage
 import client.messages.broadcast.types.NoticeWithoutPrefixMessage
 import client.player.StatType
-import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine
 import field.obj.drop.ItemDrop
 import field.obj.life.FieldMob
 import managers.ItemManager
@@ -28,9 +29,6 @@ import net.server.Server.getCharacter
 import scripting.dialog.DialogUtils
 import util.packet.PacketWriter
 import java.util.*
-import javax.script.ScriptEngine
-import javax.script.ScriptException
-import kotlin.collections.ArrayList
 
 @Suppress("unused")
 class GMCommands {
@@ -93,7 +91,8 @@ class GMCommands {
         }
     }
 
-    object Eval : Command {
+    // disabled, graal is no longer available in the source
+    /*object Eval : Command {
 
         private var code: String = ""
 
@@ -116,7 +115,7 @@ class GMCommands {
                 se.printStackTrace()
             }
         }
-    }
+    }*/
 
     object Heal : Command {
 
@@ -793,6 +792,58 @@ class GMCommands {
             pw.writeBool(false)
 
             chr.write(pw.createPacket())
+        }
+    }
+
+    object NotSale : Command {
+
+        private var mode: String = ""
+        private var sn: Int = 0
+
+        override val description: String = "!notsale [add/remove] [sn:int]"
+
+        override fun loadParams(params: Map<Int, String>) {
+            mode = params[0]!!
+            sn = params[1]!!.toInt()
+        }
+
+        override fun execute(chr: Character) {
+            when (mode) {
+                "add" -> Server.notSales.add(NotSale(sn))
+                "remove" -> {
+                    Server.notSales.firstOrNull { it.SN == sn }?.let {
+                        Server.notSales.remove(it)
+                    } ?: chr.message(NoticeWithoutPrefixMessage("SN $sn was not found in NotSales"))
+                }
+                else -> chr.message(NoticeWithoutPrefixMessage("[ERROR] !notsale [add/remove] [sn:int]"))
+            }
+        }
+    }
+
+    object Stock : Command {
+
+        private var mode: String = ""
+        private var sn: Int = 0
+        private var state: Int = 0
+
+        override val description: String = "!stock [set/remove] [sn:int] [state:int]"
+
+        override fun loadParams(params: Map<Int, String>) {
+            mode = params[0]!!
+            sn = params[1]!!.toInt()
+            state = params[2]!!.toInt()
+        }
+
+        override fun execute(chr: Character) {
+            when (mode) {
+                "set" -> Server.csStock[sn] = CsStock(sn, state)
+                "remove" -> {
+                    Server.csStock[sn]?.let {
+                        Server.csStock.remove(sn)
+                    } ?: chr.message(NoticeWithoutPrefixMessage("SN $sn was not found in CsStock"))
+                }
+                else -> chr.message(NoticeWithoutPrefixMessage("[ERROR] !stock [set/remove] [sn:int] [state:int]"))
+            }
         }
     }
 
