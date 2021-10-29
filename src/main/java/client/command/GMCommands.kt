@@ -847,6 +847,44 @@ class GMCommands {
         }
     }
 
+    object Quest : Command {
+
+        private var questid: Int = 0
+        private var mode: String = ""
+
+        private var npcid: Int = 0
+
+        private var mobid: Int = 0
+        private var amount: Int = 0
+
+        override val description: String = "!quest [questid:int] [start/complete/mob/reset] <npcid:int/mobid:int> <mobamount:int>"
+
+        override fun loadParams(params: Map<Int, String>) {
+            questid = params[0]!!.toInt()
+            mode = params[1]!!
+
+            when(mode) {
+                "start" -> npcid = params[2]!!.toInt()
+                "mob" -> {
+                    mobid = params[2]!!.toInt()
+                    amount = params[3]!!.toInt()
+                }
+            }
+        }
+
+        override fun execute(chr: Character) {
+            when(mode) {
+                "start" -> chr.startQuest(questid, npcid)
+                "complete" -> chr.completeQuest(questid)
+                "mob" -> chr.quests[questid]?.progress(mobid, amount)
+                "reset" -> {
+                    chr.forfeitQuest(questid)
+
+                }
+            }
+        }
+    }
+
     object Commands : Command {
 
         override val description: String = "Shows all the commands"

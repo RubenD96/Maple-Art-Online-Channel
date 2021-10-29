@@ -222,7 +222,7 @@ object DialogUtils {
     }
 
     fun postRewards(rewards: List<QuestReward>, chr: Character? = null, giveRewards: Boolean = false): String {
-        var message = "UI/UIWindow.img/QuestIcon/4/0".wzImage() + "\r\n"
+        var message = "\r\n" + "UI/UIWindow.img/QuestIcon/4/0".wzImage()
         rewards.forEach {
             message += "\r\n${it.message}"
             if (giveRewards && chr != null) {
