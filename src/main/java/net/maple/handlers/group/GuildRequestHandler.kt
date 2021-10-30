@@ -124,7 +124,7 @@ class GuildRequestHandler : PacketHandler {
                 if (guild.leader != chr.id) return
 
                 if (chr.meso < GuildEmblemCreator.cost) {
-                    chr.write(ConversationPackets.getOkMessagePacket(2010008, 0, "You do not have the required funds!"))
+                    chr.writeNpc(2010008, "You do not have the required funds!")
                     return
                 }
                 chr.gainMeso(-GuildEmblemCreator.cost, true)

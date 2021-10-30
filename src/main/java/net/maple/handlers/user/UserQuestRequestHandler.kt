@@ -3,7 +3,6 @@ package net.maple.handlers.user
 import client.Client
 import client.player.quest.QuestRequest
 import net.maple.handlers.PacketHandler
-import net.maple.packets.ConversationPackets
 import scripting.dialog.quest.QuestScriptManager
 import util.HexTool.toHex
 import util.packet.PacketReader
@@ -44,13 +43,14 @@ class UserQuestRequestHandler : PacketHandler {
                     it.finish(c)
                 }
             } ?: run {
-                c.write(
-                    ConversationPackets.getOkMessagePacket(npc, 0,
+                c.character.writeNpc(
+                    npc,
                     "This quest does not appear to have a script\r\n" +
                             "Please report this to a staff member\r\n" +
                             "QID: #r" + qid + "#k\r\n" +
                             "NPC: #r" + npc + "#k\r\n" +
-                            "Map: #r" + c.character.fieldId))
+                            "Map: #r" + c.character.fieldId
+                )
             }
         }
     }

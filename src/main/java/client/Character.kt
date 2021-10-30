@@ -51,6 +51,7 @@ import net.database.WishlistAPI.save
 import net.maple.packets.CharacterPackets.message
 import net.maple.packets.CharacterPackets.statUpdate
 import net.maple.packets.CharacterPackets.updateMacroSettings
+import net.maple.packets.ConversationPackets
 import net.maple.packets.PartyPackets.getUpdatePartyHealthPacket
 import net.server.ChannelServer
 import net.server.Server.getCharacter
@@ -267,6 +268,14 @@ class Character(val client: Client, override var name: String, val record: Recor
 
     fun getChannel(): ChannelServer {
         return client.worldChannel
+    }
+
+    fun changeField(field: Field, portal: Int = 0) {
+        field.enter(this, portal.toByte())
+    }
+
+    fun changeField(field: Field, portal: String) {
+        field.enter(this, portal)
     }
 
     fun changeField(id: Int, portal: String) {
@@ -541,6 +550,10 @@ class Character(val client: Client, override var name: String, val record: Recor
 
     fun isAlive(): Boolean {
         return health > 0
+    }
+
+    fun writeNpc(npc: Int, message: String) {
+        write(ConversationPackets.getOkMessagePacket(npc, 0, message))
     }
 
     override fun toString(): String {

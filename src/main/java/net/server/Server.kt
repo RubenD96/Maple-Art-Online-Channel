@@ -7,12 +7,10 @@ import client.command.CommandHandler
 import client.party.Party
 import constants.ServerConstants
 import constants.ServerConstants.RANKING_TIMER
+import field.House
 import kotlinx.coroutines.*
 import managers.*
-import net.database.BeautyAPI
-import net.database.CharacterAPI
-import net.database.GuildAPI
-import net.database.ShopAPI
+import net.database.*
 import scripting.dialog.npc.NPCScriptManager
 import scripting.dialog.npc.Npc
 import scripting.dialog.quest.Quest
@@ -39,6 +37,7 @@ object Server {
     val parties: MutableMap<Int, Party> = HashMap()
     val guilds: MutableMap<Int, Guild> = HashMap()
     var shops: List<Int>
+    val houses: MutableMap<Int, MutableList<House>> = HashMap()
 
     //cs stuff
     val notSales: MutableSet<NotSale> = HashSet()
@@ -66,6 +65,7 @@ object Server {
         CommandHandler.loadCommands()
         loadAllScripts()
         GuildAPI.loadAllGuildNames()
+        HouseAPI.loadPlayerHouseIds()
         //benchmark()
     }
 

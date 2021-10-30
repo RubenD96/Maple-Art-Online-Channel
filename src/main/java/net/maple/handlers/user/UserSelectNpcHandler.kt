@@ -4,7 +4,6 @@ import client.Client
 import field.obj.life.FieldNPC
 import managers.NPCShopManager.getShop
 import net.maple.handlers.PacketHandler
-import net.maple.packets.ConversationPackets
 import net.server.Server.shops
 import scripting.dialog.npc.NPCScriptManager
 import util.packet.PacketReader
@@ -34,14 +33,12 @@ class UserSelectNpcHandler : PacketHandler {
                 if (shops.contains(npc.npcId)) {
                     getShop(npc.npcId).open(c.character)
                 } else {
-                    c.write(
-                        ConversationPackets.getOkMessagePacket(
-                            npc.npcId, 0,
-                            "This npc does not appear to have a script\r\n" +
-                                    "Please report this to a staff member\r\n" +
-                                    "ID: #r" + npc.npcId + "#k\r\n" +
-                                    "Map: #r" + c.character.fieldId
-                        )
+                    c.character.writeNpc(
+                        npc.npcId,
+                        "This npc does not appear to have a script\r\n" +
+                                "Please report this to a staff member\r\n" +
+                                "ID: #r" + npc.npcId + "#k\r\n" +
+                                "Map: #r" + c.character.fieldId
                     )
                 }
             }

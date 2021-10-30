@@ -1,6 +1,9 @@
 package scripting.scripts.npc
 
 import client.Client
+import field.House
+import net.database.HouseAPI
+import net.server.Server
 import scripting.dialog.DialogContext
 import scripting.dialog.DialogUtils
 import scripting.dialog.DialogUtils.blue
@@ -21,6 +24,11 @@ class RealEstate : NPCScript() {
     )
 
     private val DialogContext.house get() = houses[c.character.fieldId]
+    private val DialogContext.ownsHouse: Boolean get() {
+        Server.houses[c.character.id]?.firstOrNull { it.id == 100000000 + c.character.fieldId }?.let {
+            return true
+        } ?: return false
+    }
     private val playerName = DialogUtils.playerName.purple()
     private val houses = mapOf(
         1500 to HouseInfo("", 50000)
@@ -42,8 +50,9 @@ class RealEstate : NPCScript() {
             "What are the costs of this house?\r\n".blue() to { housePrice() }
         )
 
-        // todo check if person already owns this house
-        if (house != null) selections["I would like to buy the house for this town!".red()] = { confirmBuy() }
+        if (house != null && !ownsHouse) {
+            selections["I would like to buy the house for this town!".red()] = { confirmBuy() }
+        }
 
         sendSimple(
             "Real Estate".letters() + "\r\n\r\n" +
@@ -113,9 +122,14 @@ class RealEstate : NPCScript() {
                     ok = { mainMenu() }
                 )
             } else {
-                // todo check if person already owns this house
-                // todo add house to the player
-                chr.meso -= it.price
+                chr.gainMeso(-it.price, true)
+                val house = House(chr.id, c.character.fieldId + 100000000)
+                Server.houses.getOrPut(chr.id) { ArrayList() }.add(house)
+                HouseAPI.addPlayerHouse(house)
+                sendMessage(
+                    "Pleasure doing business with you $playerName!",
+                    ok = { onEnd() }
+                )
             }
         }
     }
