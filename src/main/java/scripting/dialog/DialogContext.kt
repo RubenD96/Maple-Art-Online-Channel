@@ -1,9 +1,17 @@
 package scripting.dialog
 
 import client.Client
+import client.inventory.ModifyInventoriesContext
 import client.messages.broadcast.types.AlertMessage
+import client.player.quest.reward.ItemQuestReward
+import client.player.quest.reward.MasteryQuestReward
+import client.player.quest.reward.QuestReward
+import client.player.quest.reward.QuestRewardType
+import managers.ItemManager
 import net.maple.packets.CharacterPackets.message
+import net.maple.packets.CharacterPackets.modifyInventory
 import net.maple.packets.ConversationPackets
+import scripting.dialog.DialogUtils.wzImage
 
 class DialogContext(
     val script: DialogScript,
@@ -185,12 +193,58 @@ class DialogContext(
     /**
      * WARNING: do not use default values OUTSIDE QuestScript extended classes!!
      */
-    fun finishQuest(qid: Int = id) {
+    fun finishQuest(qid: Int = id): Boolean {
         val quest = c.character.quests[qid]
         if (quest == null || !quest.canFinish()) {
             c.close(this, "Invalid quest finish requirements ($qid)")
-            return
+            return false
         }
         c.character.completeQuest(qid)
+        return true
+    }
+
+    fun postRewards(rewards: List<QuestReward>, text: String, next: (() -> Unit)? = null) {
+        val chr = c.character
+        if (!chr.hasInvSpace(rewards.filter { it.type == QuestRewardType.ITEM }.map { it.value })) {
+            sendMessage(
+                "Make sure you have enough inventory space available!",
+                ok = { clearStates() }
+            )
+            return
+        }
+
+        if (finishQuest()) {
+            var message = "\r\n" + "UI/UIWindow.img/QuestIcon/4/0".wzImage()
+            rewards.forEach {
+                message += "\r\n${it.message}"
+                when (it.type) {
+                    QuestRewardType.EXP -> chr.gainExp(it.value)
+                    QuestRewardType.MESOS -> chr.gainMeso(it.value)
+                    QuestRewardType.FAME -> chr.fame += it.value
+                    QuestRewardType.RANDOM -> TODO() // ???
+                    QuestRewardType.CLOSENESS -> TODO()
+                    QuestRewardType.ITEM -> {
+                        if (it is ItemQuestReward) {
+                            chr.modifyInventory({ i: ModifyInventoriesContext ->
+                                i.add(
+                                    ItemManager.getItem(it.value),
+                                    it.quantity
+                                )
+                            })
+                        }
+                    }
+                    QuestRewardType.MASTERY -> {
+                        if (it is MasteryQuestReward) {
+                            TODO()
+                        }
+                    }
+                }
+            }
+
+            sendMessage(
+                "$text\r\n$message",
+                ok = { next?.invoke() ?: clearStates() }
+            )
+        }
     }
 }

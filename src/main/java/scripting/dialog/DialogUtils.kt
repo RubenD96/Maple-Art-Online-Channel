@@ -221,39 +221,6 @@ object DialogUtils {
         ItemStorageInteraction(script!!.script.id, storage).open(character)
     }
 
-    fun postRewards(rewards: List<QuestReward>, chr: Character? = null, giveRewards: Boolean = false): String {
-        var message = "\r\n" + "UI/UIWindow.img/QuestIcon/4/0".wzImage()
-        rewards.forEach {
-            message += "\r\n${it.message}"
-            if (giveRewards && chr != null) {
-                when (it.type) {
-                    QuestRewardType.EXP -> chr.gainExp(it.value)
-                    QuestRewardType.MESOS -> chr.gainMeso(it.value)
-                    QuestRewardType.FAME -> chr.fame += it.value
-                    QuestRewardType.RANDOM -> TODO() // ???
-                    QuestRewardType.CLOSENESS -> TODO()
-                    QuestRewardType.ITEM -> {
-                        if (it is ItemQuestReward) {
-                            chr.modifyInventory({ i: ModifyInventoriesContext ->
-                                i.add(
-                                    ItemManager.getItem(it.value),
-                                    it.quantity
-                                )
-                            })
-                        }
-                    }
-                    QuestRewardType.MASTERY -> {
-                        if (it is MasteryQuestReward) {
-                            TODO()
-                        }
-                    }
-                }
-            }
-        }
-
-        return message
-    }
-
     val allHairs: List<Beauty> get() = BeautyManager.hairs.values.flatten()
 
     fun Character.setHardcore(enable: Boolean) {

@@ -8,7 +8,6 @@ import scripting.dialog.DialogContext
 import scripting.dialog.DialogUtils.blue
 import scripting.dialog.DialogUtils.itemImage
 import scripting.dialog.DialogUtils.itemName
-import scripting.dialog.DialogUtils.postRewards
 import scripting.dialog.quest.Quest
 import scripting.dialog.quest.QuestScript
 
@@ -61,23 +60,15 @@ class RainingBoars : QuestScript() {
     }
 
     private fun DialogContext.completeQuest() {
-        finishQuest()
-        sendMessage(
-            "Wow thanks a lot, you really made my day! I hope to see you around more often!\r\n" +
-                    postRewards(
-                        listOf(
-                            ExpQuestReward(100),
-                            MesoQuestReward(200),
-                            ItemQuestReward(4000000, 10),
-                            ItemQuestReward(4000001, 10),
-                            ItemQuestReward(4000002, 10)
-                        ),
-                        chr = c.character,
-                        giveRewards = true
-                    ),
-            ok = {
-                onEnd()
-            }
+        postRewards(
+            listOf(
+                ExpQuestReward(100),
+                MesoQuestReward(200),
+                ItemQuestReward(4000000, 10),
+                ItemQuestReward(4000001, 10),
+                ItemQuestReward(4000002, 10)
+            ),
+            "Wow thanks a lot, you really made my day! I hope to see you around more often!"
         )
     }
 }

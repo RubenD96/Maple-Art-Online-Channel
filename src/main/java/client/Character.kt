@@ -496,6 +496,22 @@ class Character(val client: Client, override var name: String, val record: Recor
         return quantity
     }
 
+    fun hasInvSpace(items: List<Int>): Boolean {
+        println(items)
+        val arr = IntArray(5)
+        items.forEach {
+            arr[it / 1000000 - 1]++
+        }
+
+        println(arr)
+        repeat(5) {
+            if (getAvailableSlots(ItemInventoryType.values()[it]) < arr[it]) {
+                return false
+            }
+        }
+        return true
+    }
+
     fun hasInvSpace(item: ItemSlot): Boolean {
         return hasInvSpace(item.templateId)
     }
