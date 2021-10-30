@@ -1,17 +1,15 @@
 package scripting.dialog
 
 import client.Client
-import client.inventory.ModifyInventoriesContext
 import client.messages.broadcast.types.AlertMessage
 import client.player.quest.reward.ItemQuestReward
 import client.player.quest.reward.MasteryQuestReward
 import client.player.quest.reward.QuestReward
 import client.player.quest.reward.QuestRewardType
-import managers.ItemManager
 import net.maple.packets.CharacterPackets.message
-import net.maple.packets.CharacterPackets.modifyInventory
 import net.maple.packets.ConversationPackets
 import scripting.dialog.DialogUtils.wzImage
+import kotlin.math.abs
 
 class DialogContext(
     val script: DialogScript,
@@ -203,7 +201,7 @@ class DialogContext(
         return true
     }
 
-    fun postRewards(rewards: List<QuestReward>, text: String, next: (() -> Unit)? = null) {
+    fun postRewards(rewards: List<QuestReward>, text: String, take: Map<Int, Int>? = null, next: (() -> Unit)? = null) {
         val chr = c.character
         if (!chr.hasInvSpace(rewards.filter { it.type == QuestRewardType.ITEM }.map { it.value })) {
             sendMessage(
@@ -225,12 +223,7 @@ class DialogContext(
                     QuestRewardType.CLOSENESS -> TODO()
                     QuestRewardType.ITEM -> {
                         if (it is ItemQuestReward) {
-                            chr.modifyInventory({ i: ModifyInventoriesContext ->
-                                i.add(
-                                    ItemManager.getItem(it.value),
-                                    it.quantity
-                                )
-                            })
+                            chr.gainItem(it.value, it.quantity)
                         }
                     }
                     QuestRewardType.MASTERY -> {
@@ -239,6 +232,10 @@ class DialogContext(
                         }
                     }
                 }
+            }
+
+            take?.forEach {
+                chr.gainItem(it.key, (-abs(it.value)).toShort())
             }
 
             sendMessage(

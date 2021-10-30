@@ -68,7 +68,8 @@ class RainingBoars : QuestScript() {
                 ItemQuestReward(4000001, 10),
                 ItemQuestReward(4000002, 10)
             ),
-            "Wow thanks a lot, you really made my day! I hope to see you around more often!"
+            "Wow thanks a lot, you really made my day! I hope to see you around more often!",
+            take = mapOf(4000020 to 10)
         )
     }
 }

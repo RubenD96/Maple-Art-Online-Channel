@@ -4,6 +4,7 @@ import client.interaction.shop.NPCShop
 import client.interaction.storage.ItemStorageInteraction
 import client.inventory.ItemInventory
 import client.inventory.ItemInventoryType
+import client.inventory.ModifyInventoriesContext
 import client.inventory.item.slots.ItemSlot
 import client.inventory.item.slots.ItemSlotBundle
 import client.inventory.item.slots.ItemSlotEquip
@@ -30,6 +31,7 @@ import field.Field
 import field.obj.life.FieldControlledObject
 import field.obj.life.FieldMobTemplate
 import kotlinx.coroutines.*
+import managers.ItemManager
 import net.database.CharacterAPI.getKeyBindings
 import net.database.CharacterAPI.getMacros
 import net.database.CharacterAPI.getMobKills
@@ -49,6 +51,7 @@ import net.database.QuestAPI.saveInfo
 import net.database.TownsAPI.add
 import net.database.WishlistAPI.save
 import net.maple.packets.CharacterPackets.message
+import net.maple.packets.CharacterPackets.modifyInventory
 import net.maple.packets.CharacterPackets.statUpdate
 import net.maple.packets.CharacterPackets.updateMacroSettings
 import net.maple.packets.ConversationPackets
@@ -62,6 +65,7 @@ import util.logging.LogType
 import util.logging.Logger.log
 import util.packet.Packet
 import java.util.*
+import kotlin.math.abs
 import kotlin.math.min
 
 class Character(val client: Client, override var name: String, val record: Record) : Avatar() {
@@ -497,13 +501,11 @@ class Character(val client: Client, override var name: String, val record: Recor
     }
 
     fun hasInvSpace(items: List<Int>): Boolean {
-        println(items)
         val arr = IntArray(5)
         items.forEach {
             arr[it / 1000000 - 1]++
         }
 
-        println(arr)
         repeat(5) {
             if (getAvailableSlots(ItemInventoryType.values()[it]) < arr[it]) {
                 return false
@@ -570,6 +572,24 @@ class Character(val client: Client, override var name: String, val record: Recor
 
     fun writeNpc(npc: Int, message: String) {
         write(ConversationPackets.getOkMessagePacket(npc, 0, message))
+    }
+
+    fun gainItem(item: Int, quantity: Short = 1) {
+        if (quantity > 0) {
+            modifyInventory({ i: ModifyInventoriesContext ->
+                i.add(
+                    ItemManager.getItem(item),
+                    quantity
+                )
+            })
+        } else if (quantity < 0) {
+            modifyInventory({ i: ModifyInventoriesContext ->
+                i.take(
+                    item,
+                    abs(quantity.toInt()).toShort()
+                )
+            })
+        }
     }
 
     override fun toString(): String {
