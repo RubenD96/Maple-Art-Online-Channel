@@ -60,8 +60,8 @@ object CommandHandler {
      */
     private fun String.getParams(): Map<Int, String> {
         val params = HashMap<Int, String>()
-        split(" ").forEach {
-            params[split(" ").indexOf(it)] = it
+        split(" ").forEachIndexed { index, it ->
+            params[index] = it
         }
         return params
     }

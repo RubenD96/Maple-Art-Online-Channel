@@ -21,6 +21,7 @@ enum class SendOpcode(override val value: Int) : IntegerValue {
     GUILD_RESULT(0x43),
     ALLIANCE_RESULT(0x44),
     BROADCAST_MSG(0x47),
+    DRAGON_BALL_BOX(0x88), // wtf am i doing
     MACRO_SYS_DATA_INIT(0x8C),
     SET_FIELD(0x8D),
     SET_CASH_SHOP(0x8F),
@@ -32,6 +33,9 @@ enum class SendOpcode(override val value: Int) : IntegerValue {
     USER_ENTER_FIELD(0xB3),
     USER_LEAVE_FIELD(0xB4),
     USER_CHAT(0xB5),
+    USER_MINI_ROOM_BALLOON(0xB8),
+    USER_HIT_BY_USER(0xBF),
+    USER_TESLA_TRIANGLE(0xC0),
     PET_ACTIVATED(0xC6),
     PET_MOVE(0xC9),
     PET_ACTION(0xC9),
@@ -77,6 +81,7 @@ enum class SendOpcode(override val value: Int) : IntegerValue {
     OPEN_SHOP_DLG(0x16C),
     SHOP_RESULT(0x16D),
     STORAGE_RESULT(0x170),
+    MINI_ROOM(0x175),
     CASH_SHOP_QUERY_CASH_RESULT(0x17F),
     CASH_SHOP_CASH_ITEM_RESULT(0x180),
     FUNC_KEY_MAPPED_INIT(0x18E);

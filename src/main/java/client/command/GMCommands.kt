@@ -24,6 +24,7 @@ import net.maple.packets.AlliancePackets
 import net.maple.packets.CharacterPackets.message
 import net.maple.packets.CharacterPackets.modifyInventory
 import net.maple.packets.FieldPackets.fieldEffect
+import net.maple.packets.MiniRoomPackets.setMiniRoomBalloon
 import net.server.Server
 import net.server.Server.getCharacter
 import scripting.dialog.DialogUtils
@@ -857,13 +858,14 @@ class GMCommands {
         private var mobid: Int = 0
         private var amount: Int = 0
 
-        override val description: String = "!quest [questid:int] [start/complete/mob/reset] <npcid:int/mobid:int> <mobamount:int>"
+        override val description: String =
+            "!quest [questid:int] [start/complete/mob/reset] <npcid:int/mobid:int> <mobamount:int>"
 
         override fun loadParams(params: Map<Int, String>) {
             questid = params[0]!!.toInt()
             mode = params[1]!!
 
-            when(mode) {
+            when (mode) {
                 "start" -> npcid = params[2]!!.toInt()
                 "mob" -> {
                     mobid = params[2]!!.toInt()
@@ -873,7 +875,7 @@ class GMCommands {
         }
 
         override fun execute(chr: Character) {
-            when(mode) {
+            when (mode) {
                 "start" -> chr.startQuest(questid, npcid)
                 "complete" -> chr.completeQuest(questid)
                 "mob" -> chr.quests[questid]?.progress(mobid, amount)
@@ -882,6 +884,116 @@ class GMCommands {
 
                 }
             }
+        }
+    }
+
+    object MiniRoomBalloon : Command {
+
+        private var sn: Int = 0
+        private var title: String = ""
+        private var private: Boolean = false
+        private var gameKind: Byte = 0
+        private var curUsers: Byte = 0
+        private var maxUsers: Byte = 0
+        private var gameOn: Boolean = false
+
+        override val description: String =
+            "!miniroomballoon [sn:int] [title:string] [private:boolean] [gameKind:byte] [curUsers:byte] [maxUsers:byte] [gameOn:boolean]"
+
+        override fun loadParams(params: Map<Int, String>) {
+            sn = params[0]!!.toInt()
+            title = params[1]!!
+            private = params[2]!!.toInt() == 1
+            gameKind = params[3]!!.toInt().toByte()
+            curUsers = params[4]!!.toInt().toByte()
+            maxUsers = params[5]!!.toInt().toByte()
+            gameOn = params[6]!!.toInt() == 1
+        }
+
+        override fun execute(chr: Character) {
+            chr.setMiniRoomBalloon(
+                sn,
+                title,
+                private,
+                gameKind,
+                curUsers,
+                maxUsers,
+                gameOn
+            )
+        }
+    }
+
+    object Tesla : Command {
+
+        private var dwID: Int = 0
+
+        override val description: String = "!tesla [dwID:int]"
+
+        override fun loadParams(params: Map<Int, String>) {
+            dwID = params[0]!!.toInt()
+        }
+
+        override fun execute(chr: Character) {
+            val pw = PacketWriter(10)
+
+            pw.writeHeader(SendOpcode.USER_TESLA_TRIANGLE)
+            pw.writeInt(chr.id)
+            pw.writeInt(dwID)
+
+            chr.write(pw.createPacket())
+        }
+    }
+
+    object UserHit : Command {
+
+        private var damage: Int = 0
+
+        override val description: String = "!userhit [damage:int]"
+
+        override fun loadParams(params: Map<Int, String>) {
+            damage = params[0]!!.toInt()
+        }
+
+        override fun execute(chr: Character) {
+            val pw = PacketWriter(10)
+
+            pw.writeHeader(SendOpcode.USER_HIT_BY_USER)
+            pw.writeInt(chr.id)
+            pw.writeInt(damage)
+
+            chr.write(pw.createPacket())
+        }
+    }
+
+    object DragonBall : Command {
+
+        private var remainTime: Int = 0
+        private var showUI: Boolean = false
+        private var closeUI: Boolean = false
+        private var ableToSummon: Boolean = false
+        private var orb: Int = 0
+
+        override val description: String = "!dragonball [remainTime:int] [showUI:boolean] [closeUI:boolean] [ableToSummon:boolean] [orb:int]"
+
+        override fun loadParams(params: Map<Int, String>) {
+            remainTime = params[0]!!.toInt()
+            showUI = params[1]!!.toInt() == 1
+            closeUI = params[2]!!.toInt() == 1
+            ableToSummon = params[3]!!.toInt() == 1
+            orb = params[4]!!.toInt()
+        }
+
+        override fun execute(chr: Character) {
+            val pw = PacketWriter(8)
+
+            pw.writeHeader(SendOpcode.DRAGON_BALL_BOX)
+            pw.writeInt(remainTime) // m_pUIDragonBox.p->m_tRemainTime
+            pw.writeBool(showUI) // bShowUI
+            pw.writeBool(closeUI) // ... v5 aka closeui??
+            pw.writeBool(ableToSummon) // bAbleToSummon
+            pw.writeInt(orb) // nOrb (flag)
+
+            chr.write(pw.createPacket())
         }
     }
 
