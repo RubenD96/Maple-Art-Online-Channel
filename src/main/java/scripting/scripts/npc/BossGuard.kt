@@ -65,7 +65,7 @@ class BossGuard : NPCScript() {
             info.preMessage,
             next = {
                 chr.party?.let {
-                    if (it.getMembers().size == 1) return@sendMessage // single player party (no members)
+                    if (it.getMembers().size == 1) return@let // single player party (no members)
                     if (it.leaderId == chr.id) {
                         var message = "Are you sure you want to fight the boss with your ${"party".red().bold()}?"
                         if (mapMembers.size != it.onlineMembers.size) {
