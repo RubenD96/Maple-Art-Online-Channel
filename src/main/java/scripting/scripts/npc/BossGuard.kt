@@ -77,7 +77,7 @@ class BossGuard : NPCScript() {
                             yes = { warpStart(mapMembers) }
                         )
                     } else {
-                        sendMessage("You are not the party leader. If you want to try the boss solo please leave your current party first.")
+                        endMessage("You are not the party leader. If you want to try the boss solo please leave your current party first.")
                     }
                     return@sendMessage
                 }
@@ -123,24 +123,24 @@ class BossGuard : NPCScript() {
 
     private fun DialogContext.duringFight() {
         chr.field.getObjects<FieldMob>().firstOrNull { it.template.id == info.boss }?.let {
-            sendMessage(info.fightMessage)
+            endMessage(info.fightMessage)
         } ?: run {
             sendMessage(
                 info.endMessage + "\r\n" +
                         "Do you wish to go to the next floor right now?",
                 yes = {
                     chr.changeField(info.exitMap)
-                    sendMessage(info.warpMessage)
+                    endMessage(info.warpMessage)
                 },
                 no = {
-                    sendMessage("Let me know when you're ready!")
+                    endMessage("Let me know when you're ready!")
                 }
             )
         }
     }
 
     private fun DialogContext.afterFight() {
-        sendMessage(info.nextTownMessage)
+        endMessage(info.nextTownMessage)
     }
 
     override fun DialogContext.onEnd() {
