@@ -5,12 +5,19 @@ import client.party.PartyMember
 import field.obj.life.FieldMob
 import net.server.Server
 import scripting.dialog.DialogContext
+import scripting.dialog.DialogUtils.blue
 import scripting.dialog.DialogUtils.bold
+import scripting.dialog.DialogUtils.green
+import scripting.dialog.DialogUtils.mobName
 import scripting.dialog.DialogUtils.red
 import scripting.dialog.npc.NPCScript
 import scripting.dialog.npc.Npc
 
-@Npc([1000]) // todo; list of id's of boss guards
+@Npc(
+    [
+        9000027, // Kyrin, floor 1
+    ]
+)
 class BossGuard : NPCScript() {
 
     private data class FloorInfo(
@@ -40,10 +47,10 @@ class BossGuard : NPCScript() {
         val floors: Map<Int, FloorInfo> = mapOf(
             1 to FloorInfo(
                 "Sup before start",
-                100100,
-                2000,
+                9700050,
+                2110,
                 "Hehe u gonna die",
-                "Wow u stronk!",
+                "Neat, I didn't think you had it in you!",
                 "Next town is just up ahead",
                 "Boyyyyyyyyyy u done did it"
             )
@@ -65,7 +72,7 @@ class BossGuard : NPCScript() {
             info.preMessage,
             next = {
                 chr.party?.let {
-                    if (it.getMembers().size == 1) return@let // single player party (no members)
+                    if (it.onlineMembers.size == 1) return@let // single player party (no members)
                     if (it.leaderId == chr.id) {
                         var message = "Are you sure you want to fight the boss with your ${"party".red().bold()}?"
                         if (mapMembers.size != it.onlineMembers.size) {
@@ -101,7 +108,7 @@ class BossGuard : NPCScript() {
             } else {
                 sendMessage(
                     "1 or more members in the party have already defeated this boss once while 1 or more members haven't." +
-                        "\r\nMake sure your party is either full of people that defeated the boss before or full of people that haven't.",
+                            "\r\nMake sure your party is either full of people that defeated the boss before or full of people that haven't.",
                     ok = { clearStates() }, // no prepareMessage
                     end = { clearStates() }
                 )
@@ -125,9 +132,14 @@ class BossGuard : NPCScript() {
         chr.field.getObjects<FieldMob>().firstOrNull { it.template.id == info.boss }?.let {
             endMessage(info.fightMessage)
         } ?: run {
+            var message = "${info.endMessage}\r\n\r\nDamage done to ${info.boss.mobName().red()}\r\n"
+            chr.field.bossDamage.forEach { (name, damage) ->
+                message += "${name.blue()}: ${damage.green()}\r\n".bold()
+            }
+            message += "\r\nDo you wish to go to the next floor right now?"
+
             sendMessage(
-                info.endMessage + "\r\n" +
-                        "Do you wish to go to the next floor right now?",
+                message,
                 yes = {
                     chr.changeField(info.exitMap)
                     endMessage(info.warpMessage)

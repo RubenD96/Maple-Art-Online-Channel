@@ -44,10 +44,10 @@ class UserHitHandler : PacketHandler {
         // these nexon enums seem to be wrong
         //public static final byte MOB_PYSHICAL = 0x0;
         //public static final byte MOB_MAGIC = 0xFFFFFFFF;
-        const val MOB_MAGIC: Byte = 0x0
-        const val MOB_PHYSICAL: Byte = -0x1
-        const val COUNTER: Byte = -0x2
-        const val OBSTACLE: Byte = -0x3
-        const val STAT: Byte = -0x4
+        const val MOB_MAGIC: Byte = 0x00
+        const val MOB_PHYSICAL: Byte = -0x01
+        const val COUNTER: Byte = -0x02
+        const val OBSTACLE: Byte = -0x03
+        const val STAT: Byte = -0x04
     }
 }

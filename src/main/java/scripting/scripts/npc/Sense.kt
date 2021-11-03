@@ -72,7 +72,7 @@ class Sense : NPCScript() {
         val indexes = ArrayList<Int>()
         mobs.forEach { mob ->
             val template = mob.template
-            selections["${template.id.mobName()} - ${template.id} - ${mob.hp} / ${template.maxHP} hp (${mob.id - 1000000000})"] =
+            selections["${template.id.mobName()} - ${template.id} - ${mob.hp} / ${template.maxHP} hp (${mob.id})"] =
                 {
                     field.getObject<FieldMob>(it)?.template?.id?.let { id ->
                         c.character.philId = id

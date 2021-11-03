@@ -18,8 +18,7 @@ import scripting.mob.MobScriptManager
 import util.packet.Packet
 import util.packet.PacketWriter
 import java.awt.Point
-import java.util.*
-import kotlin.collections.HashMap
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.max
 import kotlin.math.min
 
@@ -32,7 +31,7 @@ class FieldMob(val template: FieldMobTemplate, left: Boolean) : AbstractFieldCon
     var controllerDistance = 0
 
     // Stores which CID has done X dmg to the mob
-    private val damageIndex: MutableMap<Int, Int> = HashMap()
+    private val damageIndex: MutableMap<Int, AtomicInteger> = HashMap()
 
     init {
         moveAction = 3
@@ -43,7 +42,7 @@ class FieldMob(val template: FieldMobTemplate, left: Boolean) : AbstractFieldCon
             hp -= damage
 
             var add = damage
-            if (hp <= 0) add = damage - hp
+            if (hp <= 0) add = damage + hp
             addToDamageIndex(chr, add)
 
             MobScriptManager[template.id]?.onHit(chr, this, damage)
@@ -60,11 +59,7 @@ class FieldMob(val template: FieldMobTemplate, left: Boolean) : AbstractFieldCon
     }
 
     private fun addToDamageIndex(chr: Character, damage: Int) {
-        damageIndex[chr.id]?.let {
-            damageIndex[chr.id]?.plus(damage)
-        } ?: run {
-            damageIndex[chr.id] = damage
-        }
+        damageIndex[chr.id]?.addAndGet(damage) ?: run { damageIndex[chr.id] = AtomicInteger(damage) }
     }
 
     fun kill(chr: Character, damage: Int = -1) {
@@ -74,11 +69,19 @@ class FieldMob(val template: FieldMobTemplate, left: Boolean) : AbstractFieldCon
         chr.gainExp(template.exp) // todo share
 
         if (template.isBoss) { // only give party a kc if its a boss, not for regular mobs
+            if (field.template.id % 1000 == 999) {
+                val damageNameIndex: MutableMap<String, Int> = HashMap()
+                damageIndex.forEach { (cid, dmg) ->
+                    damageNameIndex[Server.getCharacter(cid)?.name ?: "???"] = dmg.get()
+                }
+                field.bossDamage = damageNameIndex.toList().sortedByDescending { (_, value) -> value }.toMap()
+            }
+
             chr.party?.onlineMembers?.forEach {
                 if (it.field == field.template.id) { // same id
-                    Server.getCharacter(it.cid)?.run {
-                        if (this.field == field) { // same instance todo test "this" instance
-                            this.updateMobKills(template)
+                    Server.getCharacter(it.cid)?.let { character ->
+                        if (character.field == field) { // same instance
+                            character.updateMobKills(template)
                         }
                     }
                 }
@@ -94,9 +97,9 @@ class FieldMob(val template: FieldMobTemplate, left: Boolean) : AbstractFieldCon
 
         if (chr.registeredQuestMobs.contains(template.id)) {
             chr.quests.values.stream()
-                    .filter { it.state === QuestState.PERFORM }
-                    .filter { it.mobs.containsKey(template.id) }
-                    .forEach { it.progress(template.id) }
+                .filter { it.state === QuestState.PERFORM }
+                .filter { it.mobs.containsKey(template.id) }
+                .forEach { it.progress(template.id) }
         }
 
         if (time != -1) {

@@ -51,6 +51,7 @@ class Field(val template: FieldTemplate) {
         )
 
     private val toRespawn: MutableList<Respawn> = ArrayList()
+    lateinit var bossDamage: Map<String, Int>
 
     companion object {
         //private val runningObjectId = AtomicInteger(1000000000)
@@ -292,6 +293,7 @@ class Field(val template: FieldTemplate) {
             }
     }
 
+    @Synchronized
     fun getControlledObject(chr: Character, oid: Int): FieldControlledObject? {
         return (getObjects<FieldNPC>() + getObjects<FieldMob>()).stream()
             .filter {

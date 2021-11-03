@@ -17,6 +17,8 @@ import scripting.dialog.quest.Quest
 import scripting.dialog.quest.QuestScriptManager
 import scripting.field.Field
 import scripting.field.FieldScriptManager
+import scripting.mob.Mob
+import scripting.mob.MobScriptManager
 import scripting.portal.Portal
 import scripting.portal.PortalScriptManager
 import util.crypto.MapleAESOFB
@@ -71,6 +73,7 @@ object Server {
 
     private fun loadAllScripts() {
         NPCScriptManager.loadScripts<Npc>()
+        MobScriptManager.loadScripts<Mob>()
         QuestScriptManager.loadScripts<Quest>()
         PortalScriptManager.loadScripts<Portal>()
         FieldScriptManager.loadScripts<Field>()
