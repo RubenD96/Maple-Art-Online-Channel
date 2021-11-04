@@ -204,10 +204,7 @@ class DialogContext(
     fun postRewards(rewards: List<QuestReward>, text: String, take: Map<Int, Int>? = null, next: (() -> Unit)? = null) {
         val chr = c.character
         if (!chr.hasInvSpace(rewards.filter { it.type == QuestRewardType.ITEM }.map { it.value })) {
-            sendMessage(
-                "Make sure you have enough inventory space available!",
-                ok = { clearStates() }
-            )
+            endMessage("Make sure you have enough inventory space available!")
             return
         }
 

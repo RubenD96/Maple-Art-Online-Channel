@@ -14,7 +14,7 @@ class UserHitHandler : PacketHandler {
 
         val timestamp = reader.readInteger()
         val type = reader.readByte()
-        val guard = reader.readByte()
+        val magicElemAttr = reader.readByte() // Element - 0x00 = elementless, 0x01 = ice, 0x02 = fire, 0x03 = lightning
         val dmg = reader.readInteger()
 
         when (type) {
