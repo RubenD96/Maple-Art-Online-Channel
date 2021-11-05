@@ -5,18 +5,18 @@ import client.player.quest.reward.ExpQuestReward
 import client.player.quest.reward.MesoQuestReward
 import scripting.dialog.DialogContext
 import scripting.dialog.DialogUtils.blue
-import scripting.dialog.DialogUtils.itemImage
+import scripting.dialog.DialogUtils.bold
 import scripting.dialog.quest.Quest
 import scripting.dialog.quest.QuestScript
 
-@Quest([10003])
-class SconsSecretLove : QuestScript() {
+@Quest([10005])
+class NurisLetter : QuestScript() {
 
     override fun execute(c: Client) {
         execute(c, 9102000) {
             with(it) {
                 sendMessage(
-                    "H-hey! How's it going? Want to help me with something?",
+                    "You're back! Do you think you could just give the letter to ${"Nuri".blue()}?",
                     accept = { onAccept() },
                     decline = { onDecline() }
 
@@ -27,16 +27,16 @@ class SconsSecretLove : QuestScript() {
 
     private fun DialogContext.onDecline() {
         sendMessage(
-            "Oh. Alright then, forget I asked.",
+            "No? Ok, well, thanks for finding it anyway.",
             ok = { onEnd() }
         )
     }
 
     private fun DialogContext.onAccept() {
         startQuest()
+        c.character.gainItem(4007009)
         sendMessage(
-            "Really?! Thanks!" +
-                    "See that girl over there, ${"Neri".blue()}? Well, I have the biggest crush on her! Could you give this ${4032280.itemImage()} letter to her for me?",
+            "Cool, here you go. Fingers crossed!",
             ok = { onEnd() }
         )
     }
@@ -46,8 +46,7 @@ class SconsSecretLove : QuestScript() {
         execute(c, 9102000) {
             with(it) {
                 sendMessage(
-                    "Yay! You gave it to her... What did she say?" +
-                            "Oh... How unfortunate. Well, I heard ${"Nuri".blue()} just recently became single...",
+                    "Did she take it? Awesome!",
                     next = { completeQuest() }
                 )
             }
@@ -57,9 +56,10 @@ class SconsSecretLove : QuestScript() {
     private fun DialogContext.completeQuest() {
         postRewards(
             listOf(
-                ExpQuestReward(6500),
-                MesoQuestReward(10000)
+                ExpQuestReward(20900),
+                MesoQuestReward(50000)
             ),
+            "Wait, she didn't say anything? Like ${"nothing".bold()}?? What in the world is up with these girls..."
         )
     }
 }

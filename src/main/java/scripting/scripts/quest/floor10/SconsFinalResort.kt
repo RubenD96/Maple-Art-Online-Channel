@@ -2,21 +2,21 @@ package scripting.scripts.quest.floor10
 
 import client.Client
 import client.player.quest.reward.ExpQuestReward
-import client.player.quest.reward.MesoQuestReward
+import client.player.quest.reward.ItemQuestReward
 import scripting.dialog.DialogContext
 import scripting.dialog.DialogUtils.blue
-import scripting.dialog.DialogUtils.itemImage
+import scripting.dialog.DialogUtils.playerName
 import scripting.dialog.quest.Quest
 import scripting.dialog.quest.QuestScript
 
-@Quest([10003])
-class SconsSecretLove : QuestScript() {
+@Quest([10006])
+class SconsFinalResort : QuestScript() {
 
     override fun execute(c: Client) {
         execute(c, 9102000) {
             with(it) {
                 sendMessage(
-                    "H-hey! How's it going? Want to help me with something?",
+                    "${playerName.blue()}, ${playerName.blue()}! I know you're probably tired of me now, but I have one last task for you. You up for it?",
                     accept = { onAccept() },
                     decline = { onDecline() }
 
@@ -27,7 +27,7 @@ class SconsSecretLove : QuestScript() {
 
     private fun DialogContext.onDecline() {
         sendMessage(
-            "Oh. Alright then, forget I asked.",
+            "Ok ok ok, I get it. You&apos;ve had enough of me.",
             ok = { onEnd() }
         )
     }
@@ -35,8 +35,8 @@ class SconsSecretLove : QuestScript() {
     private fun DialogContext.onAccept() {
         startQuest()
         sendMessage(
-            "Really?! Thanks!" +
-                    "See that girl over there, ${"Neri".blue()}? Well, I have the biggest crush on her! Could you give this ${4032280.itemImage()} letter to her for me?",
+            "Hear me out, I think I was wrong the entire time. I heard there was another fairy in town named ${"Kriel".blue()}. And I think she likes me. Could you talk to her for me? See if the rumors are true?" +
+                    "Thanks, ${playerName.blue()}. I appreciate it.",
             ok = { onEnd() }
         )
     }
@@ -46,8 +46,8 @@ class SconsSecretLove : QuestScript() {
         execute(c, 9102000) {
             with(it) {
                 sendMessage(
-                    "Yay! You gave it to her... What did she say?" +
-                            "Oh... How unfortunate. Well, I heard ${"Nuri".blue()} just recently became single...",
+                    "So, what&apos;d she say?" +
+                            "A lunch box? She gave me a lunch box?!?!",
                     next = { completeQuest() }
                 )
             }
@@ -57,9 +57,10 @@ class SconsSecretLove : QuestScript() {
     private fun DialogContext.completeQuest() {
         postRewards(
             listOf(
-                ExpQuestReward(6500),
-                MesoQuestReward(10000)
+                ExpQuestReward(36000),
             ),
+            "Wow, she truly is the one. Thank you so much for talking to her for me, ${playerName.blue()}.",
+            take = mapOf(1032074 to 1)
         )
     }
 }
