@@ -37,7 +37,7 @@ class GagasMonsterResearchPart2 : QuestScript() {
     private fun DialogContext.onAccept() {
         startQuest();
         sendMessage(
-            "My research uncovered a hidden location somewhere on Floor 2...",
+            "My research uncovered a hidden location somewhere on Floor 1...",
             next = {postAcceptDialog()}
         )
     }
