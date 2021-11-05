@@ -36,7 +36,7 @@ class SconsSecretLove : QuestScript() {
         startQuest()
         c.character.gainItem(4032280)
         sendMessage(
-            "Really?! Thanks!" +
+            "Really?! Thanks!\n" +
                     "See that girl over there, ${"Neri".blue()}? Well, I have the biggest crush on her! Could you give this ${4032280.itemImage()} letter to her for me?",
             ok = { onEnd() }
         )
@@ -47,7 +47,7 @@ class SconsSecretLove : QuestScript() {
         execute(c, 9102000) {
             with(it) {
                 sendMessage(
-                    "Yay! You gave it to her... What did she say?" +
+                    "Yay! You gave it to her... What did she say?\n" +
                             "Oh... How unfortunate. Well, I heard ${"Nuri".blue()} just recently became single...",
                     next = { completeQuest() }
                 )

@@ -34,7 +34,7 @@ class SconsFinalResort : QuestScript() {
     private fun DialogContext.onAccept() {
         startQuest()
         sendMessage(
-            "Hear me out, I think I was wrong the entire time. I heard there was another fairy in town named ${"Kriel".blue()}. And I think she likes me. Could you talk to her for me? See if the rumors are true?" +
+            "Hear me out, I think I was wrong the entire time. I heard there was another fairy in town named ${"Kriel".blue()}. And I think she likes me. Could you talk to her for me? See if the rumors are true?\n" +
                     "Thanks, ${playerName.blue()}. I appreciate it.",
             ok = { onEnd() }
         )

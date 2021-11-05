@@ -34,7 +34,7 @@ class SconsSecondSecretLove : QuestScript() {
     private fun DialogContext.onAccept() {
         startQuest()
         sendMessage(
-            "Okay, listen. I was wrong the entire time! I shouldn't have gone for ${"Neri".blue()}, that was stupid of me. I knew she didn't like me. My true love is actually for ${"Nuri".blue()}. I know, I know. I know what you're thinking, but you're just going to have to trust me on this one." +
+            "Okay, listen. I was wrong the entire time! I shouldn't have gone for ${"Neri".blue()}, that was stupid of me. I knew she didn't like me. My true love is actually for ${"Nuri".blue()}. I know, I know. I know what you're thinking, but you're just going to have to trust me on this one.\n" +
                     "So here's the problem... I accidentally dropped my letter for ${"Nuri".blue()} while I was walking around town. Can you blame me? I needed some inspiration. Could you help me find it? It's got to be somewhere on this floor.",
             ok = { onEnd() }
         )
