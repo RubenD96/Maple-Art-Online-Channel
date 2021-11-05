@@ -34,6 +34,7 @@ class SconsSecretLove : QuestScript() {
 
     private fun DialogContext.onAccept() {
         startQuest()
+        c.character.gainItem(4032280)
         sendMessage(
             "Really?! Thanks!" +
                     "See that girl over there, ${"Neri".blue()}? Well, I have the biggest crush on her! Could you give this ${4032280.itemImage()} letter to her for me?",

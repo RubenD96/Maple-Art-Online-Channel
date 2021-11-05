@@ -2,7 +2,6 @@ package scripting.scripts.quest.floor10
 
 import client.Client
 import client.player.quest.reward.ExpQuestReward
-import client.player.quest.reward.ItemQuestReward
 import scripting.dialog.DialogContext
 import scripting.dialog.DialogUtils.blue
 import scripting.dialog.DialogUtils.playerName
