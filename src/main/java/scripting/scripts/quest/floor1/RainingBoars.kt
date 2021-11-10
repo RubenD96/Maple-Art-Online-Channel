@@ -27,7 +27,7 @@ class RainingBoars : QuestScript() {
 
     private fun DialogContext.onDecline() {
         sendMessage(
-            "Oh, that's too bad.\n" +
+            "Oh, that's too bad.\n\n" +
                     "Talk to me again if you change your mind!",
             ok = { onEnd() }
         )

@@ -1,6 +1,8 @@
 package scripting.scripts.quest.floor1
 
 import client.Client
+import client.player.quest.reward.ExpQuestReward
+import client.player.quest.reward.MesoQuestReward
 import scripting.dialog.DialogContext
 import scripting.dialog.DialogUtils.blue
 import scripting.dialog.DialogUtils.itemImage
@@ -13,18 +15,20 @@ import scripting.dialog.quest.QuestScript
 class CurseOfTheMasks1: QuestScript() {
     override fun execute(c: Client) {
         execute(c, 2112009) {
-            it.sendMessage(
-                "Help... me...",
-                accept = {it.onAccept()},
-                decline = {it.onDecline()}
-            )
+            with(it){
+                sendMessage(
+                    "Help... me...",
+                    accept = {onAccept()},
+                    decline = {onDecline()}
+                )
+            }
         }
     }
 
     private fun DialogContext.onAccept() {
         startQuest()
         sendMessage(
-            "Please... Break... Curse... Bring me ${"100".red()} ${4000196.itemName().blue()} ${4000196.itemImage()}",
+            "Please... Break... The curse... Bring me ${4000196.itemImage()} ${"100 Wooden Boards".blue()}.",
             ok = {onEnd()}
         )
     }
@@ -38,12 +42,22 @@ class CurseOfTheMasks1: QuestScript() {
 
     override fun finish(c: Client) {
         execute(c, 2112009) {
-            it.finishQuest()
-            it.sendMessage(
-                "Thanks kind... warrior, I... feel a bit... better now" +
-                        "\\nBut... its not over!",
-                ok = {it.onEnd()}
-            )
+            with(it){
+                sendMessage(
+                    "Thank you... kind... warrior, I... feel a bit... better now.",
+                    next = { completeQuest()}
+                )
+            }
         }
+    }
+    private fun DialogContext.completeQuest(){
+        postRewards(
+            listOf(
+                ExpQuestReward(10000),
+                MesoQuestReward(7500)
+            ),
+            "But... its not over!",
+            take = mapOf(4000196 to 100),
+        )
     }
 }

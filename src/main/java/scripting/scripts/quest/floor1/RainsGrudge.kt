@@ -1,6 +1,8 @@
 package scripting.scripts.quest.floor1
 
 import client.Client
+import client.player.quest.reward.ExpQuestReward
+import client.player.quest.reward.ItemQuestReward
 import scripting.dialog.DialogContext
 import scripting.dialog.DialogUtils.mobName
 import scripting.dialog.DialogUtils.red
@@ -46,17 +48,18 @@ class RainsGrudge : QuestScript() {
         execute(c, 12101) {
             it.sendMessage(
                 "Thanks so much for doing this for me!\nHere's your reward!",
-                next = { it.postFinishDialog() }
+                next = { it.completeQuest() }
             )
         }
     }
 
-    private fun DialogContext.postFinishDialog() {
-        sendMessage(
-            "Thanks a lot for taking down ${25.red()} wolves, I will sleep better tonight!",
-            ok = {
-                finishQuest()
-            }
+    private fun DialogContext.completeQuest(){
+        postRewards(
+            listOf(
+                ExpQuestReward(500),
+                ItemQuestReward(3010001,1)
+            ),
+            "Thanks a lot for taking down ${"25 wolves".red()}, I will sleep better tonight!",
         )
     }
 }

@@ -1,6 +1,9 @@
 package scripting.scripts.quest.floor1
 
 import client.Client
+import client.player.quest.reward.ExpQuestReward
+import client.player.quest.reward.ItemQuestReward
+import client.player.quest.reward.MesoQuestReward
 import scripting.dialog.DialogContext
 import scripting.dialog.DialogUtils.blue
 import scripting.dialog.DialogUtils.bold
@@ -12,10 +15,12 @@ import scripting.dialog.quest.QuestScript
 class GagasMonsterResearchPart2 : QuestScript() {
     override fun execute(c: Client) {
         execute(c, 9000021) {
-            it.sendMessage(
-                "Oh no...",
-                next = {it.firstOhNo()}
-            )
+            with(it) {
+                sendMessage(
+                    "Oh no...",
+                    next = {firstOhNo()}
+                )
+            }
         }
     }
 
@@ -28,7 +33,7 @@ class GagasMonsterResearchPart2 : QuestScript() {
 
     private fun DialogContext.secondOhNo() {
         sendMessage(
-            "${"Oh no!!!!".red().bold()}",
+            "Oh no!!!".bold().red(),
             accept = {onAccept()},
             decline = {onDecline()}
         )
@@ -51,19 +56,30 @@ class GagasMonsterResearchPart2 : QuestScript() {
 
     private fun DialogContext.postAcceptDialog() {
         sendMessage(
-            "There is seems to be a very ${"dangerous".red().bold()} mob in that map, please take care of it before it reaches this town!",
+            "There seems to be a very ${"dangerous".red().bold()} mob in that map, please take care of it before it reaches this town!",
             ok = {onEnd()}
         )
     }
 
     override fun finish(c: Client) {
         execute(c, 9000021) {
-            it.sendMessage(
-                "Wow you've saved this town!" +
-                    "\\r\\nYou're a ${"hero".blue()}!! " +
-                    "\\r\\nTake this reward as my eternal gratitude.",
-                ok = {it.finishQuest()}
+            with(it) {
+                sendMessage(
+                    "Wow, you've saved this town!" +
+                            "\r\nYou're a ${"hero".blue()}!!",
+                    next = { completeQuest() }
+                )
+            }
+        }
+    }
+    private fun DialogContext.completeQuest() {
+            postRewards(
+                listOf(
+                    ExpQuestReward(500),
+                    MesoQuestReward(5000),
+                    ItemQuestReward(2022248, 10)
+                ),
+                "Thank you for your help! Here is your reward.",
             )
         }
     }
-}

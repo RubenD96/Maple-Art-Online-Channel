@@ -59,7 +59,7 @@ class SconsFinalResort : QuestScript() {
                 ExpQuestReward(36000),
             ),
             "Wow, she truly is the one. Thank you so much for talking to her for me, ${playerName.blue()}.",
-            take = mapOf(1032074 to 1)
+            take = mapOf(4007011 to 1)
         )
     }
 }

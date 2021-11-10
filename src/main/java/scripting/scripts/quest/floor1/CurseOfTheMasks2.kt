@@ -1,6 +1,8 @@
 package scripting.scripts.quest.floor1
 
 import client.Client
+import client.player.quest.reward.ExpQuestReward
+import client.player.quest.reward.MesoQuestReward
 import scripting.dialog.DialogContext
 import scripting.dialog.DialogUtils.blue
 import scripting.dialog.DialogUtils.itemImage
@@ -32,18 +34,29 @@ class CurseOfTheMasks2:QuestScript() {
     private fun DialogContext.onAccept() {
         startQuest()
         sendMessage(
-            "The curse... its not fully... gone, bring me ${"100".red()} ${4000197.itemName().blue()} ${4000197.itemImage()}",
+            "The curse... it's not fully... gone, bring me ${4000197.itemImage()} ${"100 Slates".blue()}",
             ok = {onEnd()}
         )
     }
 
     override fun finish(c: Client) {
         execute(c, 2112009) {
-            it.finishQuest()
-            it.sendMessage(
-                "Wow the curse... I cant believe it! The curse is gone!",
-                ok = {it.onEnd()}
-            )
+            with(it){
+                sendMessage(
+                    "Wow... The curse... I can't believe it! The curse is gone!",
+                    next = { completeQuest()}
+                )
+            }
         }
+    }
+    private fun DialogContext.completeQuest(){
+        postRewards(
+            listOf(
+                ExpQuestReward(15000),
+                MesoQuestReward(12500),
+            ),
+        take = mapOf(
+            4000197 to 100)
+        )
     }
 }

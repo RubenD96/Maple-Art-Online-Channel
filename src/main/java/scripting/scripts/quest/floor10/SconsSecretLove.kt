@@ -47,8 +47,7 @@ class SconsSecretLove : QuestScript() {
         execute(c, 9102000) {
             with(it) {
                 sendMessage(
-                    "Yay! You gave it to her... What did she say?\n" +
-                            "Oh... How unfortunate. Well, I heard ${"Nuri".blue()} just recently became single...",
+                    "Yay! You gave it to her... What did she say?",
                     next = { completeQuest() }
                 )
             }
@@ -61,6 +60,7 @@ class SconsSecretLove : QuestScript() {
                 ExpQuestReward(6500),
                 MesoQuestReward(10000)
             ),
+            "Oh... How unfortunate. Well, I heard ${"Nuri".blue()} just recently became single...",
         )
     }
 }

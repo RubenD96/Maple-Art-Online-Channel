@@ -4,18 +4,19 @@ import client.Client
 import client.player.quest.reward.ExpQuestReward
 import scripting.dialog.DialogContext
 import scripting.dialog.DialogUtils.blue
-import scripting.dialog.DialogUtils.playerName
+import scripting.dialog.DialogUtils.itemImage
+import scripting.dialog.DialogUtils.red
 import scripting.dialog.quest.Quest
 import scripting.dialog.quest.QuestScript
 
-@Quest([10004])
-class SconsSecondSecretLove : QuestScript() {
+@Quest([10007])
+class BunnyInfestation : QuestScript() {
 
     override fun execute(c: Client) {
-        execute(c, 9102000) {
+        execute(c, 2030002) {
             with(it) {
                 sendMessage(
-                    "Hey, ${playerName.blue()}. I need your help again. Whaddya say?",
+                    "Hello stranger! You up for some dirty work?",
                     accept = { onAccept() },
                     decline = { onDecline() }
 
@@ -26,7 +27,7 @@ class SconsSecondSecretLove : QuestScript() {
 
     private fun DialogContext.onDecline() {
         sendMessage(
-            "C'mon! It's special this time. ... Alright, fine.",
+            "Good day!",
             ok = { onEnd() }
         )
     }
@@ -34,18 +35,18 @@ class SconsSecondSecretLove : QuestScript() {
     private fun DialogContext.onAccept() {
         startQuest()
         sendMessage(
-            "Okay, listen. I was wrong the entire time! I shouldn't have gone for ${"Neri".blue()}, that was stupid of me. I knew she didn't like me. My true love is actually for ${"Nuri".blue()}. I know, I know. I know what you're thinking, but you're just going to have to trust me on this one.\n\n" +
-                    "So here's the problem... I accidentally dropped my letter for ${"Nuri".blue()} while I was walking around town. Can you blame me? I needed some inspiration. Could you help me find it? It's got to be somewhere on this floor.",
+            "I've been having trouble finding my way back, especially with those darn ${"moon bunnies".red()} running around everywhere. They're an exquisite creature and I want to learn more about them.\n" +
+                 "Help me out by collecting their pounders and I'll be sure to give you a nice reward! I need you to collect ${4000169.itemImage()} ${100.blue()} ${"pounders".blue()} for me..",
             ok = { onEnd() }
         )
     }
 
 
     override fun finish(c: Client) {
-        execute(c, 9102000) {
+        execute(c, 2030002) {
             with(it) {
                 sendMessage(
-                    "You found it! Great, thanks. I'm just going to add some finishing touches. Then maybe you'll help give it to her?",
+                    "Look at all these pounders! I find it so unique that bunnies are just holding onto these. Well, thank you so much for the help.",
                     next = { completeQuest() }
                 )
             }
@@ -55,8 +56,9 @@ class SconsSecondSecretLove : QuestScript() {
     private fun DialogContext.completeQuest() {
         postRewards(
             listOf(
-                ExpQuestReward(20900)
+                ExpQuestReward(22200)
             ),
+            take = mapOf(4000169 to 100)
         )
     }
 }
