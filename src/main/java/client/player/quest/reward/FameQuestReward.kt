@@ -6,5 +6,5 @@ class FameQuestReward(override val value: Int) : QuestReward {
 
     override val type: QuestRewardType = QuestRewardType.FAME
 
-    override val message: String = "${"UI/UIWindow.img/QuestIcon/6/0".wzImage()} $value fame"
+    override val message: String = "${"UI/UIWindow2.img/QuestIcon/6/0".wzImage()} $value fame"
 }

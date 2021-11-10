@@ -7,5 +7,5 @@ class MasteryQuestReward(val mastery: MasteryType, override val value: Int) : Qu
 
     override val type: QuestRewardType = QuestRewardType.MASTERY
 
-    override val message: String = "${"UI/UIWindow.img/QuestIcon/10/0".wzImage()} $value ${mastery.name.toLowerCase()} mastery"
+    override val message: String = "${"UI/UIWindow2.img/QuestIcon/10/0".wzImage()} $value ${mastery.name.toLowerCase()} mastery"
 }

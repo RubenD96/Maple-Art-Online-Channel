@@ -6,5 +6,5 @@ class ClosenessQuestReward(override val value: Int) : QuestReward {
 
     override val type: QuestRewardType = QuestRewardType.CLOSENESS
 
-    override val message: String = "${"UI/UIWindow.img/QuestIcon/6/0".wzImage()} $value fame"
+    override val message: String = "${"UI/UIWindow2.img/QuestIcon/6/0".wzImage()} $value fame"
 }

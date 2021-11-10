@@ -6,5 +6,5 @@ class ExpQuestReward(override val value: Int) : QuestReward {
 
     override val type: QuestRewardType = QuestRewardType.EXP
 
-    override val message: String = "${"UI/UIWindow.img/QuestIcon/8/0".wzImage()} $value exp"
+    override val message: String = "${"UI/UIWindow2.img/QuestIcon/8/0".wzImage()} $value exp"
 }

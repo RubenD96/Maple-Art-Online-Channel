@@ -6,5 +6,5 @@ class MesoQuestReward(override val value: Int) : QuestReward {
 
     override val type: QuestRewardType = QuestRewardType.MESOS
 
-    override val message: String = "${"UI/UIWindow.img/QuestIcon/7/0".wzImage()} $value col"
+    override val message: String = "${"UI/UIWindow2.img/QuestIcon/7/0".wzImage()} $value col"
 }

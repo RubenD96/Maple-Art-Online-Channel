@@ -7,5 +7,5 @@ class RandomQuestReward(override val value: Int) : QuestReward {
 
     override val type: QuestRewardType = QuestRewardType.RANDOM
 
-    override val message: String = "UI/UIWindow.img/QuestIcon/5/0".wzImage()
+    override val message: String = "UI/UIWindow2.img/QuestIcon/5/0".wzImage()
 }
