@@ -55,6 +55,5 @@ class GagasMonsterResearchPart1: QuestScript() {
             ),
             "Please accept this token of my appreciation. Thank you for your help! Here is your reward."
         )
-
     }
 }

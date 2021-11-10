@@ -56,8 +56,8 @@ class CurseOfTheMasks1: QuestScript() {
                 ExpQuestReward(10000),
                 MesoQuestReward(7500)
             ),
-            "But... its not over!",
-            take = mapOf(4000196 to 100),
+            "But... it's not over!",
+            take = mapOf(4000196 to 100)
         )
     }
 }

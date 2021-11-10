@@ -45,20 +45,14 @@ class ExterminateTheBunnies : QuestScript() {
     override fun finish(c: Client) {
         execute(c, 2030002) {
             with(it) {
-                sendMessage(
-                    "Thank you for getting rid of those annoying bunnies. I can now go on my merry way back home.",
-                    next = { completeQuest() }
+                postRewards(
+                    listOf(
+                        ExpQuestReward(22200),
+                        MesoQuestReward(100000)
+                    ),
+                        "Thank you for getting rid of those annoying bunnies. I can now go on my merry way back home.",
                 )
             }
         }
-    }
-
-    private fun DialogContext.completeQuest() {
-        postRewards(
-            listOf(
-                ExpQuestReward(22200),
-                MesoQuestReward(100000)
-            ),
-        )
     }
 }

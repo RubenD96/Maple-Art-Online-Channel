@@ -44,19 +44,13 @@ class SconsSecondSecretLove : QuestScript() {
     override fun finish(c: Client) {
         execute(c, 9102000) {
             with(it) {
-                sendMessage(
+                postRewards(
+                    listOf(
+                        ExpQuestReward(20900)
+                    ),
                     "You found it! Great, thanks. I'm just going to add some finishing touches. Then maybe you'll help give it to her?",
-                    next = { completeQuest() }
                 )
             }
         }
-    }
-
-    private fun DialogContext.completeQuest() {
-        postRewards(
-            listOf(
-                ExpQuestReward(20900)
-            ),
-        )
     }
 }

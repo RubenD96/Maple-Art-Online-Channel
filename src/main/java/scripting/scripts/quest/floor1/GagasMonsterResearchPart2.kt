@@ -75,7 +75,7 @@ class GagasMonsterResearchPart2 : QuestScript() {
     private fun DialogContext.completeQuest() {
             postRewards(
                 listOf(
-                    ExpQuestReward(500),
+                    ExpQuestReward(2000),
                     MesoQuestReward(5000),
                     ItemQuestReward(2022248, 10)
                 ),

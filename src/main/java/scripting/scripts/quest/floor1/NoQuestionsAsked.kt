@@ -38,10 +38,10 @@ class NoQuestionsAsked: QuestScript() {
         sendMessage(
             "Good, here is a list of what I need. And remember, " +
                     "${"no questions!".red()} " +
-                    "\n\n ${4032027.itemImage()} ${"10".blue()} ${4032027.itemName().red()}" +
-                    "\n\n${4032028.itemImage()} ${"10".blue()} ${4032028.itemName().red()}" +
-                    "\n\n${4032029.itemImage()} ${"10".blue()} ${4032029.itemName().red()}" +
-                    "\n\n${4032030.itemImage()} ${"10".blue()} ${4032030.itemName().red()}",
+                    "\n\n${4032027.itemImage()} ${"10".blue()} ${4032027.itemName().blue()}" +
+                    "\n\n${4032028.itemImage()} ${"10".blue()} ${4032028.itemName().blue()}" +
+                    "\n\n${4032029.itemImage()} ${"10".blue()} ${4032029.itemName().blue()}" +
+                    "\n\n${4032030.itemImage()} ${"10".blue()} ${4032030.itemName().blue()}",
             ok = {onEnd()}
         )
     }
@@ -49,7 +49,6 @@ class NoQuestionsAsked: QuestScript() {
     override fun finish(c: Client) {
         execute(c, 2071002) {
             with(it){
-                completeQuest()
                 sendMessage(
                     "Alright thanks...",
 

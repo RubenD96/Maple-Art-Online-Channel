@@ -36,7 +36,7 @@ class BunnyInfestation : QuestScript() {
         startQuest()
         sendMessage(
             "I've been having trouble finding my way back, especially with those darn ${"moon bunnies".red()} running around everywhere. They're an exquisite creature and I want to learn more about them.\n" +
-                 "Help me out by collecting their pounders and I'll be sure to give you a nice reward! I need you to collect ${4000169.itemImage()} ${100.blue()} ${"pounders".blue()} for me..",
+                    "Help me out by collecting their pounders and I'll be sure to give you a nice reward! I need you to collect ${4000169.itemImage()} ${100.blue()} ${"pounders".blue()} for me..",
             ok = { onEnd() }
         )
     }
@@ -45,20 +45,14 @@ class BunnyInfestation : QuestScript() {
     override fun finish(c: Client) {
         execute(c, 2030002) {
             with(it) {
-                sendMessage(
+                postRewards(
+                    listOf(
+                        ExpQuestReward(22200)
+                    ),
                     "Look at all these pounders! I find it so unique that bunnies are just holding onto these. Well, thank you so much for the help.",
-                    next = { completeQuest() }
+                    take = mapOf(4000169 to 100)
                 )
             }
         }
-    }
-
-    private fun DialogContext.completeQuest() {
-        postRewards(
-            listOf(
-                ExpQuestReward(22200)
-            ),
-            take = mapOf(4000169 to 100)
-        )
     }
 }
