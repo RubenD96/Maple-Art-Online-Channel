@@ -209,7 +209,7 @@ class DialogContext(
         }
 
         if (finishQuest()) {
-            var message = "\r\n" + "UI/UIWindow2.img/QuestIcon/4/0".wzImage()
+            var message = "\r\n" + "UI/UIWindow.img/QuestIcon/4/0".wzImage()
             rewards.forEach {
                 message += "\r\n${it.message}"
                 when (it.type) {
