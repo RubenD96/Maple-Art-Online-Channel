@@ -90,4 +90,10 @@ class FieldReactor(val template: ReactorTemplate) : AbstractFieldObject() {
         f = reader.readBool()
         name = reader.readMapleString()
     }
+
+    override fun toString(): String {
+        return "FieldReactor(template=$template, time=$time, f=$f, name='$name', actionDelay=$actionDelay, stateEnd=$stateEnd, state=$state)"
+    }
+
+
 }

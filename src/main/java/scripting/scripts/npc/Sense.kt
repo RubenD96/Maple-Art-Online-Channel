@@ -6,6 +6,7 @@ import field.obj.FieldObject
 import field.obj.drop.AbstractFieldDrop
 import field.obj.life.FieldMob
 import field.obj.life.FieldNPC
+import field.obj.reactor.FieldReactor
 import managers.NPCManager
 import net.maple.handlers.user.UserSelectNpcHandler
 import scripting.dialog.DialogContext
@@ -27,6 +28,7 @@ class Sense : NPCScript() {
     private val DialogContext.mobs get() = field.getObjects<FieldMob>().toList()
     private val DialogContext.npcs get() = field.getObjects<FieldNPC>().toList()
     private val DialogContext.drops get() = field.getObjects<AbstractFieldDrop>().toList()
+    private val DialogContext.reactors get() = field.getObjects<FieldReactor>().toList()
     private val DialogContext.portals get() = field.portals.values
 
     override fun execute(c: Client) {
@@ -46,6 +48,7 @@ class Sense : NPCScript() {
         if (mobs.isNotEmpty()) selections["Monsters".blue()] = { listMobs() }
         if (npcs.isNotEmpty()) selections["NPCs".blue()] = { listNpcs() }
         if (drops.isNotEmpty()) selections["Dropped items".blue()] = { listDrops() }
+        if (reactors.isNotEmpty()) selections["Reactors".blue()] = { listReactors() }
         if (portals.isNotEmpty()) selections["Portals".blue()] = { listPortals() }
 
         sendSimple(
@@ -114,6 +117,17 @@ class Sense : NPCScript() {
         }
 
         sendList("There are a total of ${drops.size.blue().bold()} drops on this map.", selections, indexes)
+    }
+
+    private fun DialogContext.listReactors() {
+        val selections = LinkedHashMap<String, ((Int) -> Unit)>()
+        val indexes = ArrayList<Int>()
+        reactors.forEach { reactor ->
+            selections["${reactor.name} - ${reactor.template.id}"] = { showGenericInfo<FieldReactor>(it) }
+            indexes.add(reactor.id)
+        }
+
+        sendList("There are a total of ${reactors.size.blue().bold()} reactors on this map.", selections, indexes)
     }
 
     private fun DialogContext.listPortals() {
