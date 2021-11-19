@@ -13,7 +13,7 @@ import scripting.dialog.quest.QuestScript
 import java.awt.Dialog
 
 @Quest([1007])
-class GrandmaYeonsLastWish : QuestScript() {
+class GrandmaYeonsLastWish1007 : QuestScript() {
     override fun execute(c: Client) {
         execute(c, 2071007) {
             with(it){
@@ -39,7 +39,7 @@ class GrandmaYeonsLastWish : QuestScript() {
 
     private fun DialogContext.grandmaYeonRequest() {
         sendMessage(
-            "It would mean the world to me if you could retrieve my ring from the Zombie Mushmom within the cave!" +
+            "It would mean the world to me if you could retrieve my ring from the ${"Zombie Mushmom".red()} within the cave!" +
                     "\r\nCan you please help?",
             accept = {onAccept()},
             decline = {onDecline()}

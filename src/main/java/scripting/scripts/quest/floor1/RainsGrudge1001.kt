@@ -11,7 +11,7 @@ import scripting.dialog.quest.QuestScript
 
 
 @Quest([1001])
-class RainsGrudge : QuestScript() {
+class RainsGrudge1001 : QuestScript() {
 
     override fun execute(c: Client) {
         execute(c, 12101) {
