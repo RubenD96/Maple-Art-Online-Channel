@@ -7,15 +7,19 @@ import net.database.DatabaseCore.connection
 object TownsAPI {
 
     fun load(chr: Character) {
-        connection.select(UNLOCKEDTOWNS.TOWN).from(UNLOCKEDTOWNS)
-                .where(UNLOCKEDTOWNS.CID.eq(chr.id))
+        with(UNLOCKEDTOWNS) {
+            connection.select(TOWN).from(this)
+                .where(CID.eq(chr.id))
                 .fetch()
-                .forEach { chr.towns.add(it.getValue(UNLOCKEDTOWNS.TOWN)) }
+                .forEach { chr.towns.add(it.getValue(TOWN)) }
+        }
     }
 
     fun add(chr: Character, town: Int) {
-        connection.insertInto(UNLOCKEDTOWNS, UNLOCKEDTOWNS.CID, UNLOCKEDTOWNS.TOWN)
+        with(UNLOCKEDTOWNS) {
+            connection.insertInto(this, CID, TOWN)
                 .values(chr.id, town)
                 .execute()
+        }
     }
 }

@@ -18,16 +18,17 @@ class UserQuestRequestHandler : PacketHandler {
         val ptUserPosX = reader.readShort()
         val ptUserPosY = reader.readShort()
 
-        if (action.toInt() == QuestRequest.OPENING_SCRIPT.value) {
-            openQuest(c, questId.toInt(), npcId)
-        } else if (action.toInt() == QuestRequest.COMPLETE_SCRIPT.value) {
-            openQuest(c, questId.toInt(), npcId, false)
-        } else if (action.toInt() == QuestRequest.RESIGN_QUEST.value) {
-            c.character.forfeitQuest(questId.toInt())
-        } else {
-            println("Unknown/unhandled quest action ($action)")
-            if (!c.isAdmin) {
-                c.close(this, "Triggered unused quest action qid: $questId - action: $action")
+        when(action.toInt()) {
+            QuestRequest.ACCEPT_QUEST.value,
+            QuestRequest.OPENING_SCRIPT.value -> openQuest(c, questId.toInt(), npcId)
+            QuestRequest.COMPLETE_QUEST.value,
+            QuestRequest.COMPLETE_SCRIPT.value -> openQuest(c, questId.toInt(), npcId, false)
+            QuestRequest.RESIGN_QUEST.value -> c.character.forfeitQuest(questId.toInt())
+            else -> {
+                println("Unknown/unhandled quest action ($action)")
+                if (!c.isAdmin) {
+                    c.close(this, "Triggered unused quest action qid: $questId - action: $action")
+                }
             }
         }
     }

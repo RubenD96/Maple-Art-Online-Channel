@@ -8,42 +8,54 @@ import org.jooq.Record
 
 object AccountAPI {
     fun getAccountInfo(aid: Int): Record {
-        return connection.select().from(ACCOUNTS)
-                .where(ACCOUNTS.ID.eq(aid))
+        with(ACCOUNTS) {
+            return connection.select().from(this)
+                .where(ID.eq(aid))
                 .fetchOne()
+        }
     }
 
     fun getAccountInfoTemporary(cid: Int): Record {
-        return getAccountInfo(connection.select().from(CHARACTERS)
-                .where(CHARACTERS.ID.eq(cid))
-                .fetchOne().getValue(CHARACTERS.ACCOUNTID))
+        with(CHARACTERS) {
+            return getAccountInfo(
+                connection.select().from(this)
+                    .where(ID.eq(cid))
+                    .fetchOne().getValue(ACCOUNTID)
+            )
+        }
     }
 
     fun getHighestLevelOnAccount(aid: Int): Int {
-        val res = connection.select().from(CHARACTERS)
-                .where(CHARACTERS.ACCOUNTID.eq(aid))
+        with(CHARACTERS) {
+            val res = connection.select().from(this)
+                .where(ACCOUNTID.eq(aid))
                 .fetch()
-        var highest = 1 // lmao
+            var highest = 1 // lmao
 
-        for (rec in res) {
-            val level = rec.getValue(CHARACTERS.LEVEL)
+            for (rec in res) {
+                val level = rec.getValue(LEVEL)
 
-            if (highest < level) {
-                highest = level
+                if (highest < level) {
+                    highest = level
+                }
             }
+            return highest
         }
-        return highest
     }
 
     fun getCharacterCount(aid: Int): Int {
-        return connection.fetchCount(
-                connection.select().from(CHARACTERS).where(CHARACTERS.ACCOUNTID.eq(aid))
-        )
+        with(CHARACTERS) {
+            return connection.fetchCount(
+                connection.select().from(this).where(ACCOUNTID.eq(aid))
+            )
+        }
     }
 
     fun loadNXCash(client: Client) {
-        client.cash = connection.select(ACCOUNTS.CASH).from(ACCOUNTS)
-                .where(ACCOUNTS.ID.eq(client.accId))
-                .fetchOne().getValue(ACCOUNTS.CASH)
+        with(ACCOUNTS) {
+            client.cash = connection.select(CASH).from(this)
+                .where(ID.eq(client.accId))
+                .fetchOne().getValue(CASH)
+        }
     }
 }
