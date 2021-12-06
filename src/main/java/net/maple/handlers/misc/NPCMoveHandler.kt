@@ -16,7 +16,8 @@ class NPCMoveHandler : PacketHandler {
 
         val field = chr.field
 
-        val npc = field.getControlledObject(chr, npcObjectId) as? FieldNPC ?: return
+        //val npc = field.getControlledObject(chr, npcObjectId) as? FieldNPC ?: return
+        val npc = field.getObject<FieldNPC>(npcObjectId) ?: return
         field.broadcast(moveNPC(npc, reader))
     }
 

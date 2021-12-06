@@ -18,13 +18,8 @@ class MobMoveHandler : PacketHandler {
         val oid = reader.readInteger()
         val field = c.character.field
 
-        val obj = field.getControlledObject(c.character, oid) ?: return
-        if (obj is FieldNPC) {
-            log(LogType.MISC_NO_CONSOLE, "Packet sent from FieldNPC object: $oid", this, c)
-            return
-        }
+        val mob = field.getObject<FieldMob>(oid) ?: return
 
-        val mob = obj as FieldMob
         val mobCtrlSN = reader.readShort() // moveid
         val v7 = reader.readByte()
         val oldSplit = v7.toInt() and 0xF0 != 0
