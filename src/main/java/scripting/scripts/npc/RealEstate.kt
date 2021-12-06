@@ -75,7 +75,7 @@ class RealEstate : NPCScript() {
                 "A guildhouse is a special kind of real estate; " +
                 "every single member of the guild has access to it once it has been purchased.\r\n\r\n" +
                 "Every house comes at a price, the ${"higher".red()} up the house, " +
-                "the ${"higher".red()} the ${"price".blue()}!\r\n",
+                "the ${"higher".red()} the ${"price".blue()}!",
             ok = { mainMenu() }
         )
     }

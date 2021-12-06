@@ -26,9 +26,11 @@ object ShopAPI {
      * @return A List of all shopitems for the shop, to be read out in NPCShop.java
      */
     fun getShopsItems(shop: Int): Result<Record> {
-        return connection.select().from(SHOPITEMS)
-                .where(SHOPITEMS.SHOPID.eq(shop))
-                .orderBy(SHOPITEMS.POSITION)
+        with(SHOPITEMS) {
+            return connection.select().from(this)
+                .where(SHOPID.eq(shop))
+                .orderBy(POSITION)
                 .fetch()
+        }
     }
 }

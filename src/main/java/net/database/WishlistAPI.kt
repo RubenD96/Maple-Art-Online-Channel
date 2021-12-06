@@ -36,25 +36,31 @@ object WishlistAPI {
     }
 
     private fun getWishList(cid: Int): MutableList<Int> {
-        val res = connection.select().from(WISHLIST)
-                .where(WISHLIST.CID.eq(cid))
+        with(WISHLIST) {
+            val res = connection.select().from(this)
+                .where(CID.eq(cid))
                 .fetch()
 
-        val wishlist: MutableList<Int> = ArrayList()
-        res.forEach { wishlist.add(it.getValue(WISHLIST.SN)) }
-        return wishlist
+            val wishlist: MutableList<Int> = ArrayList()
+            res.forEach { wishlist.add(it.getValue(SN)) }
+            return wishlist
+        }
     }
 
     private fun add(cid: Int, sn: Int) {
-        connection.insertInto(WISHLIST, WISHLIST.CID, WISHLIST.SN)
+        with(WISHLIST) {
+            connection.insertInto(this, CID, SN)
                 .values(cid, sn)
                 .execute()
+        }
     }
 
     private fun remove(cid: Int, sn: Int) {
-        connection.deleteFrom(WISHLIST)
-                .where(WISHLIST.CID.eq(cid))
-                .and(WISHLIST.SN.eq(sn))
+        with(WISHLIST) {
+            connection.deleteFrom(this)
+                .where(CID.eq(cid))
+                .and(SN.eq(sn))
                 .execute()
+        }
     }
 }

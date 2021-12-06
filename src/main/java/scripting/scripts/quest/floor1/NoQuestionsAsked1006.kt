@@ -13,7 +13,7 @@ import scripting.dialog.quest.QuestScript
 
 
 @Quest([1006])
-class NoQuestionsAsked: QuestScript() {
+class NoQuestionsAsked1006: QuestScript() {
     override fun execute(c: Client) {
         execute(c, 2071002) {
             with(it){

@@ -22,14 +22,16 @@ object GuildAPI {
      * @return Guild id
      */
     fun create(name: String, leader: Character): Int {
-        val id = connection.insertInto(GUILDS, GUILDS.NAME, GUILDS.LEADER)
-            .values(name, leader.id)
-            .returningResult(GUILDS.ID)
-            .fetchOne().value1()
+        with(GUILDS) {
+            val id = connection.insertInto(this, NAME, LEADER)
+                .values(name, leader.id)
+                .returningResult(ID)
+                .fetchOne().value1()
 
-        addMember(Guild(id), leader, true)
-        guildNames.add(name)
-        return id
+            addMember(Guild(id), leader, true)
+            guildNames.add(name)
+            return id
+        }
     }
 
     /**
@@ -40,9 +42,11 @@ object GuildAPI {
      * @param leader Whether this member is the leader (true for guild creation)
      */
     fun addMember(guild: Guild, member: Character, leader: Boolean) {
-        connection.insertInto(GUILDMEMBERS, GUILDMEMBERS.GID, GUILDMEMBERS.CID, GUILDMEMBERS.GUILDGRADE)
-            .values(guild.id, member.id, (if (leader) 1 else 5).toByte())
-            .execute()
+        with(GUILDMEMBERS) {
+            connection.insertInto(this, GID, CID, GUILDGRADE)
+                .values(guild.id, member.id, (if (leader) 1 else 5).toByte())
+                .execute()
+        }
     }
 
     /**
@@ -52,10 +56,12 @@ object GuildAPI {
      * @param cid   Character id
      */
     fun expel(guild: Guild, cid: Int) {
-        connection.deleteFrom(GUILDMEMBERS)
-            .where(GUILDMEMBERS.GID.eq(guild.id))
-            .and(GUILDMEMBERS.CID.eq(cid))
-            .execute()
+        with(GUILDMEMBERS) {
+            connection.deleteFrom(this)
+                .where(GID.eq(guild.id))
+                .and(CID.eq(cid))
+                .execute()
+        }
     }
 
     /**
@@ -68,51 +74,53 @@ object GuildAPI {
     fun load(id: Int, alliance: Alliance? = null): Guild? {
         if (Server.guilds.containsKey(id)) return Server.guilds[id]
 
-        val rec = connection.select().from(GUILDS).where(GUILDS.ID.eq(id)).fetchOne() ?: return null
+        with(GUILDS) {
+            val rec = connection.select().from(this).where(ID.eq(id)).fetchOne() ?: return null
 
-        val guild = Guild(id)
-        guild.name = rec.getValue(GUILDS.NAME)
-        guild.notice = rec.getValue(GUILDS.NOTICE)
-        guild.maxSize = rec.getValue(GUILDS.SIZE)
-        guild.ranks[0] = rec.getValue(GUILDS.RANK1)
-        guild.ranks[1] = rec.getValue(GUILDS.RANK2)
-        guild.ranks[2] = rec.getValue(GUILDS.RANK3)
-        guild.ranks[3] = rec.getValue(GUILDS.RANK4)
-        guild.ranks[4] = rec.getValue(GUILDS.RANK5)
-        guild.leader = rec.getValue(GUILDS.LEADER)
+            val guild = Guild(id)
+            guild.name = rec.getValue(NAME)
+            guild.notice = rec.getValue(NOTICE)
+            guild.maxSize = rec.getValue(SIZE)
+            guild.ranks[0] = rec.getValue(RANK1)
+            guild.ranks[1] = rec.getValue(RANK2)
+            guild.ranks[2] = rec.getValue(RANK3)
+            guild.ranks[3] = rec.getValue(RANK4)
+            guild.ranks[4] = rec.getValue(RANK5)
+            guild.leader = rec.getValue(LEADER)
 
-        val allianceId = rec.getValue(GUILDS.ALLIANCEID)
-        alliance?.let {
-            guild.alliance = it
-        } ?: run {
-            allianceId?.let {
-                with(connection.select().from(ALLIANCES).where(ALLIANCES.ID.eq(allianceId)).fetchOne()) {
-                    if (this != null) {
-                        val newAlliance = Alliance(allianceId, getValue(ALLIANCES.NAME))
-                        newAlliance.notice = getValue(ALLIANCES.NOTICE)
-                        newAlliance.maxMemberNum = getValue(ALLIANCES.MAXMEMBERNUM)
-                        guild.alliance = newAlliance
+            val allianceId = rec.getValue(ALLIANCEID)
+            alliance?.let {
+                guild.alliance = it
+            } ?: run {
+                allianceId?.let {
+                    with(connection.select().from(ALLIANCES).where(ALLIANCES.ID.eq(allianceId)).fetchOne()) {
+                        if (this != null) {
+                            val newAlliance = Alliance(allianceId, getValue(ALLIANCES.NAME))
+                            newAlliance.notice = getValue(ALLIANCES.NOTICE)
+                            newAlliance.maxMemberNum = getValue(ALLIANCES.MAXMEMBERNUM)
+                            guild.alliance = newAlliance
 
-                        connection.select().from(GUILDS).where(GUILDS.ALLIANCEID.eq(allianceId))
-                            .and(GUILDS.ID.notEqual(id)).fetch().forEach {
-                            load(it.getValue(GUILDS.ID), newAlliance)
+                            connection.select().from(GUILDS).where(GUILDS.ALLIANCEID.eq(allianceId))
+                                .and(GUILDS.ID.notEqual(id)).fetch().forEach {
+                                    load(it.getValue(GUILDS.ID), newAlliance)
+                                }
                         }
                     }
                 }
             }
-        }
 
-        val res = connection.select().from(GUILDMEMBERS).where(GUILDMEMBERS.GID.eq(id)).fetch()
-        res.forEach {
-            guild.members[it.getValue(GUILDMEMBERS.CID)] = GuildMember(it)
-        }
+            val res = connection.select().from(GUILDMEMBERS).where(GUILDMEMBERS.GID.eq(id)).fetch()
+            res.forEach {
+                guild.members[it.getValue(GUILDMEMBERS.CID)] = GuildMember(it)
+            }
 
-        connection.select().from(GUILDMARK).where(GUILDMARK.GID.eq(id)).fetchOne()?.let {
-            guild.mark = GuildMark(it)
-        }
+            connection.select().from(GUILDMARK).where(GUILDMARK.GID.eq(id)).fetchOne()?.let {
+                guild.mark = GuildMark(it)
+            }
 
-        Server.guilds[id] = guild
-        return guild
+            Server.guilds[id] = guild
+            return guild
+        }
     }
 
     /**
@@ -122,9 +130,11 @@ object GuildAPI {
      * @param guild The guild to remove
      */
     fun disband(guild: Guild) {
-        connection.deleteFrom(GUILDS)
-            .where(GUILDS.ID.eq(guild.id))
-            .execute()
+        with(GUILDS) {
+            connection.deleteFrom(this)
+                .where(ID.eq(guild.id))
+                .execute()
+        }
     }
 
     fun updateMark(guild: Guild) {
@@ -186,10 +196,12 @@ object GuildAPI {
     }
 
     fun updateMemberGrade(cid: Int, grade: Byte) {
-        connection.update(GUILDMEMBERS)
-            .set(GUILDMEMBERS.GUILDGRADE, grade)
-            .where(GUILDMEMBERS.CID.eq(cid))
-            .execute()
+        with(GUILDMEMBERS) {
+            connection.update(this)
+                .set(GUILDGRADE, grade)
+                .where(CID.eq(cid))
+                .execute()
+        }
     }
 
     /**
@@ -197,10 +209,12 @@ object GuildAPI {
      * @return Guild id, -1 if no guild was found
      */
     fun getGuildId(chr: Character): Int {
-        val rec = connection.select(GUILDMEMBERS.GID).from(GUILDMEMBERS)
-            .where(GUILDMEMBERS.CID.eq(chr.id))
-            .fetchOne()
-        return if (rec == null) -1 else rec.value1()
+        with(GUILDMEMBERS) {
+            val rec = connection.select(GID).from(this)
+                .where(CID.eq(chr.id))
+                .fetchOne()
+            return if (rec == null) -1 else rec.value1()
+        }
     }
 
     /**
@@ -211,45 +225,47 @@ object GuildAPI {
      * @param bbs The bbs to ref
      */
     fun loadFullBBS(gid: Int, bbs: GuildBBS) {
-        val itemRes = connection.select().from(BBSITEMS)
-            .where(BBSITEMS.GUILDID.eq(gid))
-            .fetch()
-
-        val items = ArrayList<BBSItem>()
-        var high = -1
-        itemRes.forEach {
-            val itemId = it.getValue(BBSITEMS.ITEMID)
-            val cid = it.getValue(BBSITEMS.CID)
-            val title = it.getValue(BBSITEMS.TITLE)
-            val content = it.getValue(BBSITEMS.CONTENT)
-            val date = it.getValue(BBSITEMS.DATE)
-            val emote = it.getValue(BBSITEMS.EMOTE)
-
-            val commentRes = connection.select().from(BBSCOMMENTS)
-                .where(BBSCOMMENTS.GUILDID.eq(gid))
-                .and(BBSCOMMENTS.ITEMID.eq(itemId))
+        with(BBSITEMS) {
+            val itemRes = connection.select().from(this)
+                .where(GUILDID.eq(gid))
                 .fetch()
 
-            val comments = ArrayList<BBSComment>()
-            var commentHigh = -1
-            commentRes.forEach { rec ->
-                val commentId = rec.getValue(BBSCOMMENTS.COMMENTID)
-                val commentCid = rec.getValue(BBSCOMMENTS.CID)
-                val commentDate = rec.getValue(BBSCOMMENTS.DATE)
-                val commentContent = rec.getValue(BBSCOMMENTS.CONTENT)
+            val items = ArrayList<BBSItem>()
+            var high = -1
+            itemRes.forEach {
+                val itemId = it.getValue(ITEMID)
+                val cid = it.getValue(CID)
+                val title = it.getValue(TITLE)
+                val content = it.getValue(CONTENT)
+                val date = it.getValue(DATE)
+                val emote = it.getValue(EMOTE)
 
-                comments.add(BBSComment(commentId, commentCid, commentDate, commentContent))
-                if (commentId > commentHigh) commentHigh = commentId
+                val commentRes = connection.select().from(BBSCOMMENTS)
+                    .where(BBSCOMMENTS.GUILDID.eq(gid))
+                    .and(BBSCOMMENTS.ITEMID.eq(itemId))
+                    .fetch()
+
+                val comments = ArrayList<BBSComment>()
+                var commentHigh = -1
+                commentRes.forEach { rec ->
+                    val commentId = rec.getValue(BBSCOMMENTS.COMMENTID)
+                    val commentCid = rec.getValue(BBSCOMMENTS.CID)
+                    val commentDate = rec.getValue(BBSCOMMENTS.DATE)
+                    val commentContent = rec.getValue(BBSCOMMENTS.CONTENT)
+
+                    comments.add(BBSComment(commentId, commentCid, commentDate, commentContent))
+                    if (commentId > commentHigh) commentHigh = commentId
+                }
+
+                val item = BBSItem(itemId, cid, title, content, date, emote, comments)
+                items.add(item)
+                item.high = commentHigh
+
+                if (itemId > high) high = itemId
             }
-
-            val item = BBSItem(itemId, cid, title, content, date, emote, comments)
-            items.add(item)
-            item.high = commentHigh
-
-            if (itemId > high) high = itemId
+            bbs.setItems(items)
+            bbs.high = high
         }
-        bbs.setItems(items)
-        bbs.high = high
     }
 
     /**

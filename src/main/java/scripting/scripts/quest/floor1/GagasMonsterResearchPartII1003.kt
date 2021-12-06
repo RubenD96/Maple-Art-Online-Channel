@@ -12,7 +12,7 @@ import scripting.dialog.quest.Quest
 import scripting.dialog.quest.QuestScript
 
 @Quest([1003])
-class GagasMonsterResearchPart2 : QuestScript() {
+class GagasMonsterResearchPartII1003 : QuestScript() {
     override fun execute(c: Client) {
         execute(c, 9000021) {
             with(it) {

@@ -13,7 +13,7 @@ import scripting.dialog.quest.QuestScript
 import java.awt.Dialog
 
 @Quest([1009])
-class CurseOfTheMasks2:QuestScript() {
+class CurseOfTheMasksII1009:QuestScript() {
     override fun execute(c: Client) {
         execute(c, 2112009) {
             it.sendMessage(

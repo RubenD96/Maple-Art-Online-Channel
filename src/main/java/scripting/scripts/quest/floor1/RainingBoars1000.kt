@@ -12,7 +12,7 @@ import scripting.dialog.quest.Quest
 import scripting.dialog.quest.QuestScript
 
 @Quest([1000])
-class RainingBoars : QuestScript() {
+class RainingBoars1000 : QuestScript() {
 
     override fun execute(c: Client) {
         execute(c, 12101) {
