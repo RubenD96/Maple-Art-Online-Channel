@@ -30,7 +30,7 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.reflect.KClass
 
-class Field(val template: FieldTemplate) {
+open class Field(val template: FieldTemplate) {
 
     var replay: Replay? = null
     val portals: Map<Byte, FieldPortal> = HashMap(template.portals).also {

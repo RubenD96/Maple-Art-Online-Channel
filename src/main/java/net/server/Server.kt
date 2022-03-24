@@ -4,6 +4,7 @@ import cashshop.misc.CsStock
 import cashshop.misc.NotSale
 import client.Character
 import client.command.CommandHandler
+import client.command.CommandHandler.loadCommands
 import client.party.Party
 import constants.ServerConstants
 import constants.ServerConstants.RANKING_TIMER
@@ -11,6 +12,9 @@ import field.House
 import kotlinx.coroutines.*
 import managers.*
 import net.database.*
+import net.database.BeautyAPI.loadHairs
+import net.database.GuildAPI.loadAllGuildNames
+import net.database.HouseAPI.loadPlayerHouseIds
 import scripting.dialog.npc.NPCScriptManager
 import scripting.dialog.npc.Npc
 import scripting.dialog.quest.Quest
@@ -51,8 +55,8 @@ object Server {
         CharacterAPI.resetParties()
         shops = ShopAPI.shops
 
-        for (i in 0 until ServerConstants.CHANNELS) {
-            val channel = ChannelServer(i, 7575 + i, /*ServerConstants.IP*/ "63.251.217.1")
+        repeat(ServerConstants.CHANNELS) {
+            val channel = ChannelServer(it, 7575 + it, /*ServerConstants.IP*/ "63.251.217.1")
             channel.start()
             channels.add(channel)
         }
@@ -63,11 +67,11 @@ object Server {
                 async { Logger.dumpBulk() }
             }
         }
-        BeautyAPI.loadHairs()
-        CommandHandler.loadCommands()
+        loadHairs()
+        loadCommands()
         loadAllScripts()
-        GuildAPI.loadAllGuildNames()
-        HouseAPI.loadPlayerHouseIds()
+        loadAllGuildNames()
+        loadPlayerHouseIds()
         //benchmark()
     }
 

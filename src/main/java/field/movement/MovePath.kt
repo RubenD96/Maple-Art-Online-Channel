@@ -22,7 +22,7 @@ class MovePath(packet: PacketReader) : MoveFragment {
         vposition = packet.readPoint()
 
         val size = packet.readByte()
-        for (i in 0 until size) {
+        repeat(size.toInt()) {
             when (val movePathAttribute = packet.readByte()) {
                 MovePathAttribute.NORMAL,
                 MovePathAttribute.HANG_ON_BACK,
