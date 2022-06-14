@@ -18,7 +18,8 @@ class NoQuestionsAsked1006: QuestScript() {
         execute(c, 2071002) {
             with(it){
                 sendMessage(
-                    "Hello, I need some items but I don't need your help if you're gonna ask me any questions, deal?",
+                    "Hey there #b#h ##k, can you help me make a necklace for my mother?" +
+                "\r\nHer birthday is coming soon and I want my present to be special!",
                     yes = {it.onYes()},
                     no = {it.onNo()}
                 )
