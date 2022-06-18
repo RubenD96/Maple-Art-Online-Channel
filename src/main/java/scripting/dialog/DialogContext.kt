@@ -41,32 +41,35 @@ class DialogContext(
         yes: (() -> Unit)? = null,
         no: (() -> Unit)? = null,
         end: (() -> Unit)? = null,
-        speaker: Int = 0 // use SpeakerType object flags!
+        speaker: Int = 0, // use SpeakerType object flags!
+        replaceNpc: Int? = null
+
     ) {
         var positive: (() -> Unit)? = null
         var neutral: (() -> Unit)? = null
         var negative: (() -> Unit)? = null
+        var npcIdToSend = replaceNpc ?: npcId
 
         ok?.let {
-            c.write(ConversationPackets.getOkMessagePacket(npcId, speaker, text))
+            c.write(ConversationPackets.getOkMessagePacket(npcIdToSend, speaker, text))
             positive = ok
         } ?: next?.let {
             prev?.let {
-                c.write(ConversationPackets.getNextPrevMessagePacket(npcId, speaker, text))
+                c.write(ConversationPackets.getNextPrevMessagePacket(npcIdToSend, speaker, text))
                 neutral = prev
             } ?: run {
-                c.write(ConversationPackets.getNextMessagePacket(npcId, speaker, text))
+                c.write(ConversationPackets.getNextMessagePacket(npcIdToSend, speaker, text))
             }
             positive = next
         } ?: prev?.let {
-            c.write(ConversationPackets.getPrevMessagePacket(npcId, speaker, text))
+            c.write(ConversationPackets.getPrevMessagePacket(npcIdToSend, speaker, text))
             neutral = prev
         } ?: accept?.let {
-            c.write(ConversationPackets.getAcceptMessagePacket(npcId, speaker, text))
+            c.write(ConversationPackets.getAcceptMessagePacket(npcIdToSend, speaker, text))
             positive = accept
             neutral = decline
         } ?: yes?.let {
-            c.write(ConversationPackets.getYesNoMessagePacket(npcId, speaker, text))
+            c.write(ConversationPackets.getYesNoMessagePacket(npcIdToSend, speaker, text))
             positive = yes
             neutral = no
         }
@@ -92,6 +95,7 @@ class DialogContext(
         selections: LinkedHashMap<String, ((Int) -> Unit)>,
         end: (() -> Unit)? = null,
         speaker: Int = 0,
+        replaceNpc: Int? = null,
         indexes: List<Int>? = null
     ) {
         positive = null
@@ -117,7 +121,7 @@ class DialogContext(
 
         npcText.append("\r\n\r\n$appendText")
 
-        c.write(ConversationPackets.getSimpleMessagePacket(npcId, speaker, npcText.toString()))
+        c.write(ConversationPackets.getSimpleMessagePacket(replaceNpc ?: npcId, speaker, npcText.toString()))
     }
 
     fun sendGetNumber(
@@ -127,7 +131,8 @@ class DialogContext(
         max: Int,
         positive: ((Int) -> Unit),
         end: (() -> Unit)? = null,
-        speaker: Int = 0
+        speaker: Int = 0,
+        replaceNpc: Int? = null,
     ) {
         this.positive = null
         negative = null
@@ -139,7 +144,7 @@ class DialogContext(
         this.min = min
         this.max = max
 
-        c.write(ConversationPackets.getNumberMessagePacket(npcId, speaker, text, def, min, max))
+        c.write(ConversationPackets.getNumberMessagePacket(replaceNpc ?: npcId, speaker, text, def, min, max))
     }
 
     fun sendGetText(
@@ -149,7 +154,8 @@ class DialogContext(
         def: String = "",
         positive: ((String) -> Unit),
         end: (() -> Unit)? = null,
-        speaker: Int = 0
+        speaker: Int = 0,
+        replaceNpc: Int? = null,
     ) {
         this.positive = null
         negative = null
@@ -161,7 +167,7 @@ class DialogContext(
         this.min = min
         this.max = max
 
-        c.write(ConversationPackets.getTextMessagePacket(npcId, speaker, text, def, min, max))
+        c.write(ConversationPackets.getTextMessagePacket(replaceNpc ?: npcId, speaker, text, def, min, max))
     }
 
     fun endMessage(text: String, speaker: Int = 0) {

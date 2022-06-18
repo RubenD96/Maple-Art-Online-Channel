@@ -28,13 +28,6 @@ class EliminatingPuppies11001 : QuestScript() {
         }
     }
 
-    private fun DialogContext.onDecline() {
-        sendMessage(
-            "That's a shame... I was going to give you something nice...",
-            ok = { onEnd() }
-        )
-    }
-
     private fun DialogContext.firstDialogue() {
 
         sendSimple(
@@ -44,6 +37,13 @@ class EliminatingPuppies11001 : QuestScript() {
                 "KILLING PUPPIES ARE YOU INSANE? NO!".blue() to {onDecline()},
                 "Sure, I'm a heartless bastard.".blue() to {onAccept()}
             )
+        )
+    }
+
+    private fun DialogContext.onDecline() {
+        sendMessage(
+            "That's a shame... I was going to give you something nice...",
+            ok = { onEnd() }
         )
     }
 

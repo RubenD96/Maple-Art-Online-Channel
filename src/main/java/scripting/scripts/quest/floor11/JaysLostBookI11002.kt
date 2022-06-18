@@ -24,13 +24,6 @@ class JaysLostBookI11002: QuestScript() {
     }
 
 
-    private fun DialogContext.onDecline() {
-        sendMessage(
-            "This is important, please come back!",
-            ok = { onEnd() }
-        )
-    }
-
     private fun DialogContext.firstDialogue() {
         sendMessage(
             "Wait my book, #ewhere's my book?!",
@@ -52,6 +45,13 @@ class JaysLostBookI11002: QuestScript() {
                 "\r\nCan you please help me retrieve it?",
             accept = { onAccept()},
             decline = {onDecline()}
+        )
+    }
+
+    private fun DialogContext.onDecline() {
+        sendMessage(
+            "This is important, please come back!",
+            ok = { onEnd() }
         )
     }
 
