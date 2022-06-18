@@ -52,7 +52,8 @@ class EliminatingPuppies11001 : QuestScript() {
         sendMessage(
             "That's great!" +
                     "\r\nThen go ahead and ${"slaughter".bold().blue()} 50 Brown Puppies and obtain 25 ${4000078.itemName()}\" +\n" +
-                    "\r\nIt should look like this: ${4000078.itemImage()}"
+                    "\r\nIt should look like this: ${4000078.itemImage()}",
+            ok = { onEnd() }
         )
     }
 
@@ -72,7 +73,7 @@ class EliminatingPuppies11001 : QuestScript() {
             listOf(
                 ExpQuestReward(44500)
             ),
-            take = mapOf(4000078 to -25)
+            take = mapOf(4000078 to 25)
         )
         sendMessage("Mom is going to be so happy!",
         ok = { onEnd() })
