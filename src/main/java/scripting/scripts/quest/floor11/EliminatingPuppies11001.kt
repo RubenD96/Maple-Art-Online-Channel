@@ -51,7 +51,7 @@ class EliminatingPuppies11001 : QuestScript() {
         startQuest()
         sendMessage(
             "That's great!" +
-                    "\r\nThen go ahead and ${"slaughter".bold().blue()} 50 Brown Puppies and obtain 25 ${4000078.itemName()}\" +\n" +
+                    "\r\nThen go ahead and ${"slaughter".bold().red()} 50 Brown Puppies and obtain 25 ${4000078.itemName()}" +
                     "\r\nIt should look like this: ${4000078.itemImage()}",
             ok = { onEnd() }
         )
@@ -60,7 +60,7 @@ class EliminatingPuppies11001 : QuestScript() {
     override fun finish(c: Client) {
         execute(c, 1012108) {
             with(it) {
-                sendMessage("I see you obtained the materials for the necklace, thank you so much $playerName",
+                sendMessage("I see you obtained the materials for the necklace, thank you so much $playerName!",
                 next = { endingDialogue() }
                 )
             }
@@ -68,14 +68,12 @@ class EliminatingPuppies11001 : QuestScript() {
     }
 
     private fun DialogContext.endingDialogue() {
-        finishQuest()
         postRewards(
             listOf(
                 ExpQuestReward(44500)
             ),
-            take = mapOf(4000078 to 25)
+            "Mom is going to be so happy!",
+            take = mapOf(4000078 to 25),
         )
-        sendMessage("Mom is going to be so happy!",
-        ok = { onEnd() })
     }
 }

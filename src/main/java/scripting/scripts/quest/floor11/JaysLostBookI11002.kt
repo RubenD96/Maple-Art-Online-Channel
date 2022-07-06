@@ -13,7 +13,7 @@ import scripting.dialog.quest.QuestScript
 @Quest([11002])
 class JaysLostBookI11002: QuestScript() {
     override fun execute(c: Client) {
-        execute(c, 1012108) {
+        execute(c, 1012109) {
             with(it) {
                 sendMessage(
                     "Phew, I almost got caught by those filthy monsters!",

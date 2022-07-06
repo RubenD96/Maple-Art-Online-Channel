@@ -10,7 +10,7 @@ import scripting.dialog.quest.QuestScript
 @Quest([11002])
 class JaysLostBookII11003: QuestScript() {
     override fun execute(c: Client) {
-        execute(c, 1012108) {
+        execute(c, 1012109) {
             with(it) {
                 sendMessage(
                     "First of all, thanks again for retrieving the lost pages!",
@@ -23,6 +23,7 @@ class JaysLostBookII11003: QuestScript() {
     private fun DialogContext.firstDialogue() {
         sendMessage(
         "Now, can you help me gather 15 leathers to make a new cover? I want to keep the book safe",
+            replaceNpcId = 22000,
             next = { secondDialogue() },
         )
     }
