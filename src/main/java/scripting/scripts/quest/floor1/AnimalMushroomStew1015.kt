@@ -14,12 +14,13 @@ class AnimalMushroomStew1015 : QuestScript() {
             with(it) {
                 sendMessage(
                     "Hello there, do you mind helping me prepare a good meal? I'm starving!",
-                    next = { Stew()},
+                    next = { Stew() },
                     speaker = SpeakerType.NpcReplacedByUser
                 )
             }
         }
     }
+
     private fun DialogContext.Stew() {
         sendMessage(
             "Of course young warrior, if you give me the proper ingredients I can make you a good stew!",
@@ -64,7 +65,7 @@ class AnimalMushroomStew1015 : QuestScript() {
     private fun DialogContext.EatingStew() {
         sendMessage(
             "That was delicious! I feel a lot stronger!",
-            next = { completeQuest()},
+            next = { completeQuest() },
             speaker = SpeakerType.NpcReplacedByUser
         )
     }
@@ -73,15 +74,16 @@ class AnimalMushroomStew1015 : QuestScript() {
         postRewards(
             listOf(
                 ExpQuestReward(1000),
-                    ),
-                    "Of course, that's the power of a good stew.",
-                    take = mapOf(
-                        4000009 to 10,
-                        4000001 to 10,
-                        4000252 to 5,
-                        4000253 to 10,
-                        2010009 to 1,
-                        4000017 to 3),
-                )
-            }
-        }
+            ),
+            "Of course, that's the power of a good stew.",
+            take = mapOf(
+                4000009 to 10,
+                4000001 to 10,
+                4000252 to 5,
+                4000253 to 10,
+                2010009 to 1,
+                4000017 to 3
+            ),
+        )
+    }
+}
