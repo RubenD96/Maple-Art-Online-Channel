@@ -198,6 +198,9 @@ class Character(val client: Client, override var name: String, val record: Recor
     var chasing = false
     var safeDeath = false
 
+    var highestMap: Int = 0;
+        val highestFloor: Int get() {return highestMap / 1000}
+
     /**
      * Collections
      */

@@ -76,7 +76,6 @@ class JaysLostBookI11002: QuestScript() {
     }
 
     private fun DialogContext.endingDialogue() {
-        finishQuest()
         postRewards(
             listOf(
                 ExpQuestReward(55000),
