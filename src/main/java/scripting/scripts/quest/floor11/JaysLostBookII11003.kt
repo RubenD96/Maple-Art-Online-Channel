@@ -89,16 +89,12 @@ class JaysLostBookII11003: QuestScript() {
     }
 
     private fun DialogContext.endingDialogue() {
-        c
         postRewards(
             listOf(
                 ExpQuestReward(45000)
             ),
-            take = mapOf(4000021 to 15)
-        )
-        sendMessage(
             "Thank you so much!",
-            ok = { onEnd() }
+            take = mapOf(4000021 to 15),
         )
     }
 }

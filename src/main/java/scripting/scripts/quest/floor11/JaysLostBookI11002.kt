@@ -81,12 +81,9 @@ class JaysLostBookI11002: QuestScript() {
                 ExpQuestReward(55000),
                 MesoQuestReward(75000)
             ),
-            take = mapOf(4032579 to 25)
-        )
-        sendMessage(
-        "that's wonderful..." +
+            "that's wonderful..." +
             "\r\nThank you so much $playerName!",
-            ok = { onEnd() },
+            take = mapOf(4032579 to 25),
         )
     }
 }

@@ -12,7 +12,7 @@ import scripting.dialog.quest.Quest
 import scripting.dialog.quest.QuestScript
 
 @Quest([11004])
-class JaysLostBook11004: QuestScript() {
+class JaysLostBookIII11004: QuestScript() {
     override fun execute(c: Client) {
         execute(c, 1012109) {
             with(it) {
@@ -101,12 +101,9 @@ class JaysLostBook11004: QuestScript() {
                 MesoQuestReward(75000),
                 FameQuestReward(5)
             ),
-            take = mapOf(4007012 to 1)
-        )
-        sendMessage(
-            "The book is now wrapped and safe" +
+        "The book is now wrapped and safe" +
             "\r\nThank you so much!",
-            ok = { onEnd() }
+            take = mapOf(4007012 to 1),
         )
     }
 
