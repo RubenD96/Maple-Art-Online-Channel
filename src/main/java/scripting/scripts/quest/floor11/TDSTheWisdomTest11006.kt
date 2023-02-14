@@ -15,7 +15,6 @@ class TDSTheWisdomTest11006: QuestScript() {
                 "In the wisdom test, you will have to answer 3 questions correctly." +
                     "\r\nAre you ready?",
                     yes = {onAccept()},
-                    no = { onEnd() }
                 )
             }
         }
