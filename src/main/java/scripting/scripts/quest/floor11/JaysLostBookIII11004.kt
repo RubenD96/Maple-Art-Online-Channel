@@ -79,7 +79,8 @@ class JaysLostBookIII11004: QuestScript() {
         startQuest()
         sendMessage(
             "Thank you so much!, you are so kind $playerName" +
-                "\r\nYou should be able to obtain a string from any monster in taft, good luck!"
+                "\r\nYou should be able to obtain a string from any monster in taft, good luck!",
+            ok = { onEnd() }
         )
     }
 

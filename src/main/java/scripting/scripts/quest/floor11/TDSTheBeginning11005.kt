@@ -10,7 +10,7 @@ import scripting.dialog.quest.Quest
 import scripting.dialog.quest.QuestScript
 
 @Quest([11005])
-class HelpingKino11005 : QuestScript() {
+class TDSTheBeginning11005 : QuestScript() {
     override fun execute(c: Client) {
         execute(c, 2081008) {
             //NoStart
