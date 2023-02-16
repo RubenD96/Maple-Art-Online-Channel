@@ -20,7 +20,7 @@ open class NettyClient(val ch: Channel, var sendIV: ByteArray, var recvIV: ByteA
     }
 
     fun close(cl: Any, reason: String) {
-        println("[" + cl.javaClass.name + "] " + reason + " - " + ip)
+        println("[${cl.javaClass.name}] $reason - $ip")
         close()
     }
 
