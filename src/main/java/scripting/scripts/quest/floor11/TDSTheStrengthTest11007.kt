@@ -72,6 +72,6 @@ class TDSTheStrengthTest11007: QuestScript() {
 
         TODO("reset monster spawn")
         TODO("remove npc 2081008")
-        TODO("force start quest 11008")
+        startQuest(11008)
     }
 }
