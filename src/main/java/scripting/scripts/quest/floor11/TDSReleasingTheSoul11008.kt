@@ -31,7 +31,7 @@ class TDSReleasingTheSoul11008 : QuestScript() {
                 ExpQuestReward(250000)
             ),
             "Thank you human, my soul is now free." +
-                    "\r\nFarewell...".bold().blue()
+            "\r\nFarewell...".bold().blue()
         )
     }
 }

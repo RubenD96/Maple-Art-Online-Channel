@@ -22,7 +22,7 @@ class JaysLostBookII11003: QuestScript() {
 
     private fun DialogContext.firstDialogue() {
         sendMessage(
-        "Now, can you help me gather 15 leathers to make a new cover? I want to keep the book safe",
+            "Now, can you help me gather 15 leathers to make a new cover? I want to keep the book safe",
             replaceNpcId = 22000,
             next = { secondDialogue() },
         )
@@ -38,7 +38,7 @@ class JaysLostBookII11003: QuestScript() {
 
     private fun DialogContext.thirdDialogue() {
         sendMessage(
-        "This book contains my research about an ancient city that once existed in this world, but one day it just disappeared off the land." +
+            "This book contains my research about an ancient city that once existed in this world, but one day it just disappeared off the land." +
             "\r\nI have a theory, but I'm still looking for more evidence to support it.",
             next = { fourthDialogue() }
         )
@@ -54,7 +54,7 @@ class JaysLostBookII11003: QuestScript() {
 
     private fun DialogContext.fifthDialogue() {
         sendMessage(
-        "I'll tell you only if you first help me make the cover" +
+            "I'll tell you only if you first help me make the cover" +
             "\r\ndeal?",
             speaker = SpeakerType.NpcReplacedByUser,
             accept = { onAccept() },

@@ -28,7 +28,7 @@ class TheUndeadInvasionI12006: QuestScript() {
 
     private fun DialogContext.firstNpcPanic() {
         sendMessage(
-        "THE DAY HAS COME, THE UNDEAD ARE RISING" +
+            "THE DAY HAS COME, THE UNDEAD ARE RISING" +
             "\r\nWE HAVE TO RUN!",
             next = { firstPlayerCalmReply() }
         )
@@ -44,7 +44,7 @@ class TheUndeadInvasionI12006: QuestScript() {
 
     private fun DialogContext.secondNpcPanic() {
         sendMessage(
-        "I was exploring around the caves over here and found this cave, but it looked different..." +
+            "I was exploring around the caves over here and found this cave, but it looked different..." +
             "\r\nAND THEY ARE EVERYWHERE, ONLY BONES AND NO FLESH AND AND #e*heavy breathing*",
             next = { secondPlayerCalmReply() }
         )
@@ -71,7 +71,7 @@ class TheUndeadInvasionI12006: QuestScript() {
     private fun DialogContext.onAccept() {
         startQuest()
         sendMessage(
-        "Thank you thank you THANK YOU" +
+            "Thank you thank you THANK YOU" +
             "\r\nI'll think of a plan while you stall for time!"
         )
     }

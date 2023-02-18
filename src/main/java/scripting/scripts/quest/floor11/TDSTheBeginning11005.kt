@@ -22,8 +22,8 @@ class TDSTheBeginning11005 : QuestScript() {
             with(it) {
                 sendSimple(
                     "Hey $playerName." +
-                        "\r\nYes, your name is already known to us." +
-                        "\r\nWe were expecting your arrival.",
+                    "\r\nYes, your name is already known to us." +
+                    "\r\nWe were expecting your arrival.",
                     selections = linkedMapOf(
                         "\r\nWhat? We? Who are you?".bold() to {firstDialogue()},
                     ),
@@ -54,7 +54,7 @@ class TDSTheBeginning11005 : QuestScript() {
 
     private fun DialogContext.finalYesNoDialogue() {
         sendMessage(
-        "Only the strong can see us, so that makes you special... and perhaps strong enough to defeat our sibling." +
+            "Only the strong can see us, so that makes you special... and perhaps strong enough to defeat our sibling." +
             "\r\nWould you help release the curse and free our souls?",
             yes = {onYes()}
         )
@@ -65,7 +65,7 @@ class TDSTheBeginning11005 : QuestScript() {
             listOf(
                 ExpQuestReward(60000)
             ),
-        "Very well." +
+            "Very well." +
             "\r\n\r\nFor us to know you are capable, there are two tests." +
             "\r\nThe first will test your wisdom." +
             "\r\nThe second will test your strength." +

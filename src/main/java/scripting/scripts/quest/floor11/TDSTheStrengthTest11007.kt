@@ -44,7 +44,7 @@ class TDSTheStrengthTest11007: QuestScript() {
 
     private fun DialogContext.firstDialogue() {
         sendMessage(
-        "We are going to release the seal and thus unlock the cave" +
+            "We are going to release the seal and thus unlock the cave" +
             "\r\nOur brother, ${"Ashford".red()} is inside." +
             "\r\nAs you probably already figured out from the answers to the wisdom test, this is a mere reflection of what Ashford, The Fire Dragon, used to be." +
             "\r\nKilling him will release the darkness that set upon his soul and allow him to cross over to the other side with us.",
@@ -55,8 +55,8 @@ class TDSTheStrengthTest11007: QuestScript() {
     private fun DialogContext.secondDialogue() {
         sendMessage(
             "But know that we cant reseal the cave once it's released!" +
-                "\r\nAccept only if you are willing to see this through the end" +
-                "\r\nDo you accept the final challenge?",
+            "\r\nAccept only if you are willing to see this through the end" +
+            "\r\nDo you accept the final challenge?",
             accept = { finalAcceptRewardsDialogue() }
         )
     }
@@ -67,7 +67,7 @@ class TDSTheStrengthTest11007: QuestScript() {
                 ExpQuestReward(90000)
             ),
             "Very well, farewell human." +
-                "\r\nWe were so glad to meet you, good luck."
+            "\r\nWe were so glad to meet you, good luck."
         )
 
         TODO("reset monster spawn")

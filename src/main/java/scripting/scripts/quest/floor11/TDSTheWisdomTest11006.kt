@@ -12,7 +12,7 @@ class TDSTheWisdomTest11006: QuestScript() {
         execute(c, 2081008) {
             with(it) {
                 sendMessage(
-                "In the wisdom test, you will have to answer 3 questions correctly." +
+                    "In the wisdom test, you will have to answer 3 questions correctly." +
                     "\r\nAre you ready?",
                     yes = {onAccept()},
                 )
@@ -58,12 +58,12 @@ class TDSTheWisdomTest11006: QuestScript() {
     private fun DialogContext.firstQuestion() {
         sendGetText(
             "\r\nFor thousands of years," +
-                    "\r\nSeen only in tale." +
-                    "\r\nThe wind as a sail," +
-                    "\r\nFor one thunderous gale." +
-                    "\r\nShiny stores rich in lore," +
-                    "\r\nThe burning temper, like Earth's core." +
-                    "\r\n\r\n What am I?",
+            "\r\nSeen only in tale." +
+            "\r\nThe wind as a sail," +
+            "\r\nFor one thunderous gale." +
+            "\r\nShiny stores rich in lore," +
+            "\r\nThe burning temper, like Earth's core." +
+            "\r\n\r\n What am I?",
             min = 1,
             max= 1000000, //Why are those needed in text?
             positive = {guess ->
@@ -83,13 +83,13 @@ class TDSTheWisdomTest11006: QuestScript() {
 
     private fun DialogContext.secondQuestion() {
         sendGetText(
-                "It cannot be seen, cannot be felt," +
-                    "\r\nCannot be heard, cannot be smelt." +
-                    "\r\nIt lies behind stars and under hills," +
-                    "\r\nAnd empty holes it fills." +
-                    "\r\nIt comes out first and follows after," +
-                    "\r\nEnd life, kills laughter." +
-                    "\r\n\r\nWhat am I?",
+            "It cannot be seen, cannot be felt," +
+            "\r\nCannot be heard, cannot be smelt." +
+            "\r\nIt lies behind stars and under hills," +
+            "\r\nAnd empty holes it fills." +
+            "\r\nIt comes out first and follows after," +
+            "\r\nEnd life, kills laughter." +
+            "\r\n\r\nWhat am I?",
             min = 1,
             max= 1000000, //Why are those needed in text?
             positive = {guess ->
@@ -109,9 +109,9 @@ class TDSTheWisdomTest11006: QuestScript() {
     private fun DialogContext.lastQuestion() {
         sendGetText(
             "I am everyone, yet no-one." +
-                "\r\nI can be anywhere, or nowhere." +
-                "\r\nWhen the lights go out I disappear and when I face myself we multiply." +
-                "\r\n\r\nWhat am I?",
+            "\r\nI can be anywhere, or nowhere." +
+            "\r\nWhen the lights go out I disappear and when I face myself we multiply." +
+            "\r\n\r\nWhat am I?",
             min = 1,
             max= 1000000, //Why are those needed in text?
             positive = {guess ->

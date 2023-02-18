@@ -41,8 +41,8 @@ class JaysLostBookI11002: QuestScript() {
     private fun DialogContext.thirdDialogue() {
         sendMessage(
             "My name is Jay and I just came back from my uncle's house, located to the west of taft" +
-                "\r\nI had a very important book with me, and I think it dropped on the way here" +
-                "\r\nCan you please help me retrieve it?",
+            "\r\nI had a very important book with me, and I think it dropped on the way here" +
+            "\r\nCan you please help me retrieve it?",
             accept = { onAccept()},
             decline = {onDecline()}
         )
@@ -58,7 +58,7 @@ class JaysLostBookI11002: QuestScript() {
     private fun DialogContext.onAccept() {
         startQuest()
         sendMessage(
-        "Thank you so much! The content of the book got scattered while I ran away." +
+            "Thank you so much! The content of the book got scattered while I ran away." +
             "\r\nStart by looking for the book's pages, 25 pages to be exact. And please hurry!",
             ok = { onEnd() }
         )

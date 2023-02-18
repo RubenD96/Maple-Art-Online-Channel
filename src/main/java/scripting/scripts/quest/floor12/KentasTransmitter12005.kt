@@ -18,7 +18,7 @@ class KentasTransmitter12005: QuestScript() {
                     listOf(
                         ItemQuestReward(1032076, 1)
                     ),
-                "Just as we agreed, here is the transmitter." +
+                    "Just as we agreed, here is the transmitter." +
                     "\r\nRemember to wear it so you can speak with the fish!",
                 )
             }

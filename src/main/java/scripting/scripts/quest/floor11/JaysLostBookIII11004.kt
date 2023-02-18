@@ -79,7 +79,7 @@ class JaysLostBookIII11004: QuestScript() {
         startQuest()
         sendMessage(
             "Thank you so much!, you are so kind $playerName" +
-                "\r\nYou should be able to obtain a string from any monster in taft, good luck!",
+            "\r\nYou should be able to obtain a string from any monster in taft, good luck!",
             ok = { onEnd() }
         )
     }
@@ -102,7 +102,7 @@ class JaysLostBookIII11004: QuestScript() {
                 MesoQuestReward(75000),
                 FameQuestReward(5)
             ),
-        "The book is now wrapped and safe" +
+            "The book is now wrapped and safe" +
             "\r\nThank you so much!",
             take = mapOf(4007012 to 1),
         )

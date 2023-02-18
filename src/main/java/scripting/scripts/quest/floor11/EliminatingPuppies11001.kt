@@ -21,7 +21,7 @@ class EliminatingPuppies11001 : QuestScript() {
             with(it) {
                 sendMessage(
                     "Hey there ${playerName.blue()}, can you help me make a necklace for my mother?" +
-                            "\r\nHer birthday is coming soon and I want my present to be special!",
+                    "\r\nHer birthday is coming soon and I want my present to be special!",
                     next = { firstDialogue() }
                 )
             }
@@ -32,7 +32,7 @@ class EliminatingPuppies11001 : QuestScript() {
 
         sendSimple(
             "I want to make her a necklace made out of puppies teeth, but I can't kill them myself," +
-                    "\r\n${"can you do it???".blue()}",
+            "\r\n${"can you do it???".blue()}",
             selections = linkedMapOf(
                 "KILLING PUPPIES ARE YOU INSANE? NO!".blue() to {onDecline()},
                 "Sure, I'm a heartless bastard.".blue() to {onAccept()}
@@ -51,8 +51,8 @@ class EliminatingPuppies11001 : QuestScript() {
         startQuest()
         sendMessage(
             "That's great!" +
-                    "\r\nThen go ahead and ${"slaughter".bold().red()} 50 Brown Puppies and obtain 25 ${4000078.itemName()}" +
-                    "\r\nIt should look like this: ${4000078.itemImage()}",
+            "\r\nThen go ahead and ${"slaughter".bold().red()} 50 Brown Puppies and obtain 25 ${4000078.itemName()}" +
+            "\r\nIt should look like this: ${4000078.itemImage()}",
             ok = { onEnd() }
         )
     }
