@@ -113,7 +113,7 @@ class FieldMob(val template: FieldMobTemplate, left: Boolean) : AbstractFieldCon
         if (template.drops == null) {
             template.drops = getMobDrops(template.id)
         }
-        val drops: MutableList<AbstractFieldDrop> = ArrayList<AbstractFieldDrop>()
+        val drops: MutableList<AbstractFieldDrop> = ArrayList()
 
         template.drops?.forEach {
             if (it.quest != 0) {

@@ -100,7 +100,7 @@ class GuildRequestHandler : PacketHandler {
                 val name = reader.readMapleString()
                 val member = guild.members[cid] ?: return
 
-                if (req == GuildReq.KICK_GUILD) if (member.grade <= myGrade) return  // jr's can't kick jr's... or the master
+                if (req == GuildReq.KICK_GUILD && member.grade <= myGrade) return  // jr's can't kick jr's... or the master
 
                 if (member.isOnline && member.hasCharacter()) {
                     member.character?.let {

@@ -6,7 +6,7 @@ import client.effects.FieldEffectInterface
 import field.Field
 import field.obj.FieldObject
 import field.obj.drop.AbstractFieldDrop
-import field.obj.drop.EnterType
+import field.obj.drop.OwnerType
 import net.maple.SendOpcode
 import net.maple.packets.CharacterPackets.encodeData
 import net.maple.packets.CharacterPackets.encodeLooks
@@ -148,7 +148,7 @@ object FieldPackets {
         pw.writePosition(this.position)
         pw.writeInt(if (source is Character) 0 else source.id) // source
 
-        if (enterType != EnterType.FFA) {
+        if (enterType != OwnerType.FFA) {
             pw.writePosition(source.position)
             pw.writeShort(0) // delay
         }

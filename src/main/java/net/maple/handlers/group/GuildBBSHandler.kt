@@ -71,6 +71,7 @@ class GuildBBSHandler : PacketHandler {
             val item: BBSItem
             if (modify) {
                 item = bbs.getById(id) ?: return loadList(c, bbs)
+                if (item.cid != c.character.id) return loadList(c, bbs)
                 item.title = title
                 item.content = content
                 item.emote = emote

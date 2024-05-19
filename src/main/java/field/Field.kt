@@ -8,7 +8,7 @@ import client.replay.Replay
 import constants.FieldConstants.JQ_FIELDS
 import field.obj.FieldObject
 import field.obj.drop.AbstractFieldDrop
-import field.obj.drop.EnterType
+import field.obj.drop.OwnerType
 import field.obj.life.*
 import field.obj.portal.FieldPortal
 import field.obj.portal.PortalType
@@ -129,7 +129,7 @@ open class Field(val template: FieldTemplate) {
                                     is AbstractFieldDrop -> enterItemDrop(
                                         it,
                                         it.enterFieldPacket,
-                                        EnterType.FFA,
+                                        OwnerType.FFA,
                                         obj
                                     ) // todo uuh
                                     is FieldMob -> obj.write(it.getEnterFieldPacket(MobSummonType.NORMAL))
@@ -170,8 +170,8 @@ open class Field(val template: FieldTemplate) {
             when (obj) {
                 is AbstractFieldDrop -> enterItemDrop(
                     obj,
-                    obj.getEnterFieldPacket(EnterType.PARTY),
-                    EnterType.PARTY,
+                    obj.getEnterFieldPacket(OwnerType.PARTY),
+                    OwnerType.PARTY,
                     characters = getObjects<Character>().toTypedArray()
                 )
                 is Replay -> {

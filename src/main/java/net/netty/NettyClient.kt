@@ -3,6 +3,7 @@ package net.netty
 import constants.ServerConstants
 import io.netty.channel.Channel
 import io.netty.util.AttributeKey
+import util.HexTool
 import util.crypto.MapleAESOFB
 import util.packet.Packet
 import util.packet.PacketReader
@@ -16,6 +17,7 @@ open class NettyClient(val ch: Channel, var sendIV: ByteArray, var recvIV: ByteA
     val reader: PacketReader = PacketReader()
 
     fun write(msg: Packet) {
+        println("[SEND] " + HexTool.toHex(msg.data))
         ch.writeAndFlush(msg)
     }
 

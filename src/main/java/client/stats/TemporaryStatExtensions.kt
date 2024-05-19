@@ -1,12 +1,47 @@
 package client.stats
 
 import client.inventory.item.templates.StatChangeItemTemplate
+import skill.SkillLevelTemplate
 import util.packet.PacketWriter
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.math.abs
 
 object TemporaryStatExtensions {
+
+    fun SkillLevelTemplate.getTemporaryStats(): Map<TemporaryStatType, Short> {
+        val stats = mutableMapOf<TemporaryStatType, Short>()
+
+        if (pad != 0.toShort()) stats[TemporaryStatType.PAD] = pad
+        if (pdd != 0.toShort()) stats[TemporaryStatType.PDD] = pdd
+        if (mad != 0.toShort()) stats[TemporaryStatType.MAD] = mad
+        if (mdd != 0.toShort()) stats[TemporaryStatType.MDD] = mdd
+        if (acc != 0.toShort()) stats[TemporaryStatType.ACC] = acc
+        if (eva != 0.toShort()) stats[TemporaryStatType.EVA] = eva
+        if (craft != 0.toShort()) stats[TemporaryStatType.CRAFT] = craft
+        if (speed != 0.toShort()) stats[TemporaryStatType.SPEED] = speed
+        if (jump != 0.toShort()) stats[TemporaryStatType.JUMP] = jump
+
+        if (morph > 0) stats[TemporaryStatType.MORPH] = morph
+
+        if (emhp != 0.toShort()) stats[TemporaryStatType.EMHP] = emhp
+        if (emmp != 0.toShort()) stats[TemporaryStatType.EMMP] = emmp
+        if (epad != 0.toShort()) stats[TemporaryStatType.EPAD] = epad
+        if (epdd != 0.toShort()) stats[TemporaryStatType.EPDD] = epdd
+
+        when (Skill.entries[skill]) {
+            Skill.MAGICIAN_MAGIC_GUARD, Skill.FLAMEWIZARD_MAGIC_GUARD, Skill.EVAN_MAGIC_GUARD -> {
+                stats[TemporaryStatType.MAGIC_GUARD] = x
+            }
+            Skill.ROGUE_DARK_SIGHT, Skill.NIGHTWALKER_DARK_SIGHT -> {
+                stats[TemporaryStatType.DARK_SIGHT] = x
+            }
+
+            else -> println("$skill not handled yet")
+        }
+
+        return stats
+    }
 
     fun StatChangeItemTemplate.getTemporaryStats(): Map<TemporaryStatType, Short> {
         val stats = HashMap<TemporaryStatType, Short>()
@@ -29,17 +64,26 @@ object TemporaryStatExtensions {
         val bits = BitSet(128)
 
         keys.forEach {
-            bits[it.type] = true
+            //bits[it.type] = true
+            bits.set(it.type)
         }
 
         val bytes = bits.toByteArray()
-        for (i in 3 downTo 0) {
+        bytes.reverse()
+        repeat(4) {
+            try {
+                pw.writeInt(abs(bytes[it].toInt()))
+            } catch (_: Exception) {
+                pw.writeInt(0)
+            }
+        }
+        /*for (i in 3 downTo 0) {
             try {
                 pw.writeInt(abs(bytes[i].toInt()))
             } catch (_: Exception) {
                 pw.writeInt(0)
             }
-        }
+        }*/
     }
 
     fun Map<TemporaryStatType, TemporaryStat>.encodeLocal(pw: PacketWriter) {

@@ -4,7 +4,7 @@ object ServerConstants {
 
     const val VERSION: Short = 95
     const val CHANNELS = 3
-    const val IP = "82.74.154.139"
+    const val IP = "217.62.201.166"
     const val LOG = true
     const val DEBUG = true // in some cases a different action should be taken during server development in order to prevent some annoying stuff from happening
 

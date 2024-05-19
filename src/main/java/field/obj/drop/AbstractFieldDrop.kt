@@ -29,7 +29,7 @@ abstract class AbstractFieldDrop(val owner: Int, val source: FieldObject, val qu
 
     abstract fun pickUp(chr: Character)
 
-    override val enterFieldPacket: Packet get() = getEnterFieldPacket(EnterType.FFA)
+    override val enterFieldPacket: Packet get() = getEnterFieldPacket(OwnerType.FFA)
 
     fun getEnterFieldPacket(enterType: Byte, cursedObject: Int? = null): Packet {
         return enterField(enterType, cursedObject)

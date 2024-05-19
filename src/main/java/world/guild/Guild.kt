@@ -14,7 +14,7 @@ import world.alliance.Alliance
 import world.guild.bbs.GuildBBS
 import java.util.*
 
-class Guild(val id: Int) {
+class Guild constructor(val id: Int) {
 
     var maxSize = 0
     var leader = 0

@@ -20,6 +20,7 @@ import client.stats.TemporaryStatExtensions.encodeRemote
 import constants.PacketConstants
 import field.movement.MovePath
 import net.maple.SendOpcode
+import net.maple.packets.CharacterPackets.remoteEffect
 import net.maple.packets.ItemPackets.encode
 import skill.ModifySkillContext
 import util.logging.LogType
@@ -509,17 +510,17 @@ object CharacterPackets {
         pw.writeHeader(SendOpcode.USER_EFFECT_LOCAL)
         effect.encode(pw)
 
-        this.write(pw.createPacket())
+        write(pw.createPacket())
     }
 
-    fun Character.remoteEffect(chr: Character, effect: EffectInterface) {
+    fun Character.remoteEffect(effect: EffectInterface) {
         val pw = PacketWriter(12)
 
-        pw.writeHeader(SendOpcode.USER_EFFECT_LOCAL)
-        pw.writeInt(chr.id)
+        pw.writeHeader(SendOpcode.USER_EFFECT_REMOTE)
+        pw.writeInt(id)
         effect.encode(pw)
 
-        this.write(pw.createPacket())
+        field.broadcast(pw.createPacket(), this)
     }
 
     fun Avatar.move(path: MovePath): Packet {

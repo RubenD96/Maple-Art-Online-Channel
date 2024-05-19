@@ -3,7 +3,7 @@ package field.obj.drop
 /**
  * This is very wrong :)
  */
-object EnterType {
+object OwnerType {
     const val REGULAR: Byte = 0x00
     const val PARTY: Byte = 0x01
     const val FFA: Byte = 0x02
